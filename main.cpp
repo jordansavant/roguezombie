@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "bitengine/Foo.h"
+#include "bitengine/Bar.h"
 
 int main()
 {
@@ -9,6 +10,9 @@ int main()
 
     bit::Foo foo;
     foo.bar();
+
+    bit::Bar bar;
+    bar.foo();
 
 	while (window.isOpen())
 	{
