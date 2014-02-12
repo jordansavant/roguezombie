@@ -68,7 +68,6 @@ std::string cpd::Dir::ExecutablePath()
     {
         std::wstring arr_w(szPath);
         std::string arr_s(arr_w.begin(), arr_w.end());
-        arr_s;
         return arr_s;
     }
 
