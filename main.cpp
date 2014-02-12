@@ -1,7 +1,6 @@
 #include <functional>
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include "cpd.h"
 #include "ResourcePath.h"
 #include "bitengine/Foo.h"
 #include "bitengine/Bar.h"
@@ -21,9 +20,6 @@ int main()
         return true;
     });
     r++;
-
-    std::cout << cpd::Dir::ExecutablePath() << std::endl;
-    std::cout << cpd::Dir::ExecutableDir() << std::endl;
 
     sf::Texture zombieimage;
     zombieimage.loadFromFile(resourcePath() + "Zombie.png");
