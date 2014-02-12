@@ -1,5 +1,8 @@
 #include <functional>
+#include <iostream>
 #include <SFML/Graphics.hpp>
+#include "cpd.h"
+#include "ResourcePath.h"
 #include "bitengine/Foo.h"
 #include "bitengine/Bar.h"
 
@@ -19,6 +22,14 @@ int main()
     });
     r++;
 
+    std::cout << cpd::Dir::ExecutablePath() << std::endl;
+    std::cout << cpd::Dir::ExecutableDir() << std::endl;
+
+    sf::Texture zombieimage;
+    zombieimage.loadFromFile(resourcePath() + "Zombie.png");
+    sf::Sprite zombiesprite;
+    zombiesprite.setTexture(zombieimage);
+
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -30,6 +41,7 @@ int main()
 
 		window.clear();
 		window.draw(shape);
+        window.draw(zombiesprite);
 		window.display();
 	}
 
