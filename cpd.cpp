@@ -1,5 +1,9 @@
 #include "cpd.h"
 
+#if defined(__CPD_WIN__)
+#include "windows.h"
+#endif
+
 std::string cpd::Dir::AppDataDir(std::string const & appName)
 {
 #if defined(__CPD_MAC__) // MAC OS CODE HERE
@@ -58,6 +62,16 @@ std::string cpd::Dir::ExecutablePath()
 
 #elif defined(__CPD_WIN__) // WINDOWS CODE HERE
 
+    TCHAR szPath[MAX_PATH];
+    int charcount = GetModuleFileName(NULL, szPath, MAX_PATH);
+    if(charcount > 0)
+    {
+        std::wstring arr_w(szPath);
+        std::string arr_s(arr_w.begin(), arr_w.end());
+        arr_s;
+        return arr_s;
+    }
+
     return "";
 
 #endif
@@ -80,7 +94,11 @@ std::string cpd::Dir::ExecutableDir()
 
 #elif defined(__CPD_WIN__) // WINDOWS CODE HERE
 
-    return "";
+    std::string full = cpd::Dir::ExecutablePath();
+    size_t found = full.find_last_of("/\\");
+    std::string dir = full.substr(0,found);
+
+    return dir;
 
 #endif
 }
