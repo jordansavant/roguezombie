@@ -1,3 +1,4 @@
+#include <functional>
 #include <SFML/Graphics.hpp>
 #include "bitengine/Foo.h"
 #include "bitengine/Bar.h"
@@ -13,6 +14,10 @@ int main()
 
     bit::Bar bar;
     bar.foo();
+    int r = bar.lamb([] (int tar) -> bool {
+        return true;
+    });
+    r++;
 
 	while (window.isOpen())
 	{
