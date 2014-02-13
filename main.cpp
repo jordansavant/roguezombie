@@ -2,24 +2,12 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "ResourcePath.h"
-#include "bitengine/Foo.h"
-#include "bitengine/Bar.h"
 
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
 	sf::CircleShape shape(100.f);
 	shape.setFillColor(sf::Color::Green);
-
-    bit::Foo foo;
-    foo.bar();
-
-    bit::Bar bar;
-    bar.foo();
-    int r = bar.lamb([] (int tar) -> bool {
-        return true;
-    });
-    r++;
 
     sf::Texture zombieimage;
     zombieimage.loadFromFile(resourcePath() + "Zombie.png");
