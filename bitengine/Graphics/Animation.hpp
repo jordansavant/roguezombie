@@ -38,7 +38,9 @@ namespace bit
 
         static Animation fromSprite(Sprite* sprite, int frames, float fps, Direction direction = Direction::Horizontal);
 
+
 	protected:
+
         std::vector<sf::IntRect> frames;
 		GameTimer frameTimer;
 		int minFps;

@@ -4,7 +4,7 @@
 #include "Sprite.hpp"
 
 bit::Animation::Animation()
-    : frames(), reverse(false)
+    : reverse(false)
 {
 }
 

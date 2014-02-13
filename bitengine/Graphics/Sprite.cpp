@@ -30,6 +30,8 @@ void bit::Sprite::applyToQuad(Vertex3* quad)
         case Flip::Horizontal:
             VertexHelper::flipQuad(quad, true, false);
             break;
+        default:
+            break;
     }
 }
 

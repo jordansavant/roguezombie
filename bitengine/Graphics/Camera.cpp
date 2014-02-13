@@ -144,16 +144,11 @@ void bit::Camera::setView()
 {
     float currentX = (float)renderWindow->getSize().x;
     float currentY = (float)renderWindow->getSize().y;
-    float ratio = 1;
-    float ratioX = currentX / masterResolutionWidth;
-    float ratioY = currentY / masterResolutionHeight;
     float moveX = 0;
     float moveY = 0;
-    float targetX = currentX;
-    float targetY = currentY;
 
     view.reset(sf::FloatRect(0, 0, (int)currentX, (int)currentY));
-    view.zoom(1 / ratio);
+    view.zoom(1);
     view.move(moveX, moveY);
     view.setViewport(relativeRectangle);
 }
