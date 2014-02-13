@@ -103,7 +103,7 @@ namespace bit
             int subHeight = (int)(bounds.height / 2);
             int x = (int)bounds.left;
             int y = (int)bounds.top;
-            
+
             nodes.push_back(fetchFromPool(level+1, x + subWidth, y, subWidth, subHeight));
             nodes.push_back(fetchFromPool(level+1, x, y, subWidth, subHeight));
             nodes.push_back(fetchFromPool(level+1, x, y + subHeight, subWidth, subHeight));
@@ -155,13 +155,13 @@ namespace bit
             int index = -1;
             double verticalMidpoint = bounds.left + (bounds.width / 2);
             double horizontalMidpoint = bounds.top + (bounds.height / 2);
- 
+
             // Object can completely fit within the top quadrants
             bool topQuadrant = (pRect->box.top < horizontalMidpoint && pRect->box.top + pRect->box.height < horizontalMidpoint);
 
             // Object can completely fit within the bottom quadrants
             bool bottomQuadrant = (pRect->box.top > horizontalMidpoint);
- 
+
             // Object can completely fit within the left quadrants
             if (pRect->box.left < verticalMidpoint && pRect->box.left + pRect->box.width < verticalMidpoint)
             {
@@ -186,10 +186,9 @@ namespace bit
                     index = 3;
                 }
            }
- 
+
            return index;
         }
-
 
         /*
         * Insert the object into the quadtree. If the node
@@ -201,7 +200,7 @@ namespace bit
             if (nodes.size() > 0)
             {
                 int index = getIndex(pRect);
- 
+
                 if (index != -1)
                 {
                     if(index < 0 || index > nodes.size())
@@ -210,20 +209,20 @@ namespace bit
                     }
 
                     nodes[index]->insert(pRect);
- 
+
                     return;
                 }
             }
- 
+
             objects.push_back(pRect);
- 
+
             if (objects.size() > maxObjects && level < maxLevels)
             {
                 if (nodes.size() == 0)
-                { 
-                    split(); 
+                {
+                    split();
                 }
- 
+
                 int i = 0;
                 while (i < objects.size())
                 {
@@ -255,12 +254,12 @@ namespace bit
             {
                 nodes[index]->retrieve(returnObjects, pRect);
             }
- 
+
             for(int i = 0; i < objects.size(); i++)
             {
                 returnObjects->push_back(objects[i]);
             }
- 
+
             return returnObjects;
         }
 

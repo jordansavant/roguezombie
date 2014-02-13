@@ -23,7 +23,7 @@ namespace bit
 
         std::vector<sf::SoundBuffer*> soundBuffers;
         std::vector<sf::Sound*> sounds;
-        
+
         float getMaximum();
 
         int loadSound(std::string fileName);

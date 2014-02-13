@@ -28,7 +28,6 @@ namespace bit
 		    add(count);
 	    }
 
-
 	    ~Pool()
 	    {
             for(int i = 0; i < pool.size(); i++)
