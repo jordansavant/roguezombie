@@ -1,6 +1,7 @@
 #include "VectorMath.h"
 
 #include <vector>
+#include <random>
 #include <math.h>
 #include "Math.h"
 
@@ -50,28 +51,28 @@ float bit::VectorMath::Distance(float x1, float y1, float x2, float y2)
 {
     float x = (x1 - x2);
     float y = (y1 - y2);
-    return std::sqrtf(x*x  + y*y);
+    return std::sqrt(x*x  + y*y);
 }
 
 sf::Vector2f bit::VectorMath::DirectionToVector(float x1, float y1, float x2, float y2)
 {
-    return Normalize(sf::Vector2f(x2, y2) - sf::Vector2f(x1, y1));
+    return bit::VectorMath::Normalize(x2 - x1, y2 - y1);
 }
 
 float bit::VectorMath::RotationToVector(float x1, float y1, float x2, float y2)
 {
-    return std::atan2f(y1 - y2, x1 - x2);
+    return std::atan2(y1 - y2, x1 - x2);
 }
 
 float bit::VectorMath::ToRadians(sf::Vector2f v)
 {
     v = Normalize(v.x, v.y);
-    return std::atan2f(v.y, v.x);
+    return std::atan2(v.y, v.x);
 }
 
 sf::Vector2f bit::VectorMath::RadiansToVector(float radians)
 {
-    return sf::Vector2f(std::cosf(radians), std::sinf(radians));
+    return sf::Vector2f(std::cos(radians), std::sin(radians));
 }
 
 sf::Vector2f bit::VectorMath::Average(std::vector<sf::Vector2f> &vectors)
@@ -80,7 +81,7 @@ sf::Vector2f bit::VectorMath::Average(std::vector<sf::Vector2f> &vectors)
         return sf::Vector2f(0, 0);
 
     sf::Vector2f average(0, 0);
-    for(int i=0; i < vectors.size(); i++)
+    for(unsigned int i=0; i < vectors.size(); i++)
     {
         average.x += vectors[i].x;
         average.y += vectors[i].y;
@@ -93,8 +94,8 @@ sf::Vector2f bit::VectorMath::Average(std::vector<sf::Vector2f> &vectors)
 
 void bit::VectorMath::Rotate(sf::Vector2f &point, float radians)
 {
-    float cosRadians = std::cosf(radians);
-    float sinRadians = std::sinf(radians);
+    float cosRadians = std::cos(radians);
+    float sinRadians = std::sin(radians);
 
     point.x = point.x * cosRadians - point.y * sinRadians;
     point.y = point.x * sinRadians - point.y * cosRadians;
@@ -102,8 +103,8 @@ void bit::VectorMath::Rotate(sf::Vector2f &point, float radians)
 
 void bit::VectorMath::RotateAroundPivot(sf::Vector2f &point, float radians, sf::Vector2f &pivot)
 {
-    float cosRadians = std::cosf(radians);
-    float sinRadians = std::sinf(radians);
+    float cosRadians = std::cos(radians);
+    float sinRadians = std::sin(radians);
 
     sf::Vector2f translatedPoint;
     translatedPoint.x = point.x - pivot.x;

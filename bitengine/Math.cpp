@@ -1,6 +1,7 @@
 #include "Math.h"
 
 #include <vector>
+#include <random>
 #include <math.h>
 
 float bit::Math::PiOver4 = 0.785398163397f;

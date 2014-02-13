@@ -2,7 +2,7 @@
 #ifndef BIT_VECTORHELPER_H
 #define BIT_VECTORHELPER_H
 
-#include "SFML\Graphics.hpp"
+#include "SFML/Graphics.hpp"
 
 namespace bit
 {

@@ -7,7 +7,7 @@ namespace bit
     class Math
     {
     public:
-        
+
         static float PiOver4;
         static float PiOver2;
         static float Pi;
