@@ -1,4 +1,7 @@
 #include "VectorMath.h"
+
+#include <vector>
+#include <math.h>
 #include "Math.h"
 
 sf::Vector2f bit::VectorMath::GetRandomVector()
