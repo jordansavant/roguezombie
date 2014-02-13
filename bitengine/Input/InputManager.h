@@ -25,61 +25,61 @@ namespace bit
 		virtual void update(sf::RenderWindow &window, sf::Time &gameTime, bool isGamePaused);
 
         // Mouse
-		bool InputManager::isButtonDown(sf::Mouse::Button mouseButton);
+		bool isButtonDown(sf::Mouse::Button mouseButton);
 
-		bool InputManager::isButtonPressed(sf::Mouse::Button mouseButton);
+		bool isButtonPressed(sf::Mouse::Button mouseButton);
 
-        bool InputManager::isButtonReleased(sf::Mouse::Button mouseButton);
+        bool isButtonReleased(sf::Mouse::Button mouseButton);
 
         // Keyboard
-        bool InputManager::isButtonDown(sf::Keyboard::Key keyboardKey);
+        bool isButtonDown(sf::Keyboard::Key keyboardKey);
 
-        bool InputManager::isButtonPressed(sf::Keyboard::Key keyboardKey);
+        bool isButtonPressed(sf::Keyboard::Key keyboardKey);
 
-        bool InputManager::isButtonReleased(sf::Keyboard::Key keyboardKey);
+        bool isButtonReleased(sf::Keyboard::Key keyboardKey);
 
         // Gamepad
-        bool InputManager::isButtonDown(XinputGamepad::Button gamepadButton);
+        bool isButtonDown(XinputGamepad::Button gamepadButton);
 
-        bool InputManager::isButtonPressed(XinputGamepad::Button gamepadButton);
+        bool isButtonPressed(XinputGamepad::Button gamepadButton);
 
-        bool InputManager::isButtonReleased(XinputGamepad::Button gamepadButton);
+        bool isButtonReleased(XinputGamepad::Button gamepadButton);
 
-        int InputManager::getMouseWheelTicks();
+        int getMouseWheelTicks();
 
-        sf::Vector2f InputManager::getVector(XinputGamepad::Vector vector);
+        sf::Vector2f getVector(XinputGamepad::Vector vector);
 
-        bool InputManager::isButtonDown(int gamepadIndex, XinputGamepad::Button gamepadButton);
+        bool isButtonDown(int gamepadIndex, XinputGamepad::Button gamepadButton);
 
-        bool InputManager::isButtonPressed(int gamepadIndex, XinputGamepad::Button gamepadButton);
+        bool isButtonPressed(int gamepadIndex, XinputGamepad::Button gamepadButton);
 
-        bool InputManager::isButtonReleased(int gamepadIndex, XinputGamepad::Button gamepadButton);
+        bool isButtonReleased(int gamepadIndex, XinputGamepad::Button gamepadButton);
 
-        sf::Vector2f InputManager::getVector(int gamepadIndex, XinputGamepad::Vector vector);
+        sf::Vector2f getVector(int gamepadIndex, XinputGamepad::Vector vector);
 
         // Keyboard Vectors
-        sf::Vector2f InputManager::getInputBindingVectorVector(int index);
+        sf::Vector2f getInputBindingVectorVector(unsigned int index);
 
-        int InputManager::assignInputBindingVector(InputBindingVector* keyboardVector);
+        int assignInputBindingVector(InputBindingVector* keyboardVector);
 
-        int InputManager::reassignInputBindingVector(InputBindingVector* keyboardVector);
+        int reassignInputBindingVector(InputBindingVector* keyboardVector);
 
         // Button Bindings
-        bool InputManager::isButtonDown(std::vector<InputBinding*> &bindings);
+        bool isButtonDown(std::vector<InputBinding*> &bindings);
 
-        bool InputManager::isButtonDown(InputBinding &binding);
+        bool isButtonDown(InputBinding &binding);
 
-        bool InputManager::isButtonPressed(std::vector<InputBinding*> &binding);
+        bool isButtonPressed(std::vector<InputBinding*> &binding);
 
-        bool InputManager::isButtonPressed(InputBinding &binding);
+        bool isButtonPressed(InputBinding &binding);
 
-        bool InputManager::isButtonReleased(std::vector<InputBinding*> &binding);
+        bool isButtonReleased(std::vector<InputBinding*> &binding);
 
-        bool InputManager::isButtonReleased(InputBinding &binding);
+        bool isButtonReleased(InputBinding &binding);
 
-        sf::Vector2f InputManager::getVector(std::vector<InputBinding*> &binding);
+        sf::Vector2f getVector(std::vector<InputBinding*> &binding);
 
-        sf::Vector2f InputManager::getVector(InputBinding &binding);
+        sf::Vector2f getVector(InputBinding &binding);
 
 	private:
 		bool mouseButtonLastDown[5];

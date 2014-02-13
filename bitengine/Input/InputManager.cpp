@@ -77,7 +77,7 @@ void bit::InputManager::update(sf::RenderWindow &window, sf::Time &gameTime, boo
     }
 
     // InputBindingVectors
-    for(int i = 0; i < inputBindingVectors.size(); i++)
+    for(unsigned int i = 0; i < inputBindingVectors.size(); i++)
     {
         inputBindingVectors[i]->vector.x = 0;
         inputBindingVectors[i]->vector.y = 0;
@@ -252,7 +252,7 @@ sf::Vector2f bit::InputManager::getVector(int gamepadIndex, XinputGamepad::Vecto
 }
 
 // Keyboard Vectors
-sf::Vector2f bit::InputManager::getInputBindingVectorVector(int index)
+sf::Vector2f bit::InputManager::getInputBindingVectorVector(unsigned int index)
 {
     if(index >= 0 || index < inputBindingVectors.size())
     {
@@ -277,7 +277,7 @@ int bit::InputManager::reassignInputBindingVector(InputBindingVector* keyboardVe
 // Button Bindings
 bool bit::InputManager::isButtonDown(std::vector<InputBinding*> &bindings)
 {
-    for(int i = 0; i < bindings.size(); i++)
+    for(unsigned int i = 0; i < bindings.size(); i++)
     {
         if(isButtonDown(*bindings[i]))
         {
@@ -297,6 +297,9 @@ bool bit::InputManager::isButtonDown(InputBinding &binding)
             return isButtonDown(static_cast<sf::Keyboard::Key>(binding.inputEnum));
         case InputBinding::InputType::GamepadButton:
             return isButtonDown(static_cast<XinputGamepad::Button>(binding.inputEnum));
+        case InputBinding::InputType::GamepadVector:
+        case InputBinding::InputType::InputBindingVector:
+            break;
     }
 
     return false;
@@ -304,7 +307,7 @@ bool bit::InputManager::isButtonDown(InputBinding &binding)
 
 bool bit::InputManager::isButtonPressed(std::vector<InputBinding*> &binding)
 {
-    for(int i = 0; i < binding.size(); i++)
+    for(unsigned int i = 0; i < binding.size(); i++)
     {
         bool r = false;
         switch(binding[i]->inputType)
@@ -315,6 +318,9 @@ bool bit::InputManager::isButtonPressed(std::vector<InputBinding*> &binding)
                 return isButtonPressed(static_cast<sf::Keyboard::Key>(binding[i]->inputEnum));
             case InputBinding::InputType::GamepadButton:
                 return isButtonPressed(static_cast<XinputGamepad::Button>(binding[i]->inputEnum));
+            case InputBinding::InputType::GamepadVector:
+            case InputBinding::InputType::InputBindingVector:
+                break;
         }
 
         if(r)
@@ -335,6 +341,9 @@ bool bit::InputManager::isButtonPressed(InputBinding &binding)
             return isButtonPressed(static_cast<sf::Keyboard::Key>(binding.inputEnum));
         case InputBinding::InputType::GamepadButton:
             return isButtonPressed(static_cast<XinputGamepad::Button>(binding.inputEnum));
+        case InputBinding::InputType::GamepadVector:
+        case InputBinding::InputType::InputBindingVector:
+            break;
     }
 
     return false;
@@ -342,7 +351,7 @@ bool bit::InputManager::isButtonPressed(InputBinding &binding)
 
 bool bit::InputManager::isButtonReleased(std::vector<InputBinding*> &binding)
 {
-    for(int i = 0; i < binding.size(); i++)
+    for(unsigned int i = 0; i < binding.size(); i++)
     {
         bool r = false;
         switch(binding[i]->inputType)
@@ -355,6 +364,9 @@ bool bit::InputManager::isButtonReleased(std::vector<InputBinding*> &binding)
                 break;
             case InputBinding::InputType::GamepadButton:
                 r = isButtonReleased(static_cast<XinputGamepad::Button>(binding[i]->inputEnum));
+                break;
+            case InputBinding::InputType::GamepadVector:
+            case InputBinding::InputType::InputBindingVector:
                 break;
         }
 
@@ -377,6 +389,9 @@ bool bit::InputManager::isButtonReleased(InputBinding &binding)
             return isButtonReleased(static_cast<sf::Keyboard::Key>(binding.inputEnum));
         case InputBinding::InputType::GamepadButton:
             return isButtonReleased(static_cast<XinputGamepad::Button>(binding.inputEnum));
+        case InputBinding::InputType::GamepadVector:
+        case InputBinding::InputType::InputBindingVector:
+            break;
     }
 
     return false;
@@ -385,7 +400,7 @@ bool bit::InputManager::isButtonReleased(InputBinding &binding)
 sf::Vector2f bit::InputManager::getVector(std::vector<InputBinding*> &binding)
 {
     sf::Vector2f v(0, 0);
-    for(int i = 0; i < binding.size(); i++)
+    for(unsigned int i = 0; i < binding.size(); i++)
     {
         switch(binding[i]->inputType)
         {
@@ -394,6 +409,10 @@ sf::Vector2f bit::InputManager::getVector(std::vector<InputBinding*> &binding)
                 break;
             case InputBinding::InputType::InputBindingVector:
                 v = getInputBindingVectorVector(binding[i]->inputEnum);
+                break;
+            case InputBinding::InputType::MouseButton:
+            case InputBinding::InputType::KeyboardButton:
+            case InputBinding::InputType::GamepadButton:
                 break;
         }
 
@@ -414,6 +433,10 @@ sf::Vector2f bit::InputManager::getVector(InputBinding &binding)
             return getVector(static_cast<XinputGamepad::Vector>(static_cast<sf::Mouse::Button>(binding.inputEnum)));
         case InputBinding::InputType::InputBindingVector:
             return getInputBindingVectorVector(binding.inputEnum);
+        case InputBinding::InputType::MouseButton:
+        case InputBinding::InputType::KeyboardButton:
+        case InputBinding::InputType::GamepadButton:
+            break;
     }
 
     return sf::Vector2f(0, 0);
