@@ -12,7 +12,7 @@ bit::SoundManager::SoundManager()
 
 bit::SoundManager::~SoundManager()
 {
-    for(int i = 0; i < soundBuffers.size(); i++)
+    for(unsigned int i = 0; i < soundBuffers.size(); i++)
     {
         delete soundBuffers.at(i);
         delete sounds.at(i);
@@ -45,12 +45,12 @@ int bit::SoundManager::loadSound(std::string fileName)
     return soundBuffers.size() - 1;
 }
 
-void bit::SoundManager::play(int soundId)
+void bit::SoundManager::play(unsigned int soundId)
 {
     play(soundId, masterVolume, defaultPitch);
 }
 
-void bit::SoundManager::play(int soundId, float volume, float pitch)
+void bit::SoundManager::play(unsigned int soundId, float volume, float pitch)
 {
     if(soundId >= 0 && soundBuffers.size() > soundId)
     {

@@ -28,9 +28,9 @@ namespace bit
 
         int loadSound(std::string fileName);
 
-        void play(int soundId);
+        void play(unsigned int soundId);
 
-        void play(int soundId, float volume, float pitch = 1);
+        void play(unsigned int soundId, float volume, float pitch = 1);
 
         float getMasterVolume();
 

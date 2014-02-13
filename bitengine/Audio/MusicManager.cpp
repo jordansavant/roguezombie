@@ -12,7 +12,7 @@ bit::MusicManager::MusicManager()
 
 bit::MusicManager::~MusicManager()
 {
-    for(int i = 0; i < musicStreams.size(); i++)
+    for(unsigned int i = 0; i < musicStreams.size(); i++)
     {
         delete musicStreams[i];
     }
@@ -39,7 +39,7 @@ int bit::MusicManager::loadMusic(std::string fileName)
     return musicStreams.size() - 1;
 }
 
-void bit::MusicManager::play(int musicId)
+void bit::MusicManager::play(unsigned int musicId)
 {
     if(musicId >= 0 && musicStreams.size() > musicId)
     {
@@ -58,7 +58,7 @@ void bit::MusicManager::setMasterVolume(float volume)
 {
     masterVolume = bit::Math::clamp(volume, 0, getMaximum());
 
-    for(int i = 0; i < musicStreams.size(); i++)
+    for(unsigned int i = 0; i < musicStreams.size(); i++)
     {
         sf::Music* music = musicStreams.at(i);
         music->setVolume(masterVolume);
@@ -94,7 +94,7 @@ void bit::MusicManager::changeVolume(float amount, bool wrapAround)
         masterVolume += amount;
     }
 
-    for(int i = 0; i < musicStreams.size(); i++)
+    for(unsigned int i = 0; i < musicStreams.size(); i++)
     {
         sf::Music* music = musicStreams.at(i);
         music->setVolume(masterVolume);

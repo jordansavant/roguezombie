@@ -22,7 +22,7 @@ namespace bit
 
         int loadMusic(std::string fileName);
 
-        void play(int musicId);
+        void play(unsigned int musicId);
 
         float getMasterVolume();
 
