@@ -1,4 +1,4 @@
-#include "InputBinding.h"
+#include "InputBinding.hpp"
 
 bit::InputBinding::InputBinding()
     : inputType(InputType::MouseButton), inputEnum(-1), gamepadIndex(-1)

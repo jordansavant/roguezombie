@@ -3,8 +3,8 @@
 #define BIT_MUSICMANAGER_H
 
 #include "SFML/Audio.hpp"
-#include "../Game/GameComponent.h"
-#include "../MathX.h"
+#include "../Game/GameComponent.hpp"
+#include "../Math/Math.hpp"
 #include <vector>
 
 namespace bit

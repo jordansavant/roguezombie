@@ -3,7 +3,7 @@
 #define BIT_XINPUTGAMEPAD_H
 
 #include "SFML/Graphics.hpp"
-#include "../VectorMath.h"
+#include "../Math/VectorMath.hpp"
 
 namespace bit
 {

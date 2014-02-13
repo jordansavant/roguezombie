@@ -1,7 +1,7 @@
-#include "MusicManager.h"
+#include "MusicManager.hpp"
 #include "SFML/Audio.hpp"
-#include "../Game/GameComponent.h"
-#include "../MathX.h"
+#include "../Game/GameComponent.hpp"
+#include "../Math/Math.hpp"
 #include <vector>
 
 bit::MusicManager::MusicManager()

@@ -1,4 +1,4 @@
-#include "Vertex3.h"
+#include "Vertex3.hpp"
 #include "SFML/Graphics.hpp"
 
 bit::Vertex3::Vertex3()

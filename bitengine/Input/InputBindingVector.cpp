@@ -1,5 +1,5 @@
-#include "InputBindingVector.h"
-#include "InputBinding.h"
+#include "InputBindingVector.hpp"
+#include "InputBinding.hpp"
 
 bit::InputBindingVector::InputBindingVector()
 {

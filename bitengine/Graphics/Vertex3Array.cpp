@@ -1,7 +1,7 @@
-#include "Vertex3Array.h"
+#include "Vertex3Array.hpp"
 #include "SFML/Graphics.hpp"
 #include "SFML/OpenGL.hpp"
-#include "Vertex3.h"
+#include "Vertex3.hpp"
 
 bit::Vertex3Array::Vertex3Array()
     : m_vertices(), m_primitiveType(sf::Points)

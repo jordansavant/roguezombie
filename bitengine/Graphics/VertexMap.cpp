@@ -1,7 +1,7 @@
-#include "VertexMap.h"
+#include "VertexMap.hpp"
 #include "SFML/Graphics.hpp"
-#include "Vertex3.h"
-#include "Vertex3Array.h"
+#include "Vertex3.hpp"
+#include "Vertex3Array.hpp"
 
 bit::VertexMap::VertexMap()
     : texture(NULL), index(0), primitiveType(sf::PrimitiveType::Quads)

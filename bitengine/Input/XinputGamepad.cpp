@@ -1,6 +1,6 @@
-#include "XinputGamepad.h"
+#include "XinputGamepad.hpp"
 #include "SFML/Graphics.hpp"
-#include "../VectorMath.h"
+#include "../Math/VectorMath.hpp"
 
 bit::XinputGamepad::XinputGamepad()
     : index(0), defaultDeadzone(.18f)

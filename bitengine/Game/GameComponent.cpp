@@ -1,4 +1,4 @@
-#include "GameComponent.h"
+#include "GameComponent.hpp"
 
 void bit::GameComponent::update(sf::RenderWindow &window, sf::Time &gameTime, bool isGamePaused)
 {

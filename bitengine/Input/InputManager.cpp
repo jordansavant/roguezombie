@@ -1,9 +1,9 @@
-#include "InputManager.h"
+#include "InputManager.hpp"
 #include "SFML/Graphics.hpp"
-#include "../Game/GameComponent.h"
-#include "XinputGamepad.h"
-#include "InputBinding.h"
-#include "InputBindingVector.h"
+#include "../Game/GameComponent.hpp"
+#include "XinputGamepad.hpp"
+#include "InputBinding.hpp"
+#include "InputBindingVector.hpp"
 
 bit::InputManager::InputManager()
 {

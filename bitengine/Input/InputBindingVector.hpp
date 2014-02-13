@@ -3,7 +3,7 @@
 #define BIT_INPUTBINDINGVECTOR_H
 
 #include "SFML/System.hpp"
-#include "InputBinding.h"
+#include "InputBinding.hpp"
 
 namespace bit
 {

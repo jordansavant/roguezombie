@@ -2,7 +2,7 @@
 #ifndef BIT_SOUNDMANAGER_H
 #define BIT_SOUNDMANAGER_H
 
-#include "../Game/GameComponent.h"
+#include "../Game/GameComponent.hpp"
 #include <string>
 
 namespace sf

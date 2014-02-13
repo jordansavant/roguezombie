@@ -1,4 +1,4 @@
-#include "GameTimer.h"
+#include "GameTimer.hpp"
 
 bit::GameTimer::GameTimer()
 	: waitTime(), counter()

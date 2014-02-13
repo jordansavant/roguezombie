@@ -3,7 +3,7 @@
 #define BIT_VERTEXMAP_H
 
 #include "SFML/Graphics.hpp"
-#include "Vertex3Array.h"
+#include "Vertex3Array.hpp"
 
 namespace bit
 {

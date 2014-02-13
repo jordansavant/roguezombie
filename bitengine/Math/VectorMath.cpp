@@ -1,10 +1,10 @@
-#include "VectorMath.h"
+#include "VectorMath.hpp"
 
 #include <vector>
 #include <random>
 #include <math.h>
 #include <cmath>
-#include "MathX.h"
+#include "Math.hpp"
 
 sf::Vector2f bit::VectorMath::GetRandomVector()
 {

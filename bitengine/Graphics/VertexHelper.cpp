@@ -1,6 +1,6 @@
-#include "VertexHelper.h"
+#include "VertexHelper.hpp"
 #include "SFML/Graphics.hpp"
-#include "Vertex3.h"
+#include "Vertex3.hpp"
 #include <vector>
 #include <math.h>
 #include <cmath>
