@@ -1,7 +1,7 @@
 #include "SoundManager.h"
 #include "SFML/Audio.hpp"
 #include "../Game/GameComponent.h"
-#include "../Math.h"
+#include "../MathX.h"
 #include <vector>
 
 bit::SoundManager::SoundManager()
@@ -52,7 +52,7 @@ void bit::SoundManager::play(unsigned int soundId)
 
 void bit::SoundManager::play(unsigned int soundId, float volume, float pitch)
 {
-    if(soundId >= 0 && soundBuffers.size() > soundId)
+    if(soundBuffers.size() > soundId)
     {
         sf::Sound* sound = sounds.at(soundId);
 

@@ -1,7 +1,7 @@
 #include "MusicManager.h"
 #include "SFML/Audio.hpp"
 #include "../Game/GameComponent.h"
-#include "../Math.h"
+#include "../MathX.h"
 #include <vector>
 
 bit::MusicManager::MusicManager()
@@ -41,7 +41,7 @@ int bit::MusicManager::loadMusic(std::string fileName)
 
 void bit::MusicManager::play(unsigned int musicId)
 {
-    if(musicId >= 0 && musicStreams.size() > musicId)
+    if(musicStreams.size() > musicId)
     {
         sf::Music* music = musicStreams.at(musicId);
 

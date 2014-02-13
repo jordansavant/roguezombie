@@ -4,7 +4,7 @@
 
 #include "SFML/Audio.hpp"
 #include "../Game/GameComponent.h"
-#include "../Math.h"
+#include "../MathX.h"
 #include <vector>
 
 namespace bit

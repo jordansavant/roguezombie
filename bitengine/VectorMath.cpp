@@ -3,7 +3,8 @@
 #include <vector>
 #include <random>
 #include <math.h>
-#include "Math.h"
+#include <cmath>
+#include "MathX.h"
 
 sf::Vector2f bit::VectorMath::GetRandomVector()
 {

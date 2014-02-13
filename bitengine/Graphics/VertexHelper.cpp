@@ -1,6 +1,9 @@
 #include "VertexHelper.h"
 #include "SFML/Graphics.hpp"
 #include "Vertex3.h"
+#include <vector>
+#include <math.h>
+#include <cmath>
 
 // Could convert to for loop and pass count
 // If we want more than quads at any point

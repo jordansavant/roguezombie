@@ -254,7 +254,7 @@ sf::Vector2f bit::InputManager::getVector(int gamepadIndex, XinputGamepad::Vecto
 // Keyboard Vectors
 sf::Vector2f bit::InputManager::getInputBindingVectorVector(unsigned int index)
 {
-    if(index >= 0 || index < inputBindingVectors.size())
+    if(index < inputBindingVectors.size())
     {
         return inputBindingVectors[index]->vector;
     }
