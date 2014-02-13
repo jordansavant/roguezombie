@@ -3,7 +3,6 @@
 #define BIT_VERTEX3ARRAY_H
 
 #include "SFML/Graphics.hpp"
-#include "SFML/OpenGl.hpp"
 #include "Vertex3.h"
 
 namespace bit
@@ -16,7 +15,7 @@ namespace bit
 
         Vertex3Array(sf::PrimitiveType type, unsigned int vertexCount);
 
-        unsigned int Vertex3Array::getVertexCount() const;
+        unsigned int getVertexCount() const;
 
         Vertex3& operator [](unsigned int index);
 

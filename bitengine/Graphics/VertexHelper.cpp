@@ -63,8 +63,8 @@ void bit::VertexHelper::colorQuad(Vertex3* quad, sf::Color &color)
 
 void bit::VertexHelper::rotateQuad(Vertex3* quad, float radians, float centerX, float centerY)
 {
-    float cosRadians = std::cosf(radians);
-    float sinRadians = std::sinf(radians);
+    float cosRadians = std::cos(radians);
+    float sinRadians = std::sin(radians);
 
     float x = (quad + 0)->position.x - centerX;
     float y = (quad + 0)->position.y - centerY;

@@ -1,6 +1,6 @@
 #include "Vertex3Array.h"
 #include "SFML/Graphics.hpp"
-#include "SFML/OpenGl.hpp"
+#include "SFML/OpenGL.hpp"
 #include "Vertex3.h"
 
 bit::Vertex3Array::Vertex3Array()
@@ -18,12 +18,12 @@ unsigned int bit::Vertex3Array::getVertexCount() const
     return static_cast<unsigned int>(m_vertices.size());
 }
 
-bit::Vertex3& bit::Vertex3Array::operator [](unsigned int index)
+bit::Vertex3& bit::Vertex3Array::operator[](unsigned int index)
 {
     return m_vertices[index];
 }
 
-const bit::Vertex3& bit::Vertex3Array::operator [](unsigned int index) const
+const bit::Vertex3& bit::Vertex3Array::operator[](unsigned int index) const
 {
     return m_vertices[index];
 }

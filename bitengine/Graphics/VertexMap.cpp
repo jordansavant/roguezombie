@@ -22,6 +22,7 @@ unsigned int bit::VertexMap::requestVertexIndex()
     switch(primitiveType)
     {
         // Add more as needed
+        default:
         case sf::PrimitiveType::Quads:
             size = 4;
             break;
