@@ -41,4 +41,3 @@
 std::string resourcePath(void);
 
 #endif
-

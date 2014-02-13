@@ -10,7 +10,7 @@ namespace bit
     {
     public:
         void foo();
-        
+
         bool lamb(std::function<bool (int)> func);
     };
 }

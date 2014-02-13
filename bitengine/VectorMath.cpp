@@ -179,7 +179,6 @@ std::vector<sf::Vector2i> bit::VectorMath::BresenhamLine(int x1, int y1, int con
     return result;
 }
 
-
 bool bit::VectorMath::inRadius(float x, float y, float radiusX, float radiusY, float radius)
 {
     return Distance(x, y, radiusX, radiusY) <= radius;

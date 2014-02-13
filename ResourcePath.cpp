@@ -5,4 +5,3 @@ std::string resourcePath(void)
 {
     return cpd::Dir::ExecutableDir() + "/content/";
 }
-

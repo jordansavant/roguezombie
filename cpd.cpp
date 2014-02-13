@@ -39,7 +39,6 @@ std::string cpd::Dir::AppDataDir(std::string const & appName)
 #endif
 }
 
-
 std::string cpd::Dir::ExecutablePath()
 {
 #if defined(__CPD_MAC__) // MAC OS CODE HERE
