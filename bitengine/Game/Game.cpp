@@ -128,18 +128,18 @@ void bit::Game::run()
                 }
 			}
 
- 			update(*renderWindow, sf::seconds(dt));
+            sf::Time gtu = sf::seconds(dt);
+ 			update(*renderWindow, gtu);
 			timer -= dt;
 		}
-
-		const float interpolation = timer / dt;
 
         // OpenGL Calls for clearing Depth
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	    glClearDepth(1.0f);
 	    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		draw(*renderWindow, sf::seconds(newTime - actualTime));
+        sf::Time gtd = sf::seconds(newTime - actualTime);
+		draw(*renderWindow, gtd);
 
 		// end the current frame (internally swaps the front and back buffers)
 		renderWindow->display();
@@ -151,7 +151,7 @@ void bit::Game::run()
 void bit::Game::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
 	// Components
-	for(int i=0; i<gameComponents.size(); i++)
+	for(unsigned int i=0; i<gameComponents.size(); i++)
 	{
         if(isInFocus)
         {
@@ -163,7 +163,7 @@ void bit::Game::update(sf::RenderWindow &window, sf::Time &gameTime)
 void bit::Game::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
 	// Components
-	for(int i=0; i<gameComponents.size(); i++)
+	for(unsigned int i=0; i<gameComponents.size(); i++)
 	{
 		gameComponents[i]->draw(window, gameTime, isPaused);
 	}

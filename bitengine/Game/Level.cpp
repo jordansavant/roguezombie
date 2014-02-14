@@ -18,7 +18,7 @@ bit::Level::~Level()
     // At least for this preliminary design
 
     // Cameras
-    for(int i = 0; i < cameras.size(); i++)
+    for(unsigned int i = 0; i < cameras.size(); i++)
     {
         delete cameras[i];
     }
@@ -26,7 +26,7 @@ bit::Level::~Level()
 
 void bit::Level::handleWindowChange(sf::RenderWindow &window)
 {
-    for(int i = 0; i < cameras.size(); i++)
+    for(unsigned int i = 0; i < cameras.size(); i++)
     {
         cameras[i]->handleWindowChange(window);
     }
@@ -43,7 +43,7 @@ void bit::Level::update(sf::RenderWindow &window, sf::Time &gameTime, bool isGam
     bool someComponentNotLoaded = false;
     bool someComponentNotUnloaded = false;
 
-    for(int i = 0; i < levelComponents.size(); i++)
+    for(unsigned int i = 0; i < levelComponents.size(); i++)
     {
         LevelComponent* component = levelComponents[i];
 
@@ -102,6 +102,8 @@ void bit::Level::update(sf::RenderWindow &window, sf::Time &gameTime, bool isGam
         case LevelStateStep::Unloading:
             unloadingUpdate(window, gameTime);
             break;
+        default:
+            break;
     }
 }
 
@@ -109,12 +111,12 @@ void bit::Level::draw(sf::RenderWindow &window, sf::Time &gameTime, bool isGameP
 {
     if(allComponentsLoaded)
     {
-        for(int i = 0; i < cameras.size(); i++)
+        for(unsigned int i = 0; i < cameras.size(); i++)
         {
             cameras[i]->update(window, gameTime);
         }
 
-        for(int i = 0; i < cameras.size(); i++)
+        for(unsigned int i = 0; i < cameras.size(); i++)
         {
             Camera* camera = cameras[i];
 
@@ -139,12 +141,14 @@ void bit::Level::draw(sf::RenderWindow &window, sf::Time &gameTime, bool isGameP
         case LevelStateStep::Unloading:
             unloadingDraw(window, gameTime);
             break;
+        default:
+            break;
     }
 }
 
 void bit::Level::drawComponents(sf::RenderWindow &window, sf::Time &gameTime, Camera &camera)
 {
-    for(int i = 0; i < levelComponents.size(); i++)
+    for(unsigned int i = 0; i < levelComponents.size(); i++)
     {
         levelComponents.at(i)->draw(window, gameTime, camera);
     }
@@ -154,7 +158,7 @@ float bit::Level::getPercentageLoaded()
 {
     float totalPercentLoaded = 0;
 
-    for(int i = 0; i < levelComponents.size(); i++)
+    for(unsigned int i = 0; i < levelComponents.size(); i++)
     {
         totalPercentLoaded += levelComponents.at(i)->percentageLoaded;
     }
@@ -166,7 +170,7 @@ void bit::Level::unloadComponents()
 {
     currentStep = LevelStateStep::Unloading;
 
-    for(int i = 0; i < levelComponents.size(); i++)
+    for(unsigned int i = 0; i < levelComponents.size(); i++)
     {
         levelComponents.at(i)->state = LevelComponent::LevelComponentState::Unloading;
     }
@@ -176,7 +180,7 @@ void bit::Level::reloadComponents()
 {
     currentStep = LevelStateStep::UnloadingForReload;
 
-    for(int i = 0; i < levelComponents.size(); i++)
+    for(unsigned int i = 0; i < levelComponents.size(); i++)
     {
         levelComponents.at(i)->state = LevelComponent::LevelComponentState::UnloadingForReload;
     }

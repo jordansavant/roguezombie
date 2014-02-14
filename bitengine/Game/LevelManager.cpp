@@ -14,7 +14,7 @@ bit::LevelManager::LevelManager()
 bit::LevelManager::~LevelManager()
 {
     // Delete levels
-    for(int i = 0; i < levels.size(); i++)
+    for(unsigned int i = 0; i < levels.size(); i++)
     {
         if(levels[i] != NULL)
         {
