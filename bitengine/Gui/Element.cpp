@@ -1,0 +1,225 @@
+#include "Element.hpp"
+#include "SFML/Graphics.hpp"
+#include <queue>
+#include <list>
+#include <functional>
+#include "Effect.hpp"
+#include "../Game/Game.hpp"
+
+bit::Element::Element()
+    : sf::FloatRect(), parentElement(NULL), relativePosition(), anchorType(), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL)
+{
+}
+
+bit::Element::Element(float relativeX, float relativeY, float width, float height, AnchorType anchorType)
+    : relativePosition(relativeX, relativeY), sf::FloatRect(0, 0, width, height), anchorType(anchorType), parentElement(NULL), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL)
+{
+    targetWidth = width;
+    targetHeight = height;
+}
+
+bit::Element::Element(float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput)
+    : relativePosition(relativeX, relativeY), sf::FloatRect(0, 0, width, height), anchorType(anchorType), parentElement(NULL), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(true), lambdaListenToInput(lambdaListenToInput)
+{
+    targetWidth = width;
+    targetHeight = height;
+}
+
+bit::Element::~Element()
+{
+    clearEffects();
+}
+
+void bit::Element::updateTargets(sf::RenderWindow &window, sf::Time &gameTime)
+{
+}
+
+void bit::Element::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
+{
+}
+
+void bit::Element::draw(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    /*debugRect.setPosition(left, top);
+    debugRect.setFillColor(sf::Color(0, 255, 195, MathHelper::clamp(255 * opacity, 0, 255)));
+    debugRect.setSize(sf::Vector2f(width, height));
+    debugRect.setOutlineColor(sf::Color(255, 255, 255, MathHelper::clamp(255 * opacity, 0, 255)));
+
+    if(isInfocus)
+    {
+        debugRect.setOutlineThickness(2);
+    }
+    else
+    {
+        debugRect.setOutlineThickness(0);
+    }
+
+    window.draw(debugRect);*/
+}
+
+bit::Element* bit::Element::queueEffect(bit::Effect* effect)
+{
+    effectQueue.push_back(effect);
+
+    return this;
+}
+
+bit::Element* bit::Element::immediateEffect(bit::Effect* effect)
+{
+    concurrentEffects.push_back(effect);
+
+    return this;
+}
+
+bit::Element* bit::Element::clearEffects()
+{
+    for(int i = 0; i < effectQueue.size(); i++)
+    {
+        delete effectQueue[i];
+    }
+    effectQueue.clear();
+
+    std::list<bit::Effect*>::iterator i = concurrentEffects.begin();
+    while (i != concurrentEffects.end())
+    {
+        delete (*i);
+        ++i;
+    }
+    concurrentEffects.clear();
+
+    return this;
+}
+
+void bit::Element::updatePosition(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    elementScale = calculateViewRatio();
+
+    // Allow elements to update their target dimensions
+    updateTargets(window, gameTime);
+
+    // Apply our scaling to our real dimensions
+    width = elementScale * targetWidth;
+    height = elementScale * targetHeight;
+
+    // Apply effects
+    updateEffects(window, gameTime);
+
+    // Get our screen position
+    sf::Vector2f offset = relativePosition * elementScale + calculateAnchor(window);
+
+    // If we have a parent account for their position
+    if(parentElement != NULL)
+    {
+        offset.x += parentElement->left;
+        offset.y += parentElement->top;
+    }
+
+    // Assign real position on screen
+    left = offset.x;
+    top = offset.y;
+
+    // Allow elements to update their items with real size data
+    updateReals(window, gameTime);
+}
+
+void bit::Element::updateInput(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    if(isInfocus)
+    {
+        listenForInput(window, gameTime);
+    }
+}
+
+bool bit::Element::listenForInput(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    if(lambdaListenToInput)
+        return lambdaListenToInput(this, &window, &gameTime);
+
+    return false;
+}
+
+float bit::Element::calculateViewRatio()
+{
+    return std::min((float)Game::currentResolution.x / (float)Game::targetResolution.x, (float)Game::currentResolution.y / (float)Game::targetResolution.y);
+}
+
+void bit::Element::updateEffects(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    // Queued effects
+    if(effectQueue.size() > 0)
+    {
+        Effect* effect = effectQueue.front();
+
+        if(effect)
+        {
+            effect->update(this, window, gameTime);
+        }
+
+        if(effect->isComplete)
+        {
+            effectQueue.pop_front();
+            delete effect;
+        }
+    }
+
+    // Concurrent effects
+    std::list<Effect*>::iterator i = concurrentEffects.begin();
+    while (i != concurrentEffects.end())
+    {
+        if(!(*i)->isComplete)
+        {
+            (*i)->update(this, window, gameTime);
+        }
+
+        if((*i)->isComplete)
+        {
+            delete (*i);
+            concurrentEffects.erase(i++);
+        }
+        else
+        {
+            ++i;
+        }
+    }
+}
+
+sf::Vector2f bit::Element::calculateAnchor(sf::RenderWindow &window)
+{
+    sf::Vector2f anchorPositition();
+    float parentWidth = 0;
+    float parentHeight = 0;
+
+    if(parentElement != NULL)
+    {
+        parentWidth = parentElement->width;
+        parentHeight = parentElement->height;
+    }
+    else
+    {
+        parentWidth = window.getSize().x;
+        parentHeight = window.getSize().y;
+    }
+
+    switch(anchorType)
+    {
+        default:
+        case AnchorType::TopLeft:
+            return sf::Vector2f(0, 0);
+        case AnchorType::Top:
+            return sf::Vector2f(0 - width / 2 + parentWidth / 2, 0);
+        case AnchorType::TopRight:
+            return sf::Vector2f(0 - width + parentWidth, 0);
+        case AnchorType::Right:
+            return sf::Vector2f(0 - width + parentWidth, 0 - height / 2 + parentHeight / 2);
+        case AnchorType::BottomRight:
+            return sf::Vector2f(0 - width + parentWidth, 0 - height + parentHeight);
+        case AnchorType::Bottom:
+            return sf::Vector2f(0 - width / 2 + parentWidth / 2, 0 - height + parentHeight);
+        case AnchorType::BottomLeft:
+            return sf::Vector2f(0, 0 - height + parentHeight);
+        case AnchorType::Left:
+            return sf::Vector2f(0, 0 - height / 2 + parentHeight / 2);
+        case AnchorType::Center:
+            return sf::Vector2f(0 - width / 2 + parentWidth / 2,  0 - height / 2 + parentHeight / 2);
+    }
+}
