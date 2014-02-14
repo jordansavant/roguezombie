@@ -1,7 +1,7 @@
 #include "ResourcePath.h"
-#include "cpd.h"
+#include "bitengine/System/FileSystem.hpp"
 
 std::string resourcePath(void)
 {
-    return cpd::Dir::ExecutableDir() + "/content/";
+    return bit::FileSystem::ExecutableDirectory() + "/content/";
 }
