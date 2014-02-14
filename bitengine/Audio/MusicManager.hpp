@@ -20,7 +20,7 @@ namespace bit
 
         float getMaximum();
 
-        int loadMusic(std::string fileName);
+        unsigned int loadMusic(std::string fileName);
 
         void play(unsigned int musicId);
 

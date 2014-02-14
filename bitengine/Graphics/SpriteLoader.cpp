@@ -2,6 +2,7 @@
 #include "SFML/Graphics.hpp"
 #include "../Game/GameComponent.hpp"
 #include "../Math/Math.hpp"
+#include "../Structures/Exception.hpp"
 #include "Sprite.hpp"
 #include <vector>
 #include <iostream>
@@ -33,7 +34,7 @@ void bit::SpriteLoader::loadSprites(std::string loadDescriptorFile)
 
     if(!loadDescriptor.good())
     {
-        throw std::string("Unable to load sprite descriptor file " + loadDescriptorFile);
+        throw bit::Exception(loadDescriptorFile + " sprite descriptor not found.");
     }
 
     std::string line;

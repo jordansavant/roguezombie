@@ -2,6 +2,7 @@
 #include "SFML/Audio.hpp"
 #include "../Game/GameComponent.hpp"
 #include "../Math/Math.hpp"
+#include "../Structures/Exception.hpp"
 #include <vector>
 
 bit::MusicManager::MusicManager()
@@ -23,7 +24,7 @@ float bit::MusicManager::getMaximum()
     return 100;
 }
 
-int bit::MusicManager::loadMusic(std::string fileName)
+unsigned int bit::MusicManager::loadMusic(std::string fileName)
 {
     sf::Music *music = new sf::Music();
     if(!music->openFromFile(fileName))
@@ -31,7 +32,7 @@ int bit::MusicManager::loadMusic(std::string fileName)
         delete music;
         music = NULL;
 
-        return -1;
+        throw bit::Exception(fileName + " music not found.");
     }
 
     musicStreams.push_back(music);

@@ -2,6 +2,7 @@
 #include "SFML/Audio.hpp"
 #include "../Game/GameComponent.hpp"
 #include "../Math/Math.hpp"
+#include "../Structures/Exception.hpp"
 #include <vector>
 
 bit::SoundManager::SoundManager()
@@ -24,7 +25,7 @@ float bit::SoundManager::getMaximum()
     return 100;
 }
 
-int bit::SoundManager::loadSound(std::string fileName)
+unsigned int bit::SoundManager::loadSound(std::string fileName)
 {
     sf::Sound *sound = new sf::Sound();
     sf::SoundBuffer *soundBuffer = new sf::SoundBuffer();
@@ -35,7 +36,7 @@ int bit::SoundManager::loadSound(std::string fileName)
         sound = NULL;
         soundBuffer = NULL;
 
-        return -1;
+        throw bit::Exception(fileName + " sound not found.");
     }
 
     sound->setBuffer(*soundBuffer);
