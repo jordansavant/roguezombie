@@ -185,7 +185,7 @@ void bit::Element::updateEffects(sf::RenderWindow &window, sf::Time &gameTime)
 
 sf::Vector2f bit::Element::calculateAnchor(sf::RenderWindow &window)
 {
-    sf::Vector2f anchorPositition();
+    sf::Vector2f anchorPositition;
     float parentWidth = 0;
     float parentHeight = 0;
 
