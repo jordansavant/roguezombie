@@ -14,14 +14,14 @@ namespace bit
 
         Node(int x, int y, NodeContainer* parentContainer);
 
-        int x;
-        int y;
         unsigned int aStarID;
         bool closed;
         bool opened;
         int fCost;
         int gCost;
         int hCost;
+        int x;
+        int y;
         Node* aStarParent;
         NodeContainer* parentContainer;
 

@@ -4,6 +4,8 @@
 
 #include <functional>
 #include <vector>
+#include <list>
+#include <complex>
 #include "Node.hpp"
 
 namespace bit
@@ -84,7 +86,7 @@ namespace bit
                         // TODO: Not Manahattan -- use this real distance or use manhattan!
                         xdiff = checkNodeContainer->node->x - endNodeContainer->node->x;
                         ydiff = checkNodeContainer->node->y - endNodeContainer->node->y;
-                        hcost = (int)std::sqrtf((std::powf(xdiff, 2) + std::powf(ydiff, 2)));
+                        hcost = (int)std::sqrt((std::pow(xdiff, 2) + std::pow(ydiff, 2)));
                         checkNodeContainer->node->hCost = hcost;
                     }
 
@@ -134,7 +136,7 @@ namespace bit
                 // (the total cost from the current active node to the open node
                 // and the guesstimated cost from the open node to the destination node)
                 T* cheapOpenNode = NULL;
-                std::list<T*>::iterator i;
+                typename std::list<T*>::iterator i;
                 for (i = OpenList.begin(); i != OpenList.end(); ++i)
                 {
                     // Compare the openList nodes for the lowest F Cost
