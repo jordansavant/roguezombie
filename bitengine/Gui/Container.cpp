@@ -20,7 +20,7 @@ bit::Container::Container(float relativeX, float relativeY, float width, float h
 
 bit::Container::~Container()
 {
-    for(int i = 0; i < childElements.size(); i++)
+    for(unsigned int i = 0; i < childElements.size(); i++)
     {
         delete childElements[i];
     }
@@ -36,7 +36,7 @@ void bit::Container::updatePosition(sf::RenderWindow &window, sf::Time &gameTime
 {
     Element::updatePosition(window, gameTime);
 
-    for(int i = 0; i < childElements.size(); i++)
+    for(unsigned int i = 0; i < childElements.size(); i++)
     {
         childElements[i]->updatePosition(window, gameTime);
     }
@@ -86,7 +86,7 @@ void bit::Container::draw(sf::RenderWindow &window, sf::Time &gameTime)
 
     window.draw(debugRect);*/
 
-    for(int i = 0; i < childElements.size(); i++)
+    for(unsigned int i = 0; i < childElements.size(); i++)
     {
         childElements[i]->draw(window, gameTime);
     }
@@ -125,7 +125,7 @@ void bit::Container::nextChild()
 {
     if(childElements.size() > 0)
     {
-        int count = 0;
+        unsigned int count = 0;
         int next = focusedChildIndex;
 
         do
@@ -149,7 +149,7 @@ void bit::Container::previousChild()
 {
     if(childElements.size() > 0)
     {
-        int count = 0;
+        unsigned int count = 0;
         int previous = focusedChildIndex;
 
         do

@@ -1,6 +1,8 @@
 #include "Easing.hpp"
 #include "../Math/Math.hpp"
 #include <vector>
+#include <math.h>
+#include <complex>
 
 float bit::Easing::runByType(Type easingType, float percentageComplete, float millisecondsSince, float startValue, float endValue, float totalDuration)
 {
@@ -23,6 +25,8 @@ float bit::Easing::runByType(Type easingType, float percentageComplete, float mi
         case Type::OutBack:
             return outBack(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
     }
+
+    return 0;
 }
 
 float bit::Easing::instant(float percentageComplete, float millisecondsSince, float startValue, float endValue, float totalDuration)
@@ -76,7 +80,7 @@ float bit::Easing::outElastic(float x, float t, float b, float c, float d)
         a = c;
     }
 
-    return a * std::powf(2,-10*t) * std::sinf( ( t * d - s ) * ( 2 * bit::Math::Pi ) / p ) + c + b;
+    return a * std::pow(2,-10*t) * std::sin( ( t * d - s ) * ( 2 * bit::Math::Pi ) / p ) + c + b;
 }
 
 float bit::Easing::outBounce(float x, float t, float b, float c, float d)
@@ -84,16 +88,20 @@ float bit::Easing::outBounce(float x, float t, float b, float c, float d)
 	if ((t/=d) < (1/2.75)) {
 		return c*(7.5625*t*t) + b;
 	} else if (t < (2/2.75)) {
-		return c*(7.5625*(t-=(1.5/2.75))*t + .75) + b;
+        (t-=(1.5/2.75));
+		return c * (7.5625 * t * t + .75) + b;
 	} else if (t < (2.5/2.75)) {
-		return c*(7.5625*(t-=(2.25/2.75))*t + .9375) + b;
+        (t-=(2.25/2.75));
+		return c * (7.5625 * t * t + .9375) + b;
 	} else {
-		return c*(7.5625*(t-=(2.625/2.75))*t + .984375) + b;
+        (t = t - (2.625 / 2.75));
+		return c * (7.5625 * t * t + .984375) + b;
 	}
 }
 
 float bit::Easing::outBack(float x, float t, float b, float c, float d)
 {
     float s = 1.70158;
-	return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
+    (t=t/d-1);
+	return c * (t * t * ((s + 1) * t + s) + 1) + b;
 }

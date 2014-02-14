@@ -24,8 +24,8 @@ namespace bit
         float min;
         float current;
         float max;
-        float sliderDistance;
         bool currentlySliding;
+        float sliderDistance;
 
         virtual void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
 

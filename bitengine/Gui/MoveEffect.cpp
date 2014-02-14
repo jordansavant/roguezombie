@@ -30,10 +30,6 @@ void bit::MoveEffect::update(Element* element, sf::RenderWindow &window, sf::Tim
     if(!isComplete)
     {
         float ratioTime = (float)counter.asMilliseconds() / (float)duration.asMilliseconds();
-        float deltaTime = (float)gameTime.asMilliseconds() / (float)duration.asMilliseconds();
-
-        float x = deltaTime * distanceX;
-        float y = deltaTime * distanceY;
 
         float totalX = originX + easing(ratioTime, counter.asMilliseconds(), 0, 1, duration.asMilliseconds()) * distanceX;
         element->relativePosition.x += totalX - previousX;

@@ -19,12 +19,12 @@ namespace bit
 
         CheckBox(sf::Texture &checkedTexture, sf::Texture &uncheckedTexture, float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput);
 
-        sf::Texture* uncheckedTexture;
+        bool isChecked;
         sf::Texture* checkedTexture;
+        sf::Texture* uncheckedTexture;
         sf::Sprite uncheckedSprite;
         sf::Sprite checkedSprite;
         sf::Sprite* currentSprite;
-        bool isChecked;
         float textureOffsetX;
         float textureOffsetY;
 

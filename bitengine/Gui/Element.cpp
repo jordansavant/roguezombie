@@ -12,14 +12,14 @@ bit::Element::Element()
 }
 
 bit::Element::Element(float relativeX, float relativeY, float width, float height, AnchorType anchorType)
-    : relativePosition(relativeX, relativeY), sf::FloatRect(0, 0, width, height), anchorType(anchorType), parentElement(NULL), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL)
+    : sf::FloatRect(0, 0, width, height), parentElement(NULL), relativePosition(relativeX, relativeY), anchorType(anchorType), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL)
 {
     targetWidth = width;
     targetHeight = height;
 }
 
 bit::Element::Element(float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput)
-    : relativePosition(relativeX, relativeY), sf::FloatRect(0, 0, width, height), anchorType(anchorType), parentElement(NULL), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(true), lambdaListenToInput(lambdaListenToInput)
+    : sf::FloatRect(0, 0, width, height), parentElement(NULL), relativePosition(relativeX, relativeY), anchorType(anchorType), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(true), lambdaListenToInput(lambdaListenToInput)
 {
     targetWidth = width;
     targetHeight = height;
@@ -73,7 +73,7 @@ bit::Element* bit::Element::immediateEffect(bit::Effect* effect)
 
 bit::Element* bit::Element::clearEffects()
 {
-    for(int i = 0; i < effectQueue.size(); i++)
+    for(unsigned int i = 0; i < effectQueue.size(); i++)
     {
         delete effectQueue[i];
     }

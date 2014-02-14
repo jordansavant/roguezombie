@@ -8,9 +8,9 @@
 
 bit::Slider::Slider(sf::Texture &handleTexture, sf::Texture &backgroundTexture, float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<void(Slider*, float, sf::RenderWindow*, sf::Time*)> onSlideChange)
     : Label(relativeX, relativeY, width, height, anchorType), onSlideChange(onSlideChange),
-        handleTexture(&handleTexture), backgroundTexture(&backgroundTexture), textureOffsetX(0), textureOffsetY(0),
-        min(0), current(0), max(1),
-        currentlySliding(false), sliderDistance(0)
+      handleTexture(&handleTexture), backgroundTexture(&backgroundTexture), textureOffsetX(0), textureOffsetY(0),
+      min(0), current(0), max(1),
+      currentlySliding(false), sliderDistance(0)
 {
     handleSprite.setTexture(handleTexture);
     backgroundSprite.setTexture(backgroundTexture);

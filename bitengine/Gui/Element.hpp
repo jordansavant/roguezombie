@@ -40,19 +40,20 @@ namespace bit
 
         virtual ~Element();
 
+
         Element* parentElement;
         sf::Vector2f relativePosition;
         AnchorType anchorType;
         float targetWidth, targetHeight;
         float opacity;
+        float elementScale;
         bool isInfocus;
         bool canHaveFocus;
         std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput;
-        float elementScale;
         std::deque<Effect*> effectQueue;
         std::list<Effect*> concurrentEffects;
-        // debug
-        sf::RectangleShape debugRect;
+        sf::RectangleShape debugRect; // debug
+
 
         virtual void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
 
