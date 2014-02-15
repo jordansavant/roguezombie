@@ -1,9 +1,9 @@
 #include <functional>
-#include <iostream>
+#include <sstream>
 #include <SFML/Graphics.hpp>
 #include "ResourcePath.h"
-#include "bitengine/Structures/Exception.hpp"
 #include "bitengine/Math/Random.hpp"
+#include "bitengine/System/Output.hpp"
 
 int main()
 {
@@ -11,21 +11,15 @@ int main()
 	sf::CircleShape shape(100.f);
 	shape.setFillColor(sf::Color::Green);
 
-    try
-    {
-        throw bit::Exception("Sample exception here.");
-    }
-    catch(bit::Exception &e)
-    {
-        std::cout << e.what() << std::endl;
-        std::cout << e.getMessage() << std::endl;
-    }
+    std::stringstream ss;
 
-    bit::Random random;
-    std::cout << random.min() << " - " << random.max() << std::endl;
+    bit::Random random(123);
+    ss << random.min() << " - " << random.max() << std::endl;
+    bit::Output::Debug(ss.str());
     for(int i=0; i < 5; i++)
     {
-        std::cout << random.next() << std::endl << random.nextFloat() << std::endl;
+        ss << random.next() << std::endl << random.nextFloat() << std::endl;
+        bit::Output::Debug(ss.str());
     }
 
     sf::Texture zombieimage;

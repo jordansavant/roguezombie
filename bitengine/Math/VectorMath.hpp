@@ -1,6 +1,6 @@
 #pragma once
-#ifndef BIT_VECTORHELPER_H
-#define BIT_VECTORHELPER_H
+#ifndef BIT_VECTORMATH_H
+#define BIT_VECTORMATH_H
 
 #include "SFML/Graphics.hpp"
 

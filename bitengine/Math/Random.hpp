@@ -1,8 +1,8 @@
 #pragma once
-#ifndef BIT_MATHHELPER_H
-#define BIT_MATHHELPER_H
+#ifndef BIT_RANDOM_H
+#define BIT_RANDOM_H
 
-#include <random>
+#include "mtrand.hpp"
 
 namespace bit
 {
@@ -26,7 +26,8 @@ namespace bit
 
     private:
 
-        std::mt19937 engine;
+        //std::mt19937 engine;
+        MTRand_int32 engine;
     };
 }
 

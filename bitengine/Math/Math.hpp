@@ -1,6 +1,6 @@
 #pragma once
-#ifndef BIT_MATHHELPER_H
-#define BIT_MATHHELPER_H
+#ifndef BIT_MATH_H
+#define BIT_MATH_H
 
 namespace bit
 {
