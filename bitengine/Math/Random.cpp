@@ -15,13 +15,11 @@ bit::Random::Random(unsigned int _seed)
 unsigned int bit::Random::min()
 {
     return 0;
-    //return engine.min();
 }
 
 unsigned int bit::Random::max()
 {
-    return RAND_MAX;
-    //return engine.max();
+    return BIT_RANDOM_MAX;
 }
 
 unsigned int bit::Random::next()
@@ -31,5 +29,5 @@ unsigned int bit::Random::next()
 
 float bit::Random::nextFloat()
 {
-    return (float)engine() / (float)RAND_MAX;
+    return (float)engine() / (float)max();
 }
