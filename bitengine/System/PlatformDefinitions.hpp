@@ -1,3 +1,6 @@
+#ifndef BIT_PLATFORMDEFINITIONS_H
+#define BIT_PLATFORMDEFINITIONS_H
+
 #if defined(_WIN32) || defined(__WIN32__) || defined(__CYGWIN__)
 
 # define __OS_WIN__
@@ -13,5 +16,7 @@
 #else
 
 # error Unknown Operating System
+
+#endif
 
 #endif
