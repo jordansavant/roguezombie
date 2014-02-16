@@ -20,14 +20,14 @@ namespace bit
 
         virtual ~Game();
 
-        static InputManager* inputManager;
-        static StateStack* stateStack;
-        static SoundManager* soundManager;
-        static MusicManager* musicManager;
-        static SpriteLoader* spriteLoader;
-        static Game* instance;
-        static bool isPaused;
+        InputManager* inputManager;
+        StateStack* stateStack;
+        SoundManager* soundManager;
+        MusicManager* musicManager;
+        SpriteLoader* spriteLoader;
+
         static bool isInFocus;
+        
         static sf::Vector2i currentResolution;
         static sf::Vector2i targetResolution;
         static float currentResolutionRatio;

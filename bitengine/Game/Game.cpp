@@ -20,11 +20,11 @@ bit::Game::Game(std::string gameTitle, int width, int height, bool fullscreen)
 	FPS = 60.0f;
 	dt = 1.0f / FPS;
 
-    inputManager = new InputManager();
-    stateStack = new StateStack();
-    soundManager = new SoundManager();
-    musicManager = new MusicManager();
-    spriteLoader = new SpriteLoader();
+    inputManager = new InputManager(this);
+    stateStack = new StateStack(this);
+    soundManager = new SoundManager(this);
+    musicManager = new MusicManager(this);
+    spriteLoader = new SpriteLoader(this);
 
     gameComponents.push_back(inputManager);
     gameComponents.push_back(stateStack);
@@ -42,8 +42,6 @@ bit::Game::Game(std::string gameTitle, int width, int height, bool fullscreen)
     renderWindow = new sf::RenderWindow(sf::VideoMode(currentResolution.x, currentResolution.y, 32), title, (isFullscreen ? sf::Style::Fullscreen : sf::Style::Default), settings);
 	renderWindow->setVerticalSyncEnabled(verticalSync = false);
     configureOpenGL();
-
-    instance = this;
 }
 
 bit::Game::~Game()
@@ -55,14 +53,7 @@ bit::Game::~Game()
     delete renderWindow;
 }
 
-bit::InputManager* bit::Game::inputManager = NULL;
-bit::StateStack* bit::Game::stateStack = NULL;
-bit::SoundManager* bit::Game::soundManager = NULL;
-bit::MusicManager* bit::Game::musicManager = NULL;
-bit::SpriteLoader* bit::Game::spriteLoader = NULL;
-bit::Game* bit::Game::instance = NULL;
 
-bool bit::Game::isPaused = false;
 bool bit::Game::isInFocus = false;
 bool bit::Game::graphicsChange = false;
 bool bit::Game::isFullscreen = false;
@@ -74,6 +65,7 @@ float bit::Game::currentResolutionRatio = 1;
 float bit::Game::currentResolutionRatioX = 1;
 float bit::Game::currentResolutionRatioY = 1;
 float bit::Game::targetFpsInterval = (1.0f / 60.0f); // seconds
+
 
 void bit::Game::run()
 {
@@ -155,12 +147,19 @@ void bit::Game::run()
 
 void bit::Game::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
+    // Update various managers and components
 	for(unsigned int i=0; i<gameComponents.size(); i++)
 	{
         if(isInFocus)
         {
 		    gameComponents[i]->update(window, gameTime);
         }
+	}
+
+    // Quit if no states
+    if(stateStack->empty())
+	{
+		quit();
 	}
 }
 

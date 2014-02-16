@@ -10,12 +10,13 @@
 namespace bit
 {
     class State;
+    class Game;
 
     class StateStack : public GameComponent
     {
     public:
 
-        StateStack();
+        StateStack(Game* game);
 
         enum Action
         {
@@ -36,6 +37,8 @@ namespace bit
         void popState();
 
         void clearStates();
+
+        bool empty();
 
         virtual void cascadeWindowEvent(sf::RenderWindow &window);
 
@@ -63,7 +66,7 @@ void bit::StateStack::registerState(unsigned int stateId)
 {
 	factories[stateId] = [this] ()
 	{
-		return new T(*this);
+		return new T(*this, game);
 	};
 }
 

@@ -1,11 +1,13 @@
 #include "InputManager.hpp"
 #include "SFML/Graphics.hpp"
+#include "../Game/Game.hpp"
 #include "../Game/GameComponent.hpp"
 #include "XinputGamepad.hpp"
 #include "InputBinding.hpp"
 #include "InputBindingVector.hpp"
 
-bit::InputManager::InputManager()
+bit::InputManager::InputManager(bit::Game* _game)
+    : bit::GameComponent(_game)
 {
 	// Mouse
 	for ( int i = sf::Mouse::Button::Left; i < sf::Mouse::Button::XButton2; i++ )

@@ -1,9 +1,12 @@
 #include "StateStack.hpp"
 #include "State.hpp"
 #include "SFML/Graphics.hpp"
+#include "../Game/Game.hpp"
+#include "../Game/GameComponent.hpp"
 #include <functional>
 
-bit::StateStack::StateStack()
+bit::StateStack::StateStack(bit::Game*_game)
+    : bit::GameComponent(_game)
 {
 }
 
@@ -92,6 +95,11 @@ void bit::StateStack::applyPendingChanges()
 	}
 
     pendingChangeList.clear();
+}
+
+bool bit::StateStack::empty()
+{
+    return stack.size() == 0;
 }
 
 void bit::StateStack::cascadeWindowEvent(sf::RenderWindow &window)

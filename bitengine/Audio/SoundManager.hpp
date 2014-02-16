@@ -13,11 +13,13 @@ namespace sf
 
 namespace bit
 {
+    class Game;
+
     class SoundManager : public GameComponent
     {
     public:
 
-        SoundManager();
+        SoundManager(Game* game);
 
         ~SoundManager();
 

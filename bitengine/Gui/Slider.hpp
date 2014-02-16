@@ -4,6 +4,7 @@
 
 #include "SFML/Graphics.hpp"
 #include "Label.hpp"
+#include <functional>
 
 namespace bit
 {
@@ -26,6 +27,8 @@ namespace bit
         float max;
         bool currentlySliding;
         float sliderDistance;
+        std::function<bool (void)> lambdaOnSliderIsPressed;
+        std::function<bool (void)> lambdaOnSliderIsReleased;
 
         virtual void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
 

@@ -4,9 +4,9 @@
 #include "../Game/Game.hpp"
 #include "SFML/Graphics.hpp"
 
-bit::State::State(StateStack &stack)
+bit::State::State(StateStack &stack, bit::Game* _game)
+    : stateStack(&stack), game(_game)
 {
-    stateStack = &stack;
 }
 
 bool bit::State::handleInput(sf::RenderWindow &window, sf::Time &gameTime)

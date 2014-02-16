@@ -9,10 +9,12 @@
 
 namespace bit
 {
+    class Game;
+
     class MusicManager : public GameComponent
     {
     public:
-        MusicManager();
+        MusicManager(Game* game);
 
         ~MusicManager();
 

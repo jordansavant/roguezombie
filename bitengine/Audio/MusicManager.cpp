@@ -1,11 +1,13 @@
 #include "MusicManager.hpp"
 #include "SFML/Audio.hpp"
+#include "../Game/Game.hpp"
 #include "../Game/GameComponent.hpp"
 #include "../Math/Math.hpp"
 #include "../Structures/Exception.hpp"
 #include <vector>
 
-bit::MusicManager::MusicManager()
+bit::MusicManager::MusicManager(Game* _game)
+    : bit::GameComponent(_game)
 {
     masterVolume = getMaximum();
     defaultPitch = 1;

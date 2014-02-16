@@ -1,5 +1,6 @@
 #include "SpriteLoader.hpp"
 #include "SFML/Graphics.hpp"
+#include "../Game/Game.hpp"
 #include "../Game/GameComponent.hpp"
 #include "../Math/Math.hpp"
 #include "../Structures/Exception.hpp"
@@ -9,7 +10,8 @@
 #include <fstream>
 #include <sstream>
 
-bit::SpriteLoader::SpriteLoader()
+bit::SpriteLoader::SpriteLoader(bit::Game* _game)
+    : bit::GameComponent(_game)
 {
 }
 

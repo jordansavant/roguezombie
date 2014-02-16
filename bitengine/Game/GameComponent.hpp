@@ -6,13 +6,19 @@
 
 namespace bit
 {
+    class Game;
+
 	class GameComponent
 	{
 	public:
 
+        GameComponent(Game* game);
+
         virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
         virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
+
+        Game* game;
 	};
 }
 

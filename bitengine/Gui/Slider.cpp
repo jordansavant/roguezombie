@@ -10,7 +10,9 @@ bit::Slider::Slider(sf::Texture &handleTexture, sf::Texture &backgroundTexture, 
     : Label(relativeX, relativeY, width, height, anchorType), onSlideChange(onSlideChange),
       handleTexture(&handleTexture), backgroundTexture(&backgroundTexture), textureOffsetX(0), textureOffsetY(0),
       min(0), current(0), max(1),
-      currentlySliding(false), sliderDistance(0)
+      currentlySliding(false), sliderDistance(0),
+      lambdaOnSliderIsPressed(NULL),
+      lambdaOnSliderIsReleased(NULL)
 {
     handleSprite.setTexture(handleTexture);
     backgroundSprite.setTexture(backgroundTexture);
@@ -49,7 +51,7 @@ void bit::Slider::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
 
     // Listen for shitty input
     sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
-    if(bit::Game::inputManager->isButtonPressed(sf::Mouse::Left) && handleSprite.getGlobalBounds().contains(pixelPos.x, pixelPos.y))
+    if(lambdaOnSliderIsPressed && lambdaOnSliderIsPressed() && handleSprite.getGlobalBounds().contains(pixelPos.x, pixelPos.y))
     {
         currentlySliding = true;
     }
@@ -60,7 +62,7 @@ void bit::Slider::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
 
         onSlideChange(this, val, &window, &gameTime);
     }
-    else if(Game::inputManager->isButtonPressed(sf::Mouse::Left) && backgroundSprite.getGlobalBounds().contains(pixelPos.x, pixelPos.y))
+    else if(lambdaOnSliderIsPressed && lambdaOnSliderIsPressed() && backgroundSprite.getGlobalBounds().contains(pixelPos.x, pixelPos.y))
     {
         currentlySliding = true;
         float val = (pixelPos.x - handleMinX) / sliderDistance;
@@ -68,7 +70,7 @@ void bit::Slider::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
         onSlideChange(this, val, &window, &gameTime);
     }
 
-    if(currentlySliding && Game::inputManager->isButtonReleased(sf::Mouse::Left))
+    if(currentlySliding && lambdaOnSliderIsReleased && lambdaOnSliderIsReleased())
     {
         currentlySliding = false;
     }

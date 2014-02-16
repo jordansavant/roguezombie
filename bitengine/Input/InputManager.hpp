@@ -10,11 +10,13 @@
 
 namespace bit
 {
+    class Game;
+
 	class InputManager : public GameComponent
 	{
 	public:
 
-		InputManager();
+		InputManager(Game* game);
 
         virtual ~InputManager();
 

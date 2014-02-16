@@ -7,11 +7,12 @@
 namespace bit
 {
     class Sprite;
+    class Game;
 
     class SpriteLoader : public GameComponent
     {
     public:
-        SpriteLoader();
+        SpriteLoader(Game* game);
 
         ~SpriteLoader();
 

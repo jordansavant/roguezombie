@@ -2,16 +2,17 @@
 #include "bitengine/Game/Game.hpp"
 #include "bitengine/Game/State.hpp"
 #include "bitengine/Game/StateStack.hpp"
+#include "bitengine/Input/InputManager.hpp"
 #include "bitengine/Graphics/Camera.hpp"
 #include "ResourcePath.h"
 
-TitleState::TitleState(bit::StateStack &stack)
-    : bit::State(stack), shape(200)
+TitleState::TitleState(bit::StateStack &stack, bit::Game* _game)
+    : bit::State(stack, _game), shape(200)
 {
     zombieimage.loadFromFile(resourcePath() + "Zombie.png");
     zombiesprite.setTexture(zombieimage);
 
-    createCamera(*bit::Game::instance->renderWindow, 0, 0, 1, 1);
+    createCamera(*game->renderWindow, 0, 0, 1, 1);
 }
 
 bool TitleState::handleInput(sf::RenderWindow &window, sf::Time &gameTime)
@@ -22,6 +23,11 @@ bool TitleState::handleInput(sf::RenderWindow &window, sf::Time &gameTime)
 
 bool TitleState::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
+    if(game->inputManager->isButtonPressed(sf::Keyboard::Escape))
+    {
+        requestStateClear();
+    }
+
     return true;
 }
 

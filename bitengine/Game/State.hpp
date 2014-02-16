@@ -8,12 +8,13 @@ namespace bit
 {
     class StateStack;
     class Camera;
+    class Game;
 
     class State
     {
     public:
 
-        State(StateStack &stack);
+        State(StateStack &stack, Game* game);
 
         virtual bool handleInput(sf::RenderWindow &window, sf::Time &gameTime);
 
@@ -32,11 +33,16 @@ namespace bit
         void requestStateClear();
 
         virtual void handleWindowChange(sf::RenderWindow &window);
-
+        
     private:
 
         StateStack* stateStack;
+
+    protected:
+
+        Game* game;
         std::vector<Camera*> cameras;
+
     };
 }
 

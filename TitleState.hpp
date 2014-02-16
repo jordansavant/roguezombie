@@ -9,13 +9,14 @@ namespace bit
 {
     class StateStack;
     class Camera;
+    class Game;
 }
 
 class TitleState : public bit::State
 {
 public:
 
-    TitleState(bit::StateStack &stack);
+    TitleState(bit::StateStack &stack, bit::Game* game);
     
     sf::Texture zombieimage;
     sf::Sprite zombiesprite;
