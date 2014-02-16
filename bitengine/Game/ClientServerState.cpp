@@ -147,13 +147,13 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, sf::Packet &pack
 
             break;
 
-        case Server::ServerPacket::ClientConnected:
+        case Server::ServerPacket::PeerClientConnected:
 
-            handlePacket_ClientConnected(packet);
+            handlePacket_PeerClientConnected(packet);
 
             break;
 
-        case Server::ServerPacket::ClientDisconnected:
+        case Server::ServerPacket::PeerClientDisconnected:
 
             handlePacket_ClientDisonnected(packet);
 
@@ -165,15 +165,15 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, sf::Packet &pack
 
             break;
 
-        case Server::ServerPacket::ClientEvent:
+        case Server::ServerPacket::PeerClientEvent:
 
-            handlePacket_ClientEvent(packet);
+            handlePacket_PeerClientEvent(packet);
 
             break;
 
-        case Server::ServerPacket::ClientRealtimeChange:
+        case Server::ServerPacket::PeerClientRealtimeChange:
 
-            handlePacket_ClientRealtimeChange(packet);
+            handlePacket_PeerClientRealtimeChange(packet);
 
             break;
 
@@ -202,7 +202,7 @@ void bit::ClientServerState::handlePacket_InitializeWorld(sf::Packet &packet)
 {
 }
 
-void bit::ClientServerState::handlePacket_ClientConnected(sf::Packet &packet)
+void bit::ClientServerState::handlePacket_PeerClientConnected(sf::Packet &packet)
 {
 }
 
@@ -214,11 +214,11 @@ void bit::ClientServerState::handlePacket_ServerUpdate(sf::Packet &packet)
 {
 }
 
-void bit::ClientServerState::handlePacket_ClientEvent(sf::Packet &packet)
+void bit::ClientServerState::handlePacket_PeerClientEvent(sf::Packet &packet)
 {
 }
 
-void bit::ClientServerState::handlePacket_ClientRealtimeChange(sf::Packet &packet)
+void bit::ClientServerState::handlePacket_PeerClientRealtimeChange(sf::Packet &packet)
 {
 }
 

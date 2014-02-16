@@ -37,15 +37,15 @@ private:
 
         virtual void handlePacket_InitializeWorld(sf::Packet &packet);
 
-        virtual void handlePacket_ClientConnected(sf::Packet &packet); 
+        virtual void handlePacket_PeerClientConnected(sf::Packet &packet); 
 
         virtual void handlePacket_ClientDisonnected(sf::Packet &packet);
 
         virtual void handlePacket_ServerUpdate(sf::Packet &packet);
 
-        virtual void handlePacket_ClientEvent(sf::Packet &packet);
+        virtual void handlePacket_PeerClientEvent(sf::Packet &packet);
 
-        virtual void handlePacket_ClientRealtimeChange(sf::Packet &packet);
+        virtual void handlePacket_PeerClientRealtimeChange(sf::Packet &packet);
 
         virtual void handlePacket_Shutdown(sf::Packet &packet);
 

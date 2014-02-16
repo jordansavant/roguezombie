@@ -68,7 +68,7 @@ void MultiplayerState::handlePacket_InitializeWorld(sf::Packet &packet)
     bit::Output::Debug("Client handle initialize world");
 }
 
-void MultiplayerState::handlePacket_ClientConnected(sf::Packet &packet) 
+void MultiplayerState::handlePacket_PeerClientConnected(sf::Packet &packet) 
 {
     bit::Output::Debug("Client handle client connected");
 }
@@ -83,12 +83,12 @@ void MultiplayerState::handlePacket_ServerUpdate(sf::Packet &packet)
     bit::Output::Debug("Client handle update");
 }
 
-void MultiplayerState::handlePacket_ClientEvent(sf::Packet &packet)
+void MultiplayerState::handlePacket_PeerClientEvent(sf::Packet &packet)
 {
     bit::Output::Debug("Client handle client event");
 }
 
-void MultiplayerState::handlePacket_ClientRealtimeChange(sf::Packet &packet)
+void MultiplayerState::handlePacket_PeerClientRealtimeChange(sf::Packet &packet)
 {
     bit::Output::Debug("Client handle client realtimechange");
 }

@@ -159,15 +159,15 @@ void bit::Server::handlePacket(sf::Packet &packet, RemoteClient &client, bool &d
 
             break;
 
-        case Server::ClientPacket::PlayerEvent:
+        case Server::ClientPacket::Event:
 
-            handlePacket_PlayerEvent(packet, client);
+            handlePacket_Event(packet, client);
 
             break;
 
-        case Server::ClientPacket::PlayerRealtimeChange:
+        case Server::ClientPacket::RealtimeChange:
 
-            handlePacket_PlayerRealtimeChange(packet, client);
+            handlePacket_RealtimeChange(packet, client);
 
             break;
     }
@@ -196,8 +196,8 @@ void bit::Server::handleConnections()
 
         // Notify all other clients of new connection
         sf::Packet packet_clientConnected;
-        packet_clientConnected << static_cast<sf::Int32>(Server::ServerPacket::ClientConnected);
-        packet_clientConnected = preparePacket_ClientConnected(packet_clientConnected);
+        packet_clientConnected << static_cast<sf::Int32>(Server::ServerPacket::PeerClientConnected);
+        packet_clientConnected = preparePacket_PeerClientConnected(packet_clientConnected);
         sendToAllClients(packet_clientConnected);
 
         // Mark the new client as ready
@@ -226,10 +226,10 @@ void bit::Server::handleDisconnections()
         if(client->hasTimedOut)
         {
             // Inform other clients of disconnection
-            sf::Packet packet_ClientDisconnected;
-            packet_ClientDisconnected << static_cast<sf::Int32>(Server::ServerPacket::ClientDisconnected);
-            packet_ClientDisconnected = preparePacket_ClientDisconnected(packet_ClientDisconnected);
-            sendToAllClients(packet_ClientDisconnected);
+            sf::Packet packet_PeerClientDisconnected;
+            packet_PeerClientDisconnected << static_cast<sf::Int32>(Server::ServerPacket::PeerClientDisconnected);
+            packet_PeerClientDisconnected = preparePacket_PeerClientDisconnected(packet_PeerClientDisconnected);
+            sendToAllClients(packet_PeerClientDisconnected);
 
             // Erase client
             itr = clients.erase(itr);
@@ -284,11 +284,11 @@ void bit::Server::sendToAllClients(sf::Packet &packet)
  * Handle Incoming Client Packets
  **/
 
-void bit::Server::handlePacket_PlayerEvent(sf::Packet &packet, RemoteClient &client)
+void bit::Server::handlePacket_Event(sf::Packet &packet, RemoteClient &client)
 {
 }
 
-void bit::Server::handlePacket_PlayerRealtimeChange(sf::Packet &packet, RemoteClient &client)
+void bit::Server::handlePacket_RealtimeChange(sf::Packet &packet, RemoteClient &client)
 {
 }
 
@@ -307,12 +307,12 @@ sf::Packet& bit::Server::preparePacket_InitializeWorld(sf::Packet &packet)
     return packet;
 }
 
-sf::Packet& bit::Server::preparePacket_ClientConnected(sf::Packet &packet)
+sf::Packet& bit::Server::preparePacket_PeerClientConnected(sf::Packet &packet)
 {
     return packet;
 }
 
-sf::Packet& bit::Server::preparePacket_ClientDisconnected(sf::Packet &packet)
+sf::Packet& bit::Server::preparePacket_PeerClientDisconnected(sf::Packet &packet)
 {
     return packet;
 }

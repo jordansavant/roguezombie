@@ -14,17 +14,17 @@ class TestServer : public bit::Server
 {
 private:
 
-    virtual void handlePacket_ClientEvent(sf::Packet &packet, bit::RemoteClient &client);
+    virtual void handlePacket_PeerClientEvent(sf::Packet &packet, bit::RemoteClient &client);
 
-    virtual void handlePacket_ClientRealtimeChange(sf::Packet &packet, bit::RemoteClient &client);
+    virtual void handlePacket_PeerClientRealtimeChange(sf::Packet &packet, bit::RemoteClient &client);
 
     virtual sf::Packet& preparePacket_InitializeSelf(sf::Packet &packet);
 
     virtual sf::Packet& preparePacket_InitializeWorld(sf::Packet &packet);
 
-    virtual sf::Packet& preparePacket_ClientConnected(sf::Packet &packet);
+    virtual sf::Packet& preparePacket_PeerClientConnected(sf::Packet &packet);
 
-    virtual sf::Packet& preparePacket_ClientDisconnected(sf::Packet &packet);
+    virtual sf::Packet& preparePacket_PeerClientDisconnected(sf::Packet &packet);
 
     virtual sf::Packet& preparePacket_ServerUpdate(sf::Packet &packet);
 };
