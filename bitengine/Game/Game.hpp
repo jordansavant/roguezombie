@@ -9,7 +9,6 @@ namespace bit
     class GameComponent;
     class InputManager;
     class SoundManager;
-    class LevelManager;
     class StateStack;
     class MusicManager;
     class SpriteLoader;
@@ -22,7 +21,6 @@ namespace bit
         virtual ~Game();
 
         static InputManager* inputManager;
-        static LevelManager* levelManager;
         static StateStack* stateStack;
         static SoundManager* soundManager;
         static MusicManager* musicManager;

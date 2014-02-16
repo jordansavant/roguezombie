@@ -1,7 +1,6 @@
 #include "Game.hpp"
 #include "SFML/Graphics.hpp"
 #include "GameComponent.hpp"
-#include "LevelManager.hpp"
 #include "StateStack.hpp"
 #include "../Input/InputManager.hpp"
 #include "../Audio/SoundManager.hpp"
@@ -22,14 +21,12 @@ bit::Game::Game(std::string gameTitle, int width, int height, bool fullscreen)
 	dt = 1.0f / FPS;
 
     inputManager = new InputManager();
-    levelManager = new LevelManager();
     stateStack = new StateStack();
     soundManager = new SoundManager();
     musicManager = new MusicManager();
     spriteLoader = new SpriteLoader();
 
     gameComponents.push_back(inputManager);
-    gameComponents.push_back(levelManager);
     gameComponents.push_back(stateStack);
     gameComponents.push_back(soundManager);
     gameComponents.push_back(musicManager);
@@ -52,7 +49,6 @@ bit::Game::Game(std::string gameTitle, int width, int height, bool fullscreen)
 bit::Game::~Game()
 {
     delete inputManager;
-    delete levelManager;
     delete stateStack;
     delete soundManager;
     delete spriteLoader;
@@ -60,7 +56,6 @@ bit::Game::~Game()
 }
 
 bit::InputManager* bit::Game::inputManager = NULL;
-bit::LevelManager* bit::Game::levelManager = NULL;
 bit::StateStack* bit::Game::stateStack = NULL;
 bit::SoundManager* bit::Game::soundManager = NULL;
 bit::MusicManager* bit::Game::musicManager = NULL;
@@ -94,7 +89,6 @@ void bit::Game::run()
             renderWindow->create(sf::VideoMode(currentResolution.x, currentResolution.y, 32), title, (isFullscreen ? sf::Style::Fullscreen : sf::Style::Default), settings);
             configureOpenGL();
             setVerticalSync(verticalSync);
-            levelManager->cascadeWindowEvent(*renderWindow);
             stateStack->cascadeWindowEvent(*renderWindow);
         }
 
