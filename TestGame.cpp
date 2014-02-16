@@ -2,6 +2,7 @@
 #include "bitengine/Input/InputManager.hpp"
 #include "bitengine/Game/StateStack.hpp"
 #include "TitleState.hpp"
+#include "MultiplayerState.hpp"
 #include <iostream>
 #include <sstream>
 #include <SFML/OpenGL.hpp>
@@ -9,13 +10,17 @@
 TestGame::TestGame()
 	: Game("TEST GAME!!1!!", 1280, 720, false)
 {
-    Game::stateStack->pushState(1);
+    Game::stateStack->pushState(titleState);
 }
+
+unsigned int TestGame::titleState = 1;
+unsigned int TestGame::hostState = 2;
+unsigned int TestGame::clientState = 3;
 
 void TestGame::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
 	Game::update(window, gameTime);
-    
+
     if(inputManager->isButtonPressed(sf::Keyboard::Numpad0))
         changeResolution(640, 480); // 4:3
     if(inputManager->isButtonPressed(sf::Keyboard::Numpad1))
@@ -43,5 +48,7 @@ void TestGame::draw(sf::RenderWindow &window, sf::Time &gameTime)
 
 void TestGame::registerStates()
 {
-    stateStack->registerState<TitleState>(1);
+    stateStack->registerState<TitleState>(titleState);
+    stateStack->registerState<MultiplayerState>(hostState, true);
+    stateStack->registerState<MultiplayerState>(clientState, false);
 }

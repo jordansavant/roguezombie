@@ -42,6 +42,7 @@ namespace bit
 
         Game* game;
         std::vector<Camera*> cameras;
+        bool isPaused;
 
     };
 }
