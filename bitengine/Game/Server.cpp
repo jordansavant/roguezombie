@@ -1,7 +1,7 @@
 #include "Server.hpp"
 
 bit::Server::Server()
-    : serverPort(1234),
+    : serverPort(12345),
       thread(&Server::executionThread, this),
       waitingThreadEnd(false),
       isListening(false),
@@ -97,6 +97,18 @@ void bit::Server::update()
 void bit::Server::tick()
 {
     // Send world objects to the clients
+    for(unsigned int i=0; i < peers.size(); i++)
+    {
+        RemotePeer* peer = peers[i];
+
+        if(peer->isReady)
+        {
+            sf::Packet packet;
+            packet << static_cast<sf::Int32>(Server::ServerPacket::ServerUpdate);
+            packet = preparePacket_ServerUpdate(packet);
+            peers[i]->socket.send(packet);
+        }
+    }
 }
 
 sf::Time bit::Server::now()
@@ -171,7 +183,7 @@ void bit::Server::handlePacket(sf::Packet &packet, RemotePeer &peer, bool &detec
 void bit::Server::handleConnections()
 {
     // If we are not accepting connections, skip
-    if(isListening)
+    if(!isListening)
         return;
 
     // If our ready and waiting peer's socket starts being awesome
@@ -280,6 +292,11 @@ bit::Server::RemotePeer::RemotePeer()
     socket.setBlocking(false);
 }
 
+
+/**
+ * Handle Incoming Client Packets
+ **/
+
 void bit::Server::handlePacket_PlayerEvent(sf::Packet &packet, RemotePeer &peer)
 {
 }
@@ -287,6 +304,11 @@ void bit::Server::handlePacket_PlayerEvent(sf::Packet &packet, RemotePeer &peer)
 void bit::Server::handlePacket_PlayerRealtimeChange(sf::Packet &packet, RemotePeer &peer)
 {
 }
+
+
+/**
+ * Prepare Outgoing Server Packets
+ **/
 
 sf::Packet& bit::Server::preparePacket_InitializeSelf(sf::Packet &packet)
 {
@@ -304,6 +326,11 @@ sf::Packet& bit::Server::preparePacket_PeerConnected(sf::Packet &packet)
 }
 
 sf::Packet& bit::Server::preparePacket_PeerDisconnected(sf::Packet &packet)
+{
+    return packet;
+}
+
+sf::Packet& bit::Server::preparePacket_ServerUpdate(sf::Packet &packet)
 {
     return packet;
 }

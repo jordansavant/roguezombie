@@ -67,18 +67,22 @@ namespace bit
 template <typename T>
 void bit::StateStack::registerState(unsigned int stateId)
 {
-	factories[stateId] = [this] ()
+	factories[stateId] = [this] () -> T*
 	{
-		return new T(*this, game);
+		T* t = new T(*this, game);
+        t->load();
+        return t;
 	};
 }
 
 template <typename T, typename Param1>
 void bit::StateStack::registerState(unsigned int stateId, Param1 arg1)
 {
-	factories[stateId] = [this, arg1] ()
+	factories[stateId] = [this, arg1] () -> T*
 	{
-		return new T(*this, game, arg1);
+		T* t = new T(*this, game, arg1);
+        t->load();
+        return t;
 	};
 }
 

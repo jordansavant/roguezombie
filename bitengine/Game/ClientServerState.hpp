@@ -21,6 +21,8 @@ namespace bit
 
         virtual ~ClientServerState();
 
+        virtual void load();
+
         virtual bool update(sf::RenderWindow &window, sf::Time &gameTime);
 
     private:
@@ -52,13 +54,16 @@ namespace bit
 
         virtual void handlePacket_PeerDisonnected(sf::Packet &packet);
 
-        virtual void handlePacket_Update(sf::Packet &packet);
+        virtual void handlePacket_ServerUpdate(sf::Packet &packet);
 
         virtual void handlePacket_PeerEvent(sf::Packet &packet);
 
         virtual void handlePacket_PeerRealtimeChange(sf::Packet &packet);
 
         virtual void handlePacket_Shutdown(sf::Packet &packet);
+
+        virtual sf::Packet& preparePacket_ClientUpdate(sf::Packet &packet);
+
     };
 }
 

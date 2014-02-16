@@ -24,6 +24,8 @@ MultiplayerState::MultiplayerState(bit::StateStack &stack, bit::Game* _game, boo
 
 bool MultiplayerState::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
+    bit::ClientServerState::update(window, gameTime);
+
     if(game->inputManager->isButtonPressed(sf::Keyboard::Escape))
     {
         requestStateClear();
@@ -76,7 +78,7 @@ void MultiplayerState::handlePacket_PeerDisonnected(sf::Packet &packet)
     bit::Output::Debug("Client handle peer disconnected");
 }
 
-void MultiplayerState::handlePacket_Update(sf::Packet &packet)
+void MultiplayerState::handlePacket_ServerUpdate(sf::Packet &packet)
 {
     bit::Output::Debug("Client handle update");
 }
@@ -94,4 +96,12 @@ void MultiplayerState::handlePacket_PeerRealtimeChange(sf::Packet &packet)
 void MultiplayerState::handlePacket_Shutdown(sf::Packet &packet)
 {
     bit::Output::Debug("Client handle server shutdown");
+}
+
+
+
+sf::Packet& MultiplayerState::preparePacket_ClientUpdate(sf::Packet &packet)
+{
+    bit::Output::Debug("Client prepare client update");
+    return packet;
 }

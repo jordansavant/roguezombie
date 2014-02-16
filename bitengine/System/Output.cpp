@@ -12,6 +12,7 @@ void bit::Output::Debug(std::string message)
     std::wstring stemp = std::wstring(message.begin(), message.end());
     const wchar_t* cst = stemp.c_str();
     OutputDebugStringW(cst);
+    OutputDebugStringW(L"\n");
 #else
     std::cout << message << std::endl;
 #endif

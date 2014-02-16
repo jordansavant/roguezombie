@@ -18,6 +18,8 @@ namespace bit
 
         virtual bool handleInput(sf::RenderWindow &window, sf::Time &gameTime);
 
+        virtual void load();
+
         virtual bool update(sf::RenderWindow &window, sf::Time &gameTime);
 
         virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);

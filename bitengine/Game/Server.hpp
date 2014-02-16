@@ -23,7 +23,7 @@ namespace bit
             InitializeWorld,
             PeerConnected,
             PeerDisconnected,
-            Update,
+            ServerUpdate,
             PeerEvent,
             PeerRealtimeChange,
             Shutdown
@@ -34,7 +34,7 @@ namespace bit
             Quit,
             PlayerEvent,
             PlayerRealtimeChange,
-            PositionUpdate,
+            ClientUpdate,
             GameEvent
         };
 
@@ -94,6 +94,8 @@ namespace bit
         virtual sf::Packet& preparePacket_PeerConnected(sf::Packet &packet);
 
         virtual sf::Packet& preparePacket_PeerDisconnected(sf::Packet &packet);
+
+        virtual sf::Packet& preparePacket_ServerUpdate(sf::Packet &packet);
     };
 }
 

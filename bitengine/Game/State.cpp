@@ -9,6 +9,10 @@ bit::State::State(StateStack &stack, bit::Game* _game)
 {
 }
 
+void bit::State::load()
+{
+}
+
 bool bit::State::handleInput(sf::RenderWindow &window, sf::Time &gameTime)
 {
     return true;

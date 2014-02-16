@@ -35,3 +35,9 @@ sf::Packet& TestServer::preparePacket_PeerDisconnected(sf::Packet &packet)
     bit::Output::Debug("Server prepare initialize peer disconnected");
     return packet;
 }
+
+sf::Packet& TestServer::preparePacket_ServerUpdate(sf::Packet &packet)
+{
+    bit::Output::Debug("Server prepare tick update");
+    return packet;
+}

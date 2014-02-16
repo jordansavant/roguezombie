@@ -20,6 +20,8 @@ private:
     virtual sf::Packet& preparePacket_PeerConnected(sf::Packet &packet);
 
     virtual sf::Packet& preparePacket_PeerDisconnected(sf::Packet &packet);
+
+    virtual sf::Packet& preparePacket_ServerUpdate(sf::Packet &packet);
 };
 
 #endif

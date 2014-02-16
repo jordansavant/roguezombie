@@ -10,6 +10,19 @@
 bit::ClientServerState::ClientServerState(StateStack &stack, Game* game, bool isHost)
     : bit::State(stack, game), isHost(isHost), server(NULL), connected(false), timeSinceLastPacket(sf::seconds(0.0f)), clientTimeout(sf::seconds(2.0f)), tickTimer(1.0f / 20.0f)
 {
+}
+
+bit::ClientServerState::~ClientServerState()
+{
+    if(server)
+    {
+        delete server;
+    }
+}
+
+
+void bit::ClientServerState::load()
+{
     // Establish whether server or client
     if(isHost)
     {
@@ -37,18 +50,6 @@ bit::ClientServerState::ClientServerState(StateStack &stack, Game* game, bool is
     socket.setBlocking(false);
 }
 
-bit::ClientServerState::~ClientServerState()
-{
-    if(server)
-    {
-        delete server;
-    }
-}
-
-bit::Server* bit::ClientServerState::newServer()
-{
-    return new bit::Server();
-}
 
 bool bit::ClientServerState::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
@@ -98,6 +99,10 @@ bool bit::ClientServerState::update(sf::RenderWindow &window, sf::Time &gameTime
         if(tickTimer.update(gameTime))
         {
             // send SF Packet with each positional update of the player
+            sf::Packet packet;
+            packet << static_cast<sf::Int32>(Server::ClientPacket::ClientUpdate);
+            packet = preparePacket_ClientUpdate(packet);
+            socket.send(packet);
         }
 
         // Update packet duration via gameTime
@@ -112,6 +117,13 @@ bool bit::ClientServerState::update(sf::RenderWindow &window, sf::Time &gameTime
 
     return true;
 }
+
+
+bit::Server* bit::ClientServerState::newServer()
+{
+    return new bit::Server();
+}
+
 
 void bit::ClientServerState::handlePacket(sf::Int32 packetType, sf::Packet &packet)
 {
@@ -147,9 +159,9 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, sf::Packet &pack
 
             break;
 
-        case Server::ServerPacket::Update:
+        case Server::ServerPacket::ServerUpdate:
 
-            handlePacket_Update(packet);
+            handlePacket_ServerUpdate(packet);
 
             break;
 
@@ -173,6 +185,11 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, sf::Packet &pack
     }
 }
 
+
+/**
+ * Handle Incoming Server Packets
+ **/
+
 void bit::ClientServerState::handlePacket_Broadcast(sf::Packet &packet)
 {
 }
@@ -193,7 +210,7 @@ void bit::ClientServerState::handlePacket_PeerDisonnected(sf::Packet &packet)
 {
 }
 
-void bit::ClientServerState::handlePacket_Update(sf::Packet &packet)
+void bit::ClientServerState::handlePacket_ServerUpdate(sf::Packet &packet)
 {
 }
 
@@ -207,4 +224,14 @@ void bit::ClientServerState::handlePacket_PeerRealtimeChange(sf::Packet &packet)
 
 void bit::ClientServerState::handlePacket_Shutdown(sf::Packet &packet)
 {
+}
+
+
+/**
+ * Prepare Outgoing Client Packets
+ **/
+
+sf::Packet& bit::ClientServerState::preparePacket_ClientUpdate(sf::Packet &packet)
+{
+    return packet;
 }
