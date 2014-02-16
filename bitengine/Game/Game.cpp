@@ -2,6 +2,7 @@
 #include "SFML/Graphics.hpp"
 #include "GameComponent.hpp"
 #include "LevelManager.hpp"
+#include "StateStack.hpp"
 #include "../Input/InputManager.hpp"
 #include "../Audio/SoundManager.hpp"
 #include "../Audio/MusicManager.hpp"
@@ -22,12 +23,14 @@ bit::Game::Game(std::string gameTitle, int width, int height, bool fullscreen)
 
     inputManager = new InputManager();
     levelManager = new LevelManager();
+    stateStack = new StateStack();
     soundManager = new SoundManager();
     musicManager = new MusicManager();
     spriteLoader = new SpriteLoader();
 
     gameComponents.push_back(inputManager);
     gameComponents.push_back(levelManager);
+    gameComponents.push_back(stateStack);
     gameComponents.push_back(soundManager);
     gameComponents.push_back(musicManager);
 
@@ -50,6 +53,7 @@ bit::Game::~Game()
 {
     delete inputManager;
     delete levelManager;
+    delete stateStack;
     delete soundManager;
     delete spriteLoader;
     delete renderWindow;
@@ -57,16 +61,20 @@ bit::Game::~Game()
 
 bit::InputManager* bit::Game::inputManager = NULL;
 bit::LevelManager* bit::Game::levelManager = NULL;
+bit::StateStack* bit::Game::stateStack = NULL;
 bit::SoundManager* bit::Game::soundManager = NULL;
 bit::MusicManager* bit::Game::musicManager = NULL;
 bit::SpriteLoader* bit::Game::spriteLoader = NULL;
 bit::Game* bit::Game::instance = NULL;
+
 bool bit::Game::isPaused = false;
 bool bit::Game::isInFocus = false;
 bool bit::Game::graphicsChange = false;
 bool bit::Game::isFullscreen = false;
+
 sf::Vector2i bit::Game::currentResolution;
 sf::Vector2i bit::Game::targetResolution = sf::Vector2i(1920, 1080);
+
 float bit::Game::currentResolutionRatio = 1;
 float bit::Game::currentResolutionRatioX = 1;
 float bit::Game::currentResolutionRatioY = 1;
@@ -74,6 +82,8 @@ float bit::Game::targetFpsInterval = (1.0f / 60.0f); // seconds
 
 void bit::Game::run()
 {
+    registerStates();
+
 	// Game loop
 	running = true;
 	while (running)
@@ -85,6 +95,7 @@ void bit::Game::run()
             configureOpenGL();
             setVerticalSync(verticalSync);
             levelManager->cascadeWindowEvent(*renderWindow);
+            stateStack->cascadeWindowEvent(*renderWindow);
         }
 
         // Freshen draw
@@ -150,23 +161,25 @@ void bit::Game::run()
 
 void bit::Game::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
-	// Components
 	for(unsigned int i=0; i<gameComponents.size(); i++)
 	{
         if(isInFocus)
         {
-		    gameComponents[i]->update(window, gameTime, isPaused);
+		    gameComponents[i]->update(window, gameTime);
         }
 	}
 }
 
 void bit::Game::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
-	// Components
 	for(unsigned int i=0; i<gameComponents.size(); i++)
 	{
-		gameComponents[i]->draw(window, gameTime, isPaused);
+		gameComponents[i]->draw(window, gameTime);
 	}
+}
+
+void bit::Game::registerStates()
+{
 }
 
 void bit::Game::quit()

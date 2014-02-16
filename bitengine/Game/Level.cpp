@@ -32,7 +32,7 @@ void bit::Level::handleWindowChange(sf::RenderWindow &window)
     }
 }
 
-void bit::Level::update(sf::RenderWindow &window, sf::Time &gameTime, bool isGamePaused)
+void bit::Level::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     if (!isInitialized)
     {
@@ -47,7 +47,7 @@ void bit::Level::update(sf::RenderWindow &window, sf::Time &gameTime, bool isGam
     {
         LevelComponent* component = levelComponents[i];
 
-        component->updateState(window, gameTime, isGamePaused, allComponentsLoaded, allComponentsUnloaded);
+        component->updateState(window, gameTime, allComponentsLoaded, allComponentsUnloaded);
         if (component->state == LevelComponent::LevelComponentState::Loading)
         {
             someComponentNotLoaded = true;
@@ -107,7 +107,7 @@ void bit::Level::update(sf::RenderWindow &window, sf::Time &gameTime, bool isGam
     }
 }
 
-void bit::Level::draw(sf::RenderWindow &window, sf::Time &gameTime, bool isGamePaused)
+void bit::Level::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
     if(allComponentsLoaded)
     {

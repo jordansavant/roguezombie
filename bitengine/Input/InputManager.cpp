@@ -48,7 +48,7 @@ void bit::InputManager::inspectMouseWheelEvent(sf::Event e)
     }
 }
 
-void bit::InputManager::update(sf::RenderWindow &window, sf::Time &gameTime, bool isGamePaused)
+void bit::InputManager::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
 	// Mouse
 	for ( int i = sf::Mouse::Button::Left; i < sf::Mouse::Button::XButton2; i++ )

@@ -4,8 +4,18 @@
 #include "ResourcePath.h"
 #include "bitengine/Math/Random.hpp"
 #include "bitengine/System/Output.hpp"
+#include "TestGame.hpp"
 
 int main()
+{
+    srand (time(NULL));
+	TestGame game;
+	game.run();
+
+	return 0;
+}
+
+int notmain()
 {
 	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
 	sf::CircleShape shape(100.f);

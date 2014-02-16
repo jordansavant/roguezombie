@@ -10,6 +10,7 @@ namespace bit
     class InputManager;
     class SoundManager;
     class LevelManager;
+    class StateStack;
     class MusicManager;
     class SpriteLoader;
 
@@ -22,6 +23,7 @@ namespace bit
 
         static InputManager* inputManager;
         static LevelManager* levelManager;
+        static StateStack* stateStack;
         static SoundManager* soundManager;
         static MusicManager* musicManager;
         static SpriteLoader* spriteLoader;
@@ -49,6 +51,8 @@ namespace bit
 		virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
 		virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
+
+        virtual void registerStates();
 
         void quit();
 

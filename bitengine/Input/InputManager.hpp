@@ -22,7 +22,7 @@ namespace bit
 
         virtual void inspectMouseWheelEvent(sf::Event e);
 
-		virtual void update(sf::RenderWindow &window, sf::Time &gameTime, bool isGamePaused);
+		virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
         // Mouse
 		bool isButtonDown(sf::Mouse::Button mouseButton);

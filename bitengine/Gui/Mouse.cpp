@@ -11,7 +11,7 @@ bit::Mouse::Mouse(std::string textureName)
     sprite.setTexture(texture);
 }
 
-void bit::Mouse::draw(sf::RenderWindow &window, sf::Time &gameTime, bool isGamePaused)
+void bit::Mouse::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
     float scale = std::min((float)Game::currentResolution.x / (float)Game::targetResolution.x, (float)Game::currentResolution.y / (float)Game::targetResolution.y);
     window.setMouseCursorVisible(false);

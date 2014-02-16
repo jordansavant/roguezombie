@@ -16,7 +16,7 @@ namespace bit
         sf::Sprite sprite;
         sf::Color color;
 
-        void draw(sf::RenderWindow &window, sf::Time &gameTime, bool isGamePaused);
+        void draw(sf::RenderWindow &window, sf::Time &gameTime);
     };
 }
 

@@ -42,11 +42,11 @@ void bit::LevelManager::cascadeWindowEvent(sf::RenderWindow &window)
     }
 }
 
-void bit::LevelManager::update(sf::RenderWindow &window, sf::Time &gameTime, bool isGamePaused)
+void bit::LevelManager::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     if(levels.size() > 0)
     {
-        currentLevel->update(window, gameTime, isGamePaused);
+        currentLevel->update(window, gameTime);
 
         // If there is a level to push
         if (pushLevel != NULL)
@@ -101,11 +101,11 @@ void bit::LevelManager::update(sf::RenderWindow &window, sf::Time &gameTime, boo
     }
 }
 
-void bit::LevelManager::draw(sf::RenderWindow &window, sf::Time &gameTime, bool isGamePaused)
+void bit::LevelManager::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
     if (currentLevel != NULL)
     {
-        currentLevel->draw(window, gameTime, isGamePaused);
+        currentLevel->draw(window, gameTime);
     }
 }
 

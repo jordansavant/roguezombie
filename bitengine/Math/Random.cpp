@@ -4,7 +4,7 @@
 
 bit::Random::Random()
 {
-    engine.seed(1);
+    engine.seed(std::rand());
 }
 
 bit::Random::Random(unsigned int _seed)

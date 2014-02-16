@@ -39,7 +39,7 @@ namespace bit
 
         virtual bool unload(sf::RenderWindow &window, sf::Time &gameTime);
 
-        void updateState(sf::RenderWindow &window, sf::Time &gameTime, bool isGamePaused, bool allComponentsLoaded, bool allComponentsUnloaded);
+        void updateState(sf::RenderWindow &window, sf::Time &gameTime, bool allComponentsLoaded, bool allComponentsUnloaded);
     };
 }
 

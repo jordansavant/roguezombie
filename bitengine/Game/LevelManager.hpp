@@ -19,9 +19,9 @@ namespace bit
 
         virtual void cascadeWindowEvent(sf::RenderWindow &window);
 
-		virtual void update(sf::RenderWindow &window, sf::Time &gameTime, bool isGamePaused);
+		virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
-		virtual void draw(sf::RenderWindow &window, sf::Time &gameTime, bool isGamePaused);
+		virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
 
         virtual void pop();
 

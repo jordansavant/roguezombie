@@ -32,7 +32,7 @@ bool bit::LevelComponent::unload(sf::RenderWindow &window, sf::Time &gameTime)
     return true;
 }
 
-void bit::LevelComponent::updateState(sf::RenderWindow &window, sf::Time &gameTime, bool isGamePaused, bool allComponentsLoaded, bool allComponentsUnloaded)
+void bit::LevelComponent::updateState(sf::RenderWindow &window, sf::Time &gameTime, bool allComponentsLoaded, bool allComponentsUnloaded)
 {
     switch(state)
     {
@@ -53,7 +53,7 @@ void bit::LevelComponent::updateState(sf::RenderWindow &window, sf::Time &gameTi
             break;
 
         case LevelComponentState::Running:
-            if (!isGamePaused || !isPausable)
+            if (!isPausable)
             {
                 update(window, gameTime);
             }

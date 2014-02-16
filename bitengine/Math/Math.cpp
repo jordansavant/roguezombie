@@ -22,7 +22,7 @@ float bit::Math::round(float value)
 
 float bit::Math::randomFloat()
 {
-    return (float)std::rand()/(float)RAND_MAX;
+    return (float)std::rand() / (float)RAND_MAX;
 }
 
 int bit::Math::random(int min, int max)
