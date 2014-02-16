@@ -5,21 +5,26 @@
 #include "bitengine/Game/Server.hpp"
 #include "SFML/Network.hpp"
 
+namespace bit
+{
+    class RemoteClient;
+}
+
 class TestServer : public bit::Server
 {
 private:
 
-    virtual void handlePacket_PlayerEvent(sf::Packet &packet, RemotePeer &peer);
+    virtual void handlePacket_ClientEvent(sf::Packet &packet, bit::RemoteClient &client);
 
-    virtual void handlePacket_PlayerRealtimeChange(sf::Packet &packet, RemotePeer &peer);
+    virtual void handlePacket_ClientRealtimeChange(sf::Packet &packet, bit::RemoteClient &client);
 
     virtual sf::Packet& preparePacket_InitializeSelf(sf::Packet &packet);
 
     virtual sf::Packet& preparePacket_InitializeWorld(sf::Packet &packet);
 
-    virtual sf::Packet& preparePacket_PeerConnected(sf::Packet &packet);
+    virtual sf::Packet& preparePacket_ClientConnected(sf::Packet &packet);
 
-    virtual sf::Packet& preparePacket_PeerDisconnected(sf::Packet &packet);
+    virtual sf::Packet& preparePacket_ClientDisconnected(sf::Packet &packet);
 
     virtual sf::Packet& preparePacket_ServerUpdate(sf::Packet &packet);
 };

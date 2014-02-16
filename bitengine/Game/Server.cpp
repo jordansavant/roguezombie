@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include "RemoteClient.hpp"
 
 bit::Server::Server()
     : serverPort(12345),
@@ -8,11 +9,11 @@ bit::Server::Server()
       clientTimeoutTime(sf::seconds(3)),
       maxConnectedClients(16),
       connectedClients(0),
-      peers(1)
+      clients(1)
 {
     listenerSocket.setBlocking(false);
 
-    peers[0] = new RemotePeer();
+    clients[0] = new RemoteClient();
 
     thread.launch();
 }
@@ -22,11 +23,11 @@ bit::Server::~Server()
     waitingThreadEnd = true;
     thread.wait();
 
-    for(unsigned int i=0; i < peers.size(); i++)
+    for(unsigned int i=0; i < clients.size(); i++)
     {
-        if(peers[i])
+        if(clients[i])
         {
-            delete peers[i];
+            delete clients[i];
         }
     }
 }
@@ -97,18 +98,10 @@ void bit::Server::update()
 void bit::Server::tick()
 {
     // Send world objects to the clients
-    for(unsigned int i=0; i < peers.size(); i++)
-    {
-        RemotePeer* peer = peers[i];
-
-        if(peer->isReady)
-        {
-            sf::Packet packet;
-            packet << static_cast<sf::Int32>(Server::ServerPacket::ServerUpdate);
-            packet = preparePacket_ServerUpdate(packet);
-            peers[i]->socket.send(packet);
-        }
-    }
+    sf::Packet packet;
+    packet << static_cast<sf::Int32>(Server::ServerPacket::ServerUpdate);
+    packet = preparePacket_ServerUpdate(packet);
+    sendToAllClients(packet);
 }
 
 sf::Time bit::Server::now()
@@ -120,27 +113,27 @@ void bit::Server::handleIncomingPackets()
 {
     bool detectedTimeout = false;
 
-    for(unsigned int i=0; i < peers.size(); i++)
+    for(unsigned int i=0; i < clients.size(); i++)
     {
-        RemotePeer* peer = peers[i];
+        RemoteClient* client = clients[i];
 
-        if(peer->isReady)
+        if(client->isReady)
         {
             sf::Packet packet;
-            while(peer->socket.receive(packet) == sf::Socket::Done)
+            while(client->socket.receive(packet) == sf::Socket::Done)
             {
                 // Handle incoming packet from client
-                handlePacket(packet, *peer, detectedTimeout);
+                handlePacket(packet, *client, detectedTimeout);
 
                 // Packet received, updatet the ping timer
-                peer->lastPacketTime = now();
+                client->lastPacketTime = now();
                 packet.clear();
             }
 
             // Check if disconnected
-            if(now() >= peer->lastPacketTime + clientTimeoutTime)
+            if(now() >= client->lastPacketTime + clientTimeoutTime)
             {
-                peer->hasTimedOut = true;
+                client->hasTimedOut = true;
                 detectedTimeout = true;
             }
         }
@@ -152,7 +145,7 @@ void bit::Server::handleIncomingPackets()
     }
 }
 
-void bit::Server::handlePacket(sf::Packet &packet, RemotePeer &peer, bool &detectedTimeout)
+void bit::Server::handlePacket(sf::Packet &packet, RemoteClient &client, bool &detectedTimeout)
 {
     sf::Int32 packetType;
     packet >> packetType;
@@ -161,20 +154,20 @@ void bit::Server::handlePacket(sf::Packet &packet, RemotePeer &peer, bool &detec
     {
         case Server::ClientPacket::Quit:
 
-            peer.hasTimedOut = true;
+            client.hasTimedOut = true;
             detectedTimeout = true;
 
             break;
 
         case Server::ClientPacket::PlayerEvent:
 
-            handlePacket_PlayerEvent(packet, peer);
+            handlePacket_PlayerEvent(packet, client);
 
             break;
 
         case Server::ClientPacket::PlayerRealtimeChange:
 
-            handlePacket_PlayerRealtimeChange(packet, peer);
+            handlePacket_PlayerRealtimeChange(packet, client);
 
             break;
     }
@@ -186,30 +179,30 @@ void bit::Server::handleConnections()
     if(!isListening)
         return;
 
-    // If our ready and waiting peer's socket starts being awesome
-    if(listenerSocket.accept(peers[connectedClients]->socket) == sf::TcpListener::Done)
+    // If our ready and waiting client's socket starts being awesome
+    if(listenerSocket.accept(clients[connectedClients]->socket) == sf::TcpListener::Done)
     {
         // Send world state to player
         sf::Packet packet_InitializeWorld;
         packet_InitializeWorld << static_cast<sf::Int32>(Server::ServerPacket::InitializeWorld);
         packet_InitializeWorld = preparePacket_InitializeWorld(packet_InitializeWorld);
-        peers[connectedClients]->socket.send(packet_InitializeWorld);
+        clients[connectedClients]->socket.send(packet_InitializeWorld);
 
         // Send initialize player packet
         sf::Packet packet_InitializeSelf;
         packet_InitializeSelf << static_cast<sf::Int32>(Server::ServerPacket::InitializeSelf);
         packet_InitializeSelf = preparePacket_InitializeSelf(packet_InitializeSelf);
-        peers[connectedClients]->socket.send(packet_InitializeSelf);
+        clients[connectedClients]->socket.send(packet_InitializeSelf);
 
-        // Notify all other peers of new connection
-        sf::Packet packet_peerConnected;
-        packet_peerConnected << static_cast<sf::Int32>(Server::ServerPacket::PeerConnected);
-        packet_peerConnected = preparePacket_PeerConnected(packet_peerConnected);
-        sendToAllPeers(packet_peerConnected);
+        // Notify all other clients of new connection
+        sf::Packet packet_clientConnected;
+        packet_clientConnected << static_cast<sf::Int32>(Server::ServerPacket::ClientConnected);
+        packet_clientConnected = preparePacket_ClientConnected(packet_clientConnected);
+        sendToAllClients(packet_clientConnected);
 
-        // Mark the new peer as ready
-        peers[connectedClients]->isReady = true;
-        peers[connectedClients]->lastPacketTime = now();
+        // Mark the new client as ready
+        clients[connectedClients]->isReady = true;
+        clients[connectedClients]->lastPacketTime = now();
 
         // Close connection slots or add a new one
         connectedClients++;
@@ -219,32 +212,32 @@ void bit::Server::handleConnections()
         }
         else
         {
-            peers.push_back(new RemotePeer());
+            clients.push_back(new RemoteClient());
         }
     }
 }
 
 void bit::Server::handleDisconnections()
 {
-    for(auto itr = peers.begin(); itr != peers.end(); )
+    for(auto itr = clients.begin(); itr != clients.end(); )
     {
-        RemotePeer* peer = (*itr);
+        RemoteClient* client = (*itr);
 
-        if(peer->hasTimedOut)
+        if(client->hasTimedOut)
         {
-            // Inform other peers of disconnection
-            sf::Packet packet_PeerDisconnected;
-            packet_PeerDisconnected << static_cast<sf::Int32>(Server::ServerPacket::PeerDisconnected);
-            packet_PeerDisconnected = preparePacket_PeerDisconnected(packet_PeerDisconnected);
-            sendToAllPeers(packet_PeerDisconnected);
+            // Inform other clients of disconnection
+            sf::Packet packet_ClientDisconnected;
+            packet_ClientDisconnected << static_cast<sf::Int32>(Server::ServerPacket::ClientDisconnected);
+            packet_ClientDisconnected = preparePacket_ClientDisconnected(packet_ClientDisconnected);
+            sendToAllClients(packet_ClientDisconnected);
 
-            // Erase peer
-            itr = peers.erase(itr);
+            // Erase client
+            itr = clients.erase(itr);
 
             // Return to listening state
             if(connectedClients < maxConnectedClients)
             {
-                peers.push_back(new RemotePeer());
+                clients.push_back(new RemoteClient());
                 setListeningState(true);
             }
         }
@@ -258,38 +251,32 @@ void bit::Server::handleDisconnections()
 void bit::Server::broadcastMessage(std::string &message)
 {
     // send broadcast packet to every connected client
-    for(unsigned int i=0; i < peers.size(); i++)
+    for(unsigned int i=0; i < clients.size(); i++)
     {
-        RemotePeer* peer = peers[i];
+        RemoteClient* client = clients[i];
 
-        if(peer->isReady)
+        if(client->isReady)
         {
             sf::Packet packet_broadcastMessage;
             packet_broadcastMessage << static_cast<sf::Int32>(Server::ServerPacket::Broadcast);
             packet_broadcastMessage << message;
 
-            peer->socket.send(packet_broadcastMessage);
+            client->socket.send(packet_broadcastMessage);
         }
     }
 }
 
-void bit::Server::sendToAllPeers(sf::Packet &packet)
+void bit::Server::sendToAllClients(sf::Packet &packet)
 {
-    for(unsigned int i=0; i < peers.size(); i++)
+    for(unsigned int i=0; i < clients.size(); i++)
     {
-        RemotePeer* peer = peers[i];
+        RemoteClient* client = clients[i];
 
-        if(peer->isReady)
+        if(client->isReady)
         {
-            peer->socket.send(packet);
+            client->socket.send(packet);
         }
     }
-}
-
-bit::Server::RemotePeer::RemotePeer()
-: isReady(false), hasTimedOut(false)
-{
-    socket.setBlocking(false);
 }
 
 
@@ -297,11 +284,11 @@ bit::Server::RemotePeer::RemotePeer()
  * Handle Incoming Client Packets
  **/
 
-void bit::Server::handlePacket_PlayerEvent(sf::Packet &packet, RemotePeer &peer)
+void bit::Server::handlePacket_PlayerEvent(sf::Packet &packet, RemoteClient &client)
 {
 }
 
-void bit::Server::handlePacket_PlayerRealtimeChange(sf::Packet &packet, RemotePeer &peer)
+void bit::Server::handlePacket_PlayerRealtimeChange(sf::Packet &packet, RemoteClient &client)
 {
 }
 
@@ -320,12 +307,12 @@ sf::Packet& bit::Server::preparePacket_InitializeWorld(sf::Packet &packet)
     return packet;
 }
 
-sf::Packet& bit::Server::preparePacket_PeerConnected(sf::Packet &packet)
+sf::Packet& bit::Server::preparePacket_ClientConnected(sf::Packet &packet)
 {
     return packet;
 }
 
-sf::Packet& bit::Server::preparePacket_PeerDisconnected(sf::Packet &packet)
+sf::Packet& bit::Server::preparePacket_ClientDisconnected(sf::Packet &packet)
 {
     return packet;
 }

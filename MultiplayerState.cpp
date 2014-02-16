@@ -68,14 +68,14 @@ void MultiplayerState::handlePacket_InitializeWorld(sf::Packet &packet)
     bit::Output::Debug("Client handle initialize world");
 }
 
-void MultiplayerState::handlePacket_PeerConnected(sf::Packet &packet) 
+void MultiplayerState::handlePacket_ClientConnected(sf::Packet &packet) 
 {
-    bit::Output::Debug("Client handle peer connected");
+    bit::Output::Debug("Client handle client connected");
 }
 
-void MultiplayerState::handlePacket_PeerDisonnected(sf::Packet &packet)
+void MultiplayerState::handlePacket_ClientDisonnected(sf::Packet &packet)
 {
-    bit::Output::Debug("Client handle peer disconnected");
+    bit::Output::Debug("Client handle client disconnected");
 }
 
 void MultiplayerState::handlePacket_ServerUpdate(sf::Packet &packet)
@@ -83,14 +83,14 @@ void MultiplayerState::handlePacket_ServerUpdate(sf::Packet &packet)
     bit::Output::Debug("Client handle update");
 }
 
-void MultiplayerState::handlePacket_PeerEvent(sf::Packet &packet)
+void MultiplayerState::handlePacket_ClientEvent(sf::Packet &packet)
 {
-    bit::Output::Debug("Client handle peer event");
+    bit::Output::Debug("Client handle client event");
 }
 
-void MultiplayerState::handlePacket_PeerRealtimeChange(sf::Packet &packet)
+void MultiplayerState::handlePacket_ClientRealtimeChange(sf::Packet &packet)
 {
-    bit::Output::Debug("Client handle peer realtimechange");
+    bit::Output::Debug("Client handle client realtimechange");
 }
 
 void MultiplayerState::handlePacket_Shutdown(sf::Packet &packet)

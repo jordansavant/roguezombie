@@ -50,15 +50,15 @@ namespace bit
 
         virtual void handlePacket_InitializeWorld(sf::Packet &packet);
 
-        virtual void handlePacket_PeerConnected(sf::Packet &packet);
+        virtual void handlePacket_ClientConnected(sf::Packet &packet);
 
-        virtual void handlePacket_PeerDisonnected(sf::Packet &packet);
+        virtual void handlePacket_ClientDisonnected(sf::Packet &packet);
 
         virtual void handlePacket_ServerUpdate(sf::Packet &packet);
 
-        virtual void handlePacket_PeerEvent(sf::Packet &packet);
+        virtual void handlePacket_ClientEvent(sf::Packet &packet);
 
-        virtual void handlePacket_PeerRealtimeChange(sf::Packet &packet);
+        virtual void handlePacket_ClientRealtimeChange(sf::Packet &packet);
 
         virtual void handlePacket_Shutdown(sf::Packet &packet);
 

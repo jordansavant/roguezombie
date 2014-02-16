@@ -150,10 +150,7 @@ void bit::Game::update(sf::RenderWindow &window, sf::Time &gameTime)
     // Update various managers and components
 	for(unsigned int i=0; i<gameComponents.size(); i++)
 	{
-        if(isInFocus)
-        {
-		    gameComponents[i]->update(window, gameTime);
-        }
+		gameComponents[i]->update(window, gameTime);
 	}
 
     // Quit if no states

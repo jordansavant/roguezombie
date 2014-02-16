@@ -147,15 +147,15 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, sf::Packet &pack
 
             break;
 
-        case Server::ServerPacket::PeerConnected:
+        case Server::ServerPacket::ClientConnected:
 
-            handlePacket_PeerConnected(packet);
+            handlePacket_ClientConnected(packet);
 
             break;
 
-        case Server::ServerPacket::PeerDisconnected:
+        case Server::ServerPacket::ClientDisconnected:
 
-            handlePacket_PeerDisonnected(packet);
+            handlePacket_ClientDisonnected(packet);
 
             break;
 
@@ -165,15 +165,15 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, sf::Packet &pack
 
             break;
 
-        case Server::ServerPacket::PeerEvent:
+        case Server::ServerPacket::ClientEvent:
 
-            handlePacket_PeerEvent(packet);
+            handlePacket_ClientEvent(packet);
 
             break;
 
-        case Server::ServerPacket::PeerRealtimeChange:
+        case Server::ServerPacket::ClientRealtimeChange:
 
-            handlePacket_PeerRealtimeChange(packet);
+            handlePacket_ClientRealtimeChange(packet);
 
             break;
 
@@ -202,11 +202,11 @@ void bit::ClientServerState::handlePacket_InitializeWorld(sf::Packet &packet)
 {
 }
 
-void bit::ClientServerState::handlePacket_PeerConnected(sf::Packet &packet)
+void bit::ClientServerState::handlePacket_ClientConnected(sf::Packet &packet)
 {
 }
 
-void bit::ClientServerState::handlePacket_PeerDisonnected(sf::Packet &packet)
+void bit::ClientServerState::handlePacket_ClientDisonnected(sf::Packet &packet)
 {
 }
 
@@ -214,11 +214,11 @@ void bit::ClientServerState::handlePacket_ServerUpdate(sf::Packet &packet)
 {
 }
 
-void bit::ClientServerState::handlePacket_PeerEvent(sf::Packet &packet)
+void bit::ClientServerState::handlePacket_ClientEvent(sf::Packet &packet)
 {
 }
 
-void bit::ClientServerState::handlePacket_PeerRealtimeChange(sf::Packet &packet)
+void bit::ClientServerState::handlePacket_ClientRealtimeChange(sf::Packet &packet)
 {
 }
 
