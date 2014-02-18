@@ -33,8 +33,8 @@ namespace bit
         enum ClientPacket
         {
             Quit,                       // tell server that client is quitting
-            Event,                // tell server about a client event
-            RealtimeChange,       // tell server about a client realtime boolean change
+            Event,                      // tell server about a client event
+            RealtimeChange,             // tell server about a client realtime boolean change
             ClientUpdate,               // tell server about client update 1/20th a second
         };
 
@@ -73,9 +73,11 @@ namespace bit
 
         void sendToAllClients(sf::Packet &packet);
 
+
         virtual void handlePacket_Event(sf::Packet &packet, RemoteClient &client);
 
         virtual void handlePacket_RealtimeChange(sf::Packet &packet, RemoteClient &client);
+
 
         virtual sf::Packet& preparePacket_InitializeSelf(sf::Packet &packet);
 

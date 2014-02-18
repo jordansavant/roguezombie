@@ -4,7 +4,7 @@
 #include "ResourcePath.h"
 #include "bitengine/Math/Random.hpp"
 #include "bitengine/System/Output.hpp"
-#include "TestGame.hpp"
+#include "superpants/TestGame.hpp"
 
 int main()
 {

@@ -1,7 +1,7 @@
 #include "TestServer.hpp"
-#include "bitengine/Game/Server.hpp"
-#include "bitengine/Game/RemoteClient.hpp"
-#include "bitengine/System/Output.hpp"
+#include "../bitengine/Game/Server.hpp"
+#include "../bitengine/Game/RemoteClient.hpp"
+#include "../bitengine/System/Output.hpp"
 
 void TestServer::handlePacket_PeerClientEvent(sf::Packet &packet, bit::RemoteClient &client)
 {

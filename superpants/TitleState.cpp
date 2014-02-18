@@ -1,10 +1,10 @@
 #include "TitleState.hpp"
-#include "bitengine/Game/Game.hpp"
-#include "bitengine/Game/State.hpp"
-#include "bitengine/Game/StateStack.hpp"
-#include "bitengine/Input/InputManager.hpp"
-#include "bitengine/Graphics/Camera.hpp"
-#include "ResourcePath.h"
+#include "../bitengine/Game/Game.hpp"
+#include "../bitengine/Game/State.hpp"
+#include "../bitengine/Game/StateStack.hpp"
+#include "../bitengine/Input/InputManager.hpp"
+#include "../bitengine/Graphics/Camera.hpp"
+#include "../ResourcePath.h"
 #include "TestGame.hpp"
 
 TitleState::TitleState(bit::StateStack &stack, bit::Game* _game)

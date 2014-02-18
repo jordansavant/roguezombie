@@ -1,12 +1,12 @@
 #include "MultiplayerState.hpp"
-#include "bitengine/Game/Game.hpp"
-#include "bitengine/Game/ClientServerState.hpp"
-#include "bitengine/Game/StateStack.hpp"
-#include "bitengine/Input/InputManager.hpp"
-#include "bitengine/Graphics/Camera.hpp"
-#include "ResourcePath.h"
+#include "../bitengine/Game/Game.hpp"
+#include "../bitengine/Game/ClientServerState.hpp"
+#include "../bitengine/Game/StateStack.hpp"
+#include "../bitengine/Input/InputManager.hpp"
+#include "../bitengine/Graphics/Camera.hpp"
+#include "../ResourcePath.h"
 #include "TestServer.hpp"
-#include "bitengine/System/Output.hpp"
+#include "../bitengine/System/Output.hpp"
 
 
 MultiplayerState::MultiplayerState(bit::StateStack &stack, bit::Game* _game, bool isHost)

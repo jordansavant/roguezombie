@@ -2,7 +2,7 @@
 #ifndef RZ_MULTIPLAYER_STATE_H
 #define RZ_MULTIPLAYER_STATE_H
 
-#include "bitengine/Game/ClientServerState.hpp"
+#include "../bitengine/Game/ClientServerState.hpp"
 
 namespace bit
 {

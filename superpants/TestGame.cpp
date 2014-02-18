@@ -1,6 +1,6 @@
 #include "TestGame.hpp"
-#include "bitengine/Input/InputManager.hpp"
-#include "bitengine/Game/StateStack.hpp"
+#include "../bitengine/Input/InputManager.hpp"
+#include "../bitengine/Game/StateStack.hpp"
 #include "TitleState.hpp"
 #include "MultiplayerState.hpp"
 #include <iostream>
@@ -8,7 +8,7 @@
 #include <SFML/OpenGL.hpp>
 
 TestGame::TestGame()
-	: Game("TEST GAME!!1!!", 1280, 720, false)
+	: Game("TEST GAME!!1!!", 640, 480, false)
 {
     Game::stateStack->pushState(titleState);
 }

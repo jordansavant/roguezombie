@@ -44,6 +44,7 @@ namespace bit
 
         void handlePacket(sf::Int32 packetType, sf::Packet &packet);
 
+
         virtual void handlePacket_Broadcast(sf::Packet &packet);
 
         virtual void handlePacket_InitializeSelf(sf::Packet &packet);
@@ -61,6 +62,7 @@ namespace bit
         virtual void handlePacket_PeerClientRealtimeChange(sf::Packet &packet);
 
         virtual void handlePacket_Shutdown(sf::Packet &packet);
+
 
         virtual sf::Packet& preparePacket_ClientUpdate(sf::Packet &packet);
 
