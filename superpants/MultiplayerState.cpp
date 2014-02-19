@@ -4,21 +4,19 @@
 #include "../bitengine/Game/StateStack.hpp"
 #include "../bitengine/Input/InputManager.hpp"
 #include "../bitengine/Graphics/Camera.hpp"
+#include "../bitengine/System/Output.hpp"
 #include "../ResourcePath.h"
 #include "TestServer.hpp"
-#include "../bitengine/System/Output.hpp"
+#include "World.hpp"
 
 
 MultiplayerState::MultiplayerState(bit::StateStack &stack, bit::Game* _game, bool isHost)
-    : bit::ClientServerState(stack, _game, isHost), shape(200)
+    : bit::ClientServerState(stack, _game, isHost)
 {
-    if(!isHost)
-    {
-        zombieimage.loadFromFile(resourcePath() + "Zombie.png");
-        zombiesprite.setTexture(zombieimage);
+    world.load(this);
 
-        createCamera(*game->renderWindow, 0, 0, 1, 1);
-    }
+    createCamera(*game->renderWindow, 0, 0, 1, 1);
+    this->cameras[0]->lockOnPoint(200, 200);
 }
 
 
@@ -30,6 +28,8 @@ bool MultiplayerState::update(sf::RenderWindow &window, sf::Time &gameTime)
     {
         requestStateClear();
     }
+
+    world.update(window, gameTime);
 
     return true;
 }
@@ -43,8 +43,7 @@ void MultiplayerState::draw(sf::RenderWindow &window, sf::Time &gameTime)
 
 void MultiplayerState::drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera)
 {
-	window.draw(shape);
-    window.draw(zombiesprite);
+    world.draw(window, gameTime);
 }
 
 

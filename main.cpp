@@ -8,7 +8,7 @@
 
 int main()
 {
-    srand (time(NULL));
+    srand(time(NULL));
 	TestGame game;
 	game.run();
 

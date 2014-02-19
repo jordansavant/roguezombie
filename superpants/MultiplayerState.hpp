@@ -3,6 +3,7 @@
 #define RZ_MULTIPLAYER_STATE_H
 
 #include "../bitengine/Game/ClientServerState.hpp"
+#include "World.hpp"
 
 namespace bit
 {
@@ -18,10 +19,8 @@ public:
 
     MultiplayerState(bit::StateStack &stack, bit::Game* game, bool isHost);
     
-    sf::Texture zombieimage;
-    sf::Sprite zombiesprite;
-	sf::CircleShape shape;
-    
+    World world;
+
     virtual bool update(sf::RenderWindow &window, sf::Time &gameTime);
 
     virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);

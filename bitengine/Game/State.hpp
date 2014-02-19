@@ -16,6 +16,8 @@ namespace bit
 
         State(StateStack &stack, Game* game);
 
+        Game* game;
+
         virtual bool handleInput(sf::RenderWindow &window, sf::Time &gameTime);
 
         virtual void load();
@@ -42,7 +44,6 @@ namespace bit
 
     protected:
 
-        Game* game;
         std::vector<Camera*> cameras;
         bool isPaused;
 
