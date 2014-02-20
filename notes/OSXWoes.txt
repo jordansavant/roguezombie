@@ -1,0 +1,5 @@
+OS X Woes
+
+Open GL Usage problems
+
+Project > Build Phases > Link Binary With Libraries > OpenGL.Framework

@@ -1,0 +1,50 @@
+
+// Sample entity
+
+Zombie
+{
+    int id;         // full
+    int x, y;       // delta
+    int health;     // delta
+    int maxHealth;  // full
+}
+
+Client connects so full Packet is sent as snapshot 1
+Client acks full packet
+Zombie A moves and is hurt x++, health--
+Server simulates
+Server sends snapshot 2
+
+
+Snapshot 1 (Zombie Instance)
+id  = 1
+x = 3
+y = 3
+health = 100
+maxHealth = 100
+
+$lastAckId = 1
+
+Snapshot 2
+id  = 1
+x = 3
+y = 3
+health = 99
+maxHealth = 100
+
+DeltaSnapshot delta(Snapshot 1, Snapshot 2)
+{
+    snapshotPacket;
+
+    if(s1.x != s2.x)
+        snapshotPacket << "x" << s2.x
+    if(s1.y != s2.y)
+        snapshotPacket << "y" << s2.y
+    if(s1.health != s2.health)
+        snapshotPacket << "health" << s2.health
+}
+
+DeltaSnapshot for Client
+x=3
+y=3
+health=99
