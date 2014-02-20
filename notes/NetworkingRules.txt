@@ -1,0 +1,92 @@
+Rules
+
+1. Servers should send full snapshots to clients after:
+	A. First Connection
+	B. Serious packet loss
+
+2. Servers should send a Delta Snapshot to clients from their last acknowledged state and current snapshot state
+
+3. Servers should simulate their world at the same rate the client samples input 30 or 60 fps
+
+4. Servers should send snapshots at a set interval such as 20 ticks per second
+
+5. Servers should clone their snapshot each send and store them in a history
+
+6. Servers should only store their network history until all clients have acknowledged them
+
+7. Clients should sample input at the same rate as the server's simulation, 30 or 60 fps
+
+8. Clients should interpret input into "Commands" and stored in a queue to be sent
+
+9. Clients should send their CommandQueue at a set interval such as 20 ticks per second
+
+10. Clients should immediately obey their own commands assuming they are correct
+
+11. Clients should render all entities not controlled by their Commands at a position
+	that is at an historic interpolation position
+
+12. Clients historic render time should be based on their Ping time to the server
+
+13. Clients should render the position of the entity based on an interpolation between the two snapshots
+	they have received historically that wrap the historic render time
+	
+14. Servers should compensate lag for realtime commands by moving all effectable entites back to a historic
+	period that the command was executed
+	
+15. Servers will determine command execution time by:
+	Command Execution Time = Current Server Time - Packet Latency - Client View Interpolation
+	
+16. Servers will calculate the realtime command against all entities at the Command Execution Time
+	to apply command as the client expected
+	
+17. Clients will extrapolate positions for entities if no packets wrap the historic render time
+
+18. Clients will freeze positions for entities that have extrapolated longer than .25 seconds
+
+19. Servers and clients will run the same exact code when clients simulate commands and srevers run commands
+
+NOTE:
+	For Client Commands that create objects:
+		- Create a new temporary object for that item on the client
+		  and mark it as temporary but simulate it instantly like other inputs
+		- The command will also be sent to the server so the item can be created (on command packets)
+		- The server will send a snapshot with the new Full item data back to the client (on snapshot packets)
+		- The client deletes all temporary objects when a new snapshot appears as the new
+		  snapshot will contain the real new object with this logic:
+		  
+		  On Snapshot update:
+			for each object
+				if object is temporary
+					if object temporary timestamp > server ping time
+						delete
+
+
+						
+						
+						
+						
+Server
+	
+	CONCRETE ITEMS					TEMP MODIFIERS
+
+	World Guns:	[ 1, 2, 3 ]			[]
+	Player Guns:[4]					[]
+	Inventory:	10					0
+
+	
+	
+Client v1
+
+	CONCRETE ITEMS					TEMP MODIFIERS
+	
+	World Guns:	[ 1, 2, 3 ]			[4]
+	PlayerGuns: [4]					[]
+	Inventory:	10					-1
+						
+						
+						
+						
+						
+						
+						
+						

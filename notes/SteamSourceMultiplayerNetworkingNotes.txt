@@ -1,0 +1,129 @@
+
+Source MP Networking
+https://developer.valvesoftware.com/wiki/Source_Multiplayer_Networking
+
+Concepts
+	
+	Server Simulations and Packet Sending
+	
+		Simulates game at 33 fps
+		Sends game world to all clients at 20fps
+		Game data is compressed using "delta compression"
+			"server doesn't send a full world snapshot each time, but rather only changes
+			(a delta snapshot) that happened since the last acknowledged update"
+		Each packet sent between client and server have "Acknowledge Numbers"
+			These keep track of their data flow
+		Full snapshots are only sent at beginning or if a client suffers from
+			heavy packet loss for a couple of seconds
+		Clients can request a full snapshot if desired
+		
+	Client Input Sampling and Packet Sending
+		
+		Tell the server their acceptable rate in bytes/second based on their bandwidth
+			General Rules: 4500 for modems, 6000 for ISDN, 10000 for DSL and above
+		Records input at same rate as server simulation, 33 fps
+		Inputs are recorded as "Commands"
+			"A user command is basically a snapshot of the current keyboard and mouse state"
+		Commands are sent a separate tick rate, 30fps
+			so 1 or 2 commands are sent per packet, by buffering them from the sample rate
+		
+	Client Interpolation / Extrapolation and Rendering
+	
+		Ping time is the round trip time of
+			input sampled -> packet sent -> server accept -> server simulate world ->
+			server send delta snapshot packet -> client accept -> client render
+		Since ping time is effected by network, cpu, tick rates etc, the client render
+			would be different that the client input, causing judder
+		Interpolation allows the client to render based on historical snapshots
+		
+		Source servers send snapshots at 20 fps or 50 milliseconds
+		Clients actually render an interpolation of the previous two snapshots
+		
+		Example:						  10.22s				  10.32s
+									Current Render Time		Current Client Time
+											|						|
+											|                       |
+			Timeline:		 			 	V		 			 	V
+						----|-----------|-----------|-----------|-------------->
+			Snapshots:		338			340			342			344
+			Time (s)		10.15s		10.20s		10.25s		10.30s
+	
+		Clients interpolate at 100 milliseconds
+		Clients subtract 100 ms from the current client time
+		This will fall between two snapshots in history
+		The client renders the 10.22s frame by lerping the position between
+			the 10.20s position and the 10.25s position
+		Since the Interpolation period is double the snapshot packet period 100 ms vs 50 ms
+			even if a packet is lost the render frame will fall between two packets
+			to interpolate between historically
+		
+		If the client loses more than 2 packets consecutively, the client will Extrapolate
+		Extrapolation is a simple linear extrapolation based on the known history of entities
+		Extrapolation is only done for .25 seconds of packet loss, after that its impossible to know
+		
+		So if your client renders at 100 ms lag, do you need to lead your targets? Server will accommmodate
+			see Lag Compensation
+			
+		* "View interpolation delay gives a moving player a small advantage over a stationary player
+		   since the moving player can see his target a split second earlier."
+		* Spectators do not interpolate
+		
+	Client Input Prediction
+		
+		If a client has a 150 ms ping time, a FORWARD key command would take 150 ms to display on the client
+		Instead the client runs the exact same code for processing commands that the server does
+		The client then runs the command against itself immediately as well as sends it to the server
+		
+		After 150 ms the client receives the snapshot containing the position of the client
+		The client compares the current position and the snapshot position
+		If the positions are different that means it has encountered a "Prediction Error"
+		Prediction errors will correct the client position and it causes judder
+		By smoothing the predicted position to the real position it makes judder much less noticeable
+		
+	Server-Side Lag Compensation
+		
+		If a client is rendering at 100 ms previous position and fires at an enemy
+			and the time for the command to wrapped up and sent to the serve took another 100ms
+			then when the server calculated the hit, they would hit nothing if the target was moving
+		
+		Instead the Server records the positions of all "Player Entities" for the last second
+		When the Shoot command is received by the server the "Command Execution Time" is calculated:
+			
+			Command Execution Time = Current Server Time - Packet Latency - Client View Interpolation
+		
+		So client shoots at target at 10.5s, the packet arrives at server at 10.6s, and client
+		interpolation time is .1s.
+		
+			Command Execution Time = 10.6s - .1s - .1s
+			Command Execution Time = 10.4s
+			CET was exactly where the target was when the player shot
+		
+		Example:
+				E = Enemy Position on Server
+				C = Enemy Render Position on Client
+				S = Shifted Enemy Position
+				
+						x1		x2		x3		x4		x5		x6
+					------------------------------------------------> Running Direction
+					|			
+			  10.4s	| 	C		E
+			  10.5s	|			C		E							  Client Fires
+			  10.6s	|					C		E					  Server Acceps Command
+			  10.6s	|					S                             Server Shifts for Packet Latency
+			  10.6s |			S                                     Server Shifts for Interpolation
+					V
+				   Time
+				
+				After shifting for packet time and interpolation time on the client
+				the (S) shifted position matches the (C) client render position at
+				the time the client fired.
+				So the traced shot is calculated correctly and the fire is a HIT!
+		
+		A much more reliable result would be to let the client process their own hits
+		but that is subject to cheating.
+		
+		
+		
+		
+		
+		

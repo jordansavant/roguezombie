@@ -1,0 +1,415 @@
+
+Client										Server
+
+	Input Move Tile Up
+	Send Packet
+	Pseudo Check Tile						Packet Received
+	Pseudp Move Player						Check Tile
+											Move Player
+											
+
+											
+Client										Server
+											
+											Broadcast World Data
+											Send Packet
+	Receive Server Packet
+	Reposition all objects by packet
+	
+	
+	
+	
+	
+	
+	
+	
+// CLIENT SIDE
+class MultiplayerGameState : public State
+{
+	MultiplayerGameState(StateStack &stack, Context context, bool isHost)
+		: State(stack, context)
+	{
+		isHost = isHost
+		
+		if(isHost)
+		{
+			gameServer = new GameServer();
+			ip = '127.0.0.1'
+		}
+		else
+		{
+			ip = getAddressFromShit();
+		}
+		
+	}
+
+	handleEvent(Event e)
+	{
+	}
+	
+	update(Time dt)
+	{	
+	}
+	
+	draw()
+	{
+	}
+
+	private updateBroadcastMessage(sf::Time elapsedTime)
+	{
+	}
+	
+	private handlePacket(sf::Int32 packetType, sf::Packet &packet)
+	{
+	}
+	
+	private World world
+	private RenderWindow* window
+	private TextureHolder* textureHolder
+	private std::Map<int, Player*> players
+	private std::vector<sf::Int32> localPlayerIdentifiers
+	private sf::TcpSocket socket
+	private bool connected
+	private GameServer* gameServer
+	private sf::Clock tickClock
+	private std::vector<std::string> broadcasts
+	private sf::Text broadcastText
+	private sf::Time broadcastElapsedTime
+}
+
+
+
+
+class GameServer
+{
+	GameServer
+	{
+	}
+	
+	executionThread()
+	{
+		setListening(true);
+
+		sf::Time stepInterval = sf::seconds(1.f / 60.f); // 60 FPS
+		sf::Time stepTime = sf::Time::Zero;
+		sf::Time tickInterval = sf::seconds(1.f / 20.f); // 20 FPS
+		sf::Time tickTime = sf::Time::Zero;
+		sf::Clock stepClock, tickClock;
+
+		while (!mWaitingThreadEnd)
+		{
+			// Get new info from clients
+			handleIncomingPackets();
+			
+			// Set up new player connections
+			handleIncomingConnections();
+
+			
+			stepTime += stepClock.getElapsedTime();
+			stepClock.restart();
+			tickTime += tickClock.getElapsedTime();
+			tickClock.restart();
+
+			// Fixed update step 60 FPS
+			while (stepTime >= stepInterval)
+			{
+				// Changed myself, get DT and pass it in
+				update();
+				
+				stepTime -= stepInterval;
+			}
+
+			// Fixed tick step
+			while (tickTime >= tickInterval)
+			{
+				tick();
+				tickTime -= tickInterval;
+			}
+
+			// Sleep to prevent server from consuming 100% CPU
+			sf::sleep(sf::milliseconds(100));
+		}	
+	}
+	
+	/*
+	 * Game play updating
+	 */
+	update(sf::Time gameTime)
+	{
+		// Game specific serverlogic
+		mBattleFieldRect.top += mBattleFieldScrollSpeed * stepInterval.asSeconds();
+		
+	}
+	
+	/*
+	 * Network game sending
+	 */
+	tick()
+	{
+		UpdateClientState()		// game snapshot
+		checkMissionEnd()		// Sends MissionSuccessPackets
+		spawnEnemies()
+		spawnPickups()
+	}
+	
+	now()
+	{
+	}
+	
+	handleIncomingPackets()
+	{
+	}
+	
+	handleIncomingPacket(sf::Packet& packet, RemotePeer& receivingPeer, bool& detectedTimeout)
+	{
+		
+	}
+	
+	/*
+	 * Handles new peers and sending spawn data
+	 */
+	handleIncomingConnections()
+	{
+		if(!listeningState)
+			return
+			
+		if (listenerSocket.accept(peers[connectedPlayers]->socket) == sf::TcpListener::Done)
+		{
+			// Game code to specify where the player client should create their aircraft
+			aircraftInfo[aircraftCounter].position = ...
+			...
+			
+			// Create the spawn packet
+			sf::Packet packet
+			packet << static_cast<sf::Int32>(Server::SpawnSelf); // send packet type enum cast to int 32
+			packet << aircraftCounter;
+			packet << aircraftInfo[aircraftCounter].position.x;
+			packet << aircraftInfo[aircraftCounter].position.y;
+
+			// Update invalid peer to have valid game data
+			peers[connectedPlayers]->aircraftIdentifiers.push_back(aircraftCounter);
+			
+			// Notify all players of new player
+			broadcastMessage("Player connected")
+			
+			// Send world info to new peer
+			informWorldState(peers[connectedPlayers]->socket)
+			
+			// 
+			notifyPlayerSpawn(aircraftIdentifiers++)
+			
+			peers[connectedPlayers]->socket.send(packet)
+			peers[connectedPlayers]->ready = true
+			peers[connectedPlayers]->lastPacketTime = now()
+			
+			// Peer has been set to a valid state
+			
+			mAircraftCount++
+			connectPlayers++
+			
+			if(connectedPlayers > maxConnectedPlayers
+				listeningState = false
+			else
+				peers.push_back(new RemotePeer); // Next invalid peer to await new connection
+		}
+	}
+	
+	handleDisconnections()
+	{
+		for(Peer peer in peers)
+		{
+			// Network timeout
+			if(peer->timedOut)
+			{
+				// loop over aircraft
+				for(sf::Int32 identifier in peer->aircraftIdentifiers)
+				{
+					// Send disconnect packet to all players to notify them
+					sendToAll(sf::Packet() << static_cast<sf::Int32>(Server::PlayerDisconnect) << identifier);
+					
+					aircraftInfo.erase(identifier);
+				}
+				
+				connectedPlayers --;
+				mAircraftCount -= peer->aircraftIdentifiers.size()
+				peers.erase(peer) // MEMORY CLEAN UP!!!
+				
+				// return to listening
+				if(!listeningState && connectedPlayers < maxConnectedPlayers)
+				{
+					peers.push_back(new Peer()) // push invalid peer
+					listeningState = true;
+				}
+				
+				broadcastMessage("Player quit");
+			}
+		}
+	}
+
+	informWorldState(sf::TcpSocket& socket)
+	{
+	}
+	
+	broadcastMessage(const std::string& message)
+	{
+	}
+	
+	sendToAll(sf::Packet& packet)
+	{
+	}
+	
+	updateClientState()
+	{
+	}
+	
+	private
+		sf::Thread thread
+		sf::Clock clock
+		sf::TcpListener listenerSocket
+		bool listeningState
+		sf::Time clientTimeoutTime
+		
+		std::size_t maxConnectedPlayers
+		std::size_t connectedPlayers	// true number of active peers
+		
+		std::vector<Peer*> peers	// contains active peers + 1 invalid peer
+		bool waitingThreadEnd
+		
+		
+		// Game data
+		float worldHeight
+		...
+		sf::Int32 aircraftIdentifierCounter
+		map <int, aircraftInfo> aircraftInfo
+		std::size_t aircraftCount
+		
+}
+
+
+struct RemotePeer
+{
+	sf::TcpSocket socket // socket to the peer
+	sf::Time lastPacketTime // last time a packet was received from the peer
+	std::vector<sf::Int32> aircraftIdentifiers
+	bool ready // valid or invalid state, true after successful connection
+	bool timedOut // used by handleDisconnections to kill this peer
+}
+
+
+struct AircraftInfo
+{
+	sf::Vector2f position;
+	sf::Int32 hitpoints
+	sf::int32 ammo
+	std::map<sf::int32, bool> realtimeActions; // set of actions the player is doing, shooting, moving etc
+}
+
+
+
+
+
+// Allows client game objects to send packets of info to the server
+// Holds a queue of game actions to send
+class NetworkNode : SceneNode ???
+{
+	// Inserts a new game action into the queue
+	notifyGameAction(GameActions::Type type);
+	
+	// Checks to see if an action is pending
+	// If so pops it from the queue and stores it in the output parameter
+	pollGameAction(GameActions::Info &info)
+
+	// 
+	std::queue<GameActions::Action> pendingActions
+	
+}
+
+
+// Example usage if an Aircraft explodes and is an enemy
+update()
+{
+	if(blownUp)
+	{
+		Command command;
+		command.category = Category::Network;
+		command.action = derivedAction<NetworkNode>([positionofplane] (NetworkNode &node, sf::Time) {
+			node.notifyGameAction(GameActions::EnemyExplode, positionofplane);
+		});
+	}
+}
+
+
+
+
+
+!!!!!!! NOTE !!!!!!!
+Server does not send the player their positions
+The client sends the server its player position
+The Server sends to the other players the position of other players
+The Server acts as a Syncrhonization Authority!!!
+
+
+// Protocols shared by the client and the server for sane communication
+// Sent as first int32 in the packets
+enum ServerPackets
+{
+	BroadcastMessage 		// string message
+	SpawnSelf				// x and y to spawn at
+    InitialState			// world height and scroll point int (for flying game example)
+	PlayerEvent				// Aircraft ID and Action ID to notify other players of another player's action
+	PlayerRealtimeChange	// Similar to event, but for real time actions. Changes ongoing states to true or false
+	PlayerConnect			// x and y of spawn point of another new player
+	PlayerDisconnect		// aircraft ID to destroy from a lost player
+	AcceptCoopPartner
+	SpawnEnemy				// ID of enemy type, x, y
+	SpawnPickup
+	UpdateClientState		// current scolling of world, int32 of aircraft count, foreach aircraft int32 aircraft id, and x, y posiiton
+	MissionSuccess			// no args, game is over
+}
+
+enum ClientPackets
+{
+	PlayerEvent,			// tells server of player action related to an aircraft
+	PlayerRealtimeChange 	// tells server of continuous boolean player action
+	RequestCoopPartner		// 
+	PositionUpdate			// sends the clients aircraft data to the server to update it
+	GameEvent				// tells server of aspecific happening of game logic, enemy explosions etc.
+}
+
+namespace PlayerActions
+{
+	enum Action
+	{
+		MoveLeft,
+		MoveRight,
+		MoveUp,
+		MoveDown,
+		Fire,
+		LaunchMissile,
+		ActionCount
+	};
+}
+
+namespace GameActions
+{
+	enum Type
+	{
+		EnemyExplode,
+	};
+
+	struct Action
+	{
+		Action()
+		{ // leave uninitialized
+		}
+
+		Action(Type type, sf::Vector2f position)
+		: type(type)
+		, position(position)
+		{
+		}
+
+		Type			type;
+		sf::Vector2f	position;
+	};
+}

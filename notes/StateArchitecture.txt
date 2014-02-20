@@ -1,0 +1,358 @@
+
+// Appear to be a game level definition
+// But has dependency in the Architecture
+// Perhaps using these game state enums as INTs
+enum States::ID
+{
+	Title
+	StartMenu
+	Game
+	Pause
+}
+
+
+
+class StateStack
+{
+	enum Action
+	{
+		Push, Pop, Clear
+	}
+	
+	/*
+	 * Constructor takes a Context to reuse assets and target the correct windows
+	 */
+	StateStack(Context context)
+	{
+		context = context;
+	}
+	
+	/*
+	 * Loops over the active game states and calls their handleInput
+	 * If a state returns false it will kill the loop preventing
+	 * Further states from accepting input!!
+	 */
+	handleInput()
+	{
+		for(State* state in stack)
+		{
+			if(!state->handleInput())
+			{
+				return;
+			}
+		}
+		
+		applyPendingChanges();
+	}
+	
+	/*
+	 * Loops over the active game states and calls their updates
+	 * If a single state returns false it breaks the loop
+	 * preventing successive states from updating!
+	 */
+	update()
+	{
+		for(State* state in stack)
+		{
+			if(!state->update())
+			{
+				return;
+			}
+		}
+	}
+	
+	/*
+	 * Loops over states and draws them always
+	 */
+	draw()
+	{
+		for(State* state in stack)
+		{
+			state->draw();
+		}
+	}
+	
+	/*
+	 * Registers factory functions for creating states of type
+	 */
+	template <type T>
+	registerState(States::ID stateId)
+	{
+		factories[stateId] = [this] ()
+		{
+			return new T(*this, context);
+		}
+	}
+	
+	pushState(States::ID StateId)
+	
+	popState()
+	
+	clearStates()
+	
+	/*
+	 * Uses registered factory methods to actuall create the state
+	 * This is separated so that we can register the states up front but only
+	 * Create them as they are needed in game, lazy loading...
+	 */
+	private State* createState(States::ID StateId)
+	{
+		return factories[stateId]->second();
+	}
+	
+	/*
+	 * Iterates the chage requests and fulfills them
+	 */
+	private applyPendingChanges()
+	{
+		for(change in pendingChangeList)
+		{
+			switch(change.action)
+			{
+				case Push
+					stack.push_back(createState(change.stateId);
+					
+				case Pop
+					stack.pop_back() // MEMORY CLEAN UP!
+					
+				case Clear
+					stack.clear() // MEMORY CLEAN UP!
+			}
+		}
+		
+		pendingChangeList.clear();
+	}
+	
+	struct PendingChange
+	{
+		Action action;
+		States::ID stateId;
+	}
+	
+	private Context contex;
+	
+	private map<States::ID, std::function<State*> factories;
+	
+	private vector<State*> stack;
+	
+	private vector<PendingChange> pendingChangeList;
+}
+
+
+
+class State
+{
+	/*
+	 * Takes the state stack to work with
+	 * Takes a context to share assets with and a pointer to the window
+	 */
+	State(StateStack &stack, Context context)
+	{
+		stateStack = stack;
+		context = context;
+	}
+	
+	handleInput()
+	
+	update()
+	
+	draw()
+	
+	// Reqeust methods make a safe push pop operation on the state stack
+	// Avoiding manipulating the stack while it is looping
+	requestStackPush(States::ID stateId)
+	
+	requestStackPop()
+	
+	requestStateClear()
+	
+	private StateStack* stateStack
+	private Context context
+	
+	/*
+	 * Allows game states to share already loaded resources
+	 * Also has a pointer to the window they should draw to
+	 */
+	struct Context
+	{
+		Context(sf::RenderWindow &window, TextureHolder &textures, FontHolder &fonts, Player &player);
+		
+		sf::RenderWindow* window
+		TextureHolder* textures
+		FontHolder* fonts
+		Player* player
+	}
+}
+
+
+
+class Application
+{
+	/*
+	 * Constructor should be virtual so our game can define the title screen stuff
+	 */
+	Application()
+	{
+		// Load Title screen assets into TextureHolder and FontHolder
+		
+		// Prep the state factories in the stateStack
+		registerStates();
+		
+		// Start the game with the title state created
+		stateStack.pushState(States::Title);
+	}
+
+	
+	/*
+	 * Place to register the game states, should be virtual so the game can declare them
+	 */
+	registerStates()
+	{
+		stateStack.registerState<TitleState>(States::Title);
+		stateStack.registerState<MenuState>(States::Menu);
+		stateStack.registerState<GameState>(States::Game);
+		stateStack.registerState<PauseState>(States::Pause);
+	}
+	
+	/*
+	 * Polls window events and passes them to the StateStack to handle
+	 */
+	processInput()
+	{
+		while(window.pollEvent)
+		{
+			stack.handleEvent(event)
+		}
+	}
+	
+	/*
+	 *	Acts as fixed loop updater and drawer
+	 */
+	run()
+	{
+		Loop at 60fps
+		{
+			update(dt)
+		}
+		updateStatistics(dt)
+		render(dt)
+	}
+	
+	/*
+	 * Renders thes stateStack and therefore the states
+	 * If the state stack is emptied it will close the game
+	 */
+	update(sf::Time dt)
+	{
+		stateStack.update(dt);
+		
+		if(stateStack.empty())
+		{
+			window.close();
+		}
+	}
+	
+	/*
+	 * Renders thes stateStack and therefore the states
+	 */
+	render()
+	{
+		window.clear()
+		// Render stats if any
+		stateStack.render()
+		window.display()
+	}
+	
+	updateStatistics()
+	{
+		// Update FPS stats etc
+	}
+	
+	private RenderWindow window
+	private TextureHolder textures
+	private FontHolder fonts
+	private Player player
+	private StateStack
+}
+
+
+
+////////////////////////////////// LOADING STATES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+// Renders information to the player on what is loading
+class LoadingState
+{
+	update()
+	{
+		if(parallelTask.isFinished())
+		{
+			requestStackPop();
+			requestStackPush(States::Game);
+		}
+	}
+	else
+	{
+		setCompletion(parallelTask.getCompletion());
+	}
+	
+	setCompletion(float completion)
+	{
+		// change text
+		// change progress bar graphics etc.
+	}
+	
+	private Text loadingText
+	private ParallelTask parallelTask
+}
+
+// Does the actual loading, provides feedback to LoadingState
+class ParallelTask
+{
+	ParallelTask()
+	{
+	}
+	
+	execute()
+	
+	isFinished()
+	{
+		sf::Lock lock(mutex)
+		return isFinished
+	}
+	
+	getCompletion()
+	
+	private runTask()
+	{
+		bool endedd = false
+		
+		while(!ended)
+		{
+			sf::Lock lock(mutex);
+			
+			// Sample loading which is just a timer
+			if(elapsedTime.getElapsedTime().asSeconds() >= 10.0f)
+			{
+				ended = true;
+			}
+		}
+		
+		{
+			sf::Lock lock(mutex)
+			mFinished = true;
+		}
+	}
+	
+	private Thread thread
+	
+	private bool isFinished
+	
+	private Clock elapsedTime
+	
+	private Mutex mutex
+}
+
+
+
+
+

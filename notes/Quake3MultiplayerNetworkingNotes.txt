@@ -1,0 +1,141 @@
+Quake 3 Networking
+http://trac.bookofhook.com/bookofhook/trac.cgi/wiki/Quake3Networking
+
+	All packets are sent as UDP with a simple and elegant recorvy mechanism...
+
+	The server sends sequenced game state updates that are delta compressed from the last
+	acknowledged game state the client received.
+
+	Dropped packets are handled implicitly, and specific commands are never acknowledged independently
+
+	Last known state acks are piggy backed on regular incoming/outgoing traffic
+
+	Client receive logic:
+		-----------------------------------------------------------------------
+		//  new snapshot ID      last snapshot ID
+		if ( newState.sequence < lastState.sequence )
+		{
+		   // Old packet, discard because the newstate will have better delta
+		}
+		else if ( newState.sequence > lastState.sequence )
+		{
+		   // Newer packet, uncompress
+		   lastState = deltaUncompress( lastState, newState );
+
+		   // Sends acknowledgement packet to server
+		   ackServer( lastState.sequence );
+		}
+		// Client interpolates / extrapolates to correct data from snapshot
+		// versus their local simulated version
+		-----------------------------------------------------------------------
+	
+	
+	Server send logic:
+		-----------------------------------------------------------------------
+		deltaCompressState( client.lastAckState, newState, &compressedState );
+
+		sendToClient( client, compressedState );
+		-----------------------------------------------------------------------
+	Server never waits around for acknowledgements...
+	Originally a new state was only sent when an ACK was received, which reduced number of states being sent
+	
+	CON: Now it sends more states because it does not synchronize with ACKs
+	CON: Also, the more dropped packets, the further the ACK gap and the more DELTA to send
+	CON: A history buffer of all snapshots to the last ACK'd snapshot must be kept
+	
+	Each snapshot sent
+	It uses the last ACK number of the client to find the historic snapshot with that ID
+	DIFF it with the newest snapshot and send the Delta compressed snapshot to the client
+	
+	CON: Each time an ACK is recieved it has to rebase the buffer by throwing away older ons
+	
+	STILL! The guy says its the most sane and reliable way to manage his networking...
+	
+	For "Reliable" messages that must be sent such as a chat from a client to another:
+		"sent repeatedly until the sender receives an update for most-recent-ack"
+		So if it sends a chat message at update #6, it will keep sending it with
+		every update until the client gets a packet from the server saying they
+		acknowledged the chat.
+		Brute Force...
+		
+	
+	Per-Packet Huffman Compression
+	
+		Q3 uses this in addition to Delta Compression.
+		"Works great, simple to implement, and the upside to something more aggressive is very low"
+		
+		
+
+Gamasutra Networking
+http://www.gamasutra.com/view/feature/177579/guerrilla_multiplayer_development.php?print=1
+
+
+Serialization
+
+	Snapshots are sent via the Quake 3 format, continually and in Delta compression
+	
+	There are two types of fields when an object is sent:
+		Delta Data = these fields are sent only when its value has changed since the last acknowledged state
+			e.g. x, y, z position, rotation, scale, health etc.
+		Full Data = these fields are sent only when an object is known to be new to the client
+			e.g. ID, statistics, types etc..
+	
+	Capabilities:
+	
+		Their use of Java reflection powered their serialization:
+			Using annotations on fields they marked them as FULL or DELTA
+		
+		The serializer could take a serialization of a set of fields and apply them to an instance's values
+		
+		The serializer could also take two snapshots of an instance, and diff them to create the Delta Snapshohots
+	
+	GameState object:
+	
+		Contains a list of all active game entities
+		Each time a snapshot is needed the GameState is cloned
+		
+		1. GameStates are saved up to the newest GameState acknowledged by all clients
+		2. For each client
+				Create a DeltaGameState from the current state to the clients last acknowledged state
+		
+			If( client.lastAckStateId == Client.INVALID_STATE)
+			{
+				// Send Full State to client
+				send(latestState)
+			}
+			else if( client.lastAckStateId != latestState.Id)
+			{
+				lastAckState = stateList.get(client.lastAckStateId)
+				if( lastAckState != NULL )
+				{
+					// Delta State to client 
+					send(delta(lastAckState, latestState));
+				}
+				else
+				{
+					// Send Full State to client
+					send(latestState)
+				}
+			}
+		
+		Problem from the Quake 3 Networking:
+			Storing GameState objects for an arbitrary history can be expensive
+		
+		This can be alleviated by:
+			1. Reducing GameState objects by limiting players etc.
+			2. Run them on EC2 servers... pooop
+			3. Only record game states periodically instead of every update, do it every network tick!!!
+		
+		
+	
+
+
+Usage of ping packets once a packet, using historically 3 to determine Dead Reckoning time
+Dead Reckoning time 
+
+
+
+
+
+Unreal Networking
+http://udn.epicgames.com/Three/NetworkingOverview.html

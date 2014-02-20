@@ -1,0 +1,143 @@
+Project Name:
+	roguezombie
+
+Target Distributions:
+For every distribution that you are building from or targeting:
+	
+	Windows_VisualCpp10_x86
+	
+	Linux_GCC_x86
+	Linux_GCC_x64
+
+	MacOSX10.5_GCC_xUni
+	MacOSX10.8_Clang_xUni
+
+
+Windows Setup
+		
+	roguezombie.Windows_VisualCpp10_x86.git/
+		SFML-2.1/	 		- Windows SFML binaries
+		roguezombie/	 	- GIT submodule for game source code and game resources
+		bitengine/			- GIT submodule for bit engine source code
+		VS Solution files...
+		executables...
+		
+	Development VS Setup
+		In Visual Studio the Rogue Zombie and Bit Engine code bases would each be a project.
+		Rogue Zombie would be configured to include the Bit Engine code by default
+			Project Properties > C/C++ > Additional Include Directories: ..\bitengine;
+		
+		Rogue Zombie would then include and build the bit engine files as needed when it compiled
+		from its main.
+		
+		This is because libraries have to be distributed for each supported platform, e.g. SFML
+		and maintaining that is ridiculous overhead if we already have a repo for each targeted
+		platform.
+	
+
+Linux Setup
+
+	roguezombie.Linux_GCC_x64.git/
+		SFML-2.1/
+		roguezombie/
+		bitengine/
+		makefile
+		output files...
+
+	Makefile Setup
+		TBD...
+		
+
+Mac OS X Setup
+
+	roguezombie.MacOSX10.8_Clang_xUni.git/
+		SFML-2.1-osz-clang-universal/
+		xcode/
+		app/
+			roguezombie/
+			bitengine/
+	
+	Xcode Setup
+		Click project and go to build settings, click "all"
+		Find the section for Search Header Paths
+		Put ../bitengine/ to include the bitengine for the C++ game code
+		
+		All source files are presented flat in the IDE, group them according to bitengine
+		and game code
+		All content files are automatically grouped into Resources, this is fine but stick
+		to adding resources to the roguezombie/content/ folder
+
+
+
+
+
+
+Game code
+skeleton@jordansavant.dyndns-home.com:~/repos/roguezombie.git
+
+Windows super project
+skeleton@jordansavant.dyndns-home.com:~/repos/roguezombie.Windows_VisualCpp10_x86.git
+
+
+
+Setting up the Super Project
+
+	Initialize the server repo for the main game code
+		cd game.git
+		git init --bare
+
+	Initialize the server repo for the platform super project
+		cd game.windows.git
+		git init --bare
+		
+	On your local machine setup the solution and subfile for game code
+
+	Cd into sourcecode folder and create it and push it as a repo into the server
+		cd Game/SolutionDir/Game/gamecode/
+		git init
+		git remote add origin skeleton@jordansavant.dyndns-home.com:~/repos/game.git
+		git add .
+		git commit
+		git push origin master
+		
+	Cd back into the super project
+		cd ../../../
+		git init
+		git remote add origin skeleton@jordansavant.dyndns-home.com:~/repos/game.windows.git
+		git submodule add skeleton@jordansavant.dyndns-home.com:~/repos/game.git Game/gamecode
+		git add .
+		git commit
+		git push origin master
+
+
+Cloning the windows super project:
+
+	Clone the super project repo
+		git clone skeleton@jordansavant.dyndns-home.com:~/repos/roguezombie.Windows_VisualCpp10_x86.git Game2
+		
+	Update the submodules to get the code
+		cd Game2
+		git submodule update --init --recursive		
+	
+
+	
+Visual Studio resource pathing
+	All Configurations:
+	Project Properties > Configuration Properties > Build Events > Post Build Event > Command Line
+		xcopy /E /Y "$(ProjectDir)content" "$(OutDir)content\"
+	Will copy anything in the project directory under content to the biuld directory under content
+	Modifying for roguezombie
+		xcopy /E /Y "$(ProjectDir)\roguezombie\content" "$(OutDir)content\"
+
+Makefile resource pathing
+	Added a final configuration under the all target
+	that will copy the contents from */content/*
+	into a build folder.
+	The ResourcePath.cpp implementation gets it via UNIX from
+		http://en.sfml-dev.org/forums/index.php?topic=12416.0
+		http://svn.tuxfamily.org/viewvc.cgi/hblog_svn/cpd/trunk/cpd.hpp?revision=20&view=markup
+		http://stackoverflow.com/questions/933850/how-to-find-the-location-of-the-executable-in-c
+
+Xcode resource pathing
+	The ResourcePath.mm implementation gets the apps
+	resource path.
