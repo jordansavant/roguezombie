@@ -58,6 +58,8 @@ void bit::Server::executionThread()
     sf::Time tickTime = sf::Time::Zero;
     sf::Clock stepClock, tickClock;
 
+    load();
+
     while(!waitingThreadEnd)
     {
         handleIncomingPackets();
@@ -72,7 +74,7 @@ void bit::Server::executionThread()
         // Fixed update step
         while(stepTime >= stepInterval)
         {
-            update();
+            update(stepTime);
 
             stepTime -= stepInterval;
         }
@@ -90,7 +92,12 @@ void bit::Server::executionThread()
     }
 }
 
-void bit::Server::update()
+void bit::Server::load()
+{
+    // Update the world objects
+}
+
+void bit::Server::update(sf::Time &gameTime)
 {
     // Update the world objects
 }
@@ -159,15 +166,9 @@ void bit::Server::handlePacket(sf::Packet &packet, RemoteClient &client, bool &d
 
             break;
 
-        case Server::ClientPacket::Event:
+        case Server::ClientPacket::ClientUpdate:
 
-            handlePacket_Event(packet, client);
-
-            break;
-
-        case Server::ClientPacket::RealtimeChange:
-
-            handlePacket_RealtimeChange(packet, client);
+            handlePacket_ClientUpdate(packet, client);
 
             break;
     }
@@ -284,11 +285,7 @@ void bit::Server::sendToAllClients(sf::Packet &packet)
  * Handle Incoming Client Packets
  **/
 
-void bit::Server::handlePacket_Event(sf::Packet &packet, RemoteClient &client)
-{
-}
-
-void bit::Server::handlePacket_RealtimeChange(sf::Packet &packet, RemoteClient &client)
+void bit::Server::handlePacket_ClientUpdate(sf::Packet &packet, RemoteClient &client)
 {
 }
 

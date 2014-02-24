@@ -19,11 +19,11 @@ public:
 
     MultiplayerState(bit::StateStack &stack, bit::Game* game, bool isHost);
     
-    World world;
+    World clientWorld;
+
+    virtual void load();
 
     virtual bool update(sf::RenderWindow &window, sf::Time &gameTime);
-
-    virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
 
     virtual void drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera);
 
@@ -42,11 +42,8 @@ private:
 
         virtual void handlePacket_ServerUpdate(sf::Packet &packet);
 
-        virtual void handlePacket_PeerClientEvent(sf::Packet &packet);
-
-        virtual void handlePacket_PeerClientRealtimeChange(sf::Packet &packet);
-
         virtual void handlePacket_Shutdown(sf::Packet &packet);
+
 
         virtual sf::Packet& preparePacket_ClientUpdate(sf::Packet &packet);
 

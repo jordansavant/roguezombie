@@ -4,6 +4,7 @@
 
 #include "../bitengine/Game/Server.hpp"
 #include "SFML/Network.hpp"
+#include "World.hpp"
 
 namespace bit
 {
@@ -14,9 +15,13 @@ class TestServer : public bit::Server
 {
 private:
 
-    virtual void handlePacket_PeerClientEvent(sf::Packet &packet, bit::RemoteClient &client);
+    virtual void handlePacket_ClientUpdate(sf::Packet &packet, bit::RemoteClient &client);
 
-    virtual void handlePacket_PeerClientRealtimeChange(sf::Packet &packet, bit::RemoteClient &client);
+    World serverWorld;
+
+    virtual void load();
+
+    virtual void update(sf::Time &gameTime);
 
     virtual sf::Packet& preparePacket_InitializeSelf(sf::Packet &packet);
 

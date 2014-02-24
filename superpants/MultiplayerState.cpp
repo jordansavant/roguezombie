@@ -13,10 +13,16 @@
 MultiplayerState::MultiplayerState(bit::StateStack &stack, bit::Game* _game, bool isHost)
     : bit::ClientServerState(stack, _game, isHost)
 {
-    world.load(this);
-
     createCamera(*game->renderWindow, 0, 0, 1, 1);
     this->cameras[0]->lockOnPoint(200, 200);
+}
+
+
+void MultiplayerState::load()
+{
+    bit::ClientServerState::load();
+
+    clientWorld.clientLoad();
 }
 
 
@@ -29,21 +35,15 @@ bool MultiplayerState::update(sf::RenderWindow &window, sf::Time &gameTime)
         requestStateClear();
     }
 
-    world.update(window, gameTime);
+    clientWorld.clientUpdate(gameTime);
 
     return true;
 }
 
 
-void MultiplayerState::draw(sf::RenderWindow &window, sf::Time &gameTime)
-{
-    bit::State::draw(window, gameTime);
-}
-
-
 void MultiplayerState::drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera)
 {
-    world.draw(window, gameTime);
+    clientWorld.draw(window, gameTime);
 }
 
 
@@ -79,17 +79,8 @@ void MultiplayerState::handlePacket_ClientDisonnected(sf::Packet &packet)
 
 void MultiplayerState::handlePacket_ServerUpdate(sf::Packet &packet)
 {
-    bit::Output::Debug("Client handle update");
-}
-
-void MultiplayerState::handlePacket_PeerClientEvent(sf::Packet &packet)
-{
-    bit::Output::Debug("Client handle client event");
-}
-
-void MultiplayerState::handlePacket_PeerClientRealtimeChange(sf::Packet &packet)
-{
-    bit::Output::Debug("Client handle client realtimechange");
+    clientWorld.extractSnapshot(packet);
+    bit::Output::Debug("Client handle server update");
 }
 
 void MultiplayerState::handlePacket_Shutdown(sf::Packet &packet)

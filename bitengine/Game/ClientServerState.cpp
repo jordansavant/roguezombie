@@ -165,18 +165,6 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, sf::Packet &pack
 
             break;
 
-        case Server::ServerPacket::PeerClientEvent:
-
-            handlePacket_PeerClientEvent(packet);
-
-            break;
-
-        case Server::ServerPacket::PeerClientRealtimeChange:
-
-            handlePacket_PeerClientRealtimeChange(packet);
-
-            break;
-
         case Server::ServerPacket::Shutdown:
 
             handlePacket_Shutdown(packet);
@@ -211,14 +199,6 @@ void bit::ClientServerState::handlePacket_ClientDisonnected(sf::Packet &packet)
 }
 
 void bit::ClientServerState::handlePacket_ServerUpdate(sf::Packet &packet)
-{
-}
-
-void bit::ClientServerState::handlePacket_PeerClientEvent(sf::Packet &packet)
-{
-}
-
-void bit::ClientServerState::handlePacket_PeerClientRealtimeChange(sf::Packet &packet)
 {
 }
 

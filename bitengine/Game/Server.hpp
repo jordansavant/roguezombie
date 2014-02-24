@@ -24,8 +24,6 @@ namespace bit
             InitializeSelf,             // tell client to build themselves
             PeerClientConnected,        // tell connected clients about a new client
             PeerClientDisconnected,     // tell connected clients about a lost client
-            PeerClientEvent,            // tell clients about event from specific client
-            PeerClientRealtimeChange,   // tell clients about boolean changes from specific client
             ServerUpdate,               // tick update for world snapshot 1/20th a second
             Shutdown                    // tell connected clients that the server is shutting down
         };
@@ -33,8 +31,6 @@ namespace bit
         enum ClientPacket
         {
             Quit,                       // tell server that client is quitting
-            Event,                      // tell server about a client event
-            RealtimeChange,             // tell server about a client realtime boolean change
             ClientUpdate,               // tell server about client update 1/20th a second
         };
 
@@ -55,7 +51,9 @@ namespace bit
 
         void executionThread();
 
-        virtual void update();
+        virtual void load();
+
+        virtual void update(sf::Time &gameTime);
 
         virtual void tick();
 
@@ -74,9 +72,7 @@ namespace bit
         void sendToAllClients(sf::Packet &packet);
 
 
-        virtual void handlePacket_Event(sf::Packet &packet, RemoteClient &client);
-
-        virtual void handlePacket_RealtimeChange(sf::Packet &packet, RemoteClient &client);
+        virtual void handlePacket_ClientUpdate(sf::Packet &packet, RemoteClient &client);
 
 
         virtual sf::Packet& preparePacket_InitializeSelf(sf::Packet &packet);

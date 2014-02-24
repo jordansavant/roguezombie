@@ -3,15 +3,21 @@
 #include "../bitengine/Game/RemoteClient.hpp"
 #include "../bitengine/System/Output.hpp"
 
-void TestServer::handlePacket_PeerClientEvent(sf::Packet &packet, bit::RemoteClient &client)
+void TestServer::load()
 {
-    bit::Output::Debug("Server handle player event");
+    serverWorld.serverLoad();
 }
 
-void TestServer::handlePacket_PeerClientRealtimeChange(sf::Packet &packet, bit::RemoteClient &client)
+void TestServer::update(sf::Time &gameTime)
 {
-    bit::Output::Debug("Server handle player realtime change");
+    serverWorld.serverUpdate(gameTime);
 }
+
+void TestServer::handlePacket_ClientUpdate(sf::Packet &packet, bit::RemoteClient &client)
+{
+    bit::Output::Debug("Server handle client update");
+}
+
 
 sf::Packet& TestServer::preparePacket_InitializeSelf(sf::Packet &packet)
 {
@@ -39,6 +45,7 @@ sf::Packet& TestServer::preparePacket_PeerClientDisconnected(sf::Packet &packet)
 
 sf::Packet& TestServer::preparePacket_ServerUpdate(sf::Packet &packet)
 {
-    bit::Output::Debug("Server prepare tick update");
+    serverWorld.compileSnapshot(packet);
+    bit::Output::Debug("Server prepare server update");
     return packet;
 }

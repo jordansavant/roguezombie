@@ -57,10 +57,6 @@ namespace bit
 
         virtual void handlePacket_ServerUpdate(sf::Packet &packet);
 
-        virtual void handlePacket_PeerClientEvent(sf::Packet &packet);
-
-        virtual void handlePacket_PeerClientRealtimeChange(sf::Packet &packet);
-
         virtual void handlePacket_Shutdown(sf::Packet &packet);
 
 
