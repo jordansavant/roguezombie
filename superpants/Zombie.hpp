@@ -15,7 +15,6 @@ public:
     Zombie();
 
     // Server
-    unsigned int id;
     float x;
     float y;
     sf::Vector2f direction;
@@ -30,7 +29,7 @@ public:
 
     void clientLoad(sf::Texture* renderTexture);
 
-    void serverLoad(unsigned int id, World* world, float x, float y);
+    void serverLoad(World* world, float x, float y);
 
     void clientUpdate(sf::Time &gameTime);
 

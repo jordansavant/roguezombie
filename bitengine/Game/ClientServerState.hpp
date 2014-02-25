@@ -27,6 +27,7 @@ namespace bit
 
     private:
 
+        sf::Uint32 lastSnapshotId;
         bool isHost;
         Server* server;
         sf::IpAddress ipAddress;
@@ -61,6 +62,8 @@ namespace bit
 
 
         virtual sf::Packet& preparePacket_ClientUpdate(sf::Packet &packet);
+
+        virtual sf::Packet& preparePacket_ClientAcknowledge(sf::Packet &packet);
 
     };
 }

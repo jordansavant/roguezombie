@@ -15,9 +15,11 @@ class TestServer : public bit::Server
 {
 private:
 
+    World serverWorld;
+
     virtual void handlePacket_ClientUpdate(sf::Packet &packet, bit::RemoteClient &client);
 
-    World serverWorld;
+    virtual void handlePacket_ClientAcknowledge(sf::Packet &packet, bit::RemoteClient &client);
 
     virtual void load();
 

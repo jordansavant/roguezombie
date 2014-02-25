@@ -2,6 +2,10 @@
 #ifndef BIT_SERVER_H
 #define BIT_SERVER_H
 
+#define BIT_SERVER_PORT 12345
+#define BIT_SERVER_TICK_FPS 20.0f
+#define BIT_SERVER_UPDATE_FPS 60.0f
+
 #include "SFML/Network.hpp"
 
 namespace bit
@@ -33,6 +37,10 @@ namespace bit
             Quit,                       // tell server that client is quitting
             ClientUpdate,               // tell server about client update 1/20th a second
         };
+
+    protected:
+
+        sf::Uint32 snapshotId;
 
     private:
 
@@ -71,9 +79,7 @@ namespace bit
 
         void sendToAllClients(sf::Packet &packet);
 
-
         virtual void handlePacket_ClientUpdate(sf::Packet &packet, RemoteClient &client);
-
 
         virtual sf::Packet& preparePacket_InitializeSelf(sf::Packet &packet);
 

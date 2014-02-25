@@ -15,6 +15,7 @@ namespace bit
         sf::Time lastPacketTime;
         bool isReady;
         bool hasTimedOut;
+        sf::Uint32 lastAcknowledgedSnapshotId;
     };
 }
 

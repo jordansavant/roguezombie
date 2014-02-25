@@ -23,7 +23,7 @@ void World::serverLoad()
     for(unsigned int i=0; i < zcount; i++)
     {
         Zombie* z = new Zombie();
-        z->serverLoad(i, this, 500 * bit::Math::randomFloat(), 500 * bit::Math::randomFloat());
+        z->serverLoad(this, 500 * bit::Math::randomFloat(), 500 * bit::Math::randomFloat());
         zombies[i] = z;
     }
 }
@@ -31,16 +31,6 @@ void World::serverLoad()
 void World::clientLoad()
 {
     zombieimage.loadFromFile(resourcePath() + "Zombie.png");
-
-    // NOT GOING TO STAY
-    int zcount = 3;
-    zombies.resize(zcount, NULL);
-    for(unsigned int i=0; i < zcount; i++)
-    {
-        Zombie* z = new Zombie();
-        z->clientLoad(&zombieimage);
-        zombies[i] = z;
-    }
 }
 
 void World::serverUpdate(sf::Time &gameTime)
@@ -89,6 +79,26 @@ sf::Packet& World::extractSnapshot(sf::Packet &packet)
     sf::Uint32 zombieCount;
     packet >> zombieCount;
 
+    // Remove any local zombies that have been removed
+    if(zombieCount < zombies.size())
+    {
+        for(unsigned int i = zombies.size() - 1; i >= zombieCount; i--)
+        {
+            delete zombies[i];
+        }
+        zombies.resize(zombieCount);
+    }
+    // Add any missing zombies that have been added
+    else if(zombieCount > zombies.size())
+    {
+        for(unsigned int i=zombies.size(); i < zombieCount; i++)
+        {
+            zombies.push_back(new Zombie());
+            zombies[i]->clientLoad(&zombieimage);
+        }
+    }
+
+    // Update all zombies
     for(unsigned int i=0; i < zombieCount; i++)
     {
         sf::Uint32 zombieId;

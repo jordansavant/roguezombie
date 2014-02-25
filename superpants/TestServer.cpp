@@ -18,6 +18,10 @@ void TestServer::handlePacket_ClientUpdate(sf::Packet &packet, bit::RemoteClient
     bit::Output::Debug("Server handle client update");
 }
 
+void TestServer::handlePacket_ClientAcknowledge(sf::Packet &packet, bit::RemoteClient &client)
+{
+    bit::Output::Debug("Server handle client acknowledge");
+}
 
 sf::Packet& TestServer::preparePacket_InitializeSelf(sf::Packet &packet)
 {

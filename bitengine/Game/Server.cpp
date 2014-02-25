@@ -2,7 +2,8 @@
 #include "RemoteClient.hpp"
 
 bit::Server::Server()
-    : serverPort(12345),
+    : snapshotId(0),
+      serverPort(BIT_SERVER_PORT),
       thread(&Server::executionThread, this),
       waitingThreadEnd(false),
       isListening(false),
@@ -52,9 +53,9 @@ void bit::Server::executionThread()
 {
     setListeningState(true);
 
-    sf::Time stepInterval = sf::seconds(1.f / 60.f);
+    sf::Time stepInterval = sf::seconds(1.f / BIT_SERVER_UPDATE_FPS);
     sf::Time stepTime = sf::Time::Zero;
-    sf::Time tickInterval = sf::seconds(1.f / 20.f);
+    sf::Time tickInterval = sf::seconds(1.f / BIT_SERVER_TICK_FPS);
     sf::Time tickTime = sf::Time::Zero;
     sf::Clock stepClock, tickClock;
 
@@ -104,9 +105,13 @@ void bit::Server::update(sf::Time &gameTime)
 
 void bit::Server::tick()
 {
+    // Update snapshot id
+    snapshotId++;
+
     // Send world objects to the clients
     sf::Packet packet;
     packet << static_cast<sf::Int32>(Server::ServerPacket::ServerUpdate);
+    packet << snapshotId;
     packet = preparePacket_ServerUpdate(packet);
     sendToAllClients(packet);
 }
@@ -168,6 +173,15 @@ void bit::Server::handlePacket(sf::Packet &packet, RemoteClient &client, bool &d
 
         case Server::ClientPacket::ClientUpdate:
 
+            // Update their most rescent ack
+            sf::Uint32 snapshotId;
+            packet >> snapshotId;
+            if(client.lastAcknowledgedSnapshotId < snapshotId)
+            {
+                client.lastAcknowledgedSnapshotId = snapshotId;
+            }
+
+            // Always update their incoming information in case packets with input commands are late
             handlePacket_ClientUpdate(packet, client);
 
             break;

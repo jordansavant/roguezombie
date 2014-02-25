@@ -8,7 +8,14 @@
 #include "SFML/System.hpp"
 
 bit::ClientServerState::ClientServerState(StateStack &stack, Game* game, bool isHost)
-    : bit::State(stack, game), isHost(isHost), server(NULL), connected(false), timeSinceLastPacket(sf::seconds(0.0f)), clientTimeout(sf::seconds(2.0f)), tickTimer(1.0f / 20.0f)
+    : bit::State(stack, game),
+      lastSnapshotId(0),
+      isHost(isHost),
+      server(NULL),
+      connected(false),
+      timeSinceLastPacket(sf::seconds(0.0f)),
+      clientTimeout(sf::seconds(2.0f)),
+      tickTimer(1.0f / BIT_SERVER_TICK_FPS)
 {
 }
 
@@ -28,12 +35,12 @@ void bit::ClientServerState::load()
     {
         server = newServer();
         ipAddress = "127.0.0.1";
-        port = 12345;
+        port = BIT_SERVER_PORT;
     }
     else
     {
         ipAddress = "127.0.0.1"; // swap to external ip for server
-        port = 12345;
+        port = BIT_SERVER_PORT;
     }
 
     // Connect to server
@@ -57,16 +64,14 @@ bool bit::ClientServerState::update(sf::RenderWindow &window, sf::Time &gameTime
 
     if(connected)
     {
-        // 1. Update game specific logic
-
-        // 2. If the game is not paused and the window is in focus (Local Input?)
+        // If the game is not paused and the window is in focus
         if(!isPaused && game->isInFocus)
         {
             // Pulls items from the world into a command queue
             // Calls ->handleRealtimeInput(Command c) ??
         }
 
-        // 3. Always handle the network input
+        // Handle the network input
         sf::Packet packet;
         if(socket.receive(packet) == sf::Socket::Done)
         {
@@ -82,25 +87,16 @@ bool bit::ClientServerState::update(sf::RenderWindow &window, sf::Time &gameTime
             if(timeSinceLastPacket > clientTimeout)
             {
                 connected = false;
-
-                // Game specific stuff for connection timeout
-
                 failedConnectionClock.restart();
             }
         }
 
-        // Send Updates to the server for Game Events
-        // These are done the instant the message needs to be sent
-        // ....
-
-        // Send position updates
-        // These are done on the communication tick
-        // ....
+        // Send update to the server
         if(tickTimer.update(gameTime))
         {
-            // send SF Packet with each positional update of the player
+            // Send client update packet with last acknowledged snapshot id
             sf::Packet packet;
-            packet << static_cast<sf::Int32>(Server::ClientPacket::ClientUpdate);
+            packet << static_cast<sf::Int32>(Server::ClientPacket::ClientUpdate) << lastSnapshotId;
             packet = preparePacket_ClientUpdate(packet);
             socket.send(packet);
         }
@@ -110,6 +106,7 @@ bool bit::ClientServerState::update(sf::RenderWindow &window, sf::Time &gameTime
     }
     else if(failedConnectionClock.getElapsedTime() >= sf::seconds(5.0f))
     {
+        // TODO
         // Connection was not established, pop to previous state?
         // Override this in game code?
         requestStackPop();
@@ -161,7 +158,17 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, sf::Packet &pack
 
         case Server::ServerPacket::ServerUpdate:
 
-            handlePacket_ServerUpdate(packet);
+            // Get the snapshot id
+            sf::Uint32 snapshotId;
+            packet >> snapshotId;
+
+            // If it is newer
+            if(lastSnapshotId < snapshotId)
+            {
+                // Update our client snapshot
+                lastSnapshotId = snapshotId;
+                handlePacket_ServerUpdate(packet);
+            }
 
             break;
 
@@ -212,6 +219,11 @@ void bit::ClientServerState::handlePacket_Shutdown(sf::Packet &packet)
  **/
 
 sf::Packet& bit::ClientServerState::preparePacket_ClientUpdate(sf::Packet &packet)
+{
+    return packet;
+}
+
+sf::Packet& bit::ClientServerState::preparePacket_ClientAcknowledge(sf::Packet &packet)
 {
     return packet;
 }

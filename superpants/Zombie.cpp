@@ -7,13 +7,12 @@
 #include "MultiplayerState.hpp"
 
 Zombie::Zombie()
-    : id(-1), x(0), y(0), direction(0, 0), health(100), maxHealth(100), walkTimer(2), world(NULL)
+    : x(0), y(0), direction(0, 0), health(100), maxHealth(100), walkTimer(2), world(NULL)
 {
 }
 
-void Zombie::serverLoad(unsigned int _id, World* _world, float _x, float _y)
+void Zombie::serverLoad(World* _world, float _x, float _y)
 {
-    id = _id;
     world = _world;
     x = _x;
     y = _y;
