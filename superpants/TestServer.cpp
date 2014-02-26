@@ -13,14 +13,14 @@ void TestServer::update(sf::Time &gameTime)
     serverWorld.serverUpdate(gameTime);
 }
 
+void TestServer::handleNewClient(bit::RemoteClient &client)
+{
+    bit::Output::Debug("Server handle new client");
+}
+
 void TestServer::handlePacket_ClientUpdate(sf::Packet &packet, bit::RemoteClient &client)
 {
     bit::Output::Debug("Server handle client update");
-}
-
-void TestServer::handlePacket_ClientAcknowledge(sf::Packet &packet, bit::RemoteClient &client)
-{
-    bit::Output::Debug("Server handle client acknowledge");
 }
 
 sf::Packet& TestServer::preparePacket_InitializeSelf(sf::Packet &packet)
@@ -32,6 +32,7 @@ sf::Packet& TestServer::preparePacket_InitializeSelf(sf::Packet &packet)
 sf::Packet& TestServer::preparePacket_InitializeWorld(sf::Packet &packet)
 {
     bit::Output::Debug("Server prepare initialize world");
+
     return packet;
 }
 

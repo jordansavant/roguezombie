@@ -17,13 +17,13 @@ private:
 
     World serverWorld;
 
-    virtual void handlePacket_ClientUpdate(sf::Packet &packet, bit::RemoteClient &client);
-
-    virtual void handlePacket_ClientAcknowledge(sf::Packet &packet, bit::RemoteClient &client);
-
     virtual void load();
 
     virtual void update(sf::Time &gameTime);
+
+    virtual void handleNewClient(bit::RemoteClient &client);
+
+    virtual void handlePacket_ClientUpdate(sf::Packet &packet, bit::RemoteClient &client);
 
     virtual sf::Packet& preparePacket_InitializeSelf(sf::Packet &packet);
 

@@ -222,8 +222,3 @@ sf::Packet& bit::ClientServerState::preparePacket_ClientUpdate(sf::Packet &packe
 {
     return packet;
 }
-
-sf::Packet& bit::ClientServerState::preparePacket_ClientAcknowledge(sf::Packet &packet)
-{
-    return packet;
-}

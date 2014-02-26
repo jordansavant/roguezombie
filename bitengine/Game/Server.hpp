@@ -3,7 +3,7 @@
 #define BIT_SERVER_H
 
 #define BIT_SERVER_PORT 12345
-#define BIT_SERVER_TICK_FPS 20.0f
+#define BIT_SERVER_TICK_FPS 5.0f
 #define BIT_SERVER_UPDATE_FPS 60.0f
 
 #include "SFML/Network.hpp"
@@ -78,6 +78,8 @@ namespace bit
         void broadcastMessage(std::string &message);
 
         void sendToAllClients(sf::Packet &packet);
+
+        virtual void handleNewClient(RemoteClient &client);
 
         virtual void handlePacket_ClientUpdate(sf::Packet &packet, RemoteClient &client);
 
