@@ -15,19 +15,21 @@ class TestServer : public bit::Server
 {
 private:
 
-    World serverWorld;
+    World world;
 
     virtual void load();
 
     virtual void update(sf::Time &gameTime);
 
-    virtual void handleNewClient(bit::RemoteClient &client);
+    // Packet handling
+
+    virtual void handlePacket_ClientInformation(sf::Packet &packet, bit::RemoteClient &client);
 
     virtual void handlePacket_ClientUpdate(sf::Packet &packet, bit::RemoteClient &client);
 
-    virtual sf::Packet& preparePacket_InitializeSelf(sf::Packet &packet);
+    // Packet sending
 
-    virtual sf::Packet& preparePacket_InitializeWorld(sf::Packet &packet);
+    virtual sf::Packet& preparePacket_InitializeSelf(sf::Packet &packet);
 
     virtual sf::Packet& preparePacket_PeerClientConnected(sf::Packet &packet);
 

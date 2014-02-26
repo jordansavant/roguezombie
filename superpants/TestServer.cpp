@@ -5,52 +5,59 @@
 
 void TestServer::load()
 {
-    serverWorld.serverLoad();
+    world.load();
 }
 
 void TestServer::update(sf::Time &gameTime)
 {
-    serverWorld.serverUpdate(gameTime);
+    world.update(gameTime);
 }
 
-void TestServer::handleNewClient(bit::RemoteClient &client)
+// Packet Handling
+
+void TestServer::handlePacket_ClientInformation(sf::Packet &packet, bit::RemoteClient &client)
 {
-    bit::Output::Debug("Server handle new client");
+    bit::Output::Debug("Server handle client information");
+
+    bit::Server::handlePacket_ClientInformation(packet, client);
 }
 
 void TestServer::handlePacket_ClientUpdate(sf::Packet &packet, bit::RemoteClient &client)
 {
     bit::Output::Debug("Server handle client update");
+
+    bit::Server::handlePacket_ClientUpdate(packet, client);
 }
+
+
+// Packet Sending
 
 sf::Packet& TestServer::preparePacket_InitializeSelf(sf::Packet &packet)
 {
     bit::Output::Debug("Server prepare initialize self");
-    return packet;
-}
 
-sf::Packet& TestServer::preparePacket_InitializeWorld(sf::Packet &packet)
-{
-    bit::Output::Debug("Server prepare initialize world");
-
-    return packet;
+    return bit::Server::preparePacket_InitializeSelf(packet);
 }
 
 sf::Packet& TestServer::preparePacket_PeerClientConnected(sf::Packet &packet)
 {
     bit::Output::Debug("Server prepare initialize client connected");
-    return packet;
+
+    return bit::Server::preparePacket_PeerClientConnected(packet);
 }
 
 sf::Packet& TestServer::preparePacket_PeerClientDisconnected(sf::Packet &packet)
 {
     bit::Output::Debug("Server prepare initialize client disconnected");
-    return packet;
+
+    return bit::Server::preparePacket_PeerClientDisconnected(packet);
 }
 
 sf::Packet& TestServer::preparePacket_ServerUpdate(sf::Packet &packet)
 {
-    serverWorld.compileSnapshot(packet);
     bit::Output::Debug("Server prepare server update");
-    return packet;
+
+    world.compileSnapshot(packet);
+
+    return bit::Server::preparePacket_ServerUpdate(packet);
 }

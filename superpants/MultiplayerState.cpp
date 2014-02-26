@@ -22,7 +22,7 @@ void MultiplayerState::load()
 {
     bit::ClientServerState::load();
 
-    clientWorld.clientLoad();
+    clientWorld.load();
 }
 
 
@@ -35,7 +35,7 @@ bool MultiplayerState::update(sf::RenderWindow &window, sf::Time &gameTime)
         requestStateClear();
     }
 
-    clientWorld.clientUpdate(gameTime);
+    clientWorld.update(gameTime);
 
     return true;
 }
@@ -52,46 +52,70 @@ bit::Server* MultiplayerState::newServer()
     return new TestServer();
 }
 
+
+/**
+ * Packet handling
+ */
+
 void MultiplayerState::handlePacket_Broadcast(sf::Packet &packet)
 {
     bit::Output::Debug("Client handle broadcast");
+
+    bit::ClientServerState::handlePacket_Broadcast(packet);
 }
 
 void MultiplayerState::handlePacket_InitializeSelf(sf::Packet &packet)
 {
     bit::Output::Debug("Client handle initialize self");
-}
 
-void MultiplayerState::handlePacket_InitializeWorld(sf::Packet &packet)
-{
-    bit::Output::Debug("Client handle initialize world");
+    bit::ClientServerState::handlePacket_InitializeSelf(packet);
 }
 
 void MultiplayerState::handlePacket_PeerClientConnected(sf::Packet &packet) 
 {
     bit::Output::Debug("Client handle client connected");
+
+    bit::ClientServerState::handlePacket_PeerClientConnected(packet);
 }
 
 void MultiplayerState::handlePacket_ClientDisonnected(sf::Packet &packet)
 {
     bit::Output::Debug("Client handle client disconnected");
+
+    bit::ClientServerState::handlePacket_ClientDisonnected(packet);
 }
 
 void MultiplayerState::handlePacket_ServerUpdate(sf::Packet &packet)
 {
-    clientWorld.extractSnapshot(packet);
     bit::Output::Debug("Client handle server update");
+
+    clientWorld.extractSnapshot(packet);
+
+    bit::ClientServerState::handlePacket_ServerUpdate(packet);
 }
 
 void MultiplayerState::handlePacket_Shutdown(sf::Packet &packet)
 {
     bit::Output::Debug("Client handle server shutdown");
+
+    bit::ClientServerState::handlePacket_Shutdown(packet);
 }
 
 
+/**
+ * Packet sending
+ */
+
+sf::Packet& MultiplayerState::preparePacket_ClientInformation(sf::Packet &packet)
+{
+    bit::Output::Debug("Client prepare client information");
+
+    return bit::ClientServerState::preparePacket_ClientInformation(packet);
+}
 
 sf::Packet& MultiplayerState::preparePacket_ClientUpdate(sf::Packet &packet)
 {
     bit::Output::Debug("Client prepare client update");
-    return packet;
+
+    return bit::ClientServerState::preparePacket_ClientUpdate(packet);
 }

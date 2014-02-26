@@ -129,7 +129,7 @@ void bit::Server::handleIncomingPackets()
     {
         RemoteClient* client = clients[i];
 
-        if(client->isReady)
+        if(client->isConnected)
         {
             sf::Packet packet;
             while(client->socket.receive(packet) == sf::Socket::Done)
@@ -170,6 +170,15 @@ void bit::Server::handlePacket(sf::Packet &packet, RemoteClient &client, bool &d
             detectedTimeout = true;
 
             break;
+            
+        case Server::ClientPacket::ClientInformation:
+
+            // Confirm them
+            client.isConfirmed = true;
+
+            handlePacket_ClientInformation(packet, client);
+
+            break;
 
         case Server::ClientPacket::ClientUpdate:
 
@@ -200,7 +209,7 @@ void bit::Server::handleConnections()
         RemoteClient* client = clients[connectedClients];
 
         // Mark the new client as ready
-        client->isReady = true;
+        client->isConnected = true;
         client->lastPacketTime = now();
 
         // Close connection slots or add a new one
@@ -216,24 +225,6 @@ void bit::Server::handleConnections()
 
         // Add our player to the world
         handleNewClient(*client);
-
-        // Send world state to player
-        sf::Packet packet_InitializeWorld;
-        packet_InitializeWorld << static_cast<sf::Int32>(Server::ServerPacket::InitializeWorld);
-        packet_InitializeWorld = preparePacket_InitializeWorld(packet_InitializeWorld);
-        client->socket.send(packet_InitializeWorld);
-
-        // Send initialize player packet
-        sf::Packet packet_InitializeSelf;
-        packet_InitializeSelf << static_cast<sf::Int32>(Server::ServerPacket::InitializeSelf);
-        packet_InitializeSelf = preparePacket_InitializeSelf(packet_InitializeSelf);
-        client->socket.send(packet_InitializeSelf);
-
-        // Notify all other clients of new connection
-        sf::Packet packet_clientConnected;
-        packet_clientConnected << static_cast<sf::Int32>(Server::ServerPacket::PeerClientConnected);
-        packet_clientConnected = preparePacket_PeerClientConnected(packet_clientConnected);
-        sendToAllClients(packet_clientConnected);
     }
 }
 
@@ -275,7 +266,7 @@ void bit::Server::broadcastMessage(std::string &message)
     {
         RemoteClient* client = clients[i];
 
-        if(client->isReady)
+        if(client->isConnected)
         {
             sf::Packet packet_broadcastMessage;
             packet_broadcastMessage << static_cast<sf::Int32>(Server::ServerPacket::Broadcast);
@@ -292,7 +283,7 @@ void bit::Server::sendToAllClients(sf::Packet &packet)
     {
         RemoteClient* client = clients[i];
 
-        if(client->isReady)
+        if(client->isConfirmed)
         {
             client->socket.send(packet);
         }
@@ -306,6 +297,21 @@ void bit::Server::sendToAllClients(sf::Packet &packet)
 
 void bit::Server::handleNewClient(RemoteClient &client)
 {
+    // Send initialize player packet
+    sf::Packet packet_InitializeSelf;
+    packet_InitializeSelf << static_cast<sf::Int32>(Server::ServerPacket::InitializeSelf);
+    packet_InitializeSelf = preparePacket_InitializeSelf(packet_InitializeSelf);
+    client.socket.send(packet_InitializeSelf);
+
+    // Notify all other clients of new connection
+    sf::Packet packet_clientConnected;
+    packet_clientConnected << static_cast<sf::Int32>(Server::ServerPacket::PeerClientConnected);
+    packet_clientConnected = preparePacket_PeerClientConnected(packet_clientConnected);
+    sendToAllClients(packet_clientConnected);
+}
+
+void bit::Server::handlePacket_ClientInformation(sf::Packet &packet, RemoteClient &client)
+{
 }
 
 void bit::Server::handlePacket_ClientUpdate(sf::Packet &packet, RemoteClient &client)
@@ -318,11 +324,6 @@ void bit::Server::handlePacket_ClientUpdate(sf::Packet &packet, RemoteClient &cl
  **/
 
 sf::Packet& bit::Server::preparePacket_InitializeSelf(sf::Packet &packet)
-{
-    return packet;
-}
-
-sf::Packet& bit::Server::preparePacket_InitializeWorld(sf::Packet &packet)
 {
     return packet;
 }

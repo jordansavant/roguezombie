@@ -16,21 +16,12 @@ public:
     ~World();
 
     std::vector<Zombie*> zombies;
-    sf::Texture zombieimage;
 
-    void clientLoad();
+    void load();
 
-    void serverLoad();
-
-    void clientUpdate(sf::Time &gameTime);
-
-    void serverUpdate(sf::Time &gameTime);
-
-    void draw(sf::RenderWindow &window, sf::Time &gameTime);
+    void update(sf::Time &gameTime);
 
     sf::Packet& compileSnapshot(sf::Packet &packet);
-
-    sf::Packet& extractSnapshot(sf::Packet &packet);
 
 };
 

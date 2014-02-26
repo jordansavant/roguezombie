@@ -24,8 +24,7 @@ namespace bit
         enum ServerPacket
         {
             Broadcast,                  // string broadcast
-            InitializeWorld,            // tell client the world to build
-            InitializeSelf,             // tell client to build themselves
+            InitializeSelf,             // tell client we have acknowledged their connection
             PeerClientConnected,        // tell connected clients about a new client
             PeerClientDisconnected,     // tell connected clients about a lost client
             ServerUpdate,               // tick update for world snapshot 1/20th a second
@@ -34,16 +33,14 @@ namespace bit
 
         enum ClientPacket
         {
-            Quit,                       // tell server that client is quitting
+            ClientInformation,          // tell server about game specific client information
             ClientUpdate,               // tell server about client update 1/20th a second
+            Quit,                       // tell server that client is quitting
         };
 
     protected:
 
         sf::Uint32 snapshotId;
-
-    private:
-
         unsigned short serverPort;
         sf::Thread thread;
         bool waitingThreadEnd;
@@ -79,13 +76,17 @@ namespace bit
 
         void sendToAllClients(sf::Packet &packet);
 
-        virtual void handleNewClient(RemoteClient &client);
+        void handleNewClient(RemoteClient &client);
+
+        // Packet handling
+
+        virtual void handlePacket_ClientInformation(sf::Packet &packet, RemoteClient &client);
 
         virtual void handlePacket_ClientUpdate(sf::Packet &packet, RemoteClient &client);
 
-        virtual sf::Packet& preparePacket_InitializeSelf(sf::Packet &packet);
+        // Packet sending
 
-        virtual sf::Packet& preparePacket_InitializeWorld(sf::Packet &packet);
+        virtual sf::Packet& preparePacket_InitializeSelf(sf::Packet &packet);
 
         virtual sf::Packet& preparePacket_PeerClientConnected(sf::Packet &packet);
 

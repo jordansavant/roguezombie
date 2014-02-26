@@ -11,20 +11,14 @@ Zombie::Zombie()
 {
 }
 
-void Zombie::serverLoad(World* _world, float _x, float _y)
+void Zombie::load(World* _world, float _x, float _y)
 {
     world = _world;
     x = _x;
     y = _y;
 }
 
-void Zombie::clientLoad(sf::Texture* texture)
-{
-    renderTexture = texture;
-    renderSprite.setTexture(*texture);
-}
-
-void Zombie::serverUpdate(sf::Time &gameTime)
+void Zombie::update(sf::Time &gameTime)
 {
     if(walkTimer.update(gameTime))
     {
@@ -34,17 +28,6 @@ void Zombie::serverUpdate(sf::Time &gameTime)
     x += direction.x;
     y += direction.y;
 }
-
-void Zombie::clientUpdate(sf::Time &gameTime)
-{
-    renderSprite.setPosition(x, y);
-}
-
-void Zombie::draw(sf::RenderWindow &window, sf::Time &gameTime)
-{
-    window.draw(renderSprite);
-}
-
 
 sf::Packet& Zombie::compileSnapshot(sf::Packet &packet)
 {

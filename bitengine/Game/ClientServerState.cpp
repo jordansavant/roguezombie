@@ -12,7 +12,8 @@ bit::ClientServerState::ClientServerState(StateStack &stack, Game* game, bool is
       lastSnapshotId(0),
       isHost(isHost),
       server(NULL),
-      connected(false),
+      isConnected(false),
+      isConfirmed(false),
       timeSinceLastPacket(sf::seconds(0.0f)),
       clientTimeout(sf::seconds(2.0f)),
       tickTimer(1.0f / BIT_SERVER_TICK_FPS)
@@ -46,7 +47,7 @@ void bit::ClientServerState::load()
     // Connect to server
     if(socket.connect(ipAddress, port, sf::seconds(5.0f)) == sf::TcpSocket::Done)
     {
-        connected = true;
+        isConnected = true;
     }
     else
     {
@@ -62,7 +63,7 @@ bool bit::ClientServerState::update(sf::RenderWindow &window, sf::Time &gameTime
 {
     bit::State::update(window, gameTime);
 
-    if(connected)
+    if(isConnected)
     {
         // If the game is not paused and the window is in focus
         if(!isPaused && game->isInFocus)
@@ -86,13 +87,13 @@ bool bit::ClientServerState::update(sf::RenderWindow &window, sf::Time &gameTime
             // Check for connection timeout
             if(timeSinceLastPacket > clientTimeout)
             {
-                connected = false;
+                isConnected = false;
                 failedConnectionClock.restart();
             }
         }
 
         // Send update to the server
-        if(tickTimer.update(gameTime))
+        if(tickTimer.update(gameTime) && isConfirmed)
         {
             // Send client update packet with last acknowledged snapshot id
             sf::Packet packet;
@@ -135,12 +136,6 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, sf::Packet &pack
         case Server::ServerPacket::InitializeSelf:
 
             handlePacket_InitializeSelf(packet);
-
-            break;
-
-        case Server::ServerPacket::InitializeWorld:
-
-            handlePacket_InitializeWorld(packet);
 
             break;
 
@@ -191,10 +186,11 @@ void bit::ClientServerState::handlePacket_Broadcast(sf::Packet &packet)
 
 void bit::ClientServerState::handlePacket_InitializeSelf(sf::Packet &packet)
 {
-}
-
-void bit::ClientServerState::handlePacket_InitializeWorld(sf::Packet &packet)
-{
+    // Send information packet to confirm connection with server
+    sf::Packet infoPacket;
+    infoPacket << static_cast<sf::Uint32>(Server::ClientPacket::ClientInformation);
+    preparePacket_ClientInformation(infoPacket);
+    socket.send(infoPacket);
 }
 
 void bit::ClientServerState::handlePacket_PeerClientConnected(sf::Packet &packet)
@@ -217,6 +213,11 @@ void bit::ClientServerState::handlePacket_Shutdown(sf::Packet &packet)
 /**
  * Prepare Outgoing Client Packets
  **/
+
+sf::Packet& bit::ClientServerState::preparePacket_ClientInformation(sf::Packet &packet)
+{
+    return packet;
+}
 
 sf::Packet& bit::ClientServerState::preparePacket_ClientUpdate(sf::Packet &packet)
 {

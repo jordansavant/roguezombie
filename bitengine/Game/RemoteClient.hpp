@@ -13,7 +13,8 @@ namespace bit
 
         sf::TcpSocket socket;
         sf::Time lastPacketTime;
-        bool isReady;
+        bool isConnected;
+        bool isConfirmed;
         bool hasTimedOut;
         sf::Uint32 lastAcknowledgedSnapshotId;
     };

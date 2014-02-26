@@ -3,7 +3,7 @@
 #define RZ_MULTIPLAYER_STATE_H
 
 #include "../bitengine/Game/ClientServerState.hpp"
-#include "World.hpp"
+#include "ClientWorld.hpp"
 
 namespace bit
 {
@@ -19,7 +19,7 @@ public:
 
     MultiplayerState(bit::StateStack &stack, bit::Game* game, bool isHost);
     
-    World clientWorld;
+    ClientWorld clientWorld;
 
     virtual void load();
 
@@ -27,25 +27,30 @@ public:
 
     virtual void drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera);
 
+
 private:
-        virtual bit::Server* newServer();
 
-        virtual void handlePacket_Broadcast(sf::Packet &packet);
+    virtual bit::Server* newServer();
 
-        virtual void handlePacket_InitializeSelf(sf::Packet &packet);
+    // Packet Handling
 
-        virtual void handlePacket_InitializeWorld(sf::Packet &packet);
+    virtual void handlePacket_Broadcast(sf::Packet &packet);
 
-        virtual void handlePacket_PeerClientConnected(sf::Packet &packet); 
+    virtual void handlePacket_InitializeSelf(sf::Packet &packet);
 
-        virtual void handlePacket_ClientDisonnected(sf::Packet &packet);
+    virtual void handlePacket_PeerClientConnected(sf::Packet &packet); 
 
-        virtual void handlePacket_ServerUpdate(sf::Packet &packet);
+    virtual void handlePacket_ClientDisonnected(sf::Packet &packet);
 
-        virtual void handlePacket_Shutdown(sf::Packet &packet);
+    virtual void handlePacket_ServerUpdate(sf::Packet &packet);
 
+    virtual void handlePacket_Shutdown(sf::Packet &packet);
 
-        virtual sf::Packet& preparePacket_ClientUpdate(sf::Packet &packet);
+    // Packet Sending
+
+    virtual sf::Packet& preparePacket_ClientInformation(sf::Packet &packet);
+
+    virtual sf::Packet& preparePacket_ClientUpdate(sf::Packet &packet);
 
 };
 

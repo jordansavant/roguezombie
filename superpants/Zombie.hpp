@@ -23,19 +23,9 @@ public:
     bit::GameTimer walkTimer;
     World* world;
 
-    // Client
-    sf::Sprite renderSprite;
-    sf::Texture* renderTexture;
+    void load(World* world, float x, float y);
 
-    void clientLoad(sf::Texture* renderTexture);
-
-    void serverLoad(World* world, float x, float y);
-
-    void clientUpdate(sf::Time &gameTime);
-
-    void serverUpdate(sf::Time &gameTime);
-
-    void draw(sf::RenderWindow &window, sf::Time &gameTime);
+    void update(sf::Time &gameTime);
 
     sf::Packet& compileSnapshot(sf::Packet& packet);
 

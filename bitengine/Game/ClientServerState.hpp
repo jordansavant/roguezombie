@@ -25,7 +25,7 @@ namespace bit
 
         virtual bool update(sf::RenderWindow &window, sf::Time &gameTime);
 
-    private:
+    protected:
 
         sf::Uint32 lastSnapshotId;
         bool isHost;
@@ -33,7 +33,8 @@ namespace bit
         sf::IpAddress ipAddress;
         unsigned short port;
         sf::TcpSocket socket;
-        bool connected;
+        bool isConnected;
+        bool isConfirmed;
         sf::Clock failedConnectionClock;
         sf::Time timeSinceLastPacket;
         sf::Time clientTimeout;
@@ -45,12 +46,11 @@ namespace bit
 
         void handlePacket(sf::Int32 packetType, sf::Packet &packet);
 
+        // Packet handling
 
         virtual void handlePacket_Broadcast(sf::Packet &packet);
 
         virtual void handlePacket_InitializeSelf(sf::Packet &packet);
-
-        virtual void handlePacket_InitializeWorld(sf::Packet &packet);
 
         virtual void handlePacket_PeerClientConnected(sf::Packet &packet);
 
@@ -60,6 +60,9 @@ namespace bit
 
         virtual void handlePacket_Shutdown(sf::Packet &packet);
 
+        // Packet sending
+
+        virtual sf::Packet& preparePacket_ClientInformation(sf::Packet &packet);
 
         virtual sf::Packet& preparePacket_ClientUpdate(sf::Packet &packet);
 
