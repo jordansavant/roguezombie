@@ -216,6 +216,8 @@ void bit::ClientServerState::handlePacket_Shutdown(sf::Packet &packet)
 
 sf::Packet& bit::ClientServerState::preparePacket_ClientInformation(sf::Packet &packet)
 {
+	isConfirmed = true;
+
     return packet;
 }
 
