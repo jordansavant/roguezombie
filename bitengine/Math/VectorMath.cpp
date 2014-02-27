@@ -33,6 +33,12 @@ sf::Vector2f bit::VectorMath::Normalize(float x, float y)
     return sf::Vector2f(0, 0);
 }
 
+sf::Vector2f bit::VectorMath::lerp(float x1, float y1, float x2, float y2, float ratio)
+{
+	return sf::Vector2f((x1 + ratio * (x2 - x1)), (y1 + ratio * (y2 - y1)));
+}
+
+
 void bit::VectorMath::ApplyDeadZone(sf::Vector2f* v, float deadZone)
 {
     if(deadZone > 0)

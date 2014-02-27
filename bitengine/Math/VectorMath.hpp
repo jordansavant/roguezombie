@@ -16,6 +16,8 @@ namespace bit
 
         static sf::Vector2f Normalize(float x, float y);
 
+		static sf::Vector2f lerp(float x1, float y1, float x2, float y2, float ratio);
+
         static void ApplyDeadZone(sf::Vector2f* v, float deadZone);
 
         static float Distance(float x1, float y1, float x2, float y2);

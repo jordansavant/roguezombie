@@ -6,6 +6,7 @@
 #include "SFML/Network.hpp"
 #include "../bitengine/Game/GameTimer.hpp"
 #include "Zombie.hpp"
+#include <deque>
 
 class World;
 
@@ -17,12 +18,16 @@ public:
 
     sf::Sprite renderSprite;
     sf::Texture* renderTexture;
+	sf::Clock temporaryClockVariable;
+	std::deque<std::pair<sf::Time, Zombie::DeltaState>> deltas;
 
     void clientLoad(sf::Texture* renderTexture);
 
     void clientUpdate(sf::Time &gameTime);
 
     void clientDraw(sf::RenderWindow &window, sf::Time &gameTime);
+
+	virtual sf::Packet& extractSnapshot(sf::Packet& packet);
 
 };
 

@@ -7,15 +7,19 @@
 #include "MultiplayerState.hpp"
 
 Zombie::Zombie()
-    : x(0), y(0), direction(0, 0), health(100), maxHealth(100), walkTimer(2), world(NULL), isPlayerControlled(false)
+    : fixedState(), deltaState(), walkTimer(2), world(NULL), isPlayerControlled(false)
 {
 }
 
 void Zombie::load(World* _world, float _x, float _y)
 {
     world = _world;
-    x = _x;
-    y = _y;
+
+	fixedState.maxHealth = 100;
+	deltaState.health = 100;
+
+    deltaState.x = _x;
+    deltaState.y = _y;
 }
 
 void Zombie::update(sf::Time &gameTime)
@@ -24,26 +28,26 @@ void Zombie::update(sf::Time &gameTime)
 	{
 		if(walkTimer.update(gameTime))
 		{
-			direction = bit::VectorMath::GetRandomVector();
+			deltaState.direction = bit::VectorMath::GetRandomVector();
 		}
 
-		updatePosition(direction);
+		updatePosition(deltaState.direction);
 	}
 }
 
 void Zombie::updatePosition(sf::Vector2f &direction)
 {
-	x += direction.x;
-	y += direction.y;
+	deltaState.x += direction.x;
+	deltaState.y += direction.y;
 }
 
 
 sf::Packet& Zombie::compileSnapshot(sf::Packet &packet)
 {
-    return packet << x << y << health;
+    return packet << deltaState.x << deltaState.y << deltaState.health;
 }
 
 sf::Packet& Zombie::extractSnapshot(sf::Packet &packet)
 {
-    return packet >> x >> y >> health;
+    return packet >> deltaState.x >> deltaState.y >> deltaState.health;
 }

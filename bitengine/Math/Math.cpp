@@ -10,6 +10,11 @@ float bit::Math::PiOver2 = 1.57079632679f;
 float bit::Math::Pi = 3.14159265359f;
 float bit::Math::TwoPi = 6.28318530718f;
 
+float bit::Math::lerp(float val1, float val2, float ratio)
+{
+	return val1 + ratio * (val2 - val1);
+}
+
 float bit::Math::clamp(float value, float min, float max)
 {
     return (value > max ? max : (value < min ? min : value));

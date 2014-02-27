@@ -13,6 +13,8 @@ namespace bit
         static float Pi;
         static float TwoPi;
 
+		static float lerp(float val1, float val2, float ratio);
+
         static float clamp(float value, float min, float max);
 
         static float round(float value);

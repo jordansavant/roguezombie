@@ -24,6 +24,8 @@ public:
 
     virtual void load();
 
+	void now();
+
     virtual bool update(sf::RenderWindow &window, sf::Time &gameTime);
 
     virtual void drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera);

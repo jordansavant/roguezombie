@@ -41,8 +41,11 @@ namespace bit
         GameTimer tickTimer;
         sf::Time tickRate;
         sf::Clock tickClock;
+	    sf::Clock clock;
 
         virtual Server* newServer();
+
+		sf::Time now();
 
         void handlePacket(sf::Int32 packetType, sf::Packet &packet);
 

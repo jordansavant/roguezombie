@@ -29,6 +29,11 @@ bit::ClientServerState::~ClientServerState()
 }
 
 
+sf::Time bit::ClientServerState::now()
+{
+	return clock.getElapsedTime();
+}
+
 void bit::ClientServerState::load()
 {
     // Establish whether server or client

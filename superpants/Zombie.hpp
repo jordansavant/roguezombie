@@ -14,15 +14,23 @@ public:
 
     Zombie();
 
-    // Server
-    float x;
-    float y;
-    sf::Vector2f direction;
-    int health;
-    int maxHealth;
     bit::GameTimer walkTimer;
     World* world;
 	bool isPlayerControlled;
+
+	struct FixedState
+	{
+		int maxHealth;
+	};
+	FixedState fixedState;
+
+	struct DeltaState
+	{
+		float x, y;
+	    sf::Vector2f direction;
+		int health;
+	};
+	DeltaState deltaState;
 
     void load(World* world, float x, float y);
 
@@ -30,9 +38,9 @@ public:
 
 	void updatePosition(sf::Vector2f &direction);
 
-    sf::Packet& compileSnapshot(sf::Packet& packet);
+    virtual sf::Packet& compileSnapshot(sf::Packet& packet);
 
-    sf::Packet& extractSnapshot(sf::Packet& packet);
+    virtual sf::Packet& extractSnapshot(sf::Packet& packet);
 
 };
 
