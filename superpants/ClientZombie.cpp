@@ -4,6 +4,7 @@
 #include "SFML/Graphics.hpp"
 #include "../bitengine/Input/InputManager.hpp"
 #include "../bitengine/Game/Game.hpp"
+#include "../bitengine/Game/Server.hpp"
 #include "../bitengine/Math/Math.hpp"
 #include "MultiplayerState.hpp"
 
@@ -20,36 +21,66 @@ void ClientZombie::clientLoad(sf::Texture* texture)
 
 void ClientZombie::clientUpdate(sf::Time &gameTime)
 {
-	// delta timeline will have 0 to 3 snapshots
-	switch(deltas.size())
-	{
-		case 1:
-		{
-			renderSprite.setPosition(deltaState.x, deltaState.y);
-			break;
-		}
+	float finalX = deltaState.x;
+	float finalY = deltaState.y;
 
-		case 2:
-		case 3:
-		{	
-			// interpolate from position at 0 to position at 1
-			unsigned int msX = temporaryClockVariable.getElapsedTime().asMilliseconds() - 100;
-			unsigned int msA = deltas[0].first.asMilliseconds();
-			unsigned int msB = deltas[1].first.asMilliseconds();
-			float xA = deltas[0].second.x;
-			float xB = deltas[1].second.x;
-			float yA = deltas[0].second.y;
-			float yB = deltas[1].second.y;
-			float flength = msB - msA;
-			float ilength = msX - msA;
+	// delta timeline will have 0 to 3 snapshots
+	if(deltas.size() > 1)
+	{
+		unsigned int ticktime = (1000 / BIT_SERVER_TICK_FPS);
+		unsigned int lagtime = 2 * ticktime;
+
+		// interpolate from position at 0 to position at 1
+		unsigned int a = 0;
+		unsigned int b = 1;
+
+		// Set point of render time 100ms behind server snapshots
+		unsigned int msX = temporaryClockVariable.getElapsedTime().asMilliseconds() - lagtime;
+
+		// Get the first delta and the second delta, this should theoretically wrap
+		// the execution snapshot if there were not dropped packets
+		unsigned int msA = deltas[a].first.asMilliseconds();
+		unsigned int msB = deltas[b].first.asMilliseconds();
+
+		// If the target render point is later than our second packet, try our third
+		if(msX > msB && deltas.size() == 3)
+		{
+			b = 2;
+			msB = deltas[b].first.asMilliseconds();
+		}
+		
+		//  If the render point has been wrapped by two known histories
+		if(msX <= msB)
+		{
+			// Interpolate
+
+			// Get the wrapped positions
+			float xA = deltas[a].second.x;
+			float xB = deltas[b].second.x;
+			float yA = deltas[a].second.y;
+			float yB = deltas[b].second.y;
+			
+			// Get their ratio of time
+			float flength = (float)msB - (float)msA;
+			float ilength = (float)msX - (float)msA;
 			float ratio = ilength / flength;
+			
+			// Lerp them
 			float lerpX = bit::Math::lerp(xA, xB, ratio);
 			float lerpY = bit::Math::lerp(yA, yB, ratio);
 
-			renderSprite.setPosition(lerpX, lerpY);
+			finalX = lerpX;
+			finalY = lerpY;
 		}
+		// If the render point has lost too many packets but not for too long
+		else if(msX - msB < ticktime * 5)
+		{
+			// Extrapolate - TODO
+		}
+		// If the render point is behind for more than 1/4 of a second, do no prediction
 	}
 
+	renderSprite.setPosition(finalX, finalY);
 }
 
 void ClientZombie::clientDraw(sf::RenderWindow &window, sf::Time &gameTime)
