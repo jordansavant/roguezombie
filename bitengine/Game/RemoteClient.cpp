@@ -2,7 +2,7 @@
 #include "SFML/Network.hpp"
 
 bit::RemoteClient::RemoteClient()
-    : isConnected(false), isConfirmed(false), hasTimedOut(false), lastAcknowledgedSnapshotId(0)
+    : id(0), isConnected(false), isConfirmed(false), hasTimedOut(false), lastAcknowledgedSnapshotId(0)
 {
     socket.setBlocking(false);
 }

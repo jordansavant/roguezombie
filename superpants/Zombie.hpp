@@ -22,10 +22,13 @@ public:
     int maxHealth;
     bit::GameTimer walkTimer;
     World* world;
+	bool isPlayerControlled;
 
     void load(World* world, float x, float y);
 
     void update(sf::Time &gameTime);
+
+	void updatePosition(sf::Vector2f &direction);
 
     sf::Packet& compileSnapshot(sf::Packet& packet);
 

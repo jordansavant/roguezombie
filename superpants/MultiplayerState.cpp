@@ -8,6 +8,7 @@
 #include "../ResourcePath.h"
 #include "TestServer.hpp"
 #include "World.hpp"
+#include "Command.hpp"
 
 
 MultiplayerState::MultiplayerState(bit::StateStack &stack, bit::Game* _game, bool isHost)
@@ -30,6 +31,26 @@ bool MultiplayerState::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::ClientServerState::update(window, gameTime);
 
+
+	// Listen for Game Commands
+	if(game->inputManager->isButtonDown(sf::Keyboard::W))
+	{
+		commandQueue.push_back(Command::PlayerUp);
+	}
+	if(game->inputManager->isButtonDown(sf::Keyboard::S))
+	{
+		commandQueue.push_back(Command::PlayerDown);
+	}
+	if(game->inputManager->isButtonDown(sf::Keyboard::A))
+	{
+		commandQueue.push_back(Command::PlayerLeft);
+	}
+	if(game->inputManager->isButtonDown(sf::Keyboard::D))
+	{
+		commandQueue.push_back(Command::PlayerRight);
+	}
+	
+	// Exit
     if(game->inputManager->isButtonPressed(sf::Keyboard::Escape))
     {
         requestStateClear();
@@ -60,29 +81,21 @@ bit::Server* MultiplayerState::newServer()
 void MultiplayerState::handlePacket_Broadcast(sf::Packet &packet)
 {
     bit::Output::Debug("Client handle broadcast");
-
-    bit::ClientServerState::handlePacket_Broadcast(packet);
 }
 
 void MultiplayerState::handlePacket_InitializeSelf(sf::Packet &packet)
 {
     bit::Output::Debug("Client handle initialize self");
-
-    bit::ClientServerState::handlePacket_InitializeSelf(packet);
 }
 
 void MultiplayerState::handlePacket_PeerClientConnected(sf::Packet &packet) 
 {
     bit::Output::Debug("Client handle client connected");
-
-    bit::ClientServerState::handlePacket_PeerClientConnected(packet);
 }
 
 void MultiplayerState::handlePacket_ClientDisonnected(sf::Packet &packet)
 {
     bit::Output::Debug("Client handle client disconnected");
-
-    bit::ClientServerState::handlePacket_ClientDisonnected(packet);
 }
 
 void MultiplayerState::handlePacket_ServerUpdate(sf::Packet &packet)
@@ -90,15 +103,11 @@ void MultiplayerState::handlePacket_ServerUpdate(sf::Packet &packet)
     bit::Output::Debug("Client handle server update");
 
     clientWorld.extractSnapshot(packet);
-
-    bit::ClientServerState::handlePacket_ServerUpdate(packet);
 }
 
 void MultiplayerState::handlePacket_Shutdown(sf::Packet &packet)
 {
     bit::Output::Debug("Client handle server shutdown");
-
-    bit::ClientServerState::handlePacket_Shutdown(packet);
 }
 
 
@@ -110,12 +119,26 @@ sf::Packet& MultiplayerState::preparePacket_ClientInformation(sf::Packet &packet
 {
     bit::Output::Debug("Client prepare client information");
 
-    return bit::ClientServerState::preparePacket_ClientInformation(packet);
+    return packet;
 }
 
 sf::Packet& MultiplayerState::preparePacket_ClientUpdate(sf::Packet &packet)
 {
     bit::Output::Debug("Client prepare client update");
 
-    return bit::ClientServerState::preparePacket_ClientUpdate(packet);
+	// Notify of command count
+	sf::Uint32 commandCount;
+	commandCount = commandQueue.size();
+	packet << commandCount;
+
+	for(unsigned int i=0; i < commandQueue.size(); i++)
+	{
+		// Push commands onto packet, oldest first
+		packet << static_cast<sf::Int32>(commandQueue[i]);
+	}
+
+	// Clear commands
+	commandQueue.clear();
+
+    return packet;
 }

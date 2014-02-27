@@ -4,6 +4,7 @@
 
 #include "../bitengine/Game/ClientServerState.hpp"
 #include "ClientWorld.hpp"
+#include "Command.hpp"
 
 namespace bit
 {
@@ -27,8 +28,9 @@ public:
 
     virtual void drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera);
 
+	std::vector<Command> commandQueue;
 
-private:
+protected:
 
     virtual bit::Server* newServer();
 

@@ -7,7 +7,7 @@
 #include "MultiplayerState.hpp"
 
 Zombie::Zombie()
-    : x(0), y(0), direction(0, 0), health(100), maxHealth(100), walkTimer(2), world(NULL)
+    : x(0), y(0), direction(0, 0), health(100), maxHealth(100), walkTimer(2), world(NULL), isPlayerControlled(false)
 {
 }
 
@@ -20,14 +20,23 @@ void Zombie::load(World* _world, float _x, float _y)
 
 void Zombie::update(sf::Time &gameTime)
 {
-    if(walkTimer.update(gameTime))
-    {
-        direction = bit::VectorMath::GetRandomVector();
-    }
+	if(!isPlayerControlled)
+	{
+		if(walkTimer.update(gameTime))
+		{
+			direction = bit::VectorMath::GetRandomVector();
+		}
 
-    x += direction.x;
-    y += direction.y;
+		updatePosition(direction);
+	}
 }
+
+void Zombie::updatePosition(sf::Vector2f &direction)
+{
+	x += direction.x;
+	y += direction.y;
+}
+
 
 sf::Packet& Zombie::compileSnapshot(sf::Packet &packet)
 {

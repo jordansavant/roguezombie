@@ -10,13 +10,12 @@ bit::Server::Server()
       clientTimeoutTime(sf::seconds(3)),
       maxConnectedClients(16),
       connectedClients(0),
+	  clientIdentifier(0),
       clients(1)
 {
     listenerSocket.setBlocking(false);
 
     clients[0] = new RemoteClient();
-
-    thread.launch();
 }
 
 bit::Server::~Server()
@@ -31,6 +30,11 @@ bit::Server::~Server()
             delete clients[i];
         }
     }
+}
+
+void bit::Server::start()
+{
+	thread.launch();
 }
 
 void bit::Server::setListeningState(bool state)
@@ -211,6 +215,7 @@ void bit::Server::handleConnections()
         // Mark the new client as ready
         client->isConnected = true;
         client->lastPacketTime = now();
+		client->id = ++clientIdentifier;
 
         // Close connection slots or add a new one
         connectedClients++;
@@ -243,7 +248,8 @@ void bit::Server::handleDisconnections()
             sendToAllClients(packet_PeerClientDisconnected);
 
             // Erase client
-            itr = clients.erase(itr);
+            delete client;
+			itr = clients.erase(itr);
 
             // Return to listening state
             if(connectedClients < maxConnectedClients)
@@ -290,11 +296,6 @@ void bit::Server::sendToAllClients(sf::Packet &packet)
     }
 }
 
-
-/**
- * Handle Incoming Client Packets
- **/
-
 void bit::Server::handleNewClient(RemoteClient &client)
 {
     // Send initialize player packet
@@ -309,6 +310,11 @@ void bit::Server::handleNewClient(RemoteClient &client)
     packet_clientConnected = preparePacket_PeerClientConnected(packet_clientConnected);
     sendToAllClients(packet_clientConnected);
 }
+
+
+/**
+ * Handle Incoming Client Packets
+ **/
 
 void bit::Server::handlePacket_ClientInformation(sf::Packet &packet, RemoteClient &client)
 {

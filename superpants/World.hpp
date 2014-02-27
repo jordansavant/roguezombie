@@ -4,8 +4,16 @@
 
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
+#include <map>
+#include "Command.hpp"
+
+namespace bit
+{
+	class RemoteClient;
+}
 
 class Zombie;
+class Player;
 
 class World
 {
@@ -16,10 +24,15 @@ public:
     ~World();
 
     std::vector<Zombie*> zombies;
+	std::map<unsigned int, Player*> players;
 
     void load();
 
     void update(sf::Time &gameTime);
+
+	void createPlayer(bit::RemoteClient &client);
+
+	void handlePlayerCommand(bit::RemoteClient &client, Command command);
 
     sf::Packet& compileSnapshot(sf::Packet &packet);
 

@@ -35,6 +35,7 @@ void bit::ClientServerState::load()
     if(isHost)
     {
         server = newServer();
+		server->start();
         ipAddress = "127.0.0.1";
         port = BIT_SERVER_PORT;
     }
@@ -134,11 +135,20 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, sf::Packet &pack
             break;
 
         case Server::ServerPacket::InitializeSelf:
-
+		{
             handlePacket_InitializeSelf(packet);
 
-            break;
+		    // Send information packet to confirm connection with server
+			sf::Packet infoPacket;
+			infoPacket << static_cast<sf::Uint32>(Server::ClientPacket::ClientInformation);
+			preparePacket_ClientInformation(infoPacket);
+			socket.send(infoPacket);
 
+			// Update confirmation flag
+			isConfirmed = true;
+
+            break;
+		}
         case Server::ServerPacket::PeerClientConnected:
 
             handlePacket_PeerClientConnected(packet);
@@ -186,11 +196,6 @@ void bit::ClientServerState::handlePacket_Broadcast(sf::Packet &packet)
 
 void bit::ClientServerState::handlePacket_InitializeSelf(sf::Packet &packet)
 {
-    // Send information packet to confirm connection with server
-    sf::Packet infoPacket;
-    infoPacket << static_cast<sf::Uint32>(Server::ClientPacket::ClientInformation);
-    preparePacket_ClientInformation(infoPacket);
-    socket.send(infoPacket);
 }
 
 void bit::ClientServerState::handlePacket_PeerClientConnected(sf::Packet &packet)
@@ -216,8 +221,6 @@ void bit::ClientServerState::handlePacket_Shutdown(sf::Packet &packet)
 
 sf::Packet& bit::ClientServerState::preparePacket_ClientInformation(sf::Packet &packet)
 {
-	isConfirmed = true;
-
     return packet;
 }
 

@@ -38,6 +38,8 @@ namespace bit
             Quit,                       // tell server that client is quitting
         };
 
+		void start();
+
     protected:
 
         sf::Uint32 snapshotId;
@@ -50,6 +52,7 @@ namespace bit
         sf::Time clientTimeoutTime;
         unsigned int maxConnectedClients;
         unsigned int connectedClients;
+		unsigned int clientIdentifier;
         std::vector<RemoteClient*> clients;
 
         void setListeningState(bool state);

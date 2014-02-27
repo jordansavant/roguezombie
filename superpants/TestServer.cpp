@@ -2,6 +2,7 @@
 #include "../bitengine/Game/Server.hpp"
 #include "../bitengine/Game/RemoteClient.hpp"
 #include "../bitengine/System/Output.hpp"
+#include "Command.hpp"
 
 void TestServer::load()
 {
@@ -19,14 +20,34 @@ void TestServer::handlePacket_ClientInformation(sf::Packet &packet, bit::RemoteC
 {
     bit::Output::Debug("Server handle client information");
 
-    bit::Server::handlePacket_ClientInformation(packet, client);
+	world.createPlayer(client);
 }
 
 void TestServer::handlePacket_ClientUpdate(sf::Packet &packet, bit::RemoteClient &client)
 {
     bit::Output::Debug("Server handle client update");
 
-    bit::Server::handlePacket_ClientUpdate(packet, client);
+	// Get command count
+	sf::Int32 commandCount;
+	packet >> commandCount;
+
+	for(unsigned int i=0; i < commandCount; i++)
+	{
+		// Get command
+		sf::Int32 command;
+		packet >> command;
+
+		// Determine how to handle
+		switch(command)
+		{
+			case Command::PlayerUp:
+			case Command::PlayerDown:
+			case Command::PlayerLeft:
+			case Command::PlayerRight:
+				world.handlePlayerCommand(client, static_cast<Command>(command));
+				break;
+		}
+	}
 }
 
 
