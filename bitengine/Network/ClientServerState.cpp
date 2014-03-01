@@ -166,7 +166,7 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, bit::ServerPacke
             packet >> snapshotId;
 
             // If it is newer
-            if(lastSnapshotId < snapshotId)
+            if(lastSnapshotId < snapshotId || snapshotId == 0)
             {
                 // Update our client snapshot
                 lastSnapshotId = snapshotId;

@@ -43,11 +43,11 @@ void ClientZombie::clientUpdate(sf::Time &gameTime)
 		unsigned int msB = deltas[b].first.asMilliseconds();
 
 		// If the target render point is later than our second packet, try our third
-		if(msX > msB && deltas.size() == 3)
+		/*if(msX > msB && deltas.size() == 3)
 		{
 			b = 2;
 			msB = deltas[b].first.asMilliseconds();
-		}
+		}*/
 		
 		//  If the render point has been wrapped by two known histories
 		if(msX <= msB)
@@ -76,8 +76,42 @@ void ClientZombie::clientUpdate(sf::Time &gameTime)
 		else if(msX - msB < ticktime * 5)
 		{
 			// Extrapolate - TODO
+            int indexA = 0;
+            int indexB = 1;
+
+            if(deltas.size() == 3)
+            {
+                indexA = 1;
+                indexB = 2;
+            }
+
+            float positionOneX = deltas[indexA].second.x;
+            float positionOneY = deltas[indexA].second.y;
+            float positionOneTime = deltas[indexA].first.asMilliseconds();
+
+            float positionTwoX = deltas[indexB].second.x;
+            float positionTwoY = deltas[indexB].second.y;
+            float positionTwoTime = deltas[indexB].first.asMilliseconds();
+
+            float currentTime = temporaryClockVariable.getElapsedTime().asMilliseconds();
+            
+            float xDiff = positionTwoX - positionOneX;
+            float yDiff = positionTwoY - positionOneY;
+            float tDiff = positionTwoTime - positionOneTime;
+
+            float currentDiff = currentTime - positionTwoTime;
+            float ratio = currentDiff / tDiff;
+
+            finalX = positionTwoX + ratio * ( xDiff );
+            finalY = positionTwoY + ratio * ( yDiff );
+
 		}
 		// If the render point is behind for more than 1/4 of a second, do no prediction
+        else
+        {
+            finalX = 10;
+            finalY = 10;
+        }
 	}
 
 	renderSprite.setPosition(finalX, finalY);
