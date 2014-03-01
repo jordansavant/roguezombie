@@ -1,5 +1,7 @@
 #include "Server.hpp"
 #include "RemoteClient.hpp"
+#include "ServerPacket.hpp"
+#include "ClientPacket.hpp"
 
 bit::Server::Server()
     : snapshotId(0),
@@ -115,8 +117,8 @@ void bit::Server::tick()
     snapshotId++;
 
     // Send world objects to the clients
-    sf::Packet packet;
-    packet << static_cast<sf::Int32>(Server::ServerPacket::ServerUpdate);
+    ServerPacket packet;
+    packet << static_cast<sf::Int32>(Server::ServerPacketType::ServerUpdate);
     packet << snapshotId;
     preparePacket_ServerUpdate(packet);
     sendToAllClients(packet);
@@ -142,7 +144,7 @@ void bit::Server::handleIncomingPackets()
 
         if(client->isConnected)
         {
-            sf::Packet packet;
+            ClientPacket packet;
             while(client->socket.receive(packet) == sf::Socket::Done)
             {
                 // Handle incoming packet from client
@@ -168,21 +170,21 @@ void bit::Server::handleIncomingPackets()
     }
 }
 
-void bit::Server::handlePacket(sf::Packet &packet, RemoteClient &client, bool &detectedTimeout)
+void bit::Server::handlePacket(ClientPacket &packet, RemoteClient &client, bool &detectedTimeout)
 {
     sf::Int32 packetType;
     packet >> packetType;
 
     switch(packetType)
     {
-        case Server::ClientPacket::Quit:
+        case Server::ClientPacketType::Quit:
 
             client.hasTimedOut = true;
             detectedTimeout = true;
 
             break;
-            
-        case Server::ClientPacket::ClientInformation:
+
+        case Server::ClientPacketType::ClientInformation:
 
             // Confirm them
             client.isConfirmed = true;
@@ -191,7 +193,7 @@ void bit::Server::handlePacket(sf::Packet &packet, RemoteClient &client, bool &d
 
             break;
 
-        case Server::ClientPacket::ClientUpdate:
+        case Server::ClientPacketType::ClientUpdate:
 
             // Update their most rescent ack
             sf::Uint32 snapshotId;
@@ -249,8 +251,8 @@ void bit::Server::handleDisconnections()
         if(client->hasTimedOut)
         {
             // Inform other clients of disconnection
-            sf::Packet packet_PeerClientDisconnected;
-            packet_PeerClientDisconnected << static_cast<sf::Int32>(Server::ServerPacket::PeerClientDisconnected);
+            ServerPacket packet_PeerClientDisconnected;
+            packet_PeerClientDisconnected << static_cast<sf::Int32>(Server::ServerPacketType::PeerClientDisconnected);
             preparePacket_PeerClientDisconnected(packet_PeerClientDisconnected);
             sendToAllClients(packet_PeerClientDisconnected);
 
@@ -281,8 +283,8 @@ void bit::Server::broadcastMessage(std::string &message)
 
         if(client->isConnected)
         {
-            sf::Packet packet_broadcastMessage;
-            packet_broadcastMessage << static_cast<sf::Int32>(Server::ServerPacket::Broadcast);
+            ServerPacket packet_broadcastMessage;
+            packet_broadcastMessage << static_cast<sf::Int32>(Server::ServerPacketType::Broadcast);
             packet_broadcastMessage << message;
 
             client->socket.send(packet_broadcastMessage);
@@ -290,7 +292,7 @@ void bit::Server::broadcastMessage(std::string &message)
     }
 }
 
-void bit::Server::sendToAllClients(sf::Packet &packet)
+void bit::Server::sendToAllClients(ServerPacket &packet)
 {
     for(unsigned int i=0; i < clients.size(); i++)
     {
@@ -306,14 +308,14 @@ void bit::Server::sendToAllClients(sf::Packet &packet)
 void bit::Server::handleNewClient(RemoteClient &client)
 {
     // Send initialize player packet
-    sf::Packet packet_InitializeSelf;
-    packet_InitializeSelf << static_cast<sf::Int32>(Server::ServerPacket::InitializeSelf);
+    ServerPacket packet_InitializeSelf;
+    packet_InitializeSelf << static_cast<sf::Int32>(Server::ServerPacketType::InitializeSelf);
     preparePacket_InitializeSelf(packet_InitializeSelf);
     client.socket.send(packet_InitializeSelf);
 
     // Notify all other clients of new connection
-    sf::Packet packet_clientConnected;
-    packet_clientConnected << static_cast<sf::Int32>(Server::ServerPacket::PeerClientConnected);
+    ServerPacket packet_clientConnected;
+    packet_clientConnected << static_cast<sf::Int32>(Server::ServerPacketType::PeerClientConnected);
     preparePacket_PeerClientConnected(packet_clientConnected);
     sendToAllClients(packet_clientConnected);
 }

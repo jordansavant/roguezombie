@@ -2,6 +2,7 @@
 #include "Zombie.hpp"
 #include "Player.hpp"
 #include "../bitengine/Game/RemoteClient.hpp"
+#include "../bitengine/Game/ServerPacket.hpp"
 #include "../bitengine/Math/Math.hpp"
 #include "../ResourcePath.h"
 #include "SFML/Network.hpp"
@@ -84,7 +85,7 @@ void World::handlePlayerCommand(bit::RemoteClient &client, Command command)
 }
 
 
-sf::Packet& World::compileSnapshot(sf::Packet &packet)
+void World::prepareSnapshot(bit::ServerPacket &packet)
 {
     sf::Uint32 zombieCount = zombies.size();
     packet << zombieCount;
@@ -93,8 +94,6 @@ sf::Packet& World::compileSnapshot(sf::Packet &packet)
     {
         sf::Uint32 zombieId = i;
         packet << zombieId;
-        zombies[i]->compileSnapshot(packet);
+        zombies[i]->prepareSnapshot(packet);
     }
-
-    return packet;
 }

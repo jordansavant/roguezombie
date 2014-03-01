@@ -1,6 +1,8 @@
 #include "TestServer.hpp"
 #include "../bitengine/Game/Server.hpp"
 #include "../bitengine/Game/RemoteClient.hpp"
+#include "../bitengine/Game/ServerPacket.hpp"
+#include "../bitengine/Game/ClientPacket.hpp"
 #include "../bitengine/System/Output.hpp"
 #include "Command.hpp"
 
@@ -16,14 +18,14 @@ void TestServer::update(sf::Time &gameTime)
 
 // Packet Handling
 
-void TestServer::handlePacket_ClientInformation(sf::Packet &packet, bit::RemoteClient &client)
+void TestServer::handlePacket_ClientInformation(bit::ClientPacket &packet, bit::RemoteClient &client)
 {
     bit::Output::Debug("Server handle client information");
 
 	world.createPlayer(client);
 }
 
-void TestServer::handlePacket_ClientUpdate(sf::Packet &packet, bit::RemoteClient &client)
+void TestServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::RemoteClient &client)
 {
     bit::Output::Debug("Server handle client update");
 
@@ -56,24 +58,24 @@ void TestServer::handlePacket_ClientUpdate(sf::Packet &packet, bit::RemoteClient
  * Prepare Outgoing Server Packets
  **/
 
-void TestServer::preparePacket_InitializeSelf(sf::Packet &packet)
+void TestServer::preparePacket_InitializeSelf(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Server prepare initialize self");
 }
 
-void TestServer::preparePacket_PeerClientConnected(sf::Packet &packet)
+void TestServer::preparePacket_PeerClientConnected(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Server prepare initialize client connected");
 }
 
-void TestServer::preparePacket_PeerClientDisconnected(sf::Packet &packet)
+void TestServer::preparePacket_PeerClientDisconnected(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Server prepare initialize client disconnected");
 }
 
-void TestServer::preparePacket_ServerUpdate(sf::Packet &packet)
+void TestServer::preparePacket_ServerUpdate(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Server prepare server update");
 
-    world.compileSnapshot(packet);
+    world.prepareSnapshot(packet);
 }

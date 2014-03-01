@@ -6,6 +6,12 @@
 #include "SFML/Network.hpp"
 #include "../bitengine/Game/GameTimer.hpp"
 
+namespace bit
+{
+    class ServerPacket;
+    class ClientPacket;
+}
+
 class World;
 
 class Zombie
@@ -38,9 +44,9 @@ public:
 
 	void updatePosition(sf::Vector2f &direction);
 
-    virtual sf::Packet& compileSnapshot(sf::Packet& packet);
+    virtual void prepareSnapshot(bit::ServerPacket &packet);
 
-    virtual sf::Packet& extractSnapshot(sf::Packet& packet);
+    virtual void handleSnapshot(bit::ServerPacket &packet);
 
 };
 

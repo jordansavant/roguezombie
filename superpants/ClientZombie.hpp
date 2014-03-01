@@ -8,6 +8,11 @@
 #include "Zombie.hpp"
 #include <deque>
 
+namespace bit
+{
+    class ServerPacket;
+}
+
 class World;
 
 class ClientZombie : public Zombie
@@ -27,7 +32,7 @@ public:
 
     void clientDraw(sf::RenderWindow &window, sf::Time &gameTime);
 
-	virtual sf::Packet& extractSnapshot(sf::Packet& packet);
+    virtual void handleSnapshot(bit::ServerPacket &packet);
 
 };
 

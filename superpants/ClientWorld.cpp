@@ -1,6 +1,8 @@
 #include "ClientWorld.hpp"
 #include "ClientZombie.hpp"
 #include "../bitengine/Math/Math.hpp"
+#include "../bitengine/Game/ClientPacket.hpp"
+#include "../bitengine/Game/ServerPacket.hpp"
 #include "../ResourcePath.h"
 #include "SFML/Network.hpp"
 #include <map>
@@ -38,7 +40,7 @@ void ClientWorld::draw(sf::RenderWindow &window, sf::Time &gameTime)
     }
 }
 
-sf::Packet& ClientWorld::extractSnapshot(sf::Packet &packet)
+void ClientWorld::handleSnapshot(bit::ServerPacket &packet)
 {
     sf::Uint32 zombieCount;
     packet >> zombieCount;
@@ -54,21 +56,18 @@ sf::Packet& ClientWorld::extractSnapshot(sf::Packet &packet)
         auto itr = zombies.find(zombieId);
         if(itr != zombies.end())
         {
-            itr->second->extractSnapshot(packet);
+            itr->second->handleSnapshot(packet);
         }
         // If not, create it, load it and update it
         else
         {
             ClientZombie* z = new ClientZombie();
             z->clientLoad(&zombieimage);
-            z->extractSnapshot(packet);
+            z->handleSnapshot(packet);
             zombies.insert(std::pair<sf::Uint32, ClientZombie*>(zombieId, z));
         }
     }
 
     // TODO
     // Remove any zombies that were not in snapshot
-
-
-    return packet;
 }

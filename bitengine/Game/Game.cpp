@@ -53,7 +53,6 @@ bit::Game::~Game()
     delete renderWindow;
 }
 
-
 bool bit::Game::isInFocus = false;
 bool bit::Game::graphicsChange = false;
 bool bit::Game::isFullscreen = false;
@@ -65,7 +64,6 @@ float bit::Game::currentResolutionRatio = 1;
 float bit::Game::currentResolutionRatioX = 1;
 float bit::Game::currentResolutionRatioY = 1;
 float bit::Game::targetFpsInterval = (1.0f / 60.0f); // seconds
-
 
 void bit::Game::run()
 {

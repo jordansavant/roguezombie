@@ -12,6 +12,8 @@ namespace bit
     class StateStack;
     class Game;
     class Server;
+    class ServerPacket;
+    class ClientPacket;
 
     class ClientServerState : public State
     {
@@ -49,28 +51,27 @@ namespace bit
 
 		sf::Time now();
 
-        void handlePacket(sf::Int32 packetType, sf::Packet &packet);
+        void handlePacket(sf::Int32 packetType, ServerPacket &packet);
 
         // Packet handling
 
-        virtual void handlePacket_Broadcast(sf::Packet &packet) = 0;
+        virtual void handlePacket_Broadcast(bit::ServerPacket &packet) = 0;
 
-        virtual void handlePacket_InitializeSelf(sf::Packet &packet) = 0;
+        virtual void handlePacket_InitializeSelf(bit::ServerPacket &packet) = 0;
 
-        virtual void handlePacket_PeerClientConnected(sf::Packet &packet) = 0;
+        virtual void handlePacket_PeerClientConnected(bit::ServerPacket &packet) = 0;
 
-        virtual void handlePacket_ClientDisonnected(sf::Packet &packet) = 0;
+        virtual void handlePacket_ClientDisonnected(bit::ServerPacket &packet) = 0;
 
-        virtual void handlePacket_ServerUpdate(sf::Packet &packet) = 0;
+        virtual void handlePacket_ServerUpdate(bit::ServerPacket &packet) = 0;
 
-        virtual void handlePacket_Shutdown(sf::Packet &packet) = 0;
+        virtual void handlePacket_Shutdown(bit::ServerPacket &packet) = 0;
 
         // Packet sending
 
-        virtual void preparePacket_ClientInformation(sf::Packet &packet) = 0;
+        virtual void preparePacket_ClientInformation(bit::ClientPacket &packet) = 0;
 
-        virtual void preparePacket_ClientUpdate(sf::Packet &packet) = 0;
-
+        virtual void preparePacket_ClientUpdate(bit::ClientPacket &packet) = 0;
     };
 }
 

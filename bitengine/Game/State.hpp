@@ -37,7 +37,7 @@ namespace bit
         void requestStateClear();
 
         virtual void handleWindowChange(sf::RenderWindow &window);
-        
+
     private:
 
         StateStack* stateStack;
@@ -46,7 +46,6 @@ namespace bit
 
         std::vector<Camera*> cameras;
         bool isPaused;
-
     };
 }
 

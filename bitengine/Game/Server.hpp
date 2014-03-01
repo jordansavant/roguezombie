@@ -12,6 +12,8 @@ namespace bit
 {
     class Game;
     class RemoteClient;
+    class ServerPacket;
+    class ClientPacket;
 
     class Server
     {
@@ -21,7 +23,7 @@ namespace bit
 
         ~Server();
 
-        enum ServerPacket
+        enum ServerPacketType
         {
             Broadcast,                  // string broadcast
             InitializeSelf,             // tell client we have acknowledged their connection
@@ -31,7 +33,7 @@ namespace bit
             Shutdown                    // tell connected clients that the server is shutting down
         };
 
-        enum ClientPacket
+        enum ClientPacketType
         {
             ClientInformation,          // tell server about game specific client information
             ClientUpdate,               // tell server about client update 1/20th a second
@@ -69,7 +71,7 @@ namespace bit
 
         void handleIncomingPackets();
 
-        void handlePacket(sf::Packet &packet, RemoteClient &receivingClient, bool &detectedTimeout);
+        void handlePacket(ClientPacket &packet, RemoteClient &receivingClient, bool &detectedTimeout);
 
         void handleConnections();
 
@@ -77,7 +79,7 @@ namespace bit
 
         void broadcastMessage(std::string &message);
 
-        void sendToAllClients(sf::Packet &packet);
+        void sendToAllClients(ServerPacket &packet);
 
         void handleNewClient(RemoteClient &client);
 
@@ -85,19 +87,19 @@ namespace bit
 
         // Packet handling
 
-        virtual void handlePacket_ClientInformation(sf::Packet &packet, RemoteClient &client) = 0;
+        virtual void handlePacket_ClientInformation(ClientPacket &packet, RemoteClient &client) = 0;
 
-        virtual void handlePacket_ClientUpdate(sf::Packet &packet, RemoteClient &client) = 0;
+        virtual void handlePacket_ClientUpdate(ClientPacket &packet, RemoteClient &client) = 0;
 
         // Packet sending
 
-        virtual void preparePacket_InitializeSelf(sf::Packet &packet) = 0;
+        virtual void preparePacket_InitializeSelf(ServerPacket &packet) = 0;
 
-        virtual void preparePacket_PeerClientConnected(sf::Packet &packet) = 0;
+        virtual void preparePacket_PeerClientConnected(ServerPacket &packet) = 0;
 
-        virtual void preparePacket_PeerClientDisconnected(sf::Packet &packet) = 0;
+        virtual void preparePacket_PeerClientDisconnected(ServerPacket &packet) = 0;
 
-        virtual void preparePacket_ServerUpdate(sf::Packet &packet) = 0;
+        virtual void preparePacket_ServerUpdate(ServerPacket &packet) = 0;
     };
 }
 

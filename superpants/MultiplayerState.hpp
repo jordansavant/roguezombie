@@ -12,6 +12,8 @@ namespace bit
     class Camera;
     class Game;
     class Server;
+    class ServerPacket;
+    class ClientPacket;
 }
 
 class MultiplayerState : public bit::ClientServerState
@@ -40,23 +42,23 @@ protected:
 
     // Packet Handling
 
-    virtual void handlePacket_Broadcast(sf::Packet &packet);
+    virtual void handlePacket_Broadcast(bit::ServerPacket &packet);
 
-    virtual void handlePacket_InitializeSelf(sf::Packet &packet);
+    virtual void handlePacket_InitializeSelf(bit::ServerPacket &packet);
 
-    virtual void handlePacket_PeerClientConnected(sf::Packet &packet); 
+    virtual void handlePacket_PeerClientConnected(bit::ServerPacket &packet); 
 
-    virtual void handlePacket_ClientDisonnected(sf::Packet &packet);
+    virtual void handlePacket_ClientDisonnected(bit::ServerPacket &packet);
 
-    virtual void handlePacket_ServerUpdate(sf::Packet &packet);
+    virtual void handlePacket_ServerUpdate(bit::ServerPacket &packet);
 
-    virtual void handlePacket_Shutdown(sf::Packet &packet);
+    virtual void handlePacket_Shutdown(bit::ServerPacket &packet);
 
     // Packet Sending
 
-    virtual void preparePacket_ClientInformation(sf::Packet &packet);
+    virtual void preparePacket_ClientInformation(bit::ClientPacket &packet);
 
-    virtual void preparePacket_ClientUpdate(sf::Packet &packet);
+    virtual void preparePacket_ClientUpdate(bit::ClientPacket &packet);
 
 };
 

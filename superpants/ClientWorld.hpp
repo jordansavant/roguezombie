@@ -6,6 +6,11 @@
 #include "SFML/Network.hpp"
 #include <map>
 
+namespace bit
+{
+    class ServerPacket;
+}
+
 class ClientZombie;
 
 class ClientWorld
@@ -25,7 +30,7 @@ public:
 
     void draw(sf::RenderWindow &window, sf::Time &gameTime);
 
-    sf::Packet& extractSnapshot(sf::Packet &packet);
+    void handleSnapshot(bit::ServerPacket &packet);
 
 };
 

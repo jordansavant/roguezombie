@@ -3,6 +3,8 @@
 #include "SFML/Graphics.hpp"
 #include "../bitengine/Input/InputManager.hpp"
 #include "../bitengine/Game/Game.hpp"
+#include "../bitengine/Game/ServerPacket.hpp"
+#include "../bitengine/Game/ClientPacket.hpp"
 #include "../bitengine/Math/Math.hpp"
 #include "MultiplayerState.hpp"
 
@@ -41,13 +43,12 @@ void Zombie::updatePosition(sf::Vector2f &direction)
 	deltaState.y += direction.y;
 }
 
-
-sf::Packet& Zombie::compileSnapshot(sf::Packet &packet)
+void Zombie::prepareSnapshot(bit::ServerPacket &packet)
 {
-    return packet << deltaState.x << deltaState.y << deltaState.health;
+    packet << deltaState.x << deltaState.y << deltaState.health;
 }
 
-sf::Packet& Zombie::extractSnapshot(sf::Packet &packet)
+void Zombie::handleSnapshot(bit::ServerPacket &packet)
 {
-    return packet >> deltaState.x >> deltaState.y >> deltaState.health;
+    packet >> deltaState.x >> deltaState.y >> deltaState.health;
 }

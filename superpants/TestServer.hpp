@@ -9,6 +9,8 @@
 namespace bit
 {
     class RemoteClient;
+    class ServerPacket;
+    class ClientPacket;
 }
 
 class TestServer : public bit::Server
@@ -23,19 +25,19 @@ private:
 
     // Packet handling
 
-    virtual void handlePacket_ClientInformation(sf::Packet &packet, bit::RemoteClient &client);
+    virtual void handlePacket_ClientInformation(bit::ClientPacket &packet, bit::RemoteClient &client);
 
-    virtual void handlePacket_ClientUpdate(sf::Packet &packet, bit::RemoteClient &client);
+    virtual void handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::RemoteClient &client);
 
     // Packet sending
 
-    virtual void preparePacket_InitializeSelf(sf::Packet &packet);
+    virtual void preparePacket_InitializeSelf(bit::ServerPacket &packet);
 
-    virtual void preparePacket_PeerClientConnected(sf::Packet &packet);
+    virtual void preparePacket_PeerClientConnected(bit::ServerPacket &packet);
 
-    virtual void preparePacket_PeerClientDisconnected(sf::Packet &packet);
+    virtual void preparePacket_PeerClientDisconnected(bit::ServerPacket &packet);
 
-    virtual void preparePacket_ServerUpdate(sf::Packet &packet);
+    virtual void preparePacket_ServerUpdate(bit::ServerPacket &packet);
 };
 
 #endif

@@ -27,7 +27,7 @@ namespace bit
         SpriteLoader* spriteLoader;
 
         static bool isInFocus;
-        
+
         static sf::Vector2i currentResolution;
         static sf::Vector2i targetResolution;
         static float currentResolutionRatio;

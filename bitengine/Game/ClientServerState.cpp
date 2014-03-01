@@ -4,6 +4,8 @@
 #include "../Graphics/Camera.hpp"
 #include "Game.hpp"
 #include "Server.hpp"
+#include "ServerPacket.hpp"
+#include "ClientPacket.hpp"
 #include "SFML/Network.hpp"
 #include "SFML/System.hpp"
 
@@ -27,7 +29,6 @@ bit::ClientServerState::~ClientServerState()
         delete server;
     }
 }
-
 
 sf::Time bit::ClientServerState::now()
 {
@@ -64,7 +65,6 @@ void bit::ClientServerState::load()
     socket.setBlocking(false);
 }
 
-
 bool bit::ClientServerState::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::State::update(window, gameTime);
@@ -79,7 +79,7 @@ bool bit::ClientServerState::update(sf::RenderWindow &window, sf::Time &gameTime
         }
 
         // Handle the network input
-        sf::Packet packet;
+        ServerPacket packet;
         if(socket.receive(packet) == sf::Socket::Done)
         {
             // Pull the header type and pass into handlePacket
@@ -102,8 +102,8 @@ bool bit::ClientServerState::update(sf::RenderWindow &window, sf::Time &gameTime
         if(tickTimer.update(gameTime) && isConfirmed)
         {
             // Send client update packet with last acknowledged snapshot id
-            sf::Packet packet;
-            packet << static_cast<sf::Int32>(Server::ClientPacket::ClientUpdate) << lastSnapshotId;
+            bit::ClientPacket packet;
+            packet << static_cast<sf::Int32>(Server::ClientPacketType::ClientUpdate) << lastSnapshotId;
             preparePacket_ClientUpdate(packet);
             socket.send(packet);
         }
@@ -122,24 +122,23 @@ bool bit::ClientServerState::update(sf::RenderWindow &window, sf::Time &gameTime
     return true;
 }
 
-
-void bit::ClientServerState::handlePacket(sf::Int32 packetType, sf::Packet &packet)
+void bit::ClientServerState::handlePacket(sf::Int32 packetType, bit::ServerPacket &packet)
 {
     switch(packetType)
     {
-        case Server::ServerPacket::Broadcast:
+        case Server::ServerPacketType::Broadcast:
 
             handlePacket_Broadcast(packet);
 
             break;
 
-        case Server::ServerPacket::InitializeSelf:
+        case Server::ServerPacketType::InitializeSelf:
 		{
             handlePacket_InitializeSelf(packet);
 
 		    // Send information packet to confirm connection with server
-			sf::Packet infoPacket;
-			infoPacket << static_cast<sf::Uint32>(Server::ClientPacket::ClientInformation);
+			bit::ClientPacket infoPacket;
+			infoPacket << static_cast<sf::Uint32>(Server::ClientPacketType::ClientInformation);
 			preparePacket_ClientInformation(infoPacket);
 			socket.send(infoPacket);
 
@@ -148,19 +147,19 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, sf::Packet &pack
 
             break;
 		}
-        case Server::ServerPacket::PeerClientConnected:
+        case Server::ServerPacketType::PeerClientConnected:
 
             handlePacket_PeerClientConnected(packet);
 
             break;
 
-        case Server::ServerPacket::PeerClientDisconnected:
+        case Server::ServerPacketType::PeerClientDisconnected:
 
             handlePacket_ClientDisonnected(packet);
 
             break;
 
-        case Server::ServerPacket::ServerUpdate:
+        case Server::ServerPacketType::ServerUpdate:
 
             // Get the snapshot id
             sf::Uint32 snapshotId;
@@ -176,12 +175,10 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, sf::Packet &pack
 
             break;
 
-        case Server::ServerPacket::Shutdown:
+        case Server::ServerPacketType::Shutdown:
 
             handlePacket_Shutdown(packet);
 
             break;
     }
 }
-
-

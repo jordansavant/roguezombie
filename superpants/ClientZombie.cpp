@@ -88,9 +88,9 @@ void ClientZombie::clientDraw(sf::RenderWindow &window, sf::Time &gameTime)
     window.draw(renderSprite);
 }
 
-sf::Packet& ClientZombie::extractSnapshot(sf::Packet &packet)
+void ClientZombie::handleSnapshot(bit::ServerPacket &packet)
 {
-	Zombie::extractSnapshot(packet);
+	Zombie::handleSnapshot(packet);
 
 	deltas.push_back(std::pair<sf::Time, DeltaState>(temporaryClockVariable.getElapsedTime(), deltaState));
 	if(deltas.size() > 3)
@@ -98,5 +98,4 @@ sf::Packet& ClientZombie::extractSnapshot(sf::Packet &packet)
 		deltas.pop_front();
 	}
 
-	return packet;
 }
