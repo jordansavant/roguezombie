@@ -4,7 +4,7 @@
 #include "SFML/Graphics.hpp"
 #include "../bitengine/Input/InputManager.hpp"
 #include "../bitengine/Game/Game.hpp"
-#include "../bitengine/Game/Server.hpp"
+#include "../bitengine/Network/Server.hpp"
 #include "../bitengine/Math/Math.hpp"
 #include "MultiplayerState.hpp"
 

@@ -3,8 +3,8 @@
 #include "SFML/Graphics.hpp"
 #include "../bitengine/Input/InputManager.hpp"
 #include "../bitengine/Game/Game.hpp"
-#include "../bitengine/Game/ServerPacket.hpp"
-#include "../bitengine/Game/ClientPacket.hpp"
+#include "../bitengine/Network/ServerPacket.hpp"
+#include "../bitengine/Network/ClientPacket.hpp"
 #include "../bitengine/Math/Math.hpp"
 #include "MultiplayerState.hpp"
 

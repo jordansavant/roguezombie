@@ -1,8 +1,8 @@
 #include "TestServer.hpp"
-#include "../bitengine/Game/Server.hpp"
-#include "../bitengine/Game/RemoteClient.hpp"
-#include "../bitengine/Game/ServerPacket.hpp"
-#include "../bitengine/Game/ClientPacket.hpp"
+#include "../bitengine/Network/Server.hpp"
+#include "../bitengine/Network/RemoteClient.hpp"
+#include "../bitengine/Network/ServerPacket.hpp"
+#include "../bitengine/Network/ClientPacket.hpp"
 #include "../bitengine/System/Output.hpp"
 #include "Command.hpp"
 

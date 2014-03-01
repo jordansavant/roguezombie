@@ -2,7 +2,7 @@
 #ifndef RZ_TESTSERVER_H
 #define RZ_TESTSERVER_H
 
-#include "../bitengine/Game/Server.hpp"
+#include "../bitengine/Network/Server.hpp"
 #include "SFML/Network.hpp"
 #include "World.hpp"
 

@@ -4,8 +4,8 @@
 
 #include "SFML/Network.hpp"
 #include "SFML/System.hpp"
-#include "State.hpp"
-#include "GameTimer.hpp"
+#include "../Game/State.hpp"
+#include "../Game/GameTimer.hpp"
 
 namespace bit
 {
