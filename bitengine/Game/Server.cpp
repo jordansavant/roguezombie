@@ -3,7 +3,7 @@
 
 bit::Server::Server()
     : snapshotId(0),
-      serverPort(BIT_SERVER_PORT),
+      serverPort(0),
       thread(&Server::executionThread, this),
       waitingThreadEnd(false),
       isListening(false),
@@ -16,6 +16,8 @@ bit::Server::Server()
     listenerSocket.setBlocking(false);
 
     clients[0] = new RemoteClient();
+
+    serverPort = getServerPort();
 }
 
 bit::Server::~Server()
@@ -123,6 +125,11 @@ void bit::Server::tick()
 sf::Time bit::Server::now()
 {
     return clock.getElapsedTime();
+}
+
+unsigned short bit::Server::getServerPort()
+{
+    return BIT_SERVER_PORT;
 }
 
 void bit::Server::handleIncomingPackets()

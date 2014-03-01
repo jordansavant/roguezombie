@@ -36,6 +36,8 @@ protected:
 
     virtual bit::Server* newServer();
 
+    virtual std::string getServerIpAddress();
+
     // Packet Handling
 
     virtual void handlePacket_Broadcast(sf::Packet &packet);

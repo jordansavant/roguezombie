@@ -43,7 +43,9 @@ namespace bit
         sf::Clock tickClock;
 	    sf::Clock clock;
 
-        virtual Server* newServer();
+        virtual Server* newServer() = 0;
+
+        virtual std::string getServerIpAddress() = 0;
 
 		sf::Time now();
 

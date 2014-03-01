@@ -81,6 +81,8 @@ namespace bit
 
         void handleNewClient(RemoteClient &client);
 
+        virtual unsigned short getServerPort();
+
         // Packet handling
 
         virtual void handlePacket_ClientInformation(sf::Packet &packet, RemoteClient &client) = 0;

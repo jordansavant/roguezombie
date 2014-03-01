@@ -73,6 +73,11 @@ bit::Server* MultiplayerState::newServer()
     return new TestServer();
 }
 
+std::string MultiplayerState::getServerIpAddress()
+{
+    return "192.168.0.100";
+}
+
 
 /**
  * Packet handling

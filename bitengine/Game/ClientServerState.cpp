@@ -46,7 +46,7 @@ void bit::ClientServerState::load()
     }
     else
     {
-        ipAddress = "127.0.0.1"; // swap to external ip for server
+        ipAddress = getServerIpAddress();
         port = BIT_SERVER_PORT;
     }
 
@@ -120,12 +120,6 @@ bool bit::ClientServerState::update(sf::RenderWindow &window, sf::Time &gameTime
     }
 
     return true;
-}
-
-
-bit::Server* bit::ClientServerState::newServer()
-{
-    return NULL;
 }
 
 

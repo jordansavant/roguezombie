@@ -25,7 +25,7 @@ World::~World()
 
 void World::load()
 {
-    int zcount = 3;
+    unsigned int zcount = 3;
     zombies.resize(zcount);
     for(unsigned int i=0; i < zcount; i++)
     {
