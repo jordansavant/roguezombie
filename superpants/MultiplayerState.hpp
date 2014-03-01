@@ -52,9 +52,9 @@ protected:
 
     // Packet Sending
 
-    virtual sf::Packet& preparePacket_ClientInformation(sf::Packet &packet);
+    virtual void preparePacket_ClientInformation(sf::Packet &packet);
 
-    virtual sf::Packet& preparePacket_ClientUpdate(sf::Packet &packet);
+    virtual void preparePacket_ClientUpdate(sf::Packet &packet);
 
 };
 

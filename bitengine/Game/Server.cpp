@@ -116,7 +116,7 @@ void bit::Server::tick()
     sf::Packet packet;
     packet << static_cast<sf::Int32>(Server::ServerPacket::ServerUpdate);
     packet << snapshotId;
-    packet = preparePacket_ServerUpdate(packet);
+    preparePacket_ServerUpdate(packet);
     sendToAllClients(packet);
 }
 
@@ -244,7 +244,7 @@ void bit::Server::handleDisconnections()
             // Inform other clients of disconnection
             sf::Packet packet_PeerClientDisconnected;
             packet_PeerClientDisconnected << static_cast<sf::Int32>(Server::ServerPacket::PeerClientDisconnected);
-            packet_PeerClientDisconnected = preparePacket_PeerClientDisconnected(packet_PeerClientDisconnected);
+            preparePacket_PeerClientDisconnected(packet_PeerClientDisconnected);
             sendToAllClients(packet_PeerClientDisconnected);
 
             // Erase client
@@ -301,50 +301,12 @@ void bit::Server::handleNewClient(RemoteClient &client)
     // Send initialize player packet
     sf::Packet packet_InitializeSelf;
     packet_InitializeSelf << static_cast<sf::Int32>(Server::ServerPacket::InitializeSelf);
-    packet_InitializeSelf = preparePacket_InitializeSelf(packet_InitializeSelf);
+    preparePacket_InitializeSelf(packet_InitializeSelf);
     client.socket.send(packet_InitializeSelf);
 
     // Notify all other clients of new connection
     sf::Packet packet_clientConnected;
     packet_clientConnected << static_cast<sf::Int32>(Server::ServerPacket::PeerClientConnected);
-    packet_clientConnected = preparePacket_PeerClientConnected(packet_clientConnected);
+    preparePacket_PeerClientConnected(packet_clientConnected);
     sendToAllClients(packet_clientConnected);
-}
-
-
-/**
- * Handle Incoming Client Packets
- **/
-
-void bit::Server::handlePacket_ClientInformation(sf::Packet &packet, RemoteClient &client)
-{
-}
-
-void bit::Server::handlePacket_ClientUpdate(sf::Packet &packet, RemoteClient &client)
-{
-}
-
-
-/**
- * Prepare Outgoing Server Packets
- **/
-
-sf::Packet& bit::Server::preparePacket_InitializeSelf(sf::Packet &packet)
-{
-    return packet;
-}
-
-sf::Packet& bit::Server::preparePacket_PeerClientConnected(sf::Packet &packet)
-{
-    return packet;
-}
-
-sf::Packet& bit::Server::preparePacket_PeerClientDisconnected(sf::Packet &packet)
-{
-    return packet;
-}
-
-sf::Packet& bit::Server::preparePacket_ServerUpdate(sf::Packet &packet)
-{
-    return packet;
 }

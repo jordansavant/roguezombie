@@ -29,13 +29,13 @@ private:
 
     // Packet sending
 
-    virtual sf::Packet& preparePacket_InitializeSelf(sf::Packet &packet);
+    virtual void preparePacket_InitializeSelf(sf::Packet &packet);
 
-    virtual sf::Packet& preparePacket_PeerClientConnected(sf::Packet &packet);
+    virtual void preparePacket_PeerClientConnected(sf::Packet &packet);
 
-    virtual sf::Packet& preparePacket_PeerClientDisconnected(sf::Packet &packet);
+    virtual void preparePacket_PeerClientDisconnected(sf::Packet &packet);
 
-    virtual sf::Packet& preparePacket_ServerUpdate(sf::Packet &packet);
+    virtual void preparePacket_ServerUpdate(sf::Packet &packet);
 };
 
 #endif

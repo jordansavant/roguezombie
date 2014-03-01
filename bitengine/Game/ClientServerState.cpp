@@ -104,7 +104,7 @@ bool bit::ClientServerState::update(sf::RenderWindow &window, sf::Time &gameTime
             // Send client update packet with last acknowledged snapshot id
             sf::Packet packet;
             packet << static_cast<sf::Int32>(Server::ClientPacket::ClientUpdate) << lastSnapshotId;
-            packet = preparePacket_ClientUpdate(packet);
+            preparePacket_ClientUpdate(packet);
             socket.send(packet);
         }
 
@@ -125,7 +125,7 @@ bool bit::ClientServerState::update(sf::RenderWindow &window, sf::Time &gameTime
 
 bit::Server* bit::ClientServerState::newServer()
 {
-    return new bit::Server();
+    return NULL;
 }
 
 
@@ -191,45 +191,3 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, sf::Packet &pack
 }
 
 
-/**
- * Handle Incoming Server Packets
- **/
-
-void bit::ClientServerState::handlePacket_Broadcast(sf::Packet &packet)
-{
-}
-
-void bit::ClientServerState::handlePacket_InitializeSelf(sf::Packet &packet)
-{
-}
-
-void bit::ClientServerState::handlePacket_PeerClientConnected(sf::Packet &packet)
-{
-}
-
-void bit::ClientServerState::handlePacket_ClientDisonnected(sf::Packet &packet)
-{
-}
-
-void bit::ClientServerState::handlePacket_ServerUpdate(sf::Packet &packet)
-{
-}
-
-void bit::ClientServerState::handlePacket_Shutdown(sf::Packet &packet)
-{
-}
-
-
-/**
- * Prepare Outgoing Client Packets
- **/
-
-sf::Packet& bit::ClientServerState::preparePacket_ClientInformation(sf::Packet &packet)
-{
-    return packet;
-}
-
-sf::Packet& bit::ClientServerState::preparePacket_ClientUpdate(sf::Packet &packet)
-{
-    return packet;
-}

@@ -115,14 +115,12 @@ void MultiplayerState::handlePacket_Shutdown(sf::Packet &packet)
  * Packet sending
  */
 
-sf::Packet& MultiplayerState::preparePacket_ClientInformation(sf::Packet &packet)
+void MultiplayerState::preparePacket_ClientInformation(sf::Packet &packet)
 {
     bit::Output::Debug("Client prepare client information");
-
-    return packet;
 }
 
-sf::Packet& MultiplayerState::preparePacket_ClientUpdate(sf::Packet &packet)
+void MultiplayerState::preparePacket_ClientUpdate(sf::Packet &packet)
 {
     bit::Output::Debug("Client prepare client update");
 
@@ -139,6 +137,4 @@ sf::Packet& MultiplayerState::preparePacket_ClientUpdate(sf::Packet &packet)
 
 	// Clear commands
 	commandQueue.clear();
-
-    return packet;
 }

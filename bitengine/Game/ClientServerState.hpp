@@ -51,23 +51,23 @@ namespace bit
 
         // Packet handling
 
-        virtual void handlePacket_Broadcast(sf::Packet &packet);
+        virtual void handlePacket_Broadcast(sf::Packet &packet) = 0;
 
-        virtual void handlePacket_InitializeSelf(sf::Packet &packet);
+        virtual void handlePacket_InitializeSelf(sf::Packet &packet) = 0;
 
-        virtual void handlePacket_PeerClientConnected(sf::Packet &packet);
+        virtual void handlePacket_PeerClientConnected(sf::Packet &packet) = 0;
 
-        virtual void handlePacket_ClientDisonnected(sf::Packet &packet);
+        virtual void handlePacket_ClientDisonnected(sf::Packet &packet) = 0;
 
-        virtual void handlePacket_ServerUpdate(sf::Packet &packet);
+        virtual void handlePacket_ServerUpdate(sf::Packet &packet) = 0;
 
-        virtual void handlePacket_Shutdown(sf::Packet &packet);
+        virtual void handlePacket_Shutdown(sf::Packet &packet) = 0;
 
         // Packet sending
 
-        virtual sf::Packet& preparePacket_ClientInformation(sf::Packet &packet);
+        virtual void preparePacket_ClientInformation(sf::Packet &packet) = 0;
 
-        virtual sf::Packet& preparePacket_ClientUpdate(sf::Packet &packet);
+        virtual void preparePacket_ClientUpdate(sf::Packet &packet) = 0;
 
     };
 }

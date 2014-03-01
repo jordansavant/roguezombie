@@ -5,7 +5,7 @@
 #include "SFML/Graphics.hpp"
 
 bit::State::State(StateStack &stack, bit::Game* _game)
-    : stateStack(&stack), game(_game), isPaused(false)
+    : game(_game), stateStack(&stack), isPaused(false)
 {
 }
 

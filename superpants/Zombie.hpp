@@ -13,11 +13,7 @@ class Zombie
 public:
 
     Zombie();
-
-    bit::GameTimer walkTimer;
-    World* world;
-	bool isPlayerControlled;
-
+    
 	struct FixedState
 	{
 		int maxHealth;
@@ -31,6 +27,10 @@ public:
 		int health;
 	};
 	DeltaState deltaState;
+
+    bit::GameTimer walkTimer;
+    World* world;
+	bool isPlayerControlled;
 
     void load(World* world, float x, float y);
 
