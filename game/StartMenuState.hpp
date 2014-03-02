@@ -1,6 +1,6 @@
 #pragma once
-#ifndef TITLESTATE_H
-#define TITLESTATE_H
+#ifndef RZ_STARTMENUSTATE_H
+#define RZ_STARTMENUSTATE_H
 
 #include "SFML/Graphics.hpp"
 #include "../bitengine/Game.hpp"
@@ -12,11 +12,11 @@ namespace bit
     class Game;
 }
 
-class TitleState : public bit::State
+class StartMenuState : public bit::State
 {
 public:
 
-    TitleState(bit::StateStack &stack, bit::Game* game);
+    StartMenuState(bit::StateStack &stack, bit::Game* game);
 
     sf::Texture zombieimage;
     sf::Sprite zombiesprite;

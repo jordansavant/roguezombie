@@ -1,20 +1,20 @@
 #include "ClientZombie.hpp"
+#include "ClientWorld.hpp"
 #include "Zombie.hpp"
-#include "World.hpp"
 #include "SFML/Graphics.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Input.hpp"
 #include "../bitengine/Math.hpp"
-#include "MultiplayerState.hpp"
 
 ClientZombie::ClientZombie()
     : Zombie()
 {
 }
 
-void ClientZombie::clientLoad(sf::Texture* texture)
+void ClientZombie::clientLoad(ClientWorld* _world, sf::Texture* texture)
 {
+    world = _world;
     renderTexture = texture;
     renderSprite.setTexture(*texture);
 }

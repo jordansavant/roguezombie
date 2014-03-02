@@ -1,26 +1,18 @@
 #pragma once
-#ifndef RZ_MULTIPLAYER_STATE_H
-#define RZ_MULTIPLAYER_STATE_H
+#ifndef RZ_GAMEPLAYSTATE_H
+#define RZ_GAMEPLAYSTATE_H
 
 #include "../bitengine/Network.hpp"
+#include "../bitengine/Game.hpp"
+#include "../bitengine/Graphics.hpp"
 #include "ClientWorld.hpp"
 #include "Command.hpp"
 
-namespace bit
-{
-    class StateStack;
-    class Camera;
-    class Game;
-    class Server;
-    class ServerPacket;
-    class ClientPacket;
-}
-
-class MultiplayerState : public bit::ClientServerState
+class GameplayState : public bit::ClientServerState
 {
 public:
 
-    MultiplayerState(bit::StateStack &stack, bit::Game* game, bool isHost);
+    GameplayState(bit::StateStack &stack, bit::Game* game, bool isHost);
 
     ClientWorld clientWorld;
 	std::vector<Command> commandQueue;

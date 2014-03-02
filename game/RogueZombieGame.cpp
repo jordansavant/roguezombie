@@ -1,22 +1,23 @@
-#include "TestGame.hpp"
+#include "RogueZombieGame.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Input.hpp"
-#include "TitleState.hpp"
-#include "MultiplayerState.hpp"
+#include "StartMenuState.hpp"
+#include "GameplayState.hpp"
 #include <iostream>
 #include <sstream>
 
-TestGame::TestGame()
-	: Game("TEST GAME!!1!!", 640, 480, false)
+RogueZombieGame::RogueZombieGame()
+	: Game("Rogue Zombie", 640, 480, false)
 {
-    Game::stateStack->pushState(titleState);
+    Game::stateStack->pushState(startMenuState);
 }
 
-unsigned int TestGame::titleState = 1;
-unsigned int TestGame::hostState = 2;
-unsigned int TestGame::clientState = 3;
+unsigned int RogueZombieGame::introState = 1;
+unsigned int RogueZombieGame::startMenuState = 2;
+unsigned int RogueZombieGame::hostState = 3;
+unsigned int RogueZombieGame::clientState = 4;
 
-void TestGame::update(sf::RenderWindow &window, sf::Time &gameTime)
+void RogueZombieGame::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
 	Game::update(window, gameTime);
 
@@ -40,14 +41,14 @@ void TestGame::update(sf::RenderWindow &window, sf::Time &gameTime)
         this->setVerticalSync(!this->verticalSync);
 }
 
-void TestGame::draw(sf::RenderWindow &window, sf::Time &gameTime)
+void RogueZombieGame::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
 	Game::draw(window, gameTime);
 }
 
-void TestGame::registerStates()
+void RogueZombieGame::registerStates()
 {
-    stateStack->registerState<TitleState>(titleState);
-    stateStack->registerState<MultiplayerState>(hostState, true);
-    stateStack->registerState<MultiplayerState>(clientState, false);
+    stateStack->registerState<StartMenuState>(startMenuState);
+    stateStack->registerState<GameplayState>(hostState, true);
+    stateStack->registerState<GameplayState>(clientState, false);
 }

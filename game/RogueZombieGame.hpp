@@ -1,16 +1,17 @@
 #pragma once
-#ifndef TEST_GAME_H
-#define TEST_GAME_H
+#ifndef RZ_ROGUEZOMBIEGAME_H
+#define RZ_ROGUEZOMBIEGAME_H
 
 #include "SFML/Graphics.hpp"
 #include "../bitengine/Game.hpp"
 
-class TestGame: public bit::Game
+class RogueZombieGame: public bit::Game
 {
 public:
-		TestGame();
+		RogueZombieGame();
 
-        static unsigned int titleState;
+        static unsigned int introState;
+        static unsigned int startMenuState;
         static unsigned int hostState;
         static unsigned int clientState;
 

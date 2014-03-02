@@ -1,11 +1,11 @@
-#include "TitleState.hpp"
+#include "StartMenuState.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Graphics.hpp"
 #include "../bitengine/Input.hpp"
 #include "../ResourcePath.h"
-#include "TestGame.hpp"
+#include "RogueZombieGame.hpp"
 
-TitleState::TitleState(bit::StateStack &stack, bit::Game* _game)
+StartMenuState::StartMenuState(bit::StateStack &stack, bit::Game* _game)
     : bit::State(stack, _game), shape(200)
 {
     zombieimage.loadFromFile(resourcePath() + "Zombie.png");
@@ -14,12 +14,12 @@ TitleState::TitleState(bit::StateStack &stack, bit::Game* _game)
     createCamera(*game->renderWindow, 0, 0, 1, 1);
 }
 
-bool TitleState::handleInput(sf::RenderWindow &window, sf::Time &gameTime)
+bool StartMenuState::handleInput(sf::RenderWindow &window, sf::Time &gameTime)
 {
     return true;
 }
 
-bool TitleState::update(sf::RenderWindow &window, sf::Time &gameTime)
+bool StartMenuState::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     if(game->inputManager->isButtonPressed(sf::Keyboard::Escape))
     {
@@ -28,23 +28,23 @@ bool TitleState::update(sf::RenderWindow &window, sf::Time &gameTime)
     else if(game->inputManager->isButtonPressed(sf::Keyboard::Return))
     {
         requestStateClear();
-        requestStackPush(TestGame::hostState);
+        requestStackPush(RogueZombieGame::hostState);
     }
     else if(game->inputManager->isButtonPressed(sf::Keyboard::Delete))
     {
         requestStateClear();
-        requestStackPush(TestGame::clientState);
+        requestStackPush(RogueZombieGame::clientState);
     }
 
     return true;
 }
 
-void TitleState::draw(sf::RenderWindow &window, sf::Time &gameTime)
+void StartMenuState::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::State::draw(window, gameTime);
 }
 
-void TitleState::drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera)
+void StartMenuState::drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera)
 {
 	window.draw(shape);
     window.draw(zombiesprite);

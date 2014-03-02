@@ -13,7 +13,7 @@ namespace bit
 
 class ClientZombie;
 class ClientTile;
-class MultiplayerState;
+class GameplayState;
 
 class ClientWorld
 {
@@ -24,13 +24,13 @@ public:
     ~ClientWorld();
 
 
-    MultiplayerState* state;
+    GameplayState* state;
     std::map<sf::Uint32, ClientZombie*> zombies;
     std::map<sf::Uint32, ClientTile*> tiles;
     sf::Texture zombieimage;
     sf::Texture tileimage;
 
-    void load(MultiplayerState* state);
+    void load(GameplayState* state);
 
     void update(sf::RenderWindow &window, sf::Time &gameTime);
 

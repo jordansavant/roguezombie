@@ -1,30 +1,30 @@
-#include "MultiplayerState.hpp"
+#include "GameplayState.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Input.hpp"
 #include "../bitengine/Graphics.hpp"
 #include "../bitengine/System.hpp"
 #include "../ResourcePath.h"
-#include "TestServer.hpp"
+#include "GameplayServer.hpp"
 #include "World.hpp"
 #include "Command.hpp"
 #include <sstream>
 
-MultiplayerState::MultiplayerState(bit::StateStack &stack, bit::Game* _game, bool isHost)
+GameplayState::GameplayState(bit::StateStack &stack, bit::Game* _game, bool isHost)
     : bit::ClientServerState(stack, _game, isHost)
 {
     createCamera(*game->renderWindow, 0, 0, 1, 1);
     cameras[0]->view.setCenter(0, 0);
 }
 
-void MultiplayerState::load()
+void GameplayState::load()
 {
     bit::ClientServerState::load();
 
     clientWorld.load(this);
 }
 
-bool MultiplayerState::update(sf::RenderWindow &window, sf::Time &gameTime)
+bool GameplayState::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::ClientServerState::update(window, gameTime);
 
@@ -78,17 +78,17 @@ bool MultiplayerState::update(sf::RenderWindow &window, sf::Time &gameTime)
     return true;
 }
 
-void MultiplayerState::drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera)
+void GameplayState::drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera)
 {
     clientWorld.draw(window, gameTime);
 }
 
-bit::Server* MultiplayerState::newServer()
+bit::Server* GameplayState::newServer()
 {
-    return new TestServer();
+    return new GameplayServer();
 }
 
-std::string MultiplayerState::getServerIpAddress()
+std::string GameplayState::getServerIpAddress()
 {
     return "192.168.0.100";
 }
@@ -97,36 +97,36 @@ std::string MultiplayerState::getServerIpAddress()
  * Packet handling
  */
 
-void MultiplayerState::handlePacket_Broadcast(bit::ServerPacket &packet)
+void GameplayState::handlePacket_Broadcast(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle broadcast");
 }
 
-void MultiplayerState::handlePacket_InitializeSelf(bit::ServerPacket &packet)
+void GameplayState::handlePacket_InitializeSelf(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle initialize self");
 
     clientWorld.handleSnapshot(packet, true);
 }
 
-void MultiplayerState::handlePacket_PeerClientConnected(bit::ServerPacket &packet)
+void GameplayState::handlePacket_PeerClientConnected(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle client connected");
 }
 
-void MultiplayerState::handlePacket_ClientDisonnected(bit::ServerPacket &packet)
+void GameplayState::handlePacket_ClientDisonnected(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle client disconnected");
 }
 
-void MultiplayerState::handlePacket_ServerUpdate(bit::ServerPacket &packet)
+void GameplayState::handlePacket_ServerUpdate(bit::ServerPacket &packet)
 {
     //bit::Output::Debug("Client handle server update");
 
     clientWorld.handleSnapshot(packet);
 }
 
-void MultiplayerState::handlePacket_Shutdown(bit::ServerPacket &packet)
+void GameplayState::handlePacket_Shutdown(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle server shutdown");
 }
@@ -135,12 +135,12 @@ void MultiplayerState::handlePacket_Shutdown(bit::ServerPacket &packet)
  * Packet sending
  */
 
-void MultiplayerState::preparePacket_ClientInformation(bit::ClientPacket &packet)
+void GameplayState::preparePacket_ClientInformation(bit::ClientPacket &packet)
 {
     bit::Output::Debug("Client prepare client information");
 }
 
-void MultiplayerState::preparePacket_ClientUpdate(bit::ClientPacket &packet)
+void GameplayState::preparePacket_ClientUpdate(bit::ClientPacket &packet)
 {
     //bit::Output::Debug("Client prepare client update");
 

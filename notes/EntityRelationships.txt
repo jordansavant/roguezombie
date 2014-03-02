@@ -1,0 +1,40 @@
+
+
+Tile
+	Ground
+	Water
+	
+Structure
+	Wall
+	Furniture
+	- Have health
+	
+Container
+	Terminal
+	Safe
+	Locker
+	
+Item
+	Gun
+	Ammo
+	Lighter
+	- Can belong to containers
+	- Can belong to characters
+	- Can belong to tiles
+
+Character
+	Zombie
+	Human
+	- Can move from tile to tile
+	- Can carry items
+	- Can interact with structures and containers
+	- Have statistics
+	class
+	{
+		TileId
+		x, y
+		health, maxHealth
+	}
+	
+Commands
+

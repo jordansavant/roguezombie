@@ -1,28 +1,28 @@
-#include "TestServer.hpp"
+#include "GameplayServer.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/System.hpp"
 #include "Command.hpp"
 
-void TestServer::load()
+void GameplayServer::load()
 {
     world.load();
 }
 
-void TestServer::update(sf::Time &gameTime)
+void GameplayServer::update(sf::Time &gameTime)
 {
     world.update(gameTime);
 }
 
 // Packet Handling
 
-void TestServer::handlePacket_ClientInformation(bit::ClientPacket &packet, bit::RemoteClient &client)
+void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, bit::RemoteClient &client)
 {
     bit::Output::Debug("Server handle client information");
 
 	world.createPlayer(client);
 }
 
-void TestServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::RemoteClient &client)
+void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::RemoteClient &client)
 {
     //bit::Output::Debug("Server handle client update");
 
@@ -54,24 +54,24 @@ void TestServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::Remot
  * Prepare Outgoing Server Packets
  **/
 
-void TestServer::preparePacket_InitializeSelf(bit::ServerPacket &packet)
+void GameplayServer::preparePacket_InitializeSelf(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Server prepare initialize self");
 
     world.prepareSnapshot(packet, true);
 }
 
-void TestServer::preparePacket_PeerClientConnected(bit::ServerPacket &packet)
+void GameplayServer::preparePacket_PeerClientConnected(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Server prepare initialize client connected");
 }
 
-void TestServer::preparePacket_PeerClientDisconnected(bit::ServerPacket &packet)
+void GameplayServer::preparePacket_PeerClientDisconnected(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Server prepare initialize client disconnected");
 }
 
-void TestServer::preparePacket_ServerUpdate(bit::ServerPacket &packet)
+void GameplayServer::preparePacket_ServerUpdate(bit::ServerPacket &packet)
 {
     //bit::Output::Debug("Server prepare server update");
 

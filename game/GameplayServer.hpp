@@ -1,19 +1,12 @@
 #pragma once
-#ifndef RZ_TESTSERVER_H
-#define RZ_TESTSERVER_H
+#ifndef RZ_GAMEPLAYSERVER_H
+#define RZ_GAMEPLAYSERVER_H
 
 #include "SFML/Network.hpp"
 #include "../bitengine/Network.hpp"
 #include "World.hpp"
 
-namespace bit
-{
-    class RemoteClient;
-    class ServerPacket;
-    class ClientPacket;
-}
-
-class TestServer : public bit::Server
+class GameplayServer : public bit::Server
 {
 private:
 

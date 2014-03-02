@@ -24,7 +24,7 @@ ClientWorld::~ClientWorld()
     }
 }
 
-void ClientWorld::load(MultiplayerState* _state)
+void ClientWorld::load(GameplayState* _state)
 {
     state = _state;
     zombieimage.loadFromFile(resourcePath() + "Zombie.png");
@@ -101,7 +101,7 @@ void ClientWorld::handleSnapshot(bit::ServerPacket &packet, bool full)
         else
         {
             z = new ClientZombie();
-            z->clientLoad(&zombieimage);
+            z->clientLoad(this, &zombieimage);
             zombies.insert(std::pair<sf::Uint32, ClientZombie*>(zombieId, z));
         }
         z->handleSnapshot(packet, full);

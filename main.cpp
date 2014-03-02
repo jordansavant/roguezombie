@@ -1,9 +1,9 @@
-#include "superpants/TestGame.hpp"
+#include "game/RogueZombieGame.hpp"
 
 int main()
 {
     srand(time(NULL));
-	TestGame game;
+	RogueZombieGame game;
 	game.run();
 
 	return 0;
