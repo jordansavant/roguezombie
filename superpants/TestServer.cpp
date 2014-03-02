@@ -57,6 +57,8 @@ void TestServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::Remot
 void TestServer::preparePacket_InitializeSelf(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Server prepare initialize self");
+
+    world.prepareSnapshot(packet, true);
 }
 
 void TestServer::preparePacket_PeerClientConnected(bit::ServerPacket &packet)

@@ -36,7 +36,7 @@ public:
 
     void handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type command);
 
-    void prepareSnapshot(bit::ServerPacket &packet);
+    void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 };
 
 #endif

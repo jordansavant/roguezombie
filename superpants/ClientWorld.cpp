@@ -39,7 +39,7 @@ void ClientWorld::draw(sf::RenderWindow &window, sf::Time &gameTime)
     }
 }
 
-void ClientWorld::handleSnapshot(bit::ServerPacket &packet)
+void ClientWorld::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
     sf::Uint32 zombieCount;
     packet >> zombieCount;
@@ -51,20 +51,20 @@ void ClientWorld::handleSnapshot(bit::ServerPacket &packet)
         packet >> zombieId;
 
         // If zombie exists, update it
-        // TODO keep pointer
+        ClientZombie* z;
         auto itr = zombies.find(zombieId);
         if(itr != zombies.end())
         {
-            itr->second->handleSnapshot(packet);
+            z = itr->second;
         }
         // If not, create it, load it and update it
         else
         {
-            ClientZombie* z = new ClientZombie();
+            z = new ClientZombie();
             z->clientLoad(&zombieimage);
-            z->handleSnapshot(packet);
             zombies.insert(std::pair<sf::Uint32, ClientZombie*>(zombieId, z));
         }
+        z->handleSnapshot(packet, full);
     }
 
     // TODO

@@ -32,7 +32,7 @@ public:
 
     void clientDraw(sf::RenderWindow &window, sf::Time &gameTime);
 
-    virtual void handleSnapshot(bit::ServerPacket &packet);
+    virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 };
 
 #endif

@@ -5,12 +5,7 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
 #include "../bitengine/Game.hpp"
-
-namespace bit
-{
-    class ServerPacket;
-    class ClientPacket;
-}
+#include "../bitengine/Network.hpp"
 
 class World;
 
@@ -20,17 +15,35 @@ public:
 
     Zombie();
 
-	struct FixedState
+	class FixedState
 	{
+    public:
 		int maxHealth;
+        friend sf::Packet& operator <<(sf::Packet& packet, const FixedState &state)
+        {
+            return packet << state.maxHealth;
+        }
+        friend sf::Packet& operator >>(sf::Packet& packet, FixedState &state)
+        {
+            return packet >> state.maxHealth;
+        }
 	};
 	FixedState fixedState;
 
-	struct DeltaState
+	class DeltaState
 	{
+    public:
 		float x, y;
 	    sf::Vector2f direction;
 		int health;
+        friend sf::Packet& operator <<(sf::Packet& packet, const DeltaState &state)
+        {
+            return packet << state.x << state.y << state.health;
+        }
+        friend sf::Packet& operator >>(sf::Packet& packet, DeltaState &state)
+        {
+            return packet >> state.x >> state.y >> state.health;
+        }
 	};
 	DeltaState deltaState;
 
@@ -44,9 +57,9 @@ public:
 
 	void updatePosition(sf::Vector2f &direction);
 
-    virtual void prepareSnapshot(bit::ServerPacket &packet);
+    virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 
-    virtual void handleSnapshot(bit::ServerPacket &packet);
+    virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 };
 
 #endif

@@ -89,7 +89,7 @@ void World::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &cl
     player->zombie->updatePosition(d);
 }
 
-void World::prepareSnapshot(bit::ServerPacket &packet)
+void World::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
     sf::Uint32 zombieCount = zombies.size();
     packet << zombieCount;
@@ -98,6 +98,6 @@ void World::prepareSnapshot(bit::ServerPacket &packet)
     {
         sf::Uint32 zombieId = i;
         packet << zombieId;
-        zombies[i]->prepareSnapshot(packet);
+        zombies[i]->prepareSnapshot(packet, full);
     }
 }

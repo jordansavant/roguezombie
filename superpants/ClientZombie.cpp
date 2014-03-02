@@ -121,9 +121,9 @@ void ClientZombie::clientDraw(sf::RenderWindow &window, sf::Time &gameTime)
     window.draw(renderSprite);
 }
 
-void ClientZombie::handleSnapshot(bit::ServerPacket &packet)
+void ClientZombie::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
-	Zombie::handleSnapshot(packet);
+	Zombie::handleSnapshot(packet, full);
 
 	deltas.push_back(std::pair<sf::Time, DeltaState>(temporaryClockVariable.getElapsedTime(), deltaState));
 	if(deltas.size() > 3)

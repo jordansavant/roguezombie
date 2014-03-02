@@ -40,12 +40,20 @@ void Zombie::updatePosition(sf::Vector2f &direction)
 	deltaState.y += direction.y;
 }
 
-void Zombie::prepareSnapshot(bit::ServerPacket &packet)
+void Zombie::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
-    packet << deltaState.x << deltaState.y << deltaState.health;
+    if(full)
+    {
+        packet << fixedState;
+    }
+    packet << deltaState;
 }
 
-void Zombie::handleSnapshot(bit::ServerPacket &packet)
+void Zombie::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
-    packet >> deltaState.x >> deltaState.y >> deltaState.health;
+    if(full)
+    {
+        packet >> fixedState;
+    }
+    packet >> deltaState;
 }

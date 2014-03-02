@@ -98,6 +98,8 @@ void MultiplayerState::handlePacket_Broadcast(bit::ServerPacket &packet)
 void MultiplayerState::handlePacket_InitializeSelf(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle initialize self");
+
+    clientWorld.handleSnapshot(packet, true);
 }
 
 void MultiplayerState::handlePacket_PeerClientConnected(bit::ServerPacket &packet)
