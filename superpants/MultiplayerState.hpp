@@ -21,8 +21,9 @@ class MultiplayerState : public bit::ClientServerState
 public:
 
     MultiplayerState(bit::StateStack &stack, bit::Game* game, bool isHost);
-    
+
     ClientWorld clientWorld;
+	std::vector<Command> commandQueue;
 
     virtual void load();
 
@@ -31,8 +32,6 @@ public:
     virtual bool update(sf::RenderWindow &window, sf::Time &gameTime);
 
     virtual void drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera);
-
-	std::vector<Command> commandQueue;
 
 protected:
 
@@ -46,7 +45,7 @@ protected:
 
     virtual void handlePacket_InitializeSelf(bit::ServerPacket &packet);
 
-    virtual void handlePacket_PeerClientConnected(bit::ServerPacket &packet); 
+    virtual void handlePacket_PeerClientConnected(bit::ServerPacket &packet);
 
     virtual void handlePacket_ClientDisonnected(bit::ServerPacket &packet);
 
@@ -59,8 +58,6 @@ protected:
     virtual void preparePacket_ClientInformation(bit::ClientPacket &packet);
 
     virtual void preparePacket_ClientUpdate(bit::ClientPacket &packet);
-
 };
-
 
 #endif

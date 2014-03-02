@@ -19,7 +19,7 @@ class Zombie
 public:
 
     Zombie();
-    
+
 	struct FixedState
 	{
 		int maxHealth;
@@ -47,7 +47,6 @@ public:
     virtual void prepareSnapshot(bit::ServerPacket &packet);
 
     virtual void handleSnapshot(bit::ServerPacket &packet);
-
 };
 
 #endif

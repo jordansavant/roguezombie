@@ -3,6 +3,7 @@
 #include "Player.hpp"
 #include "../bitengine/Network/RemoteClient.hpp"
 #include "../bitengine/Network/ServerPacket.hpp"
+#include "../bitengine/Network/ClientPacket.hpp"
 #include "../bitengine/Math/Math.hpp"
 #include "../ResourcePath.h"
 #include "SFML/Network.hpp"
@@ -60,30 +61,31 @@ void World::createPlayer(bit::RemoteClient &client)
 	}
 }
 
-
-void World::handlePlayerCommand(bit::RemoteClient &client, Command command)
+void World::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type commandType)
 {
 	Player* player = players[client.id];
-	sf::Vector2f d;
+	sf::Vector2f d(0, 0);
 
-	switch(command)
+	switch(commandType)
 	{
-		case Command::PlayerUp:
+		case Command::Type::PlayerMoveUp:
 			d.y = -1;
 			break;
-		case Command::PlayerDown:
+		case Command::Type::PlayerMoveDown:
 			d.y = 1;
 			break;
-		case Command::PlayerLeft:
+		case Command::Type::PlayerMoveLeft:
 			d.x = -1;
 			break;
-		case Command::PlayerRight:
+		case Command::Type::PlayerMoveRight:
 			d.x = 1;
 			break;
+        case Command::Type::PlayerTeleport:
+            packet >> player->zombie->deltaState.x >> player->zombie->deltaState.y;
+            break;
 	}
-	player->zombie->updatePosition(d);
+    player->zombie->updatePosition(d);
 }
-
 
 void World::prepareSnapshot(bit::ServerPacket &packet)
 {

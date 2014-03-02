@@ -19,7 +19,6 @@ public:
 	Zombie* zombie;
 
     void load(World* world, Zombie* zombie);
-
 };
 
 #endif

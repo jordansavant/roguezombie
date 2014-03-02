@@ -2,12 +2,26 @@
 #ifndef RZ_COMMAND_H
 #define RZ_COMMAND_H
 
-enum Command
+#include "SFML/Network.hpp"
+
+class Command
 {
-	PlayerUp,
-	PlayerDown,
-	PlayerLeft,
-	PlayerRight
+public:
+
+    Command();
+
+    enum Type
+    {
+        None,
+        PlayerMoveUp,
+	    PlayerMoveDown,
+	    PlayerMoveLeft,
+	    PlayerMoveRight,
+        PlayerTeleport,
+    };
+    Type type;
+
+    sf::Packet data;
 };
 
 #endif

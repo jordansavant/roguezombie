@@ -48,7 +48,7 @@ void ClientZombie::clientUpdate(sf::Time &gameTime)
 			b = 2;
 			msB = deltas[b].first.asMilliseconds();
 		}*/
-		
+
 		//  If the render point has been wrapped by two known histories
 		if(msX <= msB)
 		{
@@ -59,12 +59,12 @@ void ClientZombie::clientUpdate(sf::Time &gameTime)
 			float xB = deltas[b].second.x;
 			float yA = deltas[a].second.y;
 			float yB = deltas[b].second.y;
-			
+
 			// Get their ratio of time
 			float flength = (float)msB - (float)msA;
 			float ilength = (float)msX - (float)msA;
 			float ratio = ilength / flength;
-			
+
 			// Lerp them
 			float lerpX = bit::Math::lerp(xA, xB, ratio);
 			float lerpY = bit::Math::lerp(yA, yB, ratio);
@@ -94,7 +94,7 @@ void ClientZombie::clientUpdate(sf::Time &gameTime)
             float positionTwoTime = deltas[indexB].first.asMilliseconds();
 
             float currentTime = temporaryClockVariable.getElapsedTime().asMilliseconds();
-            
+
             float xDiff = positionTwoX - positionOneX;
             float yDiff = positionTwoY - positionOneY;
             float tDiff = positionTwoTime - positionOneTime;
@@ -104,7 +104,6 @@ void ClientZombie::clientUpdate(sf::Time &gameTime)
 
             finalX = positionTwoX + ratio * ( xDiff );
             finalY = positionTwoY + ratio * ( yDiff );
-
 		}
 		// If the render point is behind for more than 1/4 of a second, do no prediction
         else
@@ -131,5 +130,4 @@ void ClientZombie::handleSnapshot(bit::ServerPacket &packet)
 	{
 		deltas.pop_front();
 	}
-
 }

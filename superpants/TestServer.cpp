@@ -36,23 +36,22 @@ void TestServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::Remot
 	for(unsigned int i=0; i < commandCount; i++)
 	{
 		// Get command
-		sf::Int32 command;
-		packet >> command;
+		sf::Int32 commandType;
+		packet >> commandType;
 
 		// Determine how to handle
-		switch(command)
+		switch(commandType)
 		{
-			case Command::PlayerUp:
-			case Command::PlayerDown:
-			case Command::PlayerLeft:
-			case Command::PlayerRight:
-				world.handlePlayerCommand(client, static_cast<Command>(command));
+			case Command::Type::PlayerMoveUp:
+			case Command::Type::PlayerMoveDown:
+			case Command::Type::PlayerMoveLeft:
+			case Command::Type::PlayerMoveRight:
+            case Command::Type::PlayerTeleport:
+				world.handlePlayerCommand(packet, client, static_cast<Command::Type>(commandType));
 				break;
 		}
 	}
 }
-
-
 
 /**
  * Prepare Outgoing Server Packets

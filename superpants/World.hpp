@@ -11,6 +11,7 @@ namespace bit
 {
 	class RemoteClient;
     class ServerPacket;
+    class ClientPacket;
 }
 
 class Zombie;
@@ -33,10 +34,9 @@ public:
 
 	void createPlayer(bit::RemoteClient &client);
 
-	void handlePlayerCommand(bit::RemoteClient &client, Command command);
+    void handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type command);
 
     void prepareSnapshot(bit::ServerPacket &packet);
-
 };
 
 #endif
