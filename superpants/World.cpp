@@ -1,6 +1,7 @@
 #include "World.hpp"
 #include "Zombie.hpp"
 #include "Player.hpp"
+#include "Tile.hpp"
 #include "SFML/Network.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Math.hpp"
@@ -13,6 +14,11 @@ World::World()
 
 World::~World()
 {
+    for(unsigned int i=0; i < tiles.size(); i++)
+    {
+        delete tiles[i];
+    }
+
     for(unsigned int i=0; i < zombies.size(); i++)
     {
         delete zombies[i];
@@ -26,8 +32,42 @@ World::~World()
 
 void World::load()
 {
+    // Tiles
+    const int tileArray[] =
+    {
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+    };
+
+    unsigned int tileCount = 4 * 4;
+    unsigned int rows = 4, columns = 4;
+    unsigned tileWidth = 64, tileHeight = 64;
+    tiles.resize(tileCount, NULL);
+    for (unsigned int j = 0; j < rows; ++j)
+    {
+        for (unsigned int i = 0; i < columns; ++i)
+        {
+            // get the current tile information
+            int index = i + j * columns;
+            Tile::Type tileType = static_cast<Tile::Type>(tileArray[index]);
+
+            // build the quad and its position on the map
+            float z = 0;
+            float originX = i * tileWidth;
+            float originY = j * tileHeight;
+
+            // Load our tile
+            Tile* t = new Tile();
+            t->load(this, tileType, originX, originY, tileWidth, tileHeight);
+            tiles[index] = t;
+        }
+    }
+
+    // Zombies
     unsigned int zcount = 3;
-    zombies.resize(zcount);
+    zombies.resize(zcount, NULL);
     for(unsigned int i=0; i < zcount; i++)
     {
         Zombie* z = new Zombie();
@@ -91,6 +131,18 @@ void World::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &cl
 
 void World::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
+    // Tiles
+    sf::Uint32 tileCount = tiles.size();
+    packet << tileCount;
+
+    for(unsigned int i=0; i < tiles.size(); i++)
+    {
+        sf::Uint32 tileId = i;
+        packet << tileId;
+        tiles[i]->prepareSnapshot(packet, full);
+    }
+
+    // Zombies
     sf::Uint32 zombieCount = zombies.size();
     packet << zombieCount;
 

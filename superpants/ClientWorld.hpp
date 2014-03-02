@@ -12,6 +12,7 @@ namespace bit
 }
 
 class ClientZombie;
+class ClientTile;
 
 class ClientWorld
 {
@@ -22,7 +23,9 @@ public:
     ~ClientWorld();
 
     std::map<sf::Uint32, ClientZombie*> zombies;
+    std::map<sf::Uint32, ClientTile*> tiles;
     sf::Texture zombieimage;
+    sf::Texture tileimage;
 
     void load();
 

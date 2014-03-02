@@ -15,9 +15,8 @@ public:
 
     Zombie();
 
-	class FixedState
+	struct FixedState
 	{
-    public:
 		int maxHealth;
         friend sf::Packet& operator <<(sf::Packet& packet, const FixedState &state)
         {
@@ -30,9 +29,8 @@ public:
 	};
 	FixedState fixedState;
 
-	class DeltaState
+	struct DeltaState
 	{
-    public:
 		float x, y;
 	    sf::Vector2f direction;
 		int health;
