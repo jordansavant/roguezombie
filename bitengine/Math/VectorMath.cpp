@@ -6,14 +6,14 @@
 #include <cmath>
 #include "Math.hpp"
 
-sf::Vector2f bit::VectorMath::GetRandomVector()
+sf::Vector2f bit::VectorMath::getRandomVector()
 {
     float r = (float)std::rand()/(float)RAND_MAX;
     float angle = (r * bit::Math::TwoPi);
     return sf::Vector2f(std::cos(angle), std::sin(angle));
 }
 
-sf::Vector2f bit::VectorMath::Normalize(sf::Vector2f &vector)
+sf::Vector2f bit::VectorMath::normalize(sf::Vector2f &vector)
 {
     if(vector.x != 0 || vector.y != 0)
     {
@@ -23,7 +23,7 @@ sf::Vector2f bit::VectorMath::Normalize(sf::Vector2f &vector)
     return vector;
 }
 
-sf::Vector2f bit::VectorMath::Normalize(float x, float y)
+sf::Vector2f bit::VectorMath::normalize(float x, float y)
 {
     if(x != 0 || y != 0)
     {
@@ -39,7 +39,7 @@ sf::Vector2f bit::VectorMath::lerp(float x1, float y1, float x2, float y2, float
 }
 
 
-void bit::VectorMath::ApplyDeadZone(sf::Vector2f* v, float deadZone)
+void bit::VectorMath::applyDeadZone(sf::Vector2f* v, float deadZone)
 {
     if(deadZone > 0)
     {
@@ -54,35 +54,35 @@ void bit::VectorMath::ApplyDeadZone(sf::Vector2f* v, float deadZone)
     }
 }
 
-float bit::VectorMath::Distance(float x1, float y1, float x2, float y2)
+float bit::VectorMath::distance(float x1, float y1, float x2, float y2)
 {
     float x = (x1 - x2);
     float y = (y1 - y2);
     return std::sqrt(x*x  + y*y);
 }
 
-sf::Vector2f bit::VectorMath::DirectionToVector(float x1, float y1, float x2, float y2)
+sf::Vector2f bit::VectorMath::directionToVector(float x1, float y1, float x2, float y2)
 {
-    return bit::VectorMath::Normalize(x2 - x1, y2 - y1);
+    return bit::VectorMath::normalize(x2 - x1, y2 - y1);
 }
 
-float bit::VectorMath::RotationToVector(float x1, float y1, float x2, float y2)
+float bit::VectorMath::rotationToVector(float x1, float y1, float x2, float y2)
 {
     return std::atan2(y1 - y2, x1 - x2);
 }
 
-float bit::VectorMath::ToRadians(sf::Vector2f v)
+float bit::VectorMath::toRadians(sf::Vector2f v)
 {
-    v = Normalize(v.x, v.y);
+    v = normalize(v.x, v.y);
     return std::atan2(v.y, v.x);
 }
 
-sf::Vector2f bit::VectorMath::RadiansToVector(float radians)
+sf::Vector2f bit::VectorMath::radiansToVector(float radians)
 {
     return sf::Vector2f(std::cos(radians), std::sin(radians));
 }
 
-sf::Vector2f bit::VectorMath::Average(std::vector<sf::Vector2f> &vectors)
+sf::Vector2f bit::VectorMath::average(std::vector<sf::Vector2f> &vectors)
 {
     if(vectors.size() == 0)
         return sf::Vector2f(0, 0);
@@ -99,7 +99,7 @@ sf::Vector2f bit::VectorMath::Average(std::vector<sf::Vector2f> &vectors)
     return average;
 }
 
-void bit::VectorMath::Rotate(sf::Vector2f &point, float radians)
+void bit::VectorMath::rotate(sf::Vector2f &point, float radians)
 {
     float cosRadians = std::cos(radians);
     float sinRadians = std::sin(radians);
@@ -108,7 +108,7 @@ void bit::VectorMath::Rotate(sf::Vector2f &point, float radians)
     point.y = point.x * sinRadians - point.y * cosRadians;
 }
 
-void bit::VectorMath::RotateAroundPivot(sf::Vector2f &point, float radians, sf::Vector2f &pivot)
+void bit::VectorMath::rotateAroundPivot(sf::Vector2f &point, float radians, sf::Vector2f &pivot)
 {
     float cosRadians = std::cos(radians);
     float sinRadians = std::sin(radians);
@@ -123,7 +123,7 @@ void bit::VectorMath::RotateAroundPivot(sf::Vector2f &point, float radians, sf::
 
 // h ttp://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm - Algorithm
 // h ttp://roguebasin.roguelikedevelopment.org/index.php?title=Bresenham%27s_Line_Algorithm - Rogue Code
-std::vector<sf::Vector2i> bit::VectorMath::BresenhamLine(int x1, int y1, int const x2, int const y2)
+std::vector<sf::Vector2i> bit::VectorMath::bresenhamLine(int x1, int y1, int const x2, int const y2)
 {
     std::vector<sf::Vector2i> result;
 
@@ -188,5 +188,15 @@ std::vector<sf::Vector2i> bit::VectorMath::BresenhamLine(int x1, int y1, int con
 
 bool bit::VectorMath::inRadius(float x, float y, float radiusX, float radiusY, float radius)
 {
-    return Distance(x, y, radiusX, radiusY) <= radius;
+    return distance(x, y, radiusX, radiusY) <= radius;
+}
+
+sf::Vector2f bit::VectorMath::normalToIsometric(float x, float y)
+{
+    return sf::Vector2f(x - y, (x + y) / 2);
+}
+
+sf::Vector2f bit::VectorMath::isometricToNormal(float x, float y)
+{
+    return sf::Vector2f((2 * y + x) / 2, (2 * y - x) / 2);
 }

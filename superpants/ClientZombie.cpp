@@ -113,7 +113,8 @@ void ClientZombie::clientUpdate(sf::Time &gameTime)
         }
 	}
 
-	renderSprite.setPosition(finalX, finalY);
+    sf::Vector2f renderPosition = bit::VectorMath::normalToIsometric(finalX, finalY);
+    renderSprite.setPosition(renderPosition.x, renderPosition.y);
 }
 
 void ClientZombie::clientDraw(sf::RenderWindow &window, sf::Time &gameTime)

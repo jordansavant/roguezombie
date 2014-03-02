@@ -100,7 +100,7 @@ void bit::InputManager::update(sf::RenderWindow &window, sf::Time &gameTime)
             inputBindingVectors[i]->vector.x = -1;
         }
 
-        bit::VectorMath::Normalize(inputBindingVectors[i]->vector);
+        bit::VectorMath::normalize(inputBindingVectors[i]->vector);
     }
 }
 

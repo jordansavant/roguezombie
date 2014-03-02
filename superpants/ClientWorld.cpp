@@ -8,6 +8,7 @@
 #include <map>
 
 ClientWorld::ClientWorld()
+    : state(NULL)
 {
 }
 
@@ -23,17 +24,18 @@ ClientWorld::~ClientWorld()
     }
 }
 
-void ClientWorld::load()
+void ClientWorld::load(MultiplayerState* _state)
 {
+    state = _state;
     zombieimage.loadFromFile(resourcePath() + "Zombie.png");
     tileimage.loadFromFile(resourcePath() + "water.png");
 }
 
-void ClientWorld::update(sf::Time &gameTime)
+void ClientWorld::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     for(auto iterator = tiles.begin(); iterator != tiles.end(); iterator++)
     {
-        iterator->second->clientUpdate(gameTime);
+        iterator->second->clientUpdate(window, gameTime);
     }
     for(auto iterator = zombies.begin(); iterator != zombies.end(); iterator++)
     {
@@ -74,7 +76,7 @@ void ClientWorld::handleSnapshot(bit::ServerPacket &packet, bool full)
         else
         {
             t = new ClientTile();
-            t->clientLoad(&tileimage);
+            t->clientLoad(this, &tileimage);
             tiles.insert(std::pair<sf::Uint32, ClientTile*>(tileId, t));
         }
         t->handleSnapshot(packet, full);

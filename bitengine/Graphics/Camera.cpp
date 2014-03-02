@@ -105,7 +105,7 @@ void bit::Camera::updatePan(sf::RenderWindow &window, sf::Time &gameTime)
 {
     if (panDirection.x != 0 || panDirection.y != 0)
     {
-        panDirection = bit::VectorMath::Normalize(panDirection) * panSpeed;
+        panDirection = bit::VectorMath::normalize(panDirection) * panSpeed;
         view.move(panDirection);
         panDirection.x = 0;
         panDirection.y = 0;

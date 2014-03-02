@@ -109,11 +109,11 @@ void bit::XinputGamepad::updateControls()
     sf::Vector2f xyv(x / 100, y / 100);
     sf::Vector2f urv(u / 100, r / 100);
 
-    bit::VectorMath::ApplyDeadZone(&xyv, defaultDeadzone);
-    bit::VectorMath::ApplyDeadZone(&urv, defaultDeadzone);
+    bit::VectorMath::applyDeadZone(&xyv, defaultDeadzone);
+    bit::VectorMath::applyDeadZone(&urv, defaultDeadzone);
 
-    xyv = bit::VectorMath::Normalize(xyv);
-    urv = bit::VectorMath::Normalize(urv);
+    xyv = bit::VectorMath::normalize(xyv);
+    urv = bit::VectorMath::normalize(urv);
 
     xyv.x *= xPercentage;
     xyv.y *= yPercentage;
@@ -183,7 +183,7 @@ sf::Vector2f bit::XinputGamepad::getVector(Vector vector, float deadZone)
     if(deadZone > 0)
     {
         sf::Vector2f v = axes[vector];
-        bit::VectorMath::ApplyDeadZone(&v, deadZone);
+        bit::VectorMath::applyDeadZone(&v, deadZone);
         return v;
     }
 

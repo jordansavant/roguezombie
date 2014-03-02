@@ -8,19 +8,20 @@
 #include "TestServer.hpp"
 #include "World.hpp"
 #include "Command.hpp"
+#include <sstream>
 
 MultiplayerState::MultiplayerState(bit::StateStack &stack, bit::Game* _game, bool isHost)
     : bit::ClientServerState(stack, _game, isHost)
 {
     createCamera(*game->renderWindow, 0, 0, 1, 1);
-    this->cameras[0]->lockOnPoint(200, 200);
+    cameras[0]->view.setCenter(0, 0);
 }
 
 void MultiplayerState::load()
 {
     bit::ClientServerState::load();
 
-    clientWorld.load();
+    clientWorld.load(this);
 }
 
 bool MultiplayerState::update(sf::RenderWindow &window, sf::Time &gameTime)
@@ -52,12 +53,18 @@ bool MultiplayerState::update(sf::RenderWindow &window, sf::Time &gameTime)
         cmd.type = Command::Type::PlayerMoveRight;
 		commandQueue.push_back(cmd);
 	}
-    if(game->inputManager->isButtonDown(sf::Keyboard::T))
+    if(game->inputManager->isButtonPressed(sf::Keyboard::T))
 	{
 		Command cmd;
         cmd.type = Command::Type::PlayerTeleport;
-        cmd.data << 20.0f << 30.0f;
+        cmd.pack = [] (sf::Packet &packet) {
+            packet << 0.0f << 0.0f;
+        };
 		commandQueue.push_back(cmd);
+
+        std::stringstream ss;
+        ss << "Sending " << 0.0f << " " << 0.0f;
+        bit::Output::Debug(ss.str());
 	}
 
 	// Exit
@@ -66,7 +73,7 @@ bool MultiplayerState::update(sf::RenderWindow &window, sf::Time &gameTime)
         requestStateClear();
     }
 
-    clientWorld.update(gameTime);
+    clientWorld.update(window, gameTime);
 
     return true;
 }
@@ -114,7 +121,7 @@ void MultiplayerState::handlePacket_ClientDisonnected(bit::ServerPacket &packet)
 
 void MultiplayerState::handlePacket_ServerUpdate(bit::ServerPacket &packet)
 {
-    bit::Output::Debug("Client handle server update");
+    //bit::Output::Debug("Client handle server update");
 
     clientWorld.handleSnapshot(packet);
 }
@@ -135,22 +142,23 @@ void MultiplayerState::preparePacket_ClientInformation(bit::ClientPacket &packet
 
 void MultiplayerState::preparePacket_ClientUpdate(bit::ClientPacket &packet)
 {
-    bit::Output::Debug("Client prepare client update");
+    //bit::Output::Debug("Client prepare client update");
 
 	// Notify of command count
 	sf::Uint32 commandCount;
 	commandCount = commandQueue.size();
 	packet << commandCount;
 
+    if(commandCount == 1)
+    {
+        int fooop = 0;
+    }
+
 	for(unsigned int i=0; i < commandQueue.size(); i++)
 	{
 		// Push commands onto packet, oldest first
-        packet << static_cast<sf::Int32>(commandQueue[i].type);
-
-        if(commandQueue[i].data.getDataSize() > 0)
-        {
-            packet << commandQueue[i].data;
-        }
+        packet << static_cast<sf::Uint8>(commandQueue[i].type);
+        commandQueue[i].pack(packet);
 	}
 
 	// Clear commands

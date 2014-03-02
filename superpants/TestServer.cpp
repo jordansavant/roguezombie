@@ -24,7 +24,7 @@ void TestServer::handlePacket_ClientInformation(bit::ClientPacket &packet, bit::
 
 void TestServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::RemoteClient &client)
 {
-    bit::Output::Debug("Server handle client update");
+    //bit::Output::Debug("Server handle client update");
 
 	// Get command count
 	sf::Uint32 commandCount;
@@ -33,7 +33,7 @@ void TestServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::Remot
 	for(unsigned int i=0; i < commandCount; i++)
 	{
 		// Get command
-		sf::Int32 commandType;
+		sf::Uint8 commandType;
 		packet >> commandType;
 
 		// Determine how to handle
@@ -73,7 +73,7 @@ void TestServer::preparePacket_PeerClientDisconnected(bit::ServerPacket &packet)
 
 void TestServer::preparePacket_ServerUpdate(bit::ServerPacket &packet)
 {
-    bit::Output::Debug("Server prepare server update");
+    //bit::Output::Debug("Server prepare server update");
 
     world.prepareSnapshot(packet);
 }

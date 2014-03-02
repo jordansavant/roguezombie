@@ -3,6 +3,7 @@
 #define RZ_COMMAND_H
 
 #include "SFML/Network.hpp"
+#include <functional>
 
 class Command
 {
@@ -21,7 +22,7 @@ public:
     };
     Type type;
 
-    sf::Packet data;
+    std::function<void(sf::Packet &packet)> pack;
 };
 
 #endif

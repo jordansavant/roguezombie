@@ -24,6 +24,7 @@ public:
 
     ClientWorld clientWorld;
 	std::vector<Command> commandQueue;
+    sf::Vector2f mousePositionInWorld;
 
     virtual void load();
 

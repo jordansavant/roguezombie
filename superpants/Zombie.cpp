@@ -27,7 +27,7 @@ void Zombie::update(sf::Time &gameTime)
 	{
 		if(walkTimer.update(gameTime))
 		{
-			deltaState.direction = bit::VectorMath::GetRandomVector();
+			deltaState.direction = bit::VectorMath::getRandomVector();
 		}
 
 		updatePosition(deltaState.direction);

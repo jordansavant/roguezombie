@@ -5,7 +5,9 @@
 #include "SFML/Network.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Math.hpp"
+#include "../bitengine/System.hpp"
 #include "../ResourcePath.h"
+#include <sstream>
 #include <map>
 
 World::World()
@@ -35,15 +37,16 @@ void World::load()
     // Tiles
     const int tileArray[] =
     {
-        0, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 0,
+        0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0,
     };
 
-    unsigned int tileCount = 4 * 4;
-    unsigned int rows = 4, columns = 4;
-    unsigned tileWidth = 64, tileHeight = 64;
+    unsigned int rows = 5, columns = 5;
+    unsigned int tileCount = rows * columns;
+    unsigned tileWidth = 32, tileHeight = 32;
     tiles.resize(tileCount, NULL);
     for (unsigned int j = 0; j < rows; ++j)
     {
@@ -109,24 +112,33 @@ void World::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &cl
 	{
         default:
             break;
-
 		case Command::Type::PlayerMoveUp:
 			d.y = -1;
+            player->zombie->updatePosition(d);
 			break;
 		case Command::Type::PlayerMoveDown:
 			d.y = 1;
+            player->zombie->updatePosition(d);
 			break;
 		case Command::Type::PlayerMoveLeft:
 			d.x = -1;
+            player->zombie->updatePosition(d);
 			break;
 		case Command::Type::PlayerMoveRight:
 			d.x = 1;
+            player->zombie->updatePosition(d);
 			break;
         case Command::Type::PlayerTeleport:
-            packet >> player->zombie->deltaState.x >> player->zombie->deltaState.y;
+            float x, y;
+            packet >> x >> y;
+            player->zombie->deltaState.x = x;
+            player->zombie->deltaState.y = y;
+
+            std::stringstream ss;
+            ss << "Receieved " << x << " " << y;
+            bit::Output::Debug(ss.str());
             break;
 	}
-    player->zombie->updatePosition(d);
 }
 
 void World::prepareSnapshot(bit::ServerPacket &packet, bool full)

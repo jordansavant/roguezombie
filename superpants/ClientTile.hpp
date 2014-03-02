@@ -13,7 +13,7 @@ namespace bit
     class ServerPacket;
 }
 
-class World;
+class ClientWorld;
 
 class ClientTile : public Tile
 {
@@ -21,12 +21,13 @@ public:
 
     ClientTile();
 
+    ClientWorld* world;
     sf::Sprite renderSprite;
     sf::Texture* renderTexture;
 
-    void clientLoad(sf::Texture* renderTexture);
+    void clientLoad(ClientWorld* world, sf::Texture* renderTexture);
 
-    void clientUpdate(sf::Time &gameTime);
+    void clientUpdate(sf::RenderWindow &window, sf::Time &gameTime);
 
     void clientDraw(sf::RenderWindow &window, sf::Time &gameTime);
 };

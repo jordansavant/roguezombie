@@ -20,6 +20,12 @@ bool bit::State::handleInput(sf::RenderWindow &window, sf::Time &gameTime)
 
 bool bit::State::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
+    if(cameras.size() > 0)
+    {
+        Camera* camera = cameras[0];
+        window.setView(camera->view);
+    }
+
     return true;
 }
 
