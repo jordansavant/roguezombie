@@ -4,7 +4,7 @@
 
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
-#include "../bitengine/Game/GameTimer.hpp"
+#include "../bitengine/Game.hpp"
 
 namespace bit
 {

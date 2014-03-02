@@ -1,8 +1,7 @@
 #include "ClientWorld.hpp"
 #include "ClientZombie.hpp"
-#include "../bitengine/Math/Math.hpp"
-#include "../bitengine/Network/ClientPacket.hpp"
-#include "../bitengine/Network/ServerPacket.hpp"
+#include "../bitengine/Math.hpp"
+#include "../bitengine/Network.hpp"
 #include "../ResourcePath.h"
 #include "SFML/Network.hpp"
 #include <map>

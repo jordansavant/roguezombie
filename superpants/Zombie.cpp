@@ -1,12 +1,9 @@
 #include "Zombie.hpp"
-#include "World.hpp"
 #include "SFML/Graphics.hpp"
-#include "../bitengine/Input/InputManager.hpp"
-#include "../bitengine/Game/Game.hpp"
-#include "../bitengine/Network/ServerPacket.hpp"
-#include "../bitengine/Network/ClientPacket.hpp"
-#include "../bitengine/Math/Math.hpp"
-#include "MultiplayerState.hpp"
+#include "../bitengine/Game.hpp"
+#include "../bitengine/Network.hpp"
+#include "../bitengine/Math.hpp"
+#include "World.hpp"
 
 Zombie::Zombie()
     : fixedState(), deltaState(), walkTimer(2), world(NULL), isPlayerControlled(false)

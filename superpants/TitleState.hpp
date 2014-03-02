@@ -2,8 +2,8 @@
 #ifndef TITLESTATE_H
 #define TITLESTATE_H
 
-#include "../bitengine/Game/State.hpp"
 #include "SFML/Graphics.hpp"
+#include "../bitengine/Game.hpp"
 
 namespace bit
 {

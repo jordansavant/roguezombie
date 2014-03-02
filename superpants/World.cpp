@@ -1,12 +1,11 @@
 #include "World.hpp"
 #include "Zombie.hpp"
 #include "Player.hpp"
-#include "../bitengine/Network/RemoteClient.hpp"
-#include "../bitengine/Network/ServerPacket.hpp"
-#include "../bitengine/Network/ClientPacket.hpp"
-#include "../bitengine/Math/Math.hpp"
-#include "../ResourcePath.h"
 #include "SFML/Network.hpp"
+#include "../bitengine/Network.hpp"
+#include "../bitengine/Math.hpp"
+#include "../ResourcePath.h"
+#include <map>
 
 World::World()
 {

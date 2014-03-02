@@ -2,10 +2,10 @@
 #include "Zombie.hpp"
 #include "World.hpp"
 #include "SFML/Graphics.hpp"
-#include "../bitengine/Input/InputManager.hpp"
-#include "../bitengine/Game/Game.hpp"
-#include "../bitengine/Network/Server.hpp"
-#include "../bitengine/Math/Math.hpp"
+#include "../bitengine/Game.hpp"
+#include "../bitengine/Network.hpp"
+#include "../bitengine/Input.hpp"
+#include "../bitengine/Math.hpp"
 #include "MultiplayerState.hpp"
 
 ClientZombie::ClientZombie()

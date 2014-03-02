@@ -3,7 +3,7 @@
 #define TEST_GAME_H
 
 #include "SFML/Graphics.hpp"
-#include "../bitengine/Game/Game.hpp"
+#include "../bitengine/Game.hpp"
 
 class TestGame: public bit::Game
 {

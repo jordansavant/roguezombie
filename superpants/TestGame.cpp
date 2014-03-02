@@ -1,11 +1,10 @@
 #include "TestGame.hpp"
-#include "../bitengine/Input/InputManager.hpp"
-#include "../bitengine/Game/StateStack.hpp"
+#include "../bitengine/Game.hpp"
+#include "../bitengine/Input.hpp"
 #include "TitleState.hpp"
 #include "MultiplayerState.hpp"
 #include <iostream>
 #include <sstream>
-#include <SFML/OpenGL.hpp>
 
 TestGame::TestGame()
 	: Game("TEST GAME!!1!!", 640, 480, false)

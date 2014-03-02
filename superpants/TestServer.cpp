@@ -1,9 +1,6 @@
 #include "TestServer.hpp"
-#include "../bitengine/Network/Server.hpp"
-#include "../bitengine/Network/RemoteClient.hpp"
-#include "../bitengine/Network/ServerPacket.hpp"
-#include "../bitengine/Network/ClientPacket.hpp"
-#include "../bitengine/System/Output.hpp"
+#include "../bitengine/Network.hpp"
+#include "../bitengine/System.hpp"
 #include "Command.hpp"
 
 void TestServer::load()

@@ -1,9 +1,7 @@
 #include "TitleState.hpp"
-#include "../bitengine/Game/Game.hpp"
-#include "../bitengine/Game/State.hpp"
-#include "../bitengine/Game/StateStack.hpp"
-#include "../bitengine/Input/InputManager.hpp"
-#include "../bitengine/Graphics/Camera.hpp"
+#include "../bitengine/Game.hpp"
+#include "../bitengine/Graphics.hpp"
+#include "../bitengine/Input.hpp"
 #include "../ResourcePath.h"
 #include "TestGame.hpp"
 

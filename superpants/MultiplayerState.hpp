@@ -2,7 +2,7 @@
 #ifndef RZ_MULTIPLAYER_STATE_H
 #define RZ_MULTIPLAYER_STATE_H
 
-#include "../bitengine/Network/ClientServerState.hpp"
+#include "../bitengine/Network.hpp"
 #include "ClientWorld.hpp"
 #include "Command.hpp"
 

@@ -4,8 +4,8 @@
 
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
-#include <map>
 #include "Command.hpp"
+#include <map>
 
 namespace bit
 {
