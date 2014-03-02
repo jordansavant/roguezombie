@@ -68,6 +68,9 @@ void World::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &cl
 
 	switch(commandType)
 	{
+        default:
+            break;
+
 		case Command::Type::PlayerMoveUp:
 			d.y = -1;
 			break;
