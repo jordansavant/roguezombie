@@ -1,29 +1,29 @@
 #pragma once
-#ifndef RZ_CLIENTZOMBIE_H
-#define RZ_CLIENTZOMBIE_H
+#ifndef RZ_ZOMBIECLIENT_H
+#define RZ_ZOMBIECLIENT_H
 
+#include "Zombie.hpp"
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
-#include "../bitengine/Game.hpp"
-#include "../bitengine/Network.hpp"
-#include "Zombie.hpp"
+#include "../../bitengine/Game.hpp"
+#include "../../bitengine/Network.hpp"
 #include <deque>
 
-class ClientWorld;
+class WorldClient;
 
-class ClientZombie : public Zombie
+class ZombieClient : public Zombie
 {
 public:
 
-    ClientZombie();
+    ZombieClient();
 
-    ClientWorld* world;
+    WorldClient* world;
     sf::Sprite renderSprite;
     sf::Texture* renderTexture;
 	sf::Clock temporaryClockVariable;
 	std::deque<std::pair<sf::Time, Zombie::DeltaState>> deltas;
 
-    void clientLoad(ClientWorld* world, sf::Texture* renderTexture);
+    void clientLoad(WorldClient* world, sf::Texture* renderTexture);
 
     void clientUpdate(sf::Time &gameTime);
 

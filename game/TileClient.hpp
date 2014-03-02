@@ -1,31 +1,27 @@
 #pragma once
-#ifndef RZ_CLIENTTILE_H
-#define RZ_CLIENTTILE_H
+#ifndef RZ_TILECLIENT_H
+#define RZ_TILECLIENT_H
 
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
-#include "../bitengine/Game/GameTimer.hpp"
+#include "../bitengine/Game.hpp"
+#include "../bitengine/Network.hpp"
 #include "Tile.hpp"
 #include <deque>
 
-namespace bit
-{
-    class ServerPacket;
-}
+class WorldClient;
 
-class ClientWorld;
-
-class ClientTile : public Tile
+class TileClient : public Tile
 {
 public:
 
-    ClientTile();
+    TileClient();
 
-    ClientWorld* world;
+    WorldClient* world;
     sf::Sprite renderSprite;
     sf::Texture* renderTexture;
 
-    void clientLoad(ClientWorld* world, sf::Texture* renderTexture);
+    void clientLoad(WorldClient* world, sf::Texture* renderTexture);
 
     void clientUpdate(sf::RenderWindow &window, sf::Time &gameTime);
 

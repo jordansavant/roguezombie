@@ -1,25 +1,25 @@
-#include "ClientZombie.hpp"
-#include "ClientWorld.hpp"
+#include "ZombieClient.hpp"
 #include "Zombie.hpp"
 #include "SFML/Graphics.hpp"
-#include "../bitengine/Game.hpp"
-#include "../bitengine/Network.hpp"
-#include "../bitengine/Input.hpp"
-#include "../bitengine/Math.hpp"
+#include "../WorldClient.hpp"
+#include "../../bitengine/Game.hpp"
+#include "../../bitengine/Network.hpp"
+#include "../../bitengine/Input.hpp"
+#include "../../bitengine/Math.hpp"
 
-ClientZombie::ClientZombie()
+ZombieClient::ZombieClient()
     : Zombie()
 {
 }
 
-void ClientZombie::clientLoad(ClientWorld* _world, sf::Texture* texture)
+void ZombieClient::clientLoad(WorldClient* _world, sf::Texture* texture)
 {
     world = _world;
     renderTexture = texture;
     renderSprite.setTexture(*texture);
 }
 
-void ClientZombie::clientUpdate(sf::Time &gameTime)
+void ZombieClient::clientUpdate(sf::Time &gameTime)
 {
 	float finalX = deltaState.x;
 	float finalY = deltaState.y;
@@ -117,12 +117,12 @@ void ClientZombie::clientUpdate(sf::Time &gameTime)
     renderSprite.setPosition(renderPosition.x, renderPosition.y);
 }
 
-void ClientZombie::clientDraw(sf::RenderWindow &window, sf::Time &gameTime)
+void ZombieClient::clientDraw(sf::RenderWindow &window, sf::Time &gameTime)
 {
     window.draw(renderSprite);
 }
 
-void ClientZombie::handleSnapshot(bit::ServerPacket &packet, bool full)
+void ZombieClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
 	Zombie::handleSnapshot(packet, full);
 

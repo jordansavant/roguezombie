@@ -5,7 +5,7 @@
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Graphics.hpp"
-#include "ClientWorld.hpp"
+#include "WorldClient.hpp"
 #include "Command.hpp"
 
 class GameplayState : public bit::ClientServerState
@@ -14,7 +14,7 @@ public:
 
     GameplayState(bit::StateStack &stack, bit::Game* game, bool isHost);
 
-    ClientWorld clientWorld;
+    WorldClient worldClient;
 	std::vector<Command> commandQueue;
     sf::Vector2f mousePositionInWorld;
 

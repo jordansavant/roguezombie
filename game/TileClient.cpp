@@ -1,25 +1,25 @@
-#include "ClientTile.hpp"
+#include "TileClient.hpp"
 #include "Tile.hpp"
-#include "ClientWorld.hpp"
+#include "WorldClient.hpp"
 #include "SFML/Graphics.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Input.hpp"
 #include "../bitengine/Math.hpp"
 
-ClientTile::ClientTile()
+TileClient::TileClient()
     : Tile()
 {
 }
 
-void ClientTile::clientLoad(ClientWorld* _world, sf::Texture* texture)
+void TileClient::clientLoad(WorldClient* _world, sf::Texture* texture)
 {
     world = _world;
     renderTexture = texture;
     renderSprite.setTexture(*texture);
 }
 
-void ClientTile::clientUpdate(sf::RenderWindow &window, sf::Time &gameTime)
+void TileClient::clientUpdate(sf::RenderWindow &window, sf::Time &gameTime)
 {
     sf::Vector2f isoPosition = bit::VectorMath::normalToIsometric(fixedState.x, fixedState.y);
     renderSprite.setPosition(isoPosition.x - fixedState.width, isoPosition.y);
@@ -44,7 +44,7 @@ void ClientTile::clientUpdate(sf::RenderWindow &window, sf::Time &gameTime)
     }
 }
 
-void ClientTile::clientDraw(sf::RenderWindow &window, sf::Time &gameTime)
+void TileClient::clientDraw(sf::RenderWindow &window, sf::Time &gameTime)
 {
     window.draw(renderSprite);
 }

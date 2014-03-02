@@ -1,24 +1,19 @@
 #include "Zombie.hpp"
 #include "SFML/Graphics.hpp"
-#include "../bitengine/Game.hpp"
-#include "../bitengine/Network.hpp"
-#include "../bitengine/Math.hpp"
-#include "World.hpp"
+#include "../../bitengine/Game.hpp"
+#include "../../bitengine/Network.hpp"
+#include "../../bitengine/Math.hpp"
+#include "../World.hpp"
+#include "../Tile.hpp"
 
 Zombie::Zombie()
-    : fixedState(), deltaState(), walkTimer(2), world(NULL), isPlayerControlled(false)
+    : Character(), walkTimer(2), isPlayerControlled(false)
 {
 }
 
-void Zombie::load(World* _world, float _x, float _y)
+void Zombie::load(World* _world, Tile* _tile)
 {
-    world = _world;
-
-	fixedState.maxHealth = 100;
-	deltaState.health = 100;
-
-    deltaState.x = _x;
-    deltaState.y = _y;
+    Character::load(_world, _tile);
 }
 
 void Zombie::update(sf::Time &gameTime)

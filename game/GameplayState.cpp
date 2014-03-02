@@ -6,7 +6,7 @@
 #include "../bitengine/System.hpp"
 #include "../ResourcePath.h"
 #include "GameplayServer.hpp"
-#include "World.hpp"
+#include "WorldClient.hpp"
 #include "Command.hpp"
 #include <sstream>
 
@@ -21,7 +21,7 @@ void GameplayState::load()
 {
     bit::ClientServerState::load();
 
-    clientWorld.load(this);
+    worldClient.load(this);
 }
 
 bool GameplayState::update(sf::RenderWindow &window, sf::Time &gameTime)
@@ -73,14 +73,14 @@ bool GameplayState::update(sf::RenderWindow &window, sf::Time &gameTime)
         requestStateClear();
     }
 
-    clientWorld.update(window, gameTime);
+    worldClient.update(window, gameTime);
 
     return true;
 }
 
 void GameplayState::drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera)
 {
-    clientWorld.draw(window, gameTime);
+    worldClient.draw(window, gameTime);
 }
 
 bit::Server* GameplayState::newServer()
@@ -106,7 +106,7 @@ void GameplayState::handlePacket_InitializeSelf(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle initialize self");
 
-    clientWorld.handleSnapshot(packet, true);
+    worldClient.handleSnapshot(packet, true);
 }
 
 void GameplayState::handlePacket_PeerClientConnected(bit::ServerPacket &packet)
@@ -123,7 +123,7 @@ void GameplayState::handlePacket_ServerUpdate(bit::ServerPacket &packet)
 {
     //bit::Output::Debug("Client handle server update");
 
-    clientWorld.handleSnapshot(packet);
+    worldClient.handleSnapshot(packet);
 }
 
 void GameplayState::handlePacket_Shutdown(bit::ServerPacket &packet)

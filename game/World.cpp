@@ -1,7 +1,7 @@
 #include "World.hpp"
-#include "Zombie.hpp"
 #include "Player.hpp"
 #include "Tile.hpp"
+#include "characters/Zombie.hpp"
 #include "SFML/Network.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Math.hpp"
@@ -57,7 +57,7 @@ void World::load()
             Tile::Type tileType = static_cast<Tile::Type>(tileArray[index]);
 
             // build the quad and its position on the map
-            float z = 0;
+            float originZ = 0;
             float originX = i * tileWidth;
             float originY = j * tileHeight;
 
@@ -65,17 +65,15 @@ void World::load()
             Tile* t = new Tile();
             t->load(this, tileType, originX, originY, tileWidth, tileHeight);
             tiles[index] = t;
-        }
-    }
 
-    // Zombies
-    unsigned int zcount = 3;
-    zombies.resize(zcount, NULL);
-    for(unsigned int i=0; i < zcount; i++)
-    {
-        Zombie* z = new Zombie();
-        z->load(this, 500 * bit::Math::randomFloat(), 500 * bit::Math::randomFloat());
-        zombies[i] = z;
+            // Add a zombie randomly
+            if(bit::Math::random(4) == 1)
+            {
+                Zombie* z = new Zombie();
+                z->load(this, t);
+                zombies.push_back(z);
+            }
+        }
     }
 }
 
@@ -92,7 +90,7 @@ void World::createPlayer(bit::RemoteClient &client)
 	if(players.find(client.id) == players.end())
 	{
 		Zombie* zombie = new Zombie();
-        zombie->load(this, 100, 100);
+        zombie->load(this, tiles[0]);
 		zombie->isPlayerControlled = true;
 		zombies.push_back(zombie);
 

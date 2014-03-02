@@ -1,6 +1,6 @@
 #include "Player.hpp"
 #include "World.hpp"
-#include "Zombie.hpp"
+#include "characters/Zombie.hpp"
 
 Player::Player()
 	: world(NULL), zombie(NULL)

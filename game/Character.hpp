@@ -1,6 +1,6 @@
 #pragma once
-#ifndef RZ_ZOMBIE_H
-#define RZ_ZOMBIE_H
+#ifndef RZ_CHARACTER_H
+#define RZ_CHARACTER_H
 
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
@@ -8,16 +8,18 @@
 #include "../bitengine/Network.hpp"
 
 class World;
+class Tile;
 
-class Zombie
+class Character
 {
 public:
 
-    Zombie();
+    Character();
 
 	struct FixedState
 	{
 		int maxHealth;
+
         friend sf::Packet& operator <<(sf::Packet& packet, const FixedState &state)
         {
             return packet << state.maxHealth;
@@ -34,6 +36,7 @@ public:
 		float x, y;
 	    sf::Vector2f direction;
 		int health;
+
         friend sf::Packet& operator <<(sf::Packet& packet, const DeltaState &state)
         {
             return packet << state.x << state.y << state.health;
@@ -45,15 +48,13 @@ public:
 	};
 	DeltaState deltaState;
 
-    bit::GameTimer walkTimer;
     World* world;
-	bool isPlayerControlled;
+    Tile* tile;
+    bool isPlayerCharacter;
 
-    void load(World* world, float x, float y);
+    virtual void load(World* world, Tile* tile);
 
-    void update(sf::Time &gameTime);
-
-	void updatePosition(sf::Vector2f &direction);
+    virtual void update(sf::Time &gameTime);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 

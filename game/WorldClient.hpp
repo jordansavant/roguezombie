@@ -1,32 +1,28 @@
 #pragma once
-#ifndef RZ_CLIENTWORLD_H
-#define RZ_CLIENTWORLD_H
+#ifndef RZ_WORLDCLIENT_H
+#define RZ_WORLDCLIENT_H
 
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
+#include "../bitengine/Network.hpp"
 #include <map>
 
-namespace bit
-{
-    class ServerPacket;
-}
-
-class ClientZombie;
-class ClientTile;
+class ZombieClient;
+class TileClient;
 class GameplayState;
 
-class ClientWorld
+class WorldClient
 {
 public:
 
-    ClientWorld();
+    WorldClient();
 
-    ~ClientWorld();
+    ~WorldClient();
 
 
     GameplayState* state;
-    std::map<sf::Uint32, ClientZombie*> zombies;
-    std::map<sf::Uint32, ClientTile*> tiles;
+    std::map<sf::Uint32, ZombieClient*> zombies;
+    std::map<sf::Uint32, TileClient*> tiles;
     sf::Texture zombieimage;
     sf::Texture tileimage;
 
