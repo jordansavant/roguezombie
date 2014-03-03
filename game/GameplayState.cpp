@@ -31,7 +31,7 @@ bool GameplayState::update(sf::RenderWindow &window, sf::Time &gameTime)
 
     if(worldClient.playerCharacter)
     {
-        cameras[0]->lockOnPoint(worldClient.playerCharacter->renderX, worldClient.playerCharacter->renderY);
+        //cameras[0]->lockOnPoint(worldClient.playerCharacter->renderX, worldClient.playerCharacter->renderY);
     }
 
 	// Listen for Game Commands

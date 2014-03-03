@@ -7,6 +7,7 @@
 #include "../../bitengine/Network.hpp"
 #include "../../bitengine/Input.hpp"
 #include "../../bitengine/Math.hpp"
+#include "../../bitengine/System.hpp"
 
 ZombieClient::ZombieClient()
     : Zombie(), renderX(0), renderY(0)
@@ -28,27 +29,30 @@ void ZombieClient::clientUpdate(sf::Time &gameTime)
 	// delta timeline will have 0 to 3 snapshots
 	if(deltas.size() > 1)
 	{
-		unsigned int ticktime = (1000 / BIT_SERVER_TICK_FPS);
-		unsigned int lagtime = 2 * ticktime;
+		int ticktime = (1000 / BIT_SERVER_TICK_FPS);
+		int lagtime = 2 * ticktime;
 
 		// interpolate from position at 0 to position at 1
-		unsigned int a = 0;
-		unsigned int b = 1;
+		int a = 0;
+		int b = 1;
 
 		// Set point of render time 100ms behind server snapshots
-		unsigned int msX = temporaryClockVariable.getElapsedTime().asMilliseconds() - lagtime;
+		int msX = temporaryClockVariable.getElapsedTime().asMilliseconds() - lagtime;
 
 		// Get the first delta and the second delta, this should theoretically wrap
 		// the execution snapshot if there were not dropped packets
-		unsigned int msA = deltas[a].first.asMilliseconds();
-		unsigned int msB = deltas[b].first.asMilliseconds();
+		int msA = deltas[a].first.asMilliseconds();
+		int msB = deltas[b].first.asMilliseconds();
+        msX = std::max(0, msX);
+        msA = std::max(0, msA);
 
 		// If the target render point is later than our second packet, try our third
-		/*if(msX > msB && deltas.size() == 3)
+		if(msX > msB && deltas.size() == 3)
 		{
 			b = 2;
 			msB = deltas[b].first.asMilliseconds();
-		}*/
+		}
+        msB = std::max(0, msB);
 
 		//  If the render point has been wrapped by two known histories
 		if(msX <= msB)
@@ -62,9 +66,9 @@ void ZombieClient::clientUpdate(sf::Time &gameTime)
 			float yB = deltas[b].second.y;
 
 			// Get their ratio of time
-			float flength = (float)msB - (float)msA;
-			float ilength = (float)msX - (float)msA;
-			float ratio = ilength / flength;
+			int flength = msB - msA;
+			int ilength = msX - msA;
+			float ratio = (float)ilength / (float)flength;
 
 			// Lerp them
 			float lerpX = bit::Math::lerp(xA, xB, ratio);
@@ -88,30 +92,24 @@ void ZombieClient::clientUpdate(sf::Time &gameTime)
 
             float positionOneX = deltas[indexA].second.x;
             float positionOneY = deltas[indexA].second.y;
-            float positionOneTime = deltas[indexA].first.asMilliseconds();
+            int positionOneTime = deltas[indexA].first.asMilliseconds();
 
             float positionTwoX = deltas[indexB].second.x;
             float positionTwoY = deltas[indexB].second.y;
-            float positionTwoTime = deltas[indexB].first.asMilliseconds();
+            int positionTwoTime = deltas[indexB].first.asMilliseconds();
 
-            float currentTime = temporaryClockVariable.getElapsedTime().asMilliseconds();
+            int currentTime = temporaryClockVariable.getElapsedTime().asMilliseconds();
 
             float xDiff = positionTwoX - positionOneX;
             float yDiff = positionTwoY - positionOneY;
-            float tDiff = positionTwoTime - positionOneTime;
+            int tDiff = positionTwoTime - positionOneTime;
 
-            float currentDiff = currentTime - positionTwoTime;
-            float ratio = currentDiff / tDiff;
+            int currentDiff = currentTime - positionTwoTime;
+            float ratio = (float)currentDiff / (float)tDiff;
 
             finalX = positionTwoX + ratio * ( xDiff );
             finalY = positionTwoY + ratio * ( yDiff );
 		}
-		// If the render point is behind for more than 1/4 of a second, do no prediction
-        else
-        {
-            finalX = 10;
-            finalY = 10;
-        }
 	}
 
     if(fixedState.isPlayerCharacter && world->playerCharacter && world->playerCharacter == this)

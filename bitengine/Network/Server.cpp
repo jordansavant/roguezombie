@@ -9,7 +9,7 @@ bit::Server::Server()
       thread(&Server::executionThread, this),
       waitingThreadEnd(false),
       isListening(false),
-      clientTimeoutTime(sf::seconds(3)),
+      clientTimeoutTime(sf::seconds(30)),
       maxConnectedClients(16),
       connectedClients(0),
 	  clientIdentifier(0),

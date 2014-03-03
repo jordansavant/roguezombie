@@ -24,7 +24,7 @@ public:
         {
         }
 
-		int maxHealth;
+		sf::Int32 maxHealth;
         bool isPlayerCharacter;
         bool clientId;
 
@@ -43,7 +43,7 @@ public:
 	{
 		float x, y;
 	    sf::Vector2f direction;
-		int health;
+        sf::Int32 health;
 
         friend sf::Packet& operator <<(sf::Packet& packet, const DeltaState &state)
         {
