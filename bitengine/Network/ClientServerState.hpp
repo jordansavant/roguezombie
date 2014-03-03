@@ -23,6 +23,8 @@ namespace bit
 
         virtual ~ClientServerState();
 
+        sf::Uint32 clientId;
+
         virtual void load();
 
         virtual bool update(sf::RenderWindow &window, sf::Time &gameTime);
@@ -58,6 +60,8 @@ namespace bit
         virtual void handlePacket_Broadcast(bit::ServerPacket &packet) = 0;
 
         virtual void handlePacket_InitializeSelf(bit::ServerPacket &packet) = 0;
+
+        virtual void handlePacket_InitializeWorld(bit::ServerPacket &packet) = 0;
 
         virtual void handlePacket_PeerClientConnected(bit::ServerPacket &packet) = 0;
 

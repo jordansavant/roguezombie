@@ -178,23 +178,29 @@ void bit::Server::handlePacket(ClientPacket &packet, RemoteClient &client, bool 
     switch(packetType)
     {
         case Server::ClientPacketType::Quit:
-
+        {
             client.hasTimedOut = true;
             detectedTimeout = true;
 
             break;
-
+        }
         case Server::ClientPacketType::ClientInformation:
-
+        {
             // Confirm them
             client.isConfirmed = true;
 
             handlePacket_ClientInformation(packet, client);
+            
+            // Send them the full world
+            bit::ServerPacket worldPacket;
+            worldPacket << static_cast<sf::Int32>(Server::ServerPacketType::InitializeWorld);
+            preparePacket_InitializeWorld(worldPacket);
+            client.socket.send(worldPacket);
 
             break;
-
+        }
         case Server::ClientPacketType::ClientUpdate:
-
+        {
             // Update their most rescent ack
             sf::Uint32 snapshotId;
             packet >> snapshotId;
@@ -207,6 +213,7 @@ void bit::Server::handlePacket(ClientPacket &packet, RemoteClient &client, bool 
             handlePacket_ClientUpdate(packet, client);
 
             break;
+        }
     }
 }
 
@@ -310,6 +317,7 @@ void bit::Server::handleNewClient(RemoteClient &client)
     // Send initialize player packet
     ServerPacket packet_InitializeSelf;
     packet_InitializeSelf << static_cast<sf::Int32>(Server::ServerPacketType::InitializeSelf);
+    packet_InitializeSelf << sf::Uint32(client.id);
     preparePacket_InitializeSelf(packet_InitializeSelf);
     client.socket.send(packet_InitializeSelf);
 

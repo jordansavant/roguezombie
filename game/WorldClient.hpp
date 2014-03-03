@@ -19,8 +19,8 @@ public:
 
     ~WorldClient();
 
-
     GameplayState* state;
+    ZombieClient* playerCharacter;
     std::map<sf::Uint32, ZombieClient*> zombies;
     std::map<sf::Uint32, TileClient*> tiles;
     sf::Texture zombieimage;

@@ -57,6 +57,11 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
 void GameplayServer::preparePacket_InitializeSelf(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Server prepare initialize self");
+}
+
+void GameplayServer::preparePacket_InitializeWorld(bit::ServerPacket &packet)
+{
+    bit::Output::Debug("Server prepare initialize world");
 
     world.prepareSnapshot(packet, true);
 }

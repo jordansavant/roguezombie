@@ -9,6 +9,7 @@
 
 class World;
 class Tile;
+class Player;
 
 class Character
 {
@@ -18,15 +19,22 @@ public:
 
 	struct FixedState
 	{
+        FixedState()
+            : maxHealth(0), isPlayerCharacter(false), clientId(0)
+        {
+        }
+
 		int maxHealth;
+        bool isPlayerCharacter;
+        bool clientId;
 
         friend sf::Packet& operator <<(sf::Packet& packet, const FixedState &state)
         {
-            return packet << state.maxHealth;
+            return packet << state.maxHealth << state.isPlayerCharacter << state.clientId;
         }
         friend sf::Packet& operator >>(sf::Packet& packet, FixedState &state)
         {
-            return packet >> state.maxHealth;
+            return packet >> state.maxHealth >> state.isPlayerCharacter >> state.clientId;
         }
 	};
 	FixedState fixedState;
@@ -50,15 +58,12 @@ public:
 
     World* world;
     Tile* tile;
-    bool isPlayerCharacter;
 
     virtual void load(World* world, Tile* tile);
 
     virtual void update(sf::Time &gameTime);
 
-    virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
-
-    virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
+    virtual void posses(Player* player);
 
     virtual void moveUp();
 
@@ -69,6 +74,10 @@ public:
     virtual void moveRight();
 
     virtual void moveToTile(Tile* tile);
+
+    virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
+
+    virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 };
 
 #endif

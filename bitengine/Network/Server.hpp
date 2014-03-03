@@ -27,6 +27,7 @@ namespace bit
         {
             Broadcast,                  // string broadcast
             InitializeSelf,             // tell client we have acknowledged their connection
+            InitializeWorld,            // tell client of the full world
             PeerClientConnected,        // tell connected clients about a new client
             PeerClientDisconnected,     // tell connected clients about a lost client
             ServerUpdate,               // tick update for world snapshot 1/20th a second
@@ -94,6 +95,8 @@ namespace bit
         // Packet sending
 
         virtual void preparePacket_InitializeSelf(ServerPacket &packet) = 0;
+
+        virtual void preparePacket_InitializeWorld(ServerPacket &packet) = 0;
 
         virtual void preparePacket_PeerClientConnected(ServerPacket &packet) = 0;
 

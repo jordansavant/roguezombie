@@ -26,6 +26,8 @@ private:
 
     virtual void preparePacket_InitializeSelf(bit::ServerPacket &packet);
 
+    virtual void preparePacket_InitializeWorld(bit::ServerPacket &packet);
+
     virtual void preparePacket_PeerClientConnected(bit::ServerPacket &packet);
 
     virtual void preparePacket_PeerClientDisconnected(bit::ServerPacket &packet);

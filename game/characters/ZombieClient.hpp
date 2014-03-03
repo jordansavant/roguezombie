@@ -22,6 +22,7 @@ public:
     sf::Texture* renderTexture;
 	sf::Clock temporaryClockVariable;
 	std::deque<std::pair<sf::Time, Zombie::DeltaState>> deltas;
+    float renderX, renderY;
 
     void clientLoad(WorldClient* world, sf::Texture* renderTexture);
 

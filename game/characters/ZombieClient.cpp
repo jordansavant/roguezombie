@@ -2,13 +2,14 @@
 #include "Zombie.hpp"
 #include "SFML/Graphics.hpp"
 #include "../WorldClient.hpp"
+#include "../GameplayState.hpp"
 #include "../../bitengine/Game.hpp"
 #include "../../bitengine/Network.hpp"
 #include "../../bitengine/Input.hpp"
 #include "../../bitengine/Math.hpp"
 
 ZombieClient::ZombieClient()
-    : Zombie()
+    : Zombie(), renderX(0), renderY(0)
 {
 }
 
@@ -113,8 +114,19 @@ void ZombieClient::clientUpdate(sf::Time &gameTime)
         }
 	}
 
+    if(fixedState.isPlayerCharacter && world->playerCharacter && world->playerCharacter == this)
+    {
+        renderSprite.setColor(sf::Color::Magenta);
+    }
+    else
+    {
+        renderSprite.setColor(sf::Color::White);
+    }
+
     sf::Vector2f renderPosition = bit::VectorMath::normalToIsometric(finalX, finalY);
-    renderSprite.setPosition(renderPosition.x - 8, renderPosition.y - 24);
+    renderX = renderPosition.x - 8;
+    renderY = renderPosition.y - 24;
+    renderSprite.setPosition(renderX, renderY);
 }
 
 void ZombieClient::clientDraw(sf::RenderWindow &window, sf::Time &gameTime)

@@ -13,7 +13,6 @@ RogueZombieGame::RogueZombieGame()
     fpsFont.loadFromFile(resourcePath() + "Agency.ttf");
     fpsText.setFont(fpsFont);
     fpsText.setCharacterSize(16);
-	fpsText.setString("Update: XXXX micro  /  Draw: XXXX micro");
 
     Game::stateStack->pushState(startMenuState);
 }

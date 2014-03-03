@@ -16,8 +16,9 @@ public:
 
     World* world;
 	Zombie* zombie;
+    unsigned int clientId;
 
-    void load(World* world, Zombie* zombie);
+    void load(World* world, Zombie* zombie, unsigned int clientId);
 };
 
 #endif

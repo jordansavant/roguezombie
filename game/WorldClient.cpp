@@ -1,5 +1,6 @@
 #include "WorldClient.hpp"
 #include "TileClient.hpp"
+#include "GameplayState.hpp"
 #include "characters/ZombieClient.hpp"
 #include "../bitengine/Math.hpp"
 #include "../bitengine/Network.hpp"
@@ -8,7 +9,7 @@
 #include <map>
 
 WorldClient::WorldClient()
-    : state(NULL)
+    : state(NULL), playerCharacter(NULL)
 {
 }
 
@@ -106,6 +107,12 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
             zombies.insert(std::pair<sf::Uint32, ZombieClient*>(zombieId, z));
         }
         z->handleSnapshot(packet, full);
+
+        // Nab player
+        if(z->fixedState.clientId == state->clientId)
+        {
+            playerCharacter = z;
+        }
     }
 
 }

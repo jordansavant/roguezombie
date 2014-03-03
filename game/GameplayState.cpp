@@ -8,6 +8,7 @@
 #include "GameplayServer.hpp"
 #include "WorldClient.hpp"
 #include "Command.hpp"
+#include "characters/ZombieClient.hpp"
 #include <sstream>
 
 GameplayState::GameplayState(bit::StateStack &stack, bit::Game* _game, bool isHost)
@@ -27,6 +28,11 @@ void GameplayState::load()
 bool GameplayState::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::ClientServerState::update(window, gameTime);
+
+    if(worldClient.playerCharacter)
+    {
+        cameras[0]->lockOnPoint(worldClient.playerCharacter->renderX, worldClient.playerCharacter->renderY);
+    }
 
 	// Listen for Game Commands
     if(game->inputManager->isButtonPressed(sf::Keyboard::W))
@@ -101,6 +107,11 @@ void GameplayState::handlePacket_Broadcast(bit::ServerPacket &packet)
 void GameplayState::handlePacket_InitializeSelf(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle initialize self");
+}
+
+void GameplayState::handlePacket_InitializeWorld(bit::ServerPacket &packet)
+{
+    bit::Output::Debug("Client handle initialize world");
 
     worldClient.handleSnapshot(packet, true);
 }

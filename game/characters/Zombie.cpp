@@ -21,7 +21,7 @@ void Zombie::update(sf::Time &gameTime)
 {
     Character::update(gameTime);
 
-	if(!isPlayerCharacter)
+	if(!fixedState.isPlayerCharacter)
 	{
 		if(walkTimer.update(gameTime))
 		{

@@ -11,6 +11,7 @@
 
 bit::ClientServerState::ClientServerState(StateStack &stack, Game* game, bool isHost)
     : bit::State(stack, game),
+      clientId(0),
       lastSnapshotId(0),
       isHost(isHost),
       server(NULL),
@@ -134,6 +135,7 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, bit::ServerPacke
 
         case Server::ServerPacketType::InitializeSelf:
 		{
+            packet >> clientId;
             handlePacket_InitializeSelf(packet);
 
 		    // Send information packet to confirm connection with server
@@ -147,20 +149,26 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, bit::ServerPacke
 
             break;
 		}
-        case Server::ServerPacketType::PeerClientConnected:
+        case Server::ServerPacketType::InitializeWorld:
+		{
+            handlePacket_InitializeWorld(packet);
 
+            break;
+		}
+        case Server::ServerPacketType::PeerClientConnected:
+        {
             handlePacket_PeerClientConnected(packet);
 
             break;
-
+        }
         case Server::ServerPacketType::PeerClientDisconnected:
-
+        {
             handlePacket_ClientDisonnected(packet);
 
             break;
-
+        }
         case Server::ServerPacketType::ServerUpdate:
-
+        {
             // Get the snapshot id
             sf::Uint32 snapshotId;
             packet >> snapshotId;
@@ -174,11 +182,12 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, bit::ServerPacke
             }
 
             break;
-
+        }
         case Server::ServerPacketType::Shutdown:
-
+        {
             handlePacket_Shutdown(packet);
 
             break;
+        }
     }
 }

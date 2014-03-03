@@ -102,11 +102,11 @@ void World::createPlayer(bit::RemoteClient &client)
 	{
 		Zombie* zombie = new Zombie();
         zombie->load(this, tiles[0]);
-		zombie->isPlayerCharacter = true;
 		zombies.push_back(zombie);
 
 		Player* player = new Player();
-		player->load(this, zombie);
+        player->load(this, zombie, client.id);
+        zombie->posses(player);
 
 		players.insert(std::pair<unsigned int, Player*>(client.id, player));
 	}

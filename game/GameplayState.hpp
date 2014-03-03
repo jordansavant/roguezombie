@@ -38,6 +38,8 @@ protected:
 
     virtual void handlePacket_InitializeSelf(bit::ServerPacket &packet);
 
+    virtual void handlePacket_InitializeWorld(bit::ServerPacket &packet);
+
     virtual void handlePacket_PeerClientConnected(bit::ServerPacket &packet);
 
     virtual void handlePacket_ClientDisonnected(bit::ServerPacket &packet);

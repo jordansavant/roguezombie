@@ -5,9 +5,10 @@
 #include "../bitengine/Math.hpp"
 #include "World.hpp"
 #include "Tile.hpp"
+#include "Player.hpp"
 
 Character::Character()
-    : fixedState(), deltaState(), world(NULL), tile(NULL), isPlayerCharacter(false)
+    : fixedState(), deltaState(), world(NULL), tile(NULL)
 {
 }
 
@@ -29,6 +30,12 @@ void Character::update(sf::Time &gameTime)
     {
         tile = t;
     }
+}
+
+void Character::posses(Player* player)
+{
+    fixedState.isPlayerCharacter = true;
+    fixedState.clientId = player->clientId;
 }
 
 void Character::moveUp()
