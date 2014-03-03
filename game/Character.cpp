@@ -24,6 +24,45 @@ void Character::load(World* _world, Tile* _tile)
 
 void Character::update(sf::Time &gameTime)
 {
+    Tile* t = world->getTileAtPosition(deltaState.x, deltaState.y);
+    if(t)
+    {
+        tile = t;
+    }
+}
+
+void Character::moveUp()
+{
+    Tile* t = world->getTileAtPosition(tile->fixedState.x, tile->fixedState.y - tile->fixedState.height);
+    moveToTile(t);
+}
+
+void Character::moveDown()
+{
+    Tile* t = world->getTileAtPosition(tile->fixedState.x, tile->fixedState.y + tile->fixedState.height);
+    moveToTile(t);
+}
+
+void Character::moveLeft()
+{
+    Tile* t = world->getTileAtPosition(tile->fixedState.x - tile->fixedState.width, tile->fixedState.y);
+    moveToTile(t);
+}
+
+void Character::moveRight()
+{
+    Tile* t = world->getTileAtPosition(tile->fixedState.x + tile->fixedState.width, tile->fixedState.y);
+    moveToTile(t);
+}
+
+void Character::moveToTile(Tile* t)
+{
+    if(t)
+    {
+        tile = t;
+        deltaState.x = t->fixedState.centerX;
+        deltaState.y = t->fixedState.centerY;
+    }
 }
 
 void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)

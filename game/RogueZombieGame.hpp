@@ -15,6 +15,11 @@ public:
         static unsigned int hostState;
         static unsigned int clientState;
 
+        sf::Font fpsFont;
+        sf::Text fpsText;
+		sf::Time fpsUpdateMicro;
+		sf::Time fpsDrawMicro;
+
 		void update(sf::RenderWindow &window, sf::Time &gameTime);
 
 		void draw(sf::RenderWindow &window, sf::Time &gameTime);

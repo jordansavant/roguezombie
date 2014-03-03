@@ -14,7 +14,7 @@ GameplayState::GameplayState(bit::StateStack &stack, bit::Game* _game, bool isHo
     : bit::ClientServerState(stack, _game, isHost)
 {
     createCamera(*game->renderWindow, 0, 0, 1, 1);
-    cameras[0]->view.setCenter(0, 0);
+    cameras[0]->lockOnPoint(0, 160);
 }
 
 void GameplayState::load()
@@ -29,25 +29,25 @@ bool GameplayState::update(sf::RenderWindow &window, sf::Time &gameTime)
     bit::ClientServerState::update(window, gameTime);
 
 	// Listen for Game Commands
-	if(game->inputManager->isButtonDown(sf::Keyboard::W))
+    if(game->inputManager->isButtonPressed(sf::Keyboard::W))
 	{
         Command cmd;
         cmd.type = Command::Type::PlayerMoveUp;
 		commandQueue.push_back(cmd);
 	}
-	if(game->inputManager->isButtonDown(sf::Keyboard::S))
+	if(game->inputManager->isButtonPressed(sf::Keyboard::S))
 	{
 		Command cmd;
         cmd.type = Command::Type::PlayerMoveDown;
 		commandQueue.push_back(cmd);
 	}
-	if(game->inputManager->isButtonDown(sf::Keyboard::A))
+	if(game->inputManager->isButtonPressed(sf::Keyboard::A))
 	{
 		Command cmd;
         cmd.type = Command::Type::PlayerMoveLeft;
 		commandQueue.push_back(cmd);
 	}
-	if(game->inputManager->isButtonDown(sf::Keyboard::D))
+	if(game->inputManager->isButtonPressed(sf::Keyboard::D))
 	{
 		Command cmd;
         cmd.type = Command::Type::PlayerMoveRight;
@@ -61,10 +61,6 @@ bool GameplayState::update(sf::RenderWindow &window, sf::Time &gameTime)
             packet << 0.0f << 0.0f;
         };
 		commandQueue.push_back(cmd);
-
-        std::stringstream ss;
-        ss << "Sending " << 0.0f << " " << 0.0f;
-        bit::Output::Debug(ss.str());
 	}
 
 	// Exit

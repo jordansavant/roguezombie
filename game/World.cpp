@@ -11,6 +11,7 @@
 #include <map>
 
 World::World()
+    : tileWidth(0), tileHeight(0), tileRows(0), tileColumns(0), tileCount(0)
 {
 }
 
@@ -37,23 +38,32 @@ void World::load()
     // Tiles
     const int tileArray[] =
     {
-        0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     };
 
-    unsigned int rows = 5, columns = 5;
-    unsigned int tileCount = rows * columns;
-    unsigned tileWidth = 32, tileHeight = 32;
+    tileRows = 10;
+    tileColumns = 10;
+    tileCount = tileRows * tileColumns;
+    tileWidth = 32;
+    tileHeight = 32;
+    mapWidth = tileWidth * tileColumns;
+    mapHeight = tileHeight * tileRows;
     tiles.resize(tileCount, NULL);
-    for (unsigned int j = 0; j < rows; ++j)
+    for (unsigned int j = 0; j < tileRows; ++j)
     {
-        for (unsigned int i = 0; i < columns; ++i)
+        for (unsigned int i = 0; i < tileColumns; ++i)
         {
             // get the current tile information
-            int index = i + j * columns;
+            int index = i + j * tileColumns;
             Tile::Type tileType = static_cast<Tile::Type>(tileArray[index]);
 
             // build the quad and its position on the map
@@ -64,10 +74,11 @@ void World::load()
             // Load our tile
             Tile* t = new Tile();
             t->load(this, tileType, originX, originY, tileWidth, tileHeight);
+            t->fixedState.ID = index;
             tiles[index] = t;
 
             // Add a zombie randomly
-            if(bit::Math::random(4) == 1)
+            if(bit::Math::random(25) == 1)
             {
                 Zombie* z = new Zombie();
                 z->load(this, t);
@@ -91,7 +102,7 @@ void World::createPlayer(bit::RemoteClient &client)
 	{
 		Zombie* zombie = new Zombie();
         zombie->load(this, tiles[0]);
-		zombie->isPlayerControlled = true;
+		zombie->isPlayerCharacter = true;
 		zombies.push_back(zombie);
 
 		Player* player = new Player();
@@ -111,32 +122,49 @@ void World::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &cl
         default:
             break;
 		case Command::Type::PlayerMoveUp:
-			d.y = -1;
-            player->zombie->updatePosition(d);
+            player->zombie->moveUp();
 			break;
 		case Command::Type::PlayerMoveDown:
-			d.y = 1;
-            player->zombie->updatePosition(d);
+            player->zombie->moveDown();
 			break;
 		case Command::Type::PlayerMoveLeft:
-			d.x = -1;
-            player->zombie->updatePosition(d);
+            player->zombie->moveLeft();
 			break;
 		case Command::Type::PlayerMoveRight:
-			d.x = 1;
-            player->zombie->updatePosition(d);
+            player->zombie->moveRight();
 			break;
         case Command::Type::PlayerTeleport:
-            float x, y;
-            packet >> x >> y;
-            player->zombie->deltaState.x = x;
-            player->zombie->deltaState.y = y;
-
-            std::stringstream ss;
-            ss << "Receieved " << x << " " << y;
-            bit::Output::Debug(ss.str());
+            packet >> player->zombie->deltaState.x >> player->zombie->deltaState.y;
             break;
 	}
+}
+
+bool World::isCoordinateInMap(float x, float y)
+{
+    if(x >= mapWidth || x < 0)
+        return false;
+    if(y >= mapHeight || y < 0)
+        return false;
+
+    return true;
+}
+
+Tile* World::getTileAtPosition(float x, float y)
+{
+    if(!isCoordinateInMap(x, y))
+        return NULL;
+
+    unsigned int tx = (unsigned int)std::floor((float)x / (float)tileWidth);
+    unsigned int ty = (unsigned int)std::floor((float)y / (float)tileHeight);
+
+    unsigned int index = tx + (tileColumns * ty);
+    
+    if(index < tileCount)
+    {
+        return tiles[index];
+    }
+
+    return NULL;
 }
 
 void World::prepareSnapshot(bit::ServerPacket &packet, bool full)

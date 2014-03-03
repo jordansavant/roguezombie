@@ -29,6 +29,7 @@ public:
     std::vector<Zombie*> zombies;
     std::vector<Tile*> tiles;
 	std::map<unsigned int, Player*> players;
+    unsigned int tileWidth, tileHeight, tileRows, tileColumns, tileCount, mapWidth, mapHeight;
 
     void load();
 
@@ -38,7 +39,12 @@ public:
 
     void handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type command);
 
+    bool isCoordinateInMap(float x, float y);
+
+    Tile* getTileAtPosition(float x, float y);
+
     void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
+
 };
 
 #endif

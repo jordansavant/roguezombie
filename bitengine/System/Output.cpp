@@ -6,6 +6,13 @@
 #include "windows.h"
 #endif
 
+void bit::Output::Debug(int integer)
+{
+    std::stringstream ss;
+    ss << integer;
+    Debug(ss.str());
+}
+
 void bit::Output::Debug(std::string message)
 {
 #if defined(__OS_WIN__)

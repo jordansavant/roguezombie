@@ -20,6 +20,7 @@ public:
     
     struct FixedState
     {
+        sf::Uint32 ID;
         int x, y;
         int centerX, centerY;
         int width, height;
@@ -27,6 +28,7 @@ public:
         friend sf::Packet& operator <<(sf::Packet& packet, const FixedState &state)
         {
             return packet << 
+                sf::Int32(state.ID) << 
                 sf::Int32(state.x) << 
                 sf::Int32(state.y) << 
                 sf::Int32(state.centerX) << 
@@ -39,6 +41,7 @@ public:
         {
             sf::Uint32 typeNum;
             packet >>
+            state.ID >> 
             state.x >> 
             state.y >> 
             state.centerX >> 

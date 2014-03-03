@@ -3,11 +3,12 @@
 #include "../../bitengine/Game.hpp"
 #include "../../bitengine/Network.hpp"
 #include "../../bitengine/Math.hpp"
+#include "../../bitengine/System.hpp"
 #include "../World.hpp"
 #include "../Tile.hpp"
 
 Zombie::Zombie()
-    : Character(), walkTimer(2), isPlayerControlled(false)
+    : Character(), walkTimer(5)
 {
 }
 
@@ -18,37 +19,29 @@ void Zombie::load(World* _world, Tile* _tile)
 
 void Zombie::update(sf::Time &gameTime)
 {
-	if(!isPlayerControlled)
+    Character::update(gameTime);
+
+	if(!isPlayerCharacter)
 	{
 		if(walkTimer.update(gameTime))
 		{
-			deltaState.direction = bit::VectorMath::getRandomVector();
+            walkTimer.adjustBy(2 * bit::Math::randomFloat());
+
+            switch(bit::Math::random(4))
+            {
+                case 0:
+                    moveUp();
+                    break;
+                case 1:
+                    moveDown();
+                    break;
+                case 2:
+                    moveLeft();
+                    break;
+                case 3:
+                    moveRight();
+                    break;
+            }
 		}
-
-		updatePosition(deltaState.direction);
 	}
-}
-
-void Zombie::updatePosition(sf::Vector2f &direction)
-{
-	deltaState.x += direction.x;
-	deltaState.y += direction.y;
-}
-
-void Zombie::prepareSnapshot(bit::ServerPacket &packet, bool full)
-{
-    if(full)
-    {
-        packet << fixedState;
-    }
-    packet << deltaState;
-}
-
-void Zombie::handleSnapshot(bit::ServerPacket &packet, bool full)
-{
-    if(full)
-    {
-        packet >> fixedState;
-    }
-    packet >> deltaState;
 }

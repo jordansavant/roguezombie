@@ -1,4 +1,5 @@
 #include "RogueZombieGame.hpp"
+#include "../ResourcePath.h"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Input.hpp"
 #include "StartMenuState.hpp"
@@ -9,6 +10,11 @@
 RogueZombieGame::RogueZombieGame()
 	: Game("Rogue Zombie", 640, 480, false)
 {
+    fpsFont.loadFromFile(resourcePath() + "Agency.ttf");
+    fpsText.setFont(fpsFont);
+    fpsText.setCharacterSize(16);
+	fpsText.setString("Update: XXXX micro  /  Draw: XXXX micro");
+
     Game::stateStack->pushState(startMenuState);
 }
 
@@ -39,11 +45,21 @@ void RogueZombieGame::update(sf::RenderWindow &window, sf::Time &gameTime)
         changeFullscreen(!isFullscreen);
     if(inputManager->isButtonPressed(sf::Keyboard::Comma))
         this->setVerticalSync(!this->verticalSync);
+
+	fpsUpdateMicro = gameTime;
 }
 
 void RogueZombieGame::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
 	Game::draw(window, gameTime);
+
+    fpsDrawMicro = gameTime;
+	std::stringstream t  (std::stringstream::in | std::stringstream::out);
+	int u = 1 / fpsUpdateMicro.asSeconds();
+	int d = 1 / fpsDrawMicro.asSeconds();
+	t << "FPS U: " << u << " / D: " << d;
+	fpsText.setString(t.str());
+	window.draw(fpsText);
 }
 
 void RogueZombieGame::registerStates()

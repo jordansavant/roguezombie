@@ -20,8 +20,10 @@ public:
     WorldClient* world;
     sf::Sprite renderSprite;
     sf::Texture* renderTexture;
+    sf::Text text;
+    sf::Font* font;
 
-    void clientLoad(WorldClient* world, sf::Texture* renderTexture);
+    void clientLoad(WorldClient* world, sf::Texture* renderTexture, sf::Font* font);
 
     void clientUpdate(sf::RenderWindow &window, sf::Time &gameTime);
 

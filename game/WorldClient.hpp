@@ -25,6 +25,7 @@ public:
     std::map<sf::Uint32, TileClient*> tiles;
     sf::Texture zombieimage;
     sf::Texture tileimage;
+    sf::Font font;
 
     void load(GameplayState* state);
 

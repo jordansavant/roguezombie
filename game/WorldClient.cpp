@@ -28,7 +28,8 @@ void WorldClient::load(GameplayState* _state)
 {
     state = _state;
     zombieimage.loadFromFile(resourcePath() + "Zombie.png");
-    tileimage.loadFromFile(resourcePath() + "water.png");
+    tileimage.loadFromFile(resourcePath() + "Water.png");
+    font.loadFromFile(resourcePath() + "Agency.ttf");
 }
 
 void WorldClient::update(sf::RenderWindow &window, sf::Time &gameTime)
@@ -76,7 +77,7 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
         else
         {
             t = new TileClient();
-            t->clientLoad(this, &tileimage);
+            t->clientLoad(this, &tileimage, &font);
             tiles.insert(std::pair<sf::Uint32, TileClient*>(tileId, t));
         }
         t->handleSnapshot(packet, full);
