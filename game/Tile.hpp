@@ -79,6 +79,8 @@ public:
 
     virtual void load(World* world, unsigned int id, Type type, int x, int y, int width, int height);
 
+    virtual void update(sf::Time &gameTime);
+
     virtual void setOccupyingBody(Body* body);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);

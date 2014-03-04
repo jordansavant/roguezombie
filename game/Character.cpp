@@ -58,10 +58,14 @@ void Character::moveRight()
 
 void Character::moveToTile(Tile* t)
 {
-    if(t)
+    if(t && !t->body)
     {
         Body::deltaState.x = t->fixedState.centerX;
         Body::deltaState.y = t->fixedState.centerY;
+    }
+    else
+    {
+        int dooop = 0;
     }
 }
 

@@ -17,6 +17,7 @@ namespace bit
 class Zombie;
 class Player;
 class Tile;
+class Wall;
 
 class World
 {
@@ -27,6 +28,7 @@ public:
     ~World();
 
     std::vector<Zombie*> zombies;
+    std::vector<Wall*> walls;
     std::vector<Tile*> tiles;
 	std::map<unsigned int, Player*> players;
     unsigned int tileWidth, tileHeight, tileRows, tileColumns, tileCount, mapWidth, mapHeight;

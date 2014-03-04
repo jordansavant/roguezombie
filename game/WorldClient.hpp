@@ -9,6 +9,7 @@
 
 class ZombieClient;
 class TileClient;
+class WallClient;
 class GameplayState;
 
 class WorldClient
@@ -23,8 +24,10 @@ public:
     ZombieClient* playerCharacter;
     std::map<unsigned int, ZombieClient*> zombies;
     std::map<unsigned int, TileClient*> tiles;
+    std::map<unsigned int, WallClient*> walls;
     sf::Texture zombieimage;
     sf::Texture tileimage;
+    sf::Texture wallimage;
     sf::Font font;
 
     void load(GameplayState* state);

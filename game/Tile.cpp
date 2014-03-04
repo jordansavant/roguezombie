@@ -18,10 +18,23 @@ void Tile::load(World* _world, unsigned int _id, Type _type, int _x, int _y, int
     fixedState.centerY = _y + _height / 2;
 }
 
+void Tile::update(sf::Time &gameTime)
+{
+    setOccupyingBody(NULL);
+}
+
 void Tile::setOccupyingBody(Body* _body)
 {
-    body = _body;
-    deltaState.bodyId = body->fixedState.id;
+    if(!_body)
+    {
+        body = NULL;
+        deltaState.bodyId = 0;
+    }
+    else
+    {
+        body = _body;
+        deltaState.bodyId = body->fixedState.id;
+    }
 }
 
 void Tile::prepareSnapshot(bit::ServerPacket &packet, bool full)

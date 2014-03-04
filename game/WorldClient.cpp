@@ -2,6 +2,7 @@
 #include "TileClient.hpp"
 #include "GameplayState.hpp"
 #include "characters/ZombieClient.hpp"
+#include "structures/WallClient.hpp"
 #include "../bitengine/Math.hpp"
 #include "../bitengine/Network.hpp"
 #include "../ResourcePath.h"
@@ -23,6 +24,10 @@ WorldClient::~WorldClient()
     {
         delete zombies[i];
     }
+    for(unsigned int i=0; i < walls.size(); i++)
+    {
+        delete walls[i];
+    }
 }
 
 void WorldClient::load(GameplayState* _state)
@@ -30,6 +35,7 @@ void WorldClient::load(GameplayState* _state)
     state = _state;
     zombieimage.loadFromFile(resourcePath() + "Zombie.png");
     tileimage.loadFromFile(resourcePath() + "Water.png");
+    wallimage.loadFromFile(resourcePath() + "Wall.png");
     font.loadFromFile(resourcePath() + "Agency.ttf");
 }
 
@@ -40,6 +46,10 @@ void WorldClient::update(sf::RenderWindow &window, sf::Time &gameTime)
         iterator->second->clientUpdate(window, gameTime);
     }
     for(auto iterator = zombies.begin(); iterator != zombies.end(); iterator++)
+    {
+        iterator->second->clientUpdate(gameTime);
+    }
+    for(auto iterator = walls.begin(); iterator != walls.end(); iterator++)
     {
         iterator->second->clientUpdate(gameTime);
     }
@@ -55,11 +65,15 @@ void WorldClient::draw(sf::RenderWindow &window, sf::Time &gameTime)
     {
         iterator->second->clientDraw(window, gameTime);
     }
+    for(auto iterator = walls.begin(); iterator != walls.end(); iterator++)
+    {
+        iterator->second->clientDraw(window, gameTime);
+    }
 }
 
 void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
-    // Update all Tiles
+    // Tiles
     sf::Uint32 tileCount;
     packet >> tileCount;
     for(unsigned int i=0; i < tileCount; i++)
@@ -67,7 +81,7 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
         unsigned int tileId;
         packet >> tileId;
 
-        // If tile exists, update it
+        // If exists, update it
         TileClient* t;
         auto itr = tiles.find(tileId);
         if(itr != tiles.end())
@@ -84,7 +98,7 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
         t->handleSnapshot(packet, full);
     }
 
-    // Update all zombies
+    // Zombies
     sf::Uint32 zombieCount;
     packet >> zombieCount;
     for(unsigned int i=0; i < zombieCount; i++)
@@ -92,7 +106,7 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
         unsigned int zombieId;
         packet >> zombieId;
 
-        // If zombie exists, update it
+        // If exists, update it
         ZombieClient* z;
         auto itr = zombies.find(zombieId);
         if(itr != zombies.end())
@@ -114,5 +128,30 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
             playerCharacter = z;
         }
     }
+    
 
+    // Walls
+    sf::Uint32 wallCount;
+    packet >> wallCount;
+    for(unsigned int i=0; i < wallCount; i++)
+    {
+        unsigned int wallId;
+        packet >> wallId;
+
+        // If exists, update it
+        WallClient* w;
+        auto itr = walls.find(wallId);
+        if(itr != walls.end())
+        {
+            w = itr->second;
+        }
+        // If not, create it, load it and update it
+        else
+        {
+            w = new WallClient();
+            w->clientLoad(this, &wallimage);
+            walls.insert(std::pair<unsigned int, WallClient*>(wallId, w));
+        }
+        w->handleSnapshot(packet, full);
+    }
 }

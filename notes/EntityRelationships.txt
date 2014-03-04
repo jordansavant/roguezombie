@@ -129,6 +129,9 @@ Body
 	
 	Character : Body
 	{
+		Delta {
+			intelligence
+		}
 	}
 		
 		Zombie : Character

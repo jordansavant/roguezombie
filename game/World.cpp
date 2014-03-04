@@ -2,6 +2,7 @@
 #include "Player.hpp"
 #include "Tile.hpp"
 #include "characters/Zombie.hpp"
+#include "structures/Wall.hpp"
 #include "SFML/Network.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Math.hpp"
@@ -30,6 +31,11 @@ World::~World()
     for(auto iterator = players.begin(); iterator != players.end(); iterator++)
     {
 		delete iterator->second;
+    }
+
+    for(unsigned int i=0; i < walls.size(); i++)
+    {
+        delete walls[i];
     }
 }
 
@@ -82,6 +88,15 @@ void World::load()
                 Zombie* z = new Zombie();
                 z->load(this, zombies.size(), t->fixedState.centerX, t->fixedState.centerY);
                 zombies.push_back(z);
+                t->setOccupyingBody(z);
+            }
+            // Add a wall randomly
+            else if(bit::Math::random(25) == 1)
+            {
+                Wall* w = new Wall();
+                w->load(this, walls.size(), t->fixedState.centerX, t->fixedState.centerY);
+                walls.push_back(w);
+                t->setOccupyingBody(w);
             }
         }
     }
@@ -89,9 +104,17 @@ void World::load()
 
 void World::update(sf::Time &gameTime)
 {
+    for(unsigned int i=0; i < tiles.size(); i++)
+    {
+        tiles[i]->update(gameTime);
+    }
     for(unsigned int i=0; i < zombies.size(); i++)
     {
         zombies[i]->update(gameTime);
+    }
+    for(unsigned int i=0; i < walls.size(); i++)
+    {
+        walls[i]->update(gameTime);
     }
 }
 
@@ -194,5 +217,16 @@ void World::prepareSnapshot(bit::ServerPacket &packet, bool full)
         sf::Uint32 zombieId = zombies[i]->Body::fixedState.id;
         packet << zombieId;
         zombies[i]->prepareSnapshot(packet, full);
+    }
+
+    // Walls
+    sf::Uint32 wallCount = walls.size();
+    packet << wallCount;
+
+    for(unsigned int i=0; i < walls.size(); i++)
+    {
+        sf::Uint32 wallId = walls[i]->Body::fixedState.id;
+        packet << wallId;
+        walls[i]->prepareSnapshot(packet, full);
     }
 }
