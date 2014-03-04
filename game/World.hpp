@@ -46,7 +46,6 @@ public:
     Tile* getTileAtPosition(float x, float y);
 
     void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
-
 };
 
 #endif

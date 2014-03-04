@@ -128,7 +128,6 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
             playerCharacter = z;
         }
     }
-    
 
     // Walls
     sf::Uint32 wallCount;

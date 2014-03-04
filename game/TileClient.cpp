@@ -29,7 +29,6 @@ void TileClient::clientUpdate(sf::RenderWindow &window, sf::Time &gameTime)
     ss << fixedState.id;
     text.setString(ss.str());
 
-
     sf::Vector2f isoPosition = bit::VectorMath::normalToIsometric(fixedState.x, fixedState.y);
     renderSprite.setPosition(isoPosition.x - fixedState.width, isoPosition.y);
 
@@ -46,7 +45,6 @@ void TileClient::clientUpdate(sf::RenderWindow &window, sf::Time &gameTime)
 
     if(tx == mx && ty == my)
     {
-        
         renderSprite.setColor(sf::Color::Red);
     }
     else

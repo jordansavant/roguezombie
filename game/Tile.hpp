@@ -21,7 +21,7 @@ public:
 
     World* world;
     Body* body;
-    
+
     struct FixedState
     {
         unsigned int id;
@@ -32,12 +32,12 @@ public:
 
         friend sf::Packet& operator <<(sf::Packet& packet, const FixedState &state)
         {
-            packet << 
-            sf::Uint32(state.id) << 
-            state.x << 
-            state.y << 
-            state.centerX << 
-            state.centerY << 
+            packet <<
+            sf::Uint32(state.id) <<
+            state.x <<
+            state.y <<
+            state.centerX <<
+            state.centerY <<
             sf::Uint32(state.width) <<
             sf::Uint32(state.height) <<
             sf::Uint32(state.type);
@@ -47,11 +47,11 @@ public:
         {
             sf::Uint32 type;
             packet >>
-            state.id >> 
-            state.x >> 
-            state.y >> 
-            state.centerX >> 
-            state.centerY >> 
+            state.id >>
+            state.x >>
+            state.y >>
+            state.centerX >>
+            state.centerY >>
             state.width >>
             state.height >>
             type;
@@ -75,7 +75,6 @@ public:
         }
     };
     DeltaState deltaState;
-
 
     virtual void load(World* world, unsigned int id, Type type, int x, int y, int width, int height);
 

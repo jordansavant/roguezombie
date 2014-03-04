@@ -40,7 +40,6 @@ namespace bit
 
         virtual ~Element();
 
-
         Element* parentElement;
         sf::Vector2f relativePosition;
         AnchorType anchorType;
@@ -53,7 +52,6 @@ namespace bit
         std::deque<Effect*> effectQueue;
         std::list<Effect*> concurrentEffects;
         sf::RectangleShape debugRect; // debug
-
 
         virtual void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
 

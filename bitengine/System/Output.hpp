@@ -14,7 +14,6 @@ namespace bit
         static void Debug(int integer);
 
         static void Debug(std::string message);
-
     };
 }
 

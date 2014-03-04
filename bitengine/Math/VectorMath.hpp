@@ -43,7 +43,6 @@ namespace bit
         static sf::Vector2f normalToIsometric(float x, float y);
 
         static sf::Vector2f isometricToNormal(float x, float y);
-
 	};
 }
 

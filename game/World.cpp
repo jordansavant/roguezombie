@@ -186,7 +186,7 @@ Tile* World::getTileAtPosition(float x, float y)
     unsigned int ty = (unsigned int)std::floor((float)y / (float)tileHeight);
 
     unsigned int index = tx + (tileColumns * ty);
-    
+
     if(index < tileCount)
     {
         return tiles[index];

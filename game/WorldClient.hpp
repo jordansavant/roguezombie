@@ -37,7 +37,6 @@ public:
     void draw(sf::RenderWindow &window, sf::Time &gameTime);
 
     void handleSnapshot(bit::ServerPacket &packet, bool full = false);
-
 };
 
 #endif

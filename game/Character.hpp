@@ -60,7 +60,6 @@ public:
 	};
 	DeltaState deltaState;
 
-
     virtual void load(World* world, unsigned int id, Type type, float x, float y, unsigned int tileSize);
 
     virtual void update(sf::Time &gameTime);
