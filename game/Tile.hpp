@@ -6,6 +6,7 @@
 #include "../bitengine/Network.hpp"
 
 class World;
+class Body;
 
 class Tile
 {
@@ -17,39 +18,44 @@ public:
     {
         Ground,
     };
+
+    World* world;
+    Body* body;
     
     struct FixedState
     {
-        sf::Uint32 ID;
-        int x, y;
-        int centerX, centerY;
-        int width, height;
+        unsigned int id;
+        float x, y;
+        float centerX, centerY;
+        unsigned int width, height;
         Type type;
+
         friend sf::Packet& operator <<(sf::Packet& packet, const FixedState &state)
         {
-            return packet << 
-                sf::Int32(state.ID) << 
-                sf::Int32(state.x) << 
-                sf::Int32(state.y) << 
-                sf::Int32(state.centerX) << 
-                sf::Uint32(state.centerY) << 
-                sf::Uint32(state.width) <<
-                sf::Uint32(state.height) <<
-                sf::Uint32(state.type);
+            packet << 
+            sf::Uint32(state.id) << 
+            state.x << 
+            state.y << 
+            state.centerX << 
+            state.centerY << 
+            sf::Uint32(state.width) <<
+            sf::Uint32(state.height) <<
+            sf::Uint32(state.type);
+            return packet;
         }
         friend sf::Packet& operator >>(sf::Packet& packet, FixedState &state)
         {
-            sf::Uint32 typeNum;
+            sf::Uint32 type;
             packet >>
-            state.ID >> 
+            state.id >> 
             state.x >> 
             state.y >> 
             state.centerX >> 
             state.centerY >> 
             state.width >>
             state.height >>
-            typeNum;
-            state.type = static_cast<Tile::Type>(typeNum);
+            type;
+            state.type = static_cast<Tile::Type>(type);
             return packet;
         }
     };
@@ -57,20 +63,23 @@ public:
 
     struct DeltaState
     {
+        unsigned int bodyId;
+
         friend sf::Packet& operator <<(sf::Packet& packet, const DeltaState &state)
         {
-            return packet;
+            return packet << sf::Uint32(state.bodyId);
         }
         friend sf::Packet& operator >>(sf::Packet& packet, DeltaState &state)
         {
-            return packet;
+            return packet >> state.bodyId;
         }
     };
     DeltaState deltaState;
 
-    World* world;
 
-    virtual void load(World* world, Type type, int x, int y, int width, int height);
+    virtual void load(World* world, unsigned int id, Type type, int x, int y, int width, int height);
+
+    virtual void setOccupyingBody(Body* body);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 

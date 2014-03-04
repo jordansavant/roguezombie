@@ -21,8 +21,8 @@ public:
 
     GameplayState* state;
     ZombieClient* playerCharacter;
-    std::map<sf::Uint32, ZombieClient*> zombies;
-    std::map<sf::Uint32, TileClient*> tiles;
+    std::map<unsigned int, ZombieClient*> zombies;
+    std::map<unsigned int, TileClient*> tiles;
     sf::Texture zombieimage;
     sf::Texture tileimage;
     sf::Font font;

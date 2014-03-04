@@ -12,9 +12,9 @@ Zombie::Zombie()
 {
 }
 
-void Zombie::load(World* _world, Tile* _tile)
+void Zombie::load(World* _world, unsigned int _id, float _x, float _y)
 {
-    Character::load(_world, _tile);
+    Character::load(_world, _id, Character::Type::Zombie, _x, _y, 1);
 }
 
 void Zombie::update(sf::Time &gameTime)

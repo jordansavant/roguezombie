@@ -73,15 +73,14 @@ void World::load()
 
             // Load our tile
             Tile* t = new Tile();
-            t->load(this, tileType, originX, originY, tileWidth, tileHeight);
-            t->fixedState.ID = index;
+            t->load(this, index, tileType, originX, originY, tileWidth, tileHeight);
             tiles[index] = t;
 
             // Add a zombie randomly
             if(bit::Math::random(25) == 1)
             {
                 Zombie* z = new Zombie();
-                z->load(this, t);
+                z->load(this, zombies.size(), t->fixedState.centerX, t->fixedState.centerY);
                 zombies.push_back(z);
             }
         }
@@ -101,12 +100,12 @@ void World::createPlayer(bit::RemoteClient &client)
 	if(players.find(client.id) == players.end())
 	{
 		Zombie* zombie = new Zombie();
-        zombie->load(this, tiles[0]);
+        zombie->load(this, zombies.size(), tiles[0]->fixedState.centerX, tiles[0]->fixedState.centerY);
 		zombies.push_back(zombie);
 
 		Player* player = new Player();
         player->load(this, zombie, client.id);
-        zombie->posses(player);
+        zombie->setControllingPlayer(player);
 
 		players.insert(std::pair<unsigned int, Player*>(client.id, player));
 	}
@@ -122,19 +121,25 @@ void World::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &cl
         default:
             break;
 		case Command::Type::PlayerMoveUp:
-            player->zombie->moveUp();
+            player->character->moveUp();
 			break;
 		case Command::Type::PlayerMoveDown:
-            player->zombie->moveDown();
+            player->character->moveDown();
 			break;
 		case Command::Type::PlayerMoveLeft:
-            player->zombie->moveLeft();
+            player->character->moveLeft();
 			break;
 		case Command::Type::PlayerMoveRight:
-            player->zombie->moveRight();
+            player->character->moveRight();
 			break;
         case Command::Type::PlayerTeleport:
-            packet >> player->zombie->deltaState.x >> player->zombie->deltaState.y;
+            float x, y;
+            packet >> x >> y;
+            Tile* t = getTileAtPosition(x, y);
+            if(t)
+            {
+                player->character->moveToTile(t);
+            }
             break;
 	}
 }
@@ -175,7 +180,7 @@ void World::prepareSnapshot(bit::ServerPacket &packet, bool full)
 
     for(unsigned int i=0; i < tiles.size(); i++)
     {
-        sf::Uint32 tileId = i;
+        sf::Uint32 tileId = tiles[i]->fixedState.id;
         packet << tileId;
         tiles[i]->prepareSnapshot(packet, full);
     }
@@ -186,7 +191,7 @@ void World::prepareSnapshot(bit::ServerPacket &packet, bool full)
 
     for(unsigned int i=0; i < zombies.size(); i++)
     {
-        sf::Uint32 zombieId = i;
+        sf::Uint32 zombieId = zombies[i]->Body::fixedState.id;
         packet << zombieId;
         zombies[i]->prepareSnapshot(packet, full);
     }

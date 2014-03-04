@@ -1,40 +1,149 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+// Clearence based A* https://aigamedev.com/open/tutorials/clearance-based-pathfinding/ //
+//////////////////////////////////////////////////////////////////////////////////////////
 
 
-Tile
-	Ground
-	Water
-	
-Structure
-	Wall
-	Furniture
-	- Have health
-	
-Container
-	Terminal
-	Safe
-	Locker
-	
-Item
-	Gun
-	Ammo
-	Lighter
-	- Can belong to containers
-	- Can belong to characters
-	- Can belong to tiles
+  ///////////////////
+ /// SERVER SIDE ///
+///////////////////
 
-Character
-	Zombie
-	Human
-	- Can move from tile to tile
-	- Can carry items
-	- Can interact with structures and containers
-	- Have statistics
-	class
+// Manages all tiles, bodies and items
+World
+{
+	Vector<Tile>
+	Vector<Body>
+	Vector<Item>
+	
+	Update()
 	{
-		TileId
-		x, y
-		health, maxHealth
+		// Update all items
 	}
 	
-Commands
+	GetPath(startX, startY, endX, endY, size, allowedFunction, neighborFunction)
+	{
+	}
+	
+	prepareSnapshot()
+}
+
+// Can have 0 to 1 body
+Tile
+{
+	Type
+	{
+		Ground,
+		Water
+	}
+	Fixed {
+		X, Y, CenterX, CenterY
+		Width, Height
+		Type
+	}
+	Delta {
+		Body
+		Items
+	}
+	
+	prepareSnapshot()
+	
+	handleSnapshot()
+}
+
+// Can occupy more than one tile
+// Can have 0 to * items
+Body
+{
+	Type
+	{
+		Structure,
+		Character
+	}
+	Fixed {
+		Type
+		MaxHealth
+	}
+	Delta {
+		Items
+		X, Y, Width, Height
+		TileSize
+		Health
+	}
+	Path<Vector2>
+	
+	prepareSnapshot()
+	
+	handleSnapshot()
+	
+	Update()
+	{
+		UpdatePosition();
+		UpdateTiles();
+	}
+	
+	UpdatePosition()
+	{
+		if(Path.size() > 0)
+		{
+			Next = path.pop();
+			X = Next.X
+			Y = Next.Y
+		}
+	}
+	
+	// Update all tiles that I am on
+	UpdateTiles()
+	{
+		tiles = World.getTilesWithinRectangle(X, Y, Width, Height)
+		foreach(tiles as tile)
+		{
+			tile.setOccupant(this)
+		}
+	}
+	
+	MoveNorth()
+	{
+		Path = World.getPath(X, Y, X, Y - World.TileHeight, TileSize, CanOccupy, World.CardinalNeighbors);
+	}
+	
+	CanOccupy(Tile* t)
+	{
+		if(t.Body)
+		{
+			return false;
+		}
+		return true;
+	}
+}
+	
+	Structure : Body
+	{
+	}
+	
+		Wall : Structure
+		{
+		}
+		
+		Terminal: Structure
+		{
+		}
+	
+	Character : Body
+	{
+	}
+		
+		Zombie : Character
+		{
+		}
+		
+		AttackDog : Character
+		{
+		}
+	
+	
+// Can belong to tiles, bodies (or other items?)
+Item
+{
+	Items
+}
+
 

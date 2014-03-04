@@ -26,7 +26,7 @@ void TileClient::clientLoad(WorldClient* _world, sf::Texture* texture, sf::Font*
 void TileClient::clientUpdate(sf::RenderWindow &window, sf::Time &gameTime)
 {
     std::stringstream ss;
-    ss << fixedState.ID;
+    ss << fixedState.id;
     text.setString(ss.str());
 
 

@@ -23,11 +23,11 @@ void ZombieClient::clientLoad(WorldClient* _world, sf::Texture* texture)
 
 void ZombieClient::clientUpdate(sf::Time &gameTime)
 {
-	float finalX = deltaState.x;
-	float finalY = deltaState.y;
+	float finalX = Body::deltaState.x;
+	float finalY = Body::deltaState.y;
 
 	// delta timeline will have 0 to 3 snapshots
-	if(deltas.size() > 1)
+	if(bodyDeltas.size() > 1)
 	{
 		int ticktime = (1000 / BIT_SERVER_TICK_FPS);
 		int lagtime = 2 * ticktime;
@@ -41,16 +41,16 @@ void ZombieClient::clientUpdate(sf::Time &gameTime)
 
 		// Get the first delta and the second delta, this should theoretically wrap
 		// the execution snapshot if there were not dropped packets
-		int msA = deltas[a].first.asMilliseconds();
-		int msB = deltas[b].first.asMilliseconds();
+		int msA = bodyDeltas[a].first.asMilliseconds();
+		int msB = bodyDeltas[b].first.asMilliseconds();
         msX = std::max(0, msX);
         msA = std::max(0, msA);
 
 		// If the target render point is later than our second packet, try our third
-		if(msX > msB && deltas.size() == 3)
+		if(msX > msB && bodyDeltas.size() == 3)
 		{
 			b = 2;
-			msB = deltas[b].first.asMilliseconds();
+			msB = bodyDeltas[b].first.asMilliseconds();
 		}
         msB = std::max(0, msB);
 
@@ -60,10 +60,10 @@ void ZombieClient::clientUpdate(sf::Time &gameTime)
 			// Interpolate
 
 			// Get the wrapped positions
-			float xA = deltas[a].second.x;
-			float xB = deltas[b].second.x;
-			float yA = deltas[a].second.y;
-			float yB = deltas[b].second.y;
+			float xA = bodyDeltas[a].second.x;
+			float xB = bodyDeltas[b].second.x;
+			float yA = bodyDeltas[a].second.y;
+			float yB = bodyDeltas[b].second.y;
 
 			// Get their ratio of time
 			int flength = msB - msA;
@@ -84,19 +84,19 @@ void ZombieClient::clientUpdate(sf::Time &gameTime)
             int indexA = 0;
             int indexB = 1;
 
-            if(deltas.size() == 3)
+            if(bodyDeltas.size() == 3)
             {
                 indexA = 1;
                 indexB = 2;
             }
 
-            float positionOneX = deltas[indexA].second.x;
-            float positionOneY = deltas[indexA].second.y;
-            int positionOneTime = deltas[indexA].first.asMilliseconds();
+            float positionOneX = bodyDeltas[indexA].second.x;
+            float positionOneY = bodyDeltas[indexA].second.y;
+            int positionOneTime = bodyDeltas[indexA].first.asMilliseconds();
 
-            float positionTwoX = deltas[indexB].second.x;
-            float positionTwoY = deltas[indexB].second.y;
-            int positionTwoTime = deltas[indexB].first.asMilliseconds();
+            float positionTwoX = bodyDeltas[indexB].second.x;
+            float positionTwoY = bodyDeltas[indexB].second.y;
+            int positionTwoTime = bodyDeltas[indexB].first.asMilliseconds();
 
             int currentTime = temporaryClockVariable.getElapsedTime().asMilliseconds();
 
@@ -122,8 +122,10 @@ void ZombieClient::clientUpdate(sf::Time &gameTime)
     }
 
     sf::Vector2f renderPosition = bit::VectorMath::normalToIsometric(finalX, finalY);
+
     renderX = renderPosition.x - 8;
     renderY = renderPosition.y - 24;
+
     renderSprite.setPosition(renderX, renderY);
 }
 
@@ -136,9 +138,12 @@ void ZombieClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
 	Zombie::handleSnapshot(packet, full);
 
-	deltas.push_back(std::pair<sf::Time, DeltaState>(temporaryClockVariable.getElapsedTime(), deltaState));
-	if(deltas.size() > 3)
+	bodyDeltas.push_back(std::pair<sf::Time, Body::DeltaState>(temporaryClockVariable.getElapsedTime(), Body::deltaState));
+	characterDeltas.push_back(std::pair<sf::Time, Character::DeltaState>(temporaryClockVariable.getElapsedTime(), Character::deltaState));
+
+	if(bodyDeltas.size() > 3)
 	{
-		deltas.pop_front();
+		bodyDeltas.pop_front();
+		characterDeltas.pop_front();
 	}
 }

@@ -6,7 +6,7 @@
 #include "SFML/Network.hpp"
 
 class World;
-class Zombie;
+class Character;
 
 class Player
 {
@@ -15,10 +15,10 @@ public:
     Player();
 
     World* world;
-	Zombie* zombie;
+	Character* character;
     unsigned int clientId;
 
-    void load(World* world, Zombie* zombie, unsigned int clientId);
+    void load(World* world, Character* character, unsigned int clientId);
 };
 
 #endif

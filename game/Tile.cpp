@@ -1,14 +1,15 @@
 #include "Tile.hpp"
+#include "Body.hpp"
 
 Tile::Tile()
-    : fixedState(), deltaState(), world(NULL)
+    : fixedState(), deltaState(), world(NULL), body(NULL)
 {
 }
 
-void Tile::load(World* _world, Type _type, int _x, int _y, int _width, int _height)
+void Tile::load(World* _world, unsigned int _id, Type _type, int _x, int _y, int _width, int _height)
 {
     world = _world;
-
+    fixedState.id = _id;
     fixedState.x = _x;
     fixedState.y = _y;
     fixedState.width = _width;
@@ -17,16 +18,26 @@ void Tile::load(World* _world, Type _type, int _x, int _y, int _width, int _heig
     fixedState.centerY = _y + _height / 2;
 }
 
+void Tile::setOccupyingBody(Body* _body)
+{
+    body = _body;
+    deltaState.bodyId = body->fixedState.id;
+}
+
 void Tile::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
     if(full)
+    {
         packet << fixedState;
+    }
     packet << deltaState;
 }
 
 void Tile::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
     if(full)
+    {
         packet >> fixedState;
+    }
     packet >> deltaState;
 }

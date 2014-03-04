@@ -16,7 +16,7 @@ public:
 
     bit::GameTimer walkTimer;
 
-    virtual void load(World* world, Tile* tile);
+    virtual void load(World* world, unsigned int id, float x, float y);
 
     virtual void update(sf::Time &gameTime);
 };

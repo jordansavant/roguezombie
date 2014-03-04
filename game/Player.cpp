@@ -1,15 +1,15 @@
 #include "Player.hpp"
 #include "World.hpp"
-#include "characters/Zombie.hpp"
+#include "Character.hpp"
 
 Player::Player()
-	: world(NULL), zombie(NULL), clientId(0)
+    : world(NULL), character(NULL), clientId(0)
 {
 }
 
-void Player::load(World* _world, Zombie* _zombie, unsigned int _clientId)
+void Player::load(World* _world, Character* _character, unsigned int _clientId)
 {
 	world = _world;
-	zombie = _zombie;
+    character = _character;
     clientId = _clientId;
 }

@@ -1,0 +1,63 @@
+
+
+
+
+  ///////////////////
+ /// CLIENT SIDE ///
+///////////////////
+
+
+// Manages syncing World Data to visual representatives
+ClientWorld
+{
+	Map<int, TileClient>
+	Map<int, BodyClient>
+	Map<int, ItemClient>
+	
+	HandleSnapshot()
+}
+
+TileClient
+{
+	Tile
+	Drawable
+	
+	clientUpdate()
+	{
+		IsometrizePosition();
+	}
+	
+	HandleSnapshot()
+	{
+		Tile.handleSnapshot()
+	}
+}
+
+
+BodyClient
+{
+	Body
+	Vector<Time, Body::DeltaState> deltaHistory
+	
+	clientLoad()
+	{
+	}
+	
+	clientUpdate()
+	{
+		InterpolatePosition();
+		IsometrizePosition();
+	}
+	
+	clientDraw()
+	{
+	}
+	
+	HandleSnapshot()
+	{
+		Body.HandleSnapshot()
+		
+		deltaHistory.push(..) // queue
+	}
+}
+

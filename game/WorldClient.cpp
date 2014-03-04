@@ -64,10 +64,10 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
     packet >> tileCount;
     for(unsigned int i=0; i < tileCount; i++)
     {
-        sf::Uint32 tileId;
+        unsigned int tileId;
         packet >> tileId;
 
-        // If zombie exists, update it
+        // If tile exists, update it
         TileClient* t;
         auto itr = tiles.find(tileId);
         if(itr != tiles.end())
@@ -79,7 +79,7 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
         {
             t = new TileClient();
             t->clientLoad(this, &tileimage, &font);
-            tiles.insert(std::pair<sf::Uint32, TileClient*>(tileId, t));
+            tiles.insert(std::pair<unsigned int, TileClient*>(tileId, t));
         }
         t->handleSnapshot(packet, full);
     }
@@ -89,7 +89,7 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
     packet >> zombieCount;
     for(unsigned int i=0; i < zombieCount; i++)
     {
-        sf::Uint32 zombieId;
+        unsigned int zombieId;
         packet >> zombieId;
 
         // If zombie exists, update it
@@ -104,7 +104,7 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
         {
             z = new ZombieClient();
             z->clientLoad(this, &zombieimage);
-            zombies.insert(std::pair<sf::Uint32, ZombieClient*>(zombieId, z));
+            zombies.insert(std::pair<unsigned int, ZombieClient*>(zombieId, z));
         }
         z->handleSnapshot(packet, full);
 
