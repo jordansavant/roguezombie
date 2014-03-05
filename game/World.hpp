@@ -6,6 +6,7 @@
 #include "SFML/Network.hpp"
 #include "Command.hpp"
 #include <map>
+#include <functional>
 
 namespace bit
 {
@@ -48,6 +49,10 @@ public:
     Tile* getTileAtPosition(float x, float y);
 
     std::vector<Tile*> getTilesWithinRectangle(float top, float left, float width, float height);
+
+    std::vector<Tile*> getShortestPath(float startX, float startY, float endX, float endY, std::function<bool(Tile*)> isBlocked, std::function<std::vector<Tile*>(Tile*)> getNeighbors);
+
+    std::vector<Tile*> getCardinalTiles(Tile* tile, bool nullsafe = true);
 
     void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 };

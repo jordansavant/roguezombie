@@ -3,6 +3,7 @@
 #include <vector>
 #include <random>
 #include <math.h>
+#include <cmath>
 #include <stdio.h>
 
 float bit::Math::PiOver4 = 0.785398163397f;

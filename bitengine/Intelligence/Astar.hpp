@@ -6,6 +6,7 @@
 #include <vector>
 #include <list>
 #include <complex>
+#include <cmath>
 #include "Node.hpp"
 
 namespace bit
@@ -71,7 +72,8 @@ namespace bit
                             if(manhattan)
                                 gcost = (int)((float)(xdiff + ydiff) / 1.4); // 1.4 is rough diagonal length of a square
                             else
-                                gcost = (int)std::sqrt((std::pow(xdiff, 2) + std::pow(ydiff, 2)));
+                                gcost = (int)std::sqrt((float)(xdiff * xdiff) + (float)(ydiff * ydiff));
+                                //gcost = (int)std::sqrt((std::pow(xdiff, 2) + std::pow(ydiff, 2)));
                         // If straight
                         else
                             gcost = xdiff + ydiff; // one has to be zero so it is the length of one side
@@ -91,7 +93,7 @@ namespace bit
                         if(manhattan)
                             hcost = xdiff + ydiff;
                         else
-                            hcost = (int)std::sqrt((std::pow(xdiff, 2) + std::pow(ydiff, 2)));
+                            hcost = (int)std::sqrt((float)(xdiff * xdiff) + (float)(ydiff * ydiff));
                         checkNodeContainer->node->hCost = hcost;
                     }
 

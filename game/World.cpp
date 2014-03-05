@@ -28,7 +28,7 @@ World::~World()
     {
         delete zombies[i];
     }
-    
+
     for(unsigned int i=0; i < ogres.size(); i++)
     {
         delete ogres[i];
@@ -170,7 +170,7 @@ void World::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &cl
             player->character->moveRight();
 			break;
         case Command::Type::PlayerTeleport:
-        { 
+        {
             float x, y;
             packet >> x >> y;
             Tile* t = getTileAtPosition(x, y);
@@ -240,6 +240,49 @@ std::vector<Tile*> World::getTilesWithinRectangle(float left, float top, float w
     return tiles;
 }
 
+std::vector<Tile*> World::getShortestPath(float startX, float startY, float endX, float endY, std::function<bool(Tile*)> isBlocked, std::function<std::vector<Tile*>(Tile*)> getNeighbors)
+{
+    // Translate start and finish to tiles
+    Tile* closestStartNode = getTileAtPosition(startX, startY);
+    Tile* closestFinishNode = getTileAtPosition(endX, endY);
+
+    // Return empty list if there is no path
+    if (closestStartNode == NULL || closestFinishNode == NULL || isBlocked(closestStartNode) || isBlocked(closestFinishNode))
+        return std::vector<Tile*>();
+
+    return bit::Astar::pathfind(closestStartNode, closestFinishNode, isBlocked, getNeighbors);
+}
+
+std::vector<Tile*> World::getCardinalTiles(Tile* tile, bool nullsafe)
+{
+    std::vector<Tile*> tiles;
+    Tile* top = getTileAtPosition(tile->fixedState.x, tile->fixedState.y - tile->fixedState.height);
+    Tile* bottom = getTileAtPosition(tile->fixedState.x, tile->fixedState.y + tile->fixedState.height);
+    Tile* left = getTileAtPosition(tile->fixedState.x - tile->fixedState.width, tile->fixedState.y);
+    Tile* right = getTileAtPosition(tile->fixedState.x + tile->fixedState.width, tile->fixedState.y);
+
+    if(top)
+        tiles.push_back(top);
+    else if(!nullsafe)
+        tiles.push_back(top);
+
+    if(bottom)
+        tiles.push_back(bottom);
+    else if(!nullsafe)
+        tiles.push_back(bottom);
+
+    if(left)
+        tiles.push_back(left);
+    else if(!nullsafe)
+        tiles.push_back(left);
+
+    if(right)
+        tiles.push_back(right);
+    else if(!nullsafe)
+        tiles.push_back(right);
+
+    return tiles;
+}
 
 void World::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
