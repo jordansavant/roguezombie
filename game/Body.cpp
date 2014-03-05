@@ -11,24 +11,18 @@ Body::Body()
 {
 }
 
-void Body::load(World* _world, unsigned int _id, Type _type, float _x, float _y, unsigned int _tileSize)
+void Body::load(World* _world, unsigned int _id, Type _type, float _x, float _y, float _width, float _height)
 {
     world = _world;
     fixedState.id = _id;
     deltaState.x = _x;
     deltaState.y = _y;
-    deltaState.tileSize = _tileSize;
+    deltaState.width = _width;
+    deltaState.height = _height;
 }
 
 void Body::update(sf::Time &gameTime)
 {
-    // TODO: Convert to support multi tile bodies
-
-    Tile* tile = world->getTileAtPosition(deltaState.x, deltaState.y);
-    if(tile)
-    {
-        tile->setOccupyingBody(this);
-    }
 }
 
 void Body::prepareSnapshot(bit::ServerPacket &packet, bool full)

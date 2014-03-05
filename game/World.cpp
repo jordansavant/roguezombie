@@ -2,6 +2,7 @@
 #include "Player.hpp"
 #include "Tile.hpp"
 #include "characters/Zombie.hpp"
+#include "characters/Ogre.hpp"
 #include "structures/Wall.hpp"
 #include "SFML/Network.hpp"
 #include "../bitengine/Network.hpp"
@@ -26,6 +27,11 @@ World::~World()
     for(unsigned int i=0; i < zombies.size(); i++)
     {
         delete zombies[i];
+    }
+    
+    for(unsigned int i=0; i < ogres.size(); i++)
+    {
+        delete ogres[i];
     }
 
     for(auto iterator = players.begin(); iterator != players.end(); iterator++)
@@ -83,20 +89,27 @@ void World::load()
             tiles[index] = t;
 
             // Add a zombie randomly
-            if(bit::Math::random(25) == 1)
+            if(i > 4 || j > 4)
             {
-                Zombie* z = new Zombie();
-                z->load(this, zombies.size(), t->fixedState.centerX, t->fixedState.centerY);
-                zombies.push_back(z);
-                t->setOccupyingBody(z);
-            }
-            // Add a wall randomly
-            else if(bit::Math::random(25) == 1)
-            {
-                Wall* w = new Wall();
-                w->load(this, walls.size(), t->fixedState.centerX, t->fixedState.centerY);
-                walls.push_back(w);
-                t->setOccupyingBody(w);
+                switch(bit::Math::random(20))
+                {
+                    case 0:
+                    {
+                        Zombie* z = new Zombie();
+                        z->load(this, zombies.size(), t->fixedState.x, t->fixedState.y);
+                        zombies.push_back(z);
+                        t->setOccupyingBody(z);
+                        break;
+                    }
+                    case 1:
+                    {
+                        Wall* w = new Wall();
+                        w->load(this, walls.size(), t->fixedState.x, t->fixedState.y);
+                        walls.push_back(w);
+                        t->setOccupyingBody(w);
+                        break;
+                    }
+                }
             }
         }
     }
@@ -112,6 +125,10 @@ void World::update(sf::Time &gameTime)
     {
         zombies[i]->update(gameTime);
     }
+    for(unsigned int i=0; i < ogres.size(); i++)
+    {
+        ogres[i]->update(gameTime);
+    }
     for(unsigned int i=0; i < walls.size(); i++)
     {
         walls[i]->update(gameTime);
@@ -122,13 +139,13 @@ void World::createPlayer(bit::RemoteClient &client)
 {
 	if(players.find(client.id) == players.end())
 	{
-		Zombie* zombie = new Zombie();
-        zombie->load(this, zombies.size(), tiles[0]->fixedState.centerX, tiles[0]->fixedState.centerY);
-		zombies.push_back(zombie);
+		Ogre* ogre = new Ogre();
+        ogre->load(this, zombies.size(), tiles[0]->fixedState.x, tiles[0]->fixedState.y);
+		ogres.push_back(ogre);
 
 		Player* player = new Player();
-        player->load(this, zombie, client.id);
-        zombie->setControllingPlayer(player);
+        player->load(this, ogre, client.id);
+        ogre->setControllingPlayer(player);
 
 		players.insert(std::pair<unsigned int, Player*>(client.id, player));
 	}
@@ -187,13 +204,32 @@ Tile* World::getTileAtPosition(float x, float y)
 
     unsigned int index = tx + (tileColumns * ty);
 
-    if(index < tileCount)
+    return tiles[index];
+}
+
+std::vector<Tile*> World::getTilesWithinRectangle(float left, float top, float width, float height)
+{
+    // Get the total size of the tiles
+    int recTileWidth = (int)width / tileWidth;
+    int recTileHeight = (int)height / tileHeight;
+    int totalTiles = recTileWidth * recTileHeight;
+
+    std::vector<Tile*> tiles;
+    tiles.resize(totalTiles, NULL);
+
+    int i=0;
+    for(int x = left; x < left + width; x += tileWidth)
     {
-        return tiles[index];
+        for(int y = top; y < top + height; y += tileHeight)
+        {
+            tiles[i] = getTileAtPosition(x, y);
+            i++;
+        }
     }
 
-    return NULL;
+    return tiles;
 }
+
 
 void World::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
@@ -217,6 +253,17 @@ void World::prepareSnapshot(bit::ServerPacket &packet, bool full)
         sf::Uint32 zombieId = zombies[i]->Body::fixedState.id;
         packet << zombieId;
         zombies[i]->prepareSnapshot(packet, full);
+    }
+
+    // Ogres
+    sf::Uint32 ogreCount = ogres.size();
+    packet << ogreCount;
+
+    for(unsigned int i=0; i < ogres.size(); i++)
+    {
+        sf::Uint32 ogreId = ogres[i]->Body::fixedState.id;
+        packet << ogreId;
+        ogres[i]->prepareSnapshot(packet, full);
     }
 
     // Walls

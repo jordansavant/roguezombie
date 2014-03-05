@@ -1,5 +1,5 @@
-#include "ZombieClient.hpp"
-#include "Zombie.hpp"
+#include "OgreClient.hpp"
+#include "Ogre.hpp"
 #include "SFML/Graphics.hpp"
 #include "../WorldClient.hpp"
 #include "../GameplayState.hpp"
@@ -9,19 +9,19 @@
 #include "../../bitengine/Math.hpp"
 #include "../../bitengine/System.hpp"
 
-ZombieClient::ZombieClient()
-    : Zombie(), renderX(0), renderY(0)
+OgreClient::OgreClient()
+    : Ogre(), renderX(0), renderY(0)
 {
 }
 
-void ZombieClient::clientLoad(WorldClient* _world, sf::Texture* texture)
+void OgreClient::clientLoad(WorldClient* _world, sf::Texture* texture)
 {
     world = _world;
     renderTexture = texture;
     renderSprite.setTexture(*texture);
 }
 
-void ZombieClient::clientUpdate(sf::Time &gameTime)
+void OgreClient::clientUpdate(sf::Time &gameTime)
 {
 	float finalX = Body::deltaState.x;
 	float finalY = Body::deltaState.y;
@@ -112,19 +112,10 @@ void ZombieClient::clientUpdate(sf::Time &gameTime)
 		}
 	}
 
-    if(fixedState.isPlayerCharacter && fixedState.clientId == world->state->clientId)
-    {
-        renderSprite.setColor(sf::Color::Magenta);
-    }
-    else
-    {
-        renderSprite.setColor(sf::Color::White);
-    }
-
-    float spriteWidth = 21;
-    float spriteHeight = 29;
-    float xFootOffset = 8;
-    float yFootOffset = 5;
+    float spriteWidth = 84;
+    float spriteHeight = 116;
+    float xFootOffset = 30;
+    float yFootOffset = 20;
 
     float worldX = finalX;
     float worldY = finalY;
@@ -137,14 +128,14 @@ void ZombieClient::clientUpdate(sf::Time &gameTime)
     renderSprite.setPosition(renderX, renderY);
 }
 
-void ZombieClient::clientDraw(sf::RenderWindow &window, sf::Time &gameTime)
+void OgreClient::clientDraw(sf::RenderWindow &window, sf::Time &gameTime)
 {
     window.draw(renderSprite);
 }
 
-void ZombieClient::handleSnapshot(bit::ServerPacket &packet, bool full)
+void OgreClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
-	Zombie::handleSnapshot(packet, full);
+	Ogre::handleSnapshot(packet, full);
 
 	bodyDeltas.push_back(std::pair<sf::Time, Body::DeltaState>(temporaryClockVariable.getElapsedTime(), Body::deltaState));
 	characterDeltas.push_back(std::pair<sf::Time, Character::DeltaState>(temporaryClockVariable.getElapsedTime(), Character::deltaState));

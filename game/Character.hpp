@@ -20,7 +20,8 @@ public:
 
     enum Type
     {
-       Zombie
+       Zombie,
+       Ogre
     };
 
 	struct FixedState
@@ -60,7 +61,7 @@ public:
 	};
 	DeltaState deltaState;
 
-    virtual void load(World* world, unsigned int id, Type type, float x, float y, unsigned int tileSize);
+    virtual void load(World* world, unsigned int id, Type type, float x, float y, float width, float height);
 
     virtual void update(sf::Time &gameTime);
 
@@ -75,6 +76,8 @@ public:
     virtual void moveRight();
 
     virtual void moveToTile(Tile* tile);
+
+    virtual void moveToPosition(float x, float y);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 

@@ -23,10 +23,20 @@ void WallClient::clientLoad(WorldClient* _world, sf::Texture* texture)
 
 void WallClient::clientUpdate(sf::Time &gameTime)
 {
-    sf::Vector2f renderPosition = bit::VectorMath::normalToIsometric(Body::deltaState.x, Body::deltaState.y);
-    renderPosition.x -= renderSprite.getLocalBounds().width / 2;
-    renderPosition.y -= renderSprite.getLocalBounds().height - 16;
-    renderSprite.setPosition(renderPosition.x, renderPosition.y);
+    float spriteWidth = 64;
+    float spriteHeight = 64;
+    float xFootOffset = 0;
+    float yFootOffset = 16;
+
+    float worldX = Body::deltaState.x;
+    float worldY = Body::deltaState.y;
+    float worldCenterX = worldX + Body::deltaState.width / 2;
+    float worldCenterY = worldY + Body::deltaState.height / 2;
+
+    sf::Vector2f renderPosition = bit::VectorMath::normalToIsometric(worldCenterX, worldCenterY);
+    float renderX = renderPosition.x - spriteWidth / 2 + xFootOffset / 2;
+    float renderY = renderPosition.y - spriteHeight + yFootOffset;
+    renderSprite.setPosition(renderX, renderY);
 }
 
 void WallClient::clientDraw(sf::RenderWindow &window, sf::Time &gameTime)

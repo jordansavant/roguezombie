@@ -15,6 +15,7 @@ namespace bit
 }
 
 class Zombie;
+class Ogre;
 class Player;
 class Tile;
 class Wall;
@@ -28,6 +29,7 @@ public:
     ~World();
 
     std::vector<Zombie*> zombies;
+    std::vector<Ogre*> ogres;
     std::vector<Wall*> walls;
     std::vector<Tile*> tiles;
 	std::map<unsigned int, Player*> players;
@@ -44,6 +46,8 @@ public:
     bool isCoordinateInMap(float x, float y);
 
     Tile* getTileAtPosition(float x, float y);
+
+    std::vector<Tile*> getTilesWithinRectangle(float top, float left, float width, float height);
 
     void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 };

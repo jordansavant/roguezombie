@@ -2,6 +2,7 @@
 #include "TileClient.hpp"
 #include "GameplayState.hpp"
 #include "characters/ZombieClient.hpp"
+#include "characters/OgreClient.hpp"
 #include "structures/WallClient.hpp"
 #include "../bitengine/Math.hpp"
 #include "../bitengine/Network.hpp"
@@ -10,7 +11,7 @@
 #include <map>
 
 WorldClient::WorldClient()
-    : state(NULL), playerCharacter(NULL)
+    : state(NULL)
 {
 }
 
@@ -34,6 +35,7 @@ void WorldClient::load(GameplayState* _state)
 {
     state = _state;
     zombieimage.loadFromFile(resourcePath() + "Zombie.png");
+    ogreimage.loadFromFile(resourcePath() + "Ogre.png");
     tileimage.loadFromFile(resourcePath() + "Water.png");
     wallimage.loadFromFile(resourcePath() + "Wall.png");
     font.loadFromFile(resourcePath() + "Agency.ttf");
@@ -46,6 +48,10 @@ void WorldClient::update(sf::RenderWindow &window, sf::Time &gameTime)
         iterator->second->clientUpdate(window, gameTime);
     }
     for(auto iterator = zombies.begin(); iterator != zombies.end(); iterator++)
+    {
+        iterator->second->clientUpdate(gameTime);
+    }
+    for(auto iterator = ogres.begin(); iterator != ogres.end(); iterator++)
     {
         iterator->second->clientUpdate(gameTime);
     }
@@ -62,6 +68,10 @@ void WorldClient::draw(sf::RenderWindow &window, sf::Time &gameTime)
         iterator->second->clientDraw(window, gameTime);
     }
     for(auto iterator = zombies.begin(); iterator != zombies.end(); iterator++)
+    {
+        iterator->second->clientDraw(window, gameTime);
+    }
+    for(auto iterator = ogres.begin(); iterator != ogres.end(); iterator++)
     {
         iterator->second->clientDraw(window, gameTime);
     }
@@ -121,12 +131,31 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
             zombies.insert(std::pair<unsigned int, ZombieClient*>(zombieId, z));
         }
         z->handleSnapshot(packet, full);
+    }
 
-        // Nab player
-        if(z->fixedState.clientId == state->clientId)
+    // Ogres
+    sf::Uint32 ogreCount;
+    packet >> ogreCount;
+    for(unsigned int i=0; i < ogreCount; i++)
+    {
+        unsigned int ogreId;
+        packet >> ogreId;
+
+        // If exists, update it
+        OgreClient* o;
+        auto itr = ogres.find(ogreId);
+        if(itr != ogres.end())
         {
-            playerCharacter = z;
+            o = itr->second;
         }
+        // If not, create it, load it and update it
+        else
+        {
+            o = new OgreClient();
+            o->clientLoad(this, &ogreimage);
+            ogres.insert(std::pair<unsigned int, OgreClient*>(ogreId, o));
+        }
+        o->handleSnapshot(packet, full);
     }
 
     // Walls

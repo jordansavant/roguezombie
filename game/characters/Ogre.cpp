@@ -1,4 +1,4 @@
-#include "Zombie.hpp"
+#include "Ogre.hpp"
 #include "SFML/Graphics.hpp"
 #include "../../bitengine/Game.hpp"
 #include "../../bitengine/Network.hpp"
@@ -7,23 +7,23 @@
 #include "../World.hpp"
 #include "../Tile.hpp"
 
-Zombie::Zombie()
+Ogre::Ogre()
     : Character(), walkTimer(5)
 {
 }
 
-void Zombie::load(World* _world, unsigned int _id, float _x, float _y)
+void Ogre::load(World* _world, unsigned int _id, float _x, float _y)
 {
-    Character::load(_world, _id, Character::Type::Zombie, _x, _y, _world->tileWidth * 1, _world->tileHeight * 1);
+    Character::load(_world, _id, Character::Type::Ogre, _x, _y, _world->tileWidth * 2, _world->tileHeight * 2);
 }
 
-void Zombie::update(sf::Time &gameTime)
+void Ogre::update(sf::Time &gameTime)
 {
     Character::update(gameTime);
 
 	if(!fixedState.isPlayerCharacter)
 	{
-		if(walkTimer.update(gameTime) && false)
+		if(walkTimer.update(gameTime))
 		{
             walkTimer.adjustBy(2 * bit::Math::randomFloat());
 

@@ -48,20 +48,20 @@ public:
 	struct DeltaState
 	{
 		float x, y;
-        unsigned int tileSize;
+        float width, height;
 
         friend sf::Packet& operator <<(sf::Packet& packet, const Body::DeltaState &state)
         {
-            return packet << state.x << state.y << sf::Uint32(state.tileSize);
+            return packet << state.x << state.y << state.width << state.height;
         }
         friend sf::Packet& operator >>(sf::Packet& packet, Body::DeltaState &state)
         {
-            return packet >> state.x >> state.y >> state.tileSize;
+            return packet >> state.x >> state.y >> state.width >> state.height;
         }
 	};
 	DeltaState deltaState;
 
-    virtual void load(World* world, unsigned int id, Type type, float x, float y, unsigned int tileSize);
+    virtual void load(World* world, unsigned int id, Type type, float x, float y, float width, float height);
 
     virtual void update(sf::Time &gameTime);
 

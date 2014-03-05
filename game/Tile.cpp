@@ -20,8 +20,6 @@ void Tile::load(World* _world, unsigned int _id, Type _type, int _x, int _y, int
 
 void Tile::update(sf::Time &gameTime)
 {
-    //TODO: FIX THIS HORRIDNESS
-    setOccupyingBody(NULL);
 }
 
 void Tile::setOccupyingBody(Body* _body)
