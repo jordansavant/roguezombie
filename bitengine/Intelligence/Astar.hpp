@@ -17,7 +17,7 @@ namespace bit
         static unsigned int aStarID;
 
         template<class T>
-        static std::vector<T*> pathfind(T* startNodeContainer, T* endNodeContainer, std::function<bool(T*)> isBlocked, std::function<std::vector<T*>(T*)> getNeighbors)
+        static std::vector<T*> pathfind(T* startNodeContainer, T* endNodeContainer, std::function<bool(T*)> isBlocked, std::function<std::vector<T*>(T*)> getNeighbors, bool manhattan = true)
         {
             aStarID++;
 
@@ -66,11 +66,14 @@ namespace bit
                         xdiff = std::abs(checkNodeContainer->node->x - currentNodeContainer->node->x);
                         ydiff = std::abs(checkNodeContainer->node->y - currentNodeContainer->node->y);
                         gcost = 0;
+                        // If diagonal
                         if (ydiff > 0 && xdiff > 0)
-                            // diagonal -- TODO: improve to either be dynamic distance or coded for grid, not both :(
-                            gcost = (int)((float)(xdiff + ydiff) / 1.4); // 1.4 is rough diagonal length of a square
+                            if(manhattan)
+                                gcost = (int)((float)(xdiff + ydiff) / 1.4); // 1.4 is rough diagonal length of a square
+                            else
+                                gcost = (int)std::sqrt((std::pow(xdiff, 2) + std::pow(ydiff, 2)));
+                        // If straight
                         else
-                            // straight
                             gcost = xdiff + ydiff; // one has to be zero so it is the length of one side
 
                         checkNodeContainer->node->gCost = gcost;
@@ -83,10 +86,12 @@ namespace bit
                         //     Use manhattan distance (total x distance + total y distance)
                         //     Or use real distance squareRoot( x distance ^ 2, y distance ^ 2)
                         //     Or some other heuristic if you are brave
-                        // TODO: Not Manahattan -- use this real distance or use manhattan!
                         xdiff = checkNodeContainer->node->x - endNodeContainer->node->x;
                         ydiff = checkNodeContainer->node->y - endNodeContainer->node->y;
-                        hcost = (int)std::sqrt((std::pow(xdiff, 2) + std::pow(ydiff, 2)));
+                        if(manhattan)
+                            hcost = xdiff + ydiff;
+                        else
+                            hcost = (int)std::sqrt((std::pow(xdiff, 2) + std::pow(ydiff, 2)));
                         checkNodeContainer->node->hCost = hcost;
                     }
 
@@ -103,6 +108,8 @@ namespace bit
                     // Skip nodes that are blocked or already closed
                     if (!isBlocked(checkNodeContainer) && !checkNodeContainer->node->closed)
                     {
+                        // TODO: Add clearance calculations
+
                         // If the connected node is not in the open list, add it to the open list
                         // and set its parent to our current active node
                         if (!checkNodeContainer->node->opened)
