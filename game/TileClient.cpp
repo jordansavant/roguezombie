@@ -46,10 +46,19 @@ void TileClient::clientUpdate(sf::RenderWindow &window, sf::Time &gameTime)
     if(tx == mx && ty == my)
     {
         renderSprite.setColor(sf::Color::Red);
+
+        // Set me as being hovered over
+        world->hoveredTile = this;
     }
     else
     {
         renderSprite.setColor(sf::Color::White);
+
+        // Unset if I was previously set
+        if(world->hoveredTile == this)
+        {
+            world->hoveredTile = NULL;
+        }
     }
 }
 

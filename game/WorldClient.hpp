@@ -31,6 +31,7 @@ public:
     sf::Texture tileimage;
     sf::Texture wallimage;
     sf::Font font;
+    TileClient* hoveredTile;
 
     void load(GameplayState* state);
 

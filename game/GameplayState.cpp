@@ -7,6 +7,7 @@
 #include "../ResourcePath.h"
 #include "GameplayServer.hpp"
 #include "WorldClient.hpp"
+#include "TileClient.hpp"
 #include "Command.hpp"
 #include "characters/ZombieClient.hpp"
 #include <sstream>
@@ -63,6 +64,20 @@ bool GameplayState::update(sf::RenderWindow &window, sf::Time &gameTime)
         };
 		commandQueue.push_back(cmd);
 	}
+    if(game->inputManager->isButtonReleased(sf::Mouse::Left))
+    {
+        // See if a tile is being hovered over
+        if(worldClient.hoveredTile)
+        {
+            TileClient* t = worldClient.hoveredTile;
+            Command cmd;
+            cmd.type = Command::Type::PlayerClickTile;
+            cmd.pack = [t] (sf::Packet &packet) {
+                packet << sf::Uint32(t->fixedState.id);
+            };
+		    commandQueue.push_back(cmd);
+        }
+    }
 
 	// Exit
     if(game->inputManager->isButtonPressed(sf::Keyboard::Escape))

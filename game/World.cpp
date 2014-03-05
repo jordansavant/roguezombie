@@ -50,16 +50,16 @@ void World::load()
     // Tiles
     const int tileArray[] =
     {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+        0, 0, 1, 0, 0, 0, 0, 1, 0, 0,
+        0, 0, 1, 0, 0, 0, 0, 1, 0, 0,
+        0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+        0, 1, 0, 0, 1, 1, 1, 1, 0, 0,
+        0, 0, 0, 0, 1, 2, 0, 1, 0, 0,
+        2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     };
 
     tileRows = 10;
@@ -76,7 +76,8 @@ void World::load()
         {
             // get the current tile information
             int index = i + j * tileColumns;
-            Tile::Type tileType = static_cast<Tile::Type>(tileArray[index]);
+            int logic = tileArray[index];
+            Tile::Type tileType = Tile::Type::Ground;
 
             // build the quad and its position on the map
             float originZ = 0;
@@ -88,27 +89,23 @@ void World::load()
             t->load(this, index, tileType, originX, originY, tileWidth, tileHeight);
             tiles[index] = t;
 
-            // Add a zombie randomly
-            if(i > 4 || j > 4)
+            switch(logic)
             {
-                switch(bit::Math::random(20))
+                case 2:
                 {
-                    case 0:
-                    {
-                        Zombie* z = new Zombie();
-                        z->load(this, zombies.size(), t->fixedState.x, t->fixedState.y);
-                        zombies.push_back(z);
-                        t->setOccupyingBody(z);
-                        break;
-                    }
-                    case 1:
-                    {
-                        Wall* w = new Wall();
-                        w->load(this, walls.size(), t->fixedState.x, t->fixedState.y);
-                        walls.push_back(w);
-                        t->setOccupyingBody(w);
-                        break;
-                    }
+                    Zombie* z = new Zombie();
+                    z->load(this, zombies.size(), t->fixedState.x, t->fixedState.y);
+                    zombies.push_back(z);
+                    t->setOccupyingBody(z);
+                    break;
+                }
+                case 1:
+                {
+                    Wall* w = new Wall();
+                    w->load(this, walls.size(), t->fixedState.x, t->fixedState.y);
+                    walls.push_back(w);
+                    t->setOccupyingBody(w);
+                    break;
                 }
             }
         }
@@ -173,6 +170,7 @@ void World::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &cl
             player->character->moveRight();
 			break;
         case Command::Type::PlayerTeleport:
+        { 
             float x, y;
             packet >> x >> y;
             Tile* t = getTileAtPosition(x, y);
@@ -181,6 +179,18 @@ void World::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &cl
                 player->character->moveToTile(t);
             }
             break;
+        }
+        case Command::Type::PlayerClickTile:
+        {
+            unsigned int tileId;
+            packet >> tileId;
+            Tile* t = tiles[tileId];
+            if(t)
+            {
+                player->character->moveToTile(t);
+            }
+            break;
+        }
 	}
 }
 

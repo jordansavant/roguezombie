@@ -23,7 +23,7 @@ void Zombie::update(sf::Time &gameTime)
 
 	if(!fixedState.isPlayerCharacter)
 	{
-		if(walkTimer.update(gameTime) && false)
+		if(walkTimer.update(gameTime))
 		{
             walkTimer.adjustBy(2 * bit::Math::randomFloat());
 

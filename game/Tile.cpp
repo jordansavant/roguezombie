@@ -1,9 +1,18 @@
 #include "Tile.hpp"
 #include "Body.hpp"
+#include "../bitengine/Intelligence.hpp"
 
 Tile::Tile()
-    : fixedState(), deltaState(), world(NULL), body(NULL)
+    : bit::NodeContainer(), fixedState(), deltaState(), world(NULL), body(NULL)
 {
+}
+
+Tile::~Tile()
+{
+    if(node)
+    {
+        delete node;
+    }
 }
 
 void Tile::load(World* _world, unsigned int _id, Type _type, int _x, int _y, int _width, int _height)
@@ -16,6 +25,8 @@ void Tile::load(World* _world, unsigned int _id, Type _type, int _x, int _y, int
     fixedState.height = _height;
     fixedState.centerX = _x + _width / 2;
     fixedState.centerY = _y + _height / 2;
+
+    this->node = new bit::Node(_x, _y, this);
 }
 
 void Tile::update(sf::Time &gameTime)

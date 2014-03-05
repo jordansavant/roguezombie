@@ -44,6 +44,7 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
 			case Command::Type::PlayerMoveLeft:
 			case Command::Type::PlayerMoveRight:
             case Command::Type::PlayerTeleport:
+            case Command::Type::PlayerClickTile:
 				world.handlePlayerCommand(packet, client, static_cast<Command::Type>(commandType));
 				break;
 		}

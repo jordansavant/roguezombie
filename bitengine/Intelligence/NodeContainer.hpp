@@ -1,8 +1,8 @@
 #pragma once
-#ifndef NODECONTAINER_H
-#define NODECONTAINER_H
+#ifndef BIT_NODECONTAINER_H
+#define BIT_NODECONTAINER_H
 
-namespace Maverick
+namespace bit
 {
     class Node;
 

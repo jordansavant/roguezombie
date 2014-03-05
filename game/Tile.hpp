@@ -4,15 +4,18 @@
 
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
+#include "../bitengine/Intelligence.hpp"
 
 class World;
 class Body;
 
-class Tile
+class Tile : public bit::NodeContainer
 {
 public:
 
     Tile();
+
+    ~Tile();
 
     enum Type
     {

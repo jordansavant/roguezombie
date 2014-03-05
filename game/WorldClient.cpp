@@ -11,7 +11,7 @@
 #include <map>
 
 WorldClient::WorldClient()
-    : state(NULL)
+    : state(NULL), hoveredTile(NULL)
 {
 }
 

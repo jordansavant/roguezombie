@@ -19,6 +19,7 @@ public:
 	    PlayerMoveLeft,
 	    PlayerMoveRight,
         PlayerTeleport,
+        PlayerClickTile,
     };
     Type type;
 
