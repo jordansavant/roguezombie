@@ -13,6 +13,7 @@ RogueZombieGame::RogueZombieGame()
     fpsFont.loadFromFile(resourcePath() + "Agency.ttf");
     fpsText.setFont(fpsFont);
     fpsText.setCharacterSize(16);
+    fpsText.setPosition(10, 10);
 
     Game::stateStack->pushState(startMenuState);
 }
@@ -58,6 +59,7 @@ void RogueZombieGame::draw(sf::RenderWindow &window, sf::Time &gameTime)
 	int d = 1 / fpsDrawMicro.asSeconds();
 	t << "FPS U: " << u << " / D: " << d;
 	fpsText.setString(t.str());
+
 	window.draw(fpsText);
 }
 

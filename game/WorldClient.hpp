@@ -38,8 +38,6 @@ public:
 
     void update(sf::RenderWindow &window, sf::Time &gameTime);
 
-    void draw2(sf::RenderWindow &window, sf::Time &gameTime);
-
     void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 
 private:

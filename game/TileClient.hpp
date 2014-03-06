@@ -19,16 +19,12 @@ public:
     TileClient();
 
     WorldClient* world;
-    sf::Text text;
-    sf::Font* font;
     bit::Sprite* sprite;
     unsigned int quadIndex;
 
-    void clientLoad(WorldClient* world, sf::Font* font);
+    void clientLoad(WorldClient* world);
 
     void clientUpdate(sf::RenderWindow &window, sf::Time &gameTime);
-
-    void clientDraw(sf::RenderWindow &window, sf::Time &gameTime);
 };
 
 #endif

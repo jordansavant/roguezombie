@@ -44,7 +44,3 @@ void WallClient::clientUpdate(sf::Time &gameTime)
     bit::Vertex3* quad = &world->vertexMap_01.vertexArray[quadIndex];
     bit::VertexHelper::positionQuad(quad, renderX, renderY, z, spriteWidth, spriteHeight);
 }
-
-void WallClient::clientDraw(sf::RenderWindow &window, sf::Time &gameTime)
-{
-}

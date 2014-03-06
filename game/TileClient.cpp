@@ -15,12 +15,9 @@ TileClient::TileClient()
 {
 }
 
-void TileClient::clientLoad(WorldClient* _world, sf::Font* _font)
+void TileClient::clientLoad(WorldClient* _world)
 {
     world = _world;
-    font = _font;
-    text.setFont(*font);
-    text.setCharacterSize(12);
 
     quadIndex = world->vertexMap_01.requestVertexIndex();
     sprite = world->state->game->spriteLoader->getSprite("Water");
@@ -29,15 +26,9 @@ void TileClient::clientLoad(WorldClient* _world, sf::Font* _font)
 
 void TileClient::clientUpdate(sf::RenderWindow &window, sf::Time &gameTime)
 {
-    std::stringstream ss;
-    ss << fixedState.id;
-    text.setString(ss.str());
-
     sf::Vector2f isoPosition = bit::VectorMath::normalToIsometric(fixedState.x, fixedState.y);
     bit::Vertex3* quad = &world->vertexMap_01.vertexArray[quadIndex];
     bit::VertexHelper::positionQuad(quad, isoPosition.x - fixedState.width, isoPosition.y, 0, 64, 32);
-
-    text.setPosition(isoPosition.x, isoPosition.y);
 
     // Test Mouse translation
     sf::Vector2f mouseWorldIsoPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
@@ -67,8 +58,4 @@ void TileClient::clientUpdate(sf::RenderWindow &window, sf::Time &gameTime)
             world->hoveredTile = NULL;
         }
     }
-}
-
-void TileClient::clientDraw(sf::RenderWindow &window, sf::Time &gameTime)
-{
 }

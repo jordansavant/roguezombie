@@ -83,7 +83,6 @@ bool GameplayState::update(sf::RenderWindow &window, sf::Time &gameTime)
 
 void GameplayState::drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera)
 {
-    worldClient.draw2(window, gameTime);
     window.draw(worldClient);
 }
 

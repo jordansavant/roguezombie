@@ -61,26 +61,6 @@ void WorldClient::update(sf::RenderWindow &window, sf::Time &gameTime)
     }
 }
 
-void WorldClient::draw2(sf::RenderWindow &window, sf::Time &gameTime)
-{
-    for(auto iterator = tiles.begin(); iterator != tiles.end(); iterator++)
-    {
-        iterator->second->clientDraw(window, gameTime);
-    }
-    for(auto iterator = zombies.begin(); iterator != zombies.end(); iterator++)
-    {
-        iterator->second->clientDraw(window, gameTime);
-    }
-    for(auto iterator = ogres.begin(); iterator != ogres.end(); iterator++)
-    {
-        iterator->second->clientDraw(window, gameTime);
-    }
-    for(auto iterator = walls.begin(); iterator != walls.end(); iterator++)
-    {
-        iterator->second->clientDraw(window, gameTime);
-    }
-}
-
 void WorldClient::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     bit::Game::depthTestBegin();
@@ -119,7 +99,7 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
         else
         {
             t = new TileClient();
-            t->clientLoad(this, &font);
+            t->clientLoad(this);
             tiles.insert(std::pair<unsigned int, TileClient*>(tileId, t));
         }
         t->handleSnapshot(packet, full);

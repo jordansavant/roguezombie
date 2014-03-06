@@ -44,10 +44,6 @@ void OgreClient::clientUpdate(sf::Time &gameTime)
     bit::VertexHelper::positionQuad(quad, r.x, r.y, z, spriteWidth, spriteHeight);
 }
 
-void OgreClient::clientDraw(sf::RenderWindow &window, sf::Time &gameTime)
-{
-}
-
 void OgreClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
 	Ogre::handleSnapshot(packet, full);

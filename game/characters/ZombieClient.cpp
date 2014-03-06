@@ -44,10 +44,6 @@ void ZombieClient::clientUpdate(sf::Time &gameTime)
     bit::VertexHelper::positionQuad(quad, r.x, r.y, z, spriteWidth, spriteHeight);
 }
 
-void ZombieClient::clientDraw(sf::RenderWindow &window, sf::Time &gameTime)
-{
-}
-
 void ZombieClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
 	Zombie::handleSnapshot(packet, full);
