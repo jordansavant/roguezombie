@@ -24,6 +24,10 @@ public:
        Ogre
     };
 
+    std::vector<Tile*> path;
+    sf::Vector2f currentDestination;
+    bit::GameTimer moveTimer;
+
 	struct FixedState
 	{
 		int maxHealth;
@@ -67,17 +71,21 @@ public:
 
     virtual void setControllingPlayer(Player* player);
 
-    virtual void moveUp();
+    virtual bool isTileBlocked(Tile* tile);
 
-    virtual void moveDown();
+    virtual bool moveUp();
 
-    virtual void moveLeft();
+    virtual bool moveDown();
 
-    virtual void moveRight();
+    virtual bool moveLeft();
 
-    virtual void moveToTile(Tile* tile);
+    virtual bool moveRight();
 
-    virtual void moveToPosition(float x, float y);
+    virtual bool moveToTile(Tile* tile);
+
+    virtual bool moveToPosition(float x, float y);
+
+    virtual void pathToPosition(float x, float y);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 

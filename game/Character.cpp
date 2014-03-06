@@ -3,13 +3,16 @@
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Math.hpp"
+#include "../bitengine/System.hpp"
 #include "World.hpp"
 #include "Body.hpp"
 #include "Tile.hpp"
 #include "Player.hpp"
+#include <deque>
+#include <sstream>
 
 Character::Character()
-    : Body(), fixedState(), deltaState()
+    : Body(), moveTimer(.5f), fixedState(), deltaState()
 {
 }
 
@@ -26,6 +29,23 @@ void Character::load(World* _world, unsigned int _id, Type _type, float _x, floa
 void Character::update(sf::Time &gameTime)
 {
     Body::update(gameTime);
+
+    if(path.size() > 0 && moveTimer.update(gameTime))
+    {
+        Tile* nextTile = path.back();
+
+        if(nextTile->fixedState.x != Body::deltaState.x || nextTile->fixedState.y != Body::deltaState.y)
+        {
+            if(moveToTile(nextTile))
+            {
+                path.pop_back();
+            }
+        }
+        else
+        {
+            path.pop_back();
+        }
+    }
 }
 
 void Character::setControllingPlayer(Player* player)
@@ -34,52 +54,38 @@ void Character::setControllingPlayer(Player* player)
     fixedState.clientId = player->clientId;
 }
 
-void Character::moveUp()
+bool Character::isTileBlocked(Tile* tile)
 {
-    moveToPosition(Body::deltaState.x, Body::deltaState.y - world->tileHeight);
+    return (!tile || (tile->body && tile->body != this));
 }
 
-void Character::moveDown()
+bool Character::moveUp()
 {
-    moveToPosition(Body::deltaState.x, Body::deltaState.y + world->tileHeight);
+    return moveToPosition(Body::deltaState.x, Body::deltaState.y - world->tileHeight);
 }
 
-void Character::moveLeft()
+bool Character::moveDown()
 {
-    moveToPosition(Body::deltaState.x - world->tileWidth, Body::deltaState.y);
+    return moveToPosition(Body::deltaState.x, Body::deltaState.y + world->tileHeight);
 }
 
-void Character::moveRight()
+bool Character::moveLeft()
 {
-    moveToPosition(Body::deltaState.x + world->tileWidth, Body::deltaState.y);
+    return moveToPosition(Body::deltaState.x - world->tileWidth, Body::deltaState.y);
 }
 
-void Character::moveToTile(Tile* t)
+bool Character::moveRight()
 {
-    moveToPosition(t->fixedState.x, t->fixedState.y);
+    return moveToPosition(Body::deltaState.x + world->tileWidth, Body::deltaState.y);
 }
 
-void Character::moveToPosition(float x, float y)
+bool Character::moveToTile(Tile* t)
 {
-    // If I can move to this tile
-    //Tile* newTile = world->getTileAtPosition(x, y);
-    //Tile* currentTile = world->getTileAtPosition(Body::deltaState.x, Body::deltaState.y);
+    return moveToPosition(t->fixedState.x, t->fixedState.y);
+}
 
-    //if(newTile && !newTile->body)
-    //{
-    //    Body::deltaState.x = newTile->fixedState.centerX;
-    //    Body::deltaState.y = newTile->fixedState.centerY;
-    //  
-    //    // Remove from current tile
-    //    if(currentTile)
-    //    {
-    //        currentTile->setOccupyingBody(NULL);
-    //    }
-
-    //    // Add to new tile
-    //    newTile->setOccupyingBody(this);
-    //}
-
+bool Character::moveToPosition(float x, float y)
+{
     std::vector<Tile*> newTiles = world->getTilesWithinRectangle(x, y, Body::deltaState.width, Body::deltaState.height);
     std::vector<Tile*> currentTiles = world->getTilesWithinRectangle(Body::deltaState.x, Body::deltaState.y, Body::deltaState.width, Body::deltaState.height);
 
@@ -87,7 +93,7 @@ void Character::moveToPosition(float x, float y)
     bool canMove = true;
     for(unsigned int i=0; i < newTiles.size(); i++)
     {
-        if(!newTiles[i] || (newTiles[i]->body && newTiles[i]->body != this))
+        if(isTileBlocked(newTiles[i]))
         {
             canMove = false;
             break;
@@ -107,6 +113,14 @@ void Character::moveToPosition(float x, float y)
         Body::deltaState.x = x;
         Body::deltaState.y = y;
     }
+
+    return canMove;
+}
+
+void Character::pathToPosition(float x, float y)
+{
+    path.clear();
+    path = world->getShortestPath(Body::deltaState.x, Body::deltaState.y, x, y, std::bind(&Character::isTileBlocked, this, std::placeholders::_1), std::bind(&World::getCardinalTiles, world, std::placeholders::_1));
 }
 
 void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)

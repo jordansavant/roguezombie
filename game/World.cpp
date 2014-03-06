@@ -53,9 +53,9 @@ void World::load()
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
-        0, 0, 1, 0, 0, 0, 0, 1, 0, 0,
-        0, 0, 1, 0, 0, 0, 0, 1, 0, 0,
-        0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 1, 0, 0, 1, 1, 1, 1, 0, 0,
         0, 0, 0, 0, 1, 2, 0, 1, 0, 0,
@@ -187,7 +187,7 @@ void World::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &cl
             Tile* t = tiles[tileId];
             if(t)
             {
-                player->character->moveToTile(t);
+                player->character->pathToPosition(t->fixedState.x, t->fixedState.y);
             }
             break;
         }
@@ -251,6 +251,11 @@ std::vector<Tile*> World::getShortestPath(float startX, float startY, float endX
         return std::vector<Tile*>();
 
     return bit::Astar::pathfind(closestStartNode, closestFinishNode, isBlocked, getNeighbors);
+}
+
+std::vector<Tile*> World::getCardinalTiles(Tile* tile)
+{
+    return getCardinalTiles(tile, true);
 }
 
 std::vector<Tile*> World::getCardinalTiles(Tile* tile, bool nullsafe)
