@@ -265,6 +265,31 @@ std::vector<Tile*> World::getCardinalTiles(Tile* tile, bool nullsafe)
     return tiles;
 }
 
+void World::raycastTiles(float startX, float startY, float endX, float endY, std::function<bool(Tile*)> inspect)
+{
+    // Convert to tile coordinates
+    unsigned int stx = (unsigned int)std::floor((float)startX / (float)tileWidth);
+    unsigned int sty = (unsigned int)std::floor((float)startY / (float)tileHeight);
+    unsigned int etx = (unsigned int)std::floor((float)endX / (float)tileWidth);
+    unsigned int ety = (unsigned int)std::floor((float)endY / (float)tileHeight);
+
+    std::vector<sf::Vector2i> line = bit::VectorMath::bresenhamLine(stx, sty, etx, ety);
+    
+    for(unsigned int i=0; i < line.size(); i++)
+    {
+        unsigned int index = line[i].x + line[i].y * tileColumns;
+        if(index < tiles.size())
+        {
+            Tile* t = tiles[index];
+
+            if(inspect(t))
+            {
+                return;
+            }
+        }
+    }
+}
+
 
 /*
  * Field of View
@@ -327,6 +352,21 @@ void World::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &cl
             if(t)
             {
                 player->character->pathToPosition(t->fixedState.x, t->fixedState.y);
+            }
+            break;
+        }
+        case Command::Type::PlayerRightClickTile:
+        {
+            unsigned int tileId;
+            packet >> tileId;
+            Tile* t = tiles[tileId];
+            Player* p = players[client.id];
+            if(t)
+            {
+                raycastTiles(t->fixedState.x, t->fixedState.y,  p->character->Body::deltaState.x, p->character->Body::deltaState.y, [] (Tile* t) -> bool {
+                    t->deltaState.illumination = 1.0f;
+                    return false;
+                });
             }
             break;
         }

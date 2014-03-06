@@ -26,7 +26,7 @@ void Tile::load(World* _world, unsigned int _id, Type _type, int _x, int _y, int
     fixedState.height = _height;
     fixedState.centerX = _x + _width / 2;
     fixedState.centerY = _y + _height / 2;
-    deltaState.illumination = 0.5f;
+    deltaState.illumination = 0.1f;
 
     this->node = new bit::Node(_x, _y, this);
 }

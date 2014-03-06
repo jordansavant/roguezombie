@@ -55,8 +55,11 @@ public:
 
     std::vector<Tile*> getCardinalTiles(Tile* tile, bool nullsafe);
 
+    void raycastTiles(float startX, float startY, float endX, float endY, std::function<bool(Tile*)> inspect);
+
 
     // Field of View
+
     unsigned int shadowcastGetWidth();
 
     unsigned int shadowcastGetHeight();
