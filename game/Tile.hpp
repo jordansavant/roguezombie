@@ -67,14 +67,15 @@ public:
     struct DeltaState
     {
         unsigned int bodyId;
+        float illumination; // how illuminated this tile is
 
         friend sf::Packet& operator <<(sf::Packet& packet, const DeltaState &state)
         {
-            return packet << sf::Uint32(state.bodyId);
+            return packet << sf::Uint32(state.bodyId) << state.illumination;
         }
         friend sf::Packet& operator >>(sf::Packet& packet, DeltaState &state)
         {
-            return packet >> state.bodyId;
+            return packet >> state.bodyId >> state.illumination;
         }
     };
     DeltaState deltaState;

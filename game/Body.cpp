@@ -15,6 +15,7 @@ void Body::load(World* _world, unsigned int _id, Type _type, float _x, float _y,
 {
     world = _world;
     fixedState.id = _id;
+    fixedState.type = _type;
     deltaState.x = _x;
     deltaState.y = _y;
     deltaState.width = _width;

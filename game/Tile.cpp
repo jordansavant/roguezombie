@@ -1,6 +1,7 @@
 #include "Tile.hpp"
 #include "Body.hpp"
 #include "../bitengine/Intelligence.hpp"
+#include "../bitengine/Math.hpp"
 
 Tile::Tile()
     : bit::NodeContainer(), fixedState(), deltaState(), world(NULL), body(NULL)
@@ -25,6 +26,7 @@ void Tile::load(World* _world, unsigned int _id, Type _type, int _x, int _y, int
     fixedState.height = _height;
     fixedState.centerX = _x + _width / 2;
     fixedState.centerY = _y + _height / 2;
+    deltaState.illumination = 0.5f;
 
     this->node = new bit::Node(_x, _y, this);
 }

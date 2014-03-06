@@ -8,6 +8,7 @@
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Math.hpp"
 #include "../bitengine/System.hpp"
+#include "../bitengine/Intelligence.hpp"
 #include "../ResourcePath.h"
 #include <sstream>
 #include <map>
@@ -44,6 +45,30 @@ World::~World()
         delete walls[i];
     }
 }
+
+
+unsigned int World::get_width()
+{
+    return tileWidth * tileColumns;
+}
+unsigned int World::get_height()
+{
+    return tileHeight * tileColumns;
+}
+void World::set_visible(int x, int y)
+{
+    Tile* t = getTileAtPosition(x * tileWidth, y * tileHeight);
+    if(t)
+    {
+        t->deltaState.illumination = 1.0f;
+    }
+}
+bool World::is_opaque(int x, int y)
+{
+    Tile* t = getTileAtPosition(x * tileWidth, y * tileHeight);
+    return (t && t->body && t->body->fixedState.type == Body::Type::Structure);
+}
+
 
 void World::load()
 {
@@ -114,9 +139,19 @@ void World::load()
 
 void World::update(sf::Time &gameTime)
 {
+    if(fovTimer.update(gameTime))
+    {
+    }
+
     for(unsigned int i=0; i < tiles.size(); i++)
     {
         tiles[i]->update(gameTime);
+        tiles[i]->deltaState.illumination = .5f;
+    }
+    if(players.size() > 0 && players[1]->character)
+    {
+        Tile* t = getTileAtPosition(players[1]->character->Body::deltaState.x, players[1]->character->Body::deltaState.y);
+        bit::FieldOfView::do_fov(*this, t->fixedState.x / tileWidth, t->fixedState.y / tileHeight, 8);
     }
     for(unsigned int i=0; i < zombies.size(); i++)
     {

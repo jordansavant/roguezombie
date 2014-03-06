@@ -49,7 +49,7 @@ void TileClient::clientUpdate(sf::RenderWindow &window, sf::Time &gameTime)
     }
     else
     {
-        sf::Color white(255, 255, 255);
+        sf::Color white(255 * deltaState.illumination, 255 * deltaState.illumination, 255 * deltaState.illumination);
         bit::VertexHelper::colorQuad(quad, white);
 
         // Unset if I was previously set

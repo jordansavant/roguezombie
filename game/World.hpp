@@ -4,16 +4,11 @@
 
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
+#include "../bitengine/Game.hpp"
+#include "../bitengine/Network.hpp"
 #include "Command.hpp"
 #include <map>
 #include <functional>
-
-namespace bit
-{
-	class RemoteClient;
-    class ServerPacket;
-    class ClientPacket;
-}
 
 class Zombie;
 class Ogre;
@@ -57,6 +52,14 @@ public:
     std::vector<Tile*> getCardinalTiles(Tile* tile, bool nullsafe);
 
     void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
+
+    // FOV
+    bit::GameTimer fovTimer;
+    unsigned int get_width();
+    unsigned int get_height();
+    void set_visible(int x, int y);
+    bool is_opaque(int x, int y);
+
 };
 
 #endif
