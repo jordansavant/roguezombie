@@ -31,13 +31,17 @@ public:
 	std::map<unsigned int, Player*> players;
     unsigned int tileWidth, tileHeight, tileRows, tileColumns, tileCount, mapWidth, mapHeight;
 
+
+    // Game Logic
+
     void load();
 
     void update(sf::Time &gameTime);
 
 	void createPlayer(bit::RemoteClient &client);
 
-    void handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type command);
+
+    // Tile Positioning and Pathfinding
 
     bool isCoordinateInMap(float x, float y);
 
@@ -51,14 +55,22 @@ public:
 
     std::vector<Tile*> getCardinalTiles(Tile* tile, bool nullsafe);
 
-    void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 
-    // FOV
-    bit::GameTimer fovTimer;
-    unsigned int get_width();
-    unsigned int get_height();
-    void set_visible(int x, int y);
-    bool is_opaque(int x, int y);
+    // Field of View
+    unsigned int shadowcastGetWidth();
+
+    unsigned int shadowcastGetHeight();
+
+    void shadowcastSetVisible(int x, int y);
+
+    bool shadowcastIsBlocked(int x, int y);
+
+
+    // Networking
+
+    void handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type command);
+
+    void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 
 };
 

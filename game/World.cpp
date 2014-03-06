@@ -47,48 +47,34 @@ World::~World()
 }
 
 
-unsigned int World::get_width()
-{
-    return tileWidth * tileColumns;
-}
-unsigned int World::get_height()
-{
-    return tileHeight * tileColumns;
-}
-void World::set_visible(int x, int y)
-{
-    Tile* t = getTileAtPosition(x * tileWidth, y * tileHeight);
-    if(t)
-    {
-        t->deltaState.illumination = 1.0f;
-    }
-}
-bool World::is_opaque(int x, int y)
-{
-    Tile* t = getTileAtPosition(x * tileWidth, y * tileHeight);
-    return (t && t->body && t->body->fixedState.type == Body::Type::Structure);
-}
-
+/*
+ * Game Logic
+ */
 
 void World::load()
 {
     // Tiles
     const int tileArray[] =
     {
-        0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-        0, 1, 0, 0, 1, 1, 1, 1, 0, 0,
-        0, 0, 0, 0, 1, 2, 0, 1, 0, 0,
-        2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+        0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+        0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0,
+        0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 0, 0, 0, 1, 0,
+        2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     };
 
-    tileRows = 10;
-    tileColumns = 10;
+    tileRows = 15;
+    tileColumns = 15;
     tileCount = tileRows * tileColumns;
     tileWidth = 32;
     tileHeight = 32;
@@ -139,10 +125,6 @@ void World::load()
 
 void World::update(sf::Time &gameTime)
 {
-    if(fovTimer.update(gameTime))
-    {
-    }
-
     for(unsigned int i=0; i < tiles.size(); i++)
     {
         tiles[i]->update(gameTime);
@@ -151,7 +133,7 @@ void World::update(sf::Time &gameTime)
     if(players.size() > 0 && players[1]->character)
     {
         Tile* t = getTileAtPosition(players[1]->character->Body::deltaState.x, players[1]->character->Body::deltaState.y);
-        bit::FieldOfView::do_fov(*this, t->fixedState.x / tileWidth, t->fixedState.y / tileHeight, 8);
+        bit::Shadowcaster::computeFoV(*this, t->fixedState.x / tileWidth, t->fixedState.y / tileHeight, 8);
     }
     for(unsigned int i=0; i < zombies.size(); i++)
     {
@@ -183,40 +165,10 @@ void World::createPlayer(bit::RemoteClient &client)
 	}
 }
 
-void World::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type commandType)
-{
-	Player* player = players[client.id];
-	sf::Vector2f d(0, 0);
 
-	switch(commandType)
-	{
-        default:
-            break;
-		case Command::Type::PlayerMoveUp:
-            player->character->moveUp();
-			break;
-		case Command::Type::PlayerMoveDown:
-            player->character->moveDown();
-			break;
-		case Command::Type::PlayerMoveLeft:
-            player->character->moveLeft();
-			break;
-		case Command::Type::PlayerMoveRight:
-            player->character->moveRight();
-			break;
-        case Command::Type::PlayerClickTile:
-        {
-            unsigned int tileId;
-            packet >> tileId;
-            Tile* t = tiles[tileId];
-            if(t)
-            {
-                player->character->pathToPosition(t->fixedState.x, t->fixedState.y);
-            }
-            break;
-        }
-	}
-}
+/*
+ * Tile Positioning and Pathfinding
+ */
 
 bool World::isCoordinateInMap(float x, float y)
 {
@@ -311,6 +263,74 @@ std::vector<Tile*> World::getCardinalTiles(Tile* tile, bool nullsafe)
         tiles.push_back(right);
 
     return tiles;
+}
+
+
+/*
+ * Field of View
+ */
+
+unsigned int World::shadowcastGetWidth()
+{
+    return tileColumns;
+}
+unsigned int World::shadowcastGetHeight()
+{
+    return tileRows;
+}
+void World::shadowcastSetVisible(int x, int y)
+{
+    Tile* t = getTileAtPosition(x * tileWidth, y * tileHeight);
+    if(t)
+    {
+        t->deltaState.illumination = 1.0f;
+    }
+}
+bool World::shadowcastIsBlocked(int x, int y)
+{
+    Tile* t = getTileAtPosition(x * tileWidth, y * tileHeight);
+    return (t && t->body && t->body->fixedState.type == Body::Type::Structure);
+}
+
+
+
+/*
+ * Networking
+ */
+
+void World::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type commandType)
+{
+	Player* player = players[client.id];
+	sf::Vector2f d(0, 0);
+
+	switch(commandType)
+	{
+        default:
+            break;
+		case Command::Type::PlayerMoveUp:
+            player->character->moveUp();
+			break;
+		case Command::Type::PlayerMoveDown:
+            player->character->moveDown();
+			break;
+		case Command::Type::PlayerMoveLeft:
+            player->character->moveLeft();
+			break;
+		case Command::Type::PlayerMoveRight:
+            player->character->moveRight();
+			break;
+        case Command::Type::PlayerClickTile:
+        {
+            unsigned int tileId;
+            packet >> tileId;
+            Tile* t = tiles[tileId];
+            if(t)
+            {
+                player->character->pathToPosition(t->fixedState.x, t->fixedState.y);
+            }
+            break;
+        }
+	}
 }
 
 void World::prepareSnapshot(bit::ServerPacket &packet, bool full)

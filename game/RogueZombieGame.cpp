@@ -8,7 +8,7 @@
 #include <sstream>
 
 RogueZombieGame::RogueZombieGame()
-	: Game("Rogue Zombie", 640, 480, false)
+	: Game("Rogue Zombie", 1280, 720, false)
 {
     fpsFont.loadFromFile(resourcePath() + "Agency.ttf");
     fpsText.setFont(fpsFont);
