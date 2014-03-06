@@ -61,7 +61,7 @@ public:
 
     unsigned int shadowcastGetHeight();
 
-    void shadowcastSetVisible(int x, int y);
+    void shadowcastSetVisible(int x, int y, int distance);
 
     bool shadowcastIsBlocked(int x, int y);
 

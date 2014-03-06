@@ -23,6 +23,9 @@ namespace bit
         template<class Map>
         static void computeFoV(Map& map, unsigned int x, unsigned int y, unsigned int radius)
         {
+            // Always mark base point
+            map.shadowcastSetVisible(x, y, 1);
+
             // Iterate across the octants and cast
             for (unsigned int i = 0; i < 8; i++)
             {
@@ -85,7 +88,7 @@ namespace bit
                     unsigned int radius2 = radius * radius;
                     if ((unsigned int)(dx * dx + dy * dy) < radius2)
                     {
-                        map.shadowcastSetVisible(ax, ay);
+                        map.shadowcastSetVisible(ax, ay, i);
                     }
 
                     if (blocked)

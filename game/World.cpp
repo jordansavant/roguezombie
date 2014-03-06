@@ -128,7 +128,7 @@ void World::update(sf::Time &gameTime)
     for(unsigned int i=0; i < tiles.size(); i++)
     {
         tiles[i]->update(gameTime);
-        tiles[i]->deltaState.illumination = .5f;
+        tiles[i]->deltaState.illumination = .1f;
     }
     if(players.size() > 0 && players[1]->character)
     {
@@ -278,12 +278,12 @@ unsigned int World::shadowcastGetHeight()
 {
     return tileRows;
 }
-void World::shadowcastSetVisible(int x, int y)
+void World::shadowcastSetVisible(int x, int y, int distance)
 {
     Tile* t = getTileAtPosition(x * tileWidth, y * tileHeight);
     if(t)
     {
-        t->deltaState.illumination = 1.0f;
+        t->deltaState.illumination = .1f + .9f * (1 - (float)distance / (float)8);
     }
 }
 bool World::shadowcastIsBlocked(int x, int y)
