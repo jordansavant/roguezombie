@@ -18,6 +18,8 @@ namespace bit
 
 		static sf::Vector2f lerp(float x1, float y1, float x2, float y2, float ratio);
 
+        static void incrementTowards(float &x1, float &y1, float x2, float y2, float amount);
+
         static void applyDeadZone(sf::Vector2f* v, float deadZone);
 
         static float distance(float x1, float y1, float x2, float y2);

@@ -25,7 +25,6 @@ public:
     };
 
     std::vector<Tile*> path;
-    sf::Vector2f currentDestination;
     bit::GameTimer moveTimer;
 
 	struct FixedState
@@ -71,10 +70,6 @@ public:
 
     virtual void setControllingPlayer(Player* player);
 
-    virtual bool isTileBlocked(Tile* tile);
-
-    virtual bool isTileBlockedForPathfinding(Tile* tile);
-
     virtual bool moveUp();
 
     virtual bool moveDown();
@@ -83,15 +78,21 @@ public:
 
     virtual bool moveRight();
 
-    virtual bool moveToTile(Tile* tile);
-
-    virtual bool moveToPosition(float x, float y);
-
     virtual void pathToPosition(float x, float y);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 
     virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
+
+protected:
+
+    virtual bool moveToTile(Tile* tile);
+
+    virtual bool moveToPosition(float x, float y);
+
+    virtual bool isTileBlocked(Tile* tile);
+
+    virtual bool isTileBlockedForPathfinding(Tile* tile);
 };
 
 #endif

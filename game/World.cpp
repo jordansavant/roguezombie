@@ -169,17 +169,6 @@ void World::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &cl
 		case Command::Type::PlayerMoveRight:
             player->character->moveRight();
 			break;
-        case Command::Type::PlayerTeleport:
-        {
-            float x, y;
-            packet >> x >> y;
-            Tile* t = getTileAtPosition(x, y);
-            if(t)
-            {
-                player->character->moveToTile(t);
-            }
-            break;
-        }
         case Command::Type::PlayerClickTile:
         {
             unsigned int tileId;

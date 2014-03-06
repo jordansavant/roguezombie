@@ -55,15 +55,6 @@ bool GameplayState::update(sf::RenderWindow &window, sf::Time &gameTime)
         cmd.type = Command::Type::PlayerMoveRight;
 		commandQueue.push_back(cmd);
 	}
-    if(game->inputManager->isButtonPressed(sf::Keyboard::T))
-	{
-		Command cmd;
-        cmd.type = Command::Type::PlayerTeleport;
-        cmd.pack = [] (sf::Packet &packet) {
-            packet << 0.0f << 0.0f;
-        };
-		commandQueue.push_back(cmd);
-	}
     if(game->inputManager->isButtonReleased(sf::Mouse::Left))
     {
         // See if a tile is being hovered over

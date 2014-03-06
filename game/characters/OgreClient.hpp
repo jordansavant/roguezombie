@@ -20,11 +20,6 @@ public:
     WorldClient* world;
     sf::Sprite renderSprite;
     sf::Texture* renderTexture;
-	sf::Clock temporaryClockVariable;
-
-	std::deque<std::pair<sf::Time, Body::DeltaState>> bodyDeltas;
-	std::deque<std::pair<sf::Time, Character::DeltaState>> characterDeltas;
-
     float renderX, renderY;
 
     void clientLoad(WorldClient* world, sf::Texture* renderTexture);
