@@ -73,6 +73,8 @@ public:
 
     virtual bool isTileBlocked(Tile* tile);
 
+    virtual bool isTileBlockedForPathfinding(Tile* tile);
+
     virtual bool moveUp();
 
     virtual bool moveDown();

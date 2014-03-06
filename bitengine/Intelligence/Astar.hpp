@@ -18,7 +18,7 @@ namespace bit
         static unsigned int aStarID;
 
         template<class T>
-        static std::vector<T*> pathfind(T* startNodeContainer, T* endNodeContainer, std::function<bool(T*)> isBlocked, std::function<std::vector<T*>(T*)> getNeighbors, bool manhattan = true)
+        static std::vector<T*> pathfind(T* startNodeContainer, T* endNodeContainer, std::function<bool(T*)> isBlocked, std::function<std::vector<T*>(T*)> getNeighbors, bool manhattan = false)
         {
             aStarID++;
 
@@ -69,14 +69,17 @@ namespace bit
                         gcost = 0;
                         // If diagonal
                         if (ydiff > 0 && xdiff > 0)
+                        {
                             if(manhattan)
                                 gcost = (int)((float)(xdiff + ydiff) / 1.4); // 1.4 is rough diagonal length of a square
                             else
                                 gcost = (int)std::sqrt((float)(xdiff * xdiff) + (float)(ydiff * ydiff));
-                                //gcost = (int)std::sqrt((std::pow(xdiff, 2) + std::pow(ydiff, 2)));
+                        }
                         // If straight
                         else
+                        {
                             gcost = xdiff + ydiff; // one has to be zero so it is the length of one side
+                        }
 
                         checkNodeContainer->node->gCost = gcost;
                     }
@@ -110,8 +113,6 @@ namespace bit
                     // Skip nodes that are blocked or already closed
                     if (!isBlocked(checkNodeContainer) && !checkNodeContainer->node->closed)
                     {
-                        // TODO: Add clearance calculations
-
                         // If the connected node is not in the open list, add it to the open list
                         // and set its parent to our current active node
                         if (!checkNodeContainer->node->opened)

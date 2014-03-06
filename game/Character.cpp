@@ -36,6 +36,9 @@ void Character::update(sf::Time &gameTime)
 
         if(nextTile->fixedState.x != Body::deltaState.x || nextTile->fixedState.y != Body::deltaState.y)
         {
+            std::stringstream ss;
+            ss << nextTile->fixedState.x << ", " << nextTile->fixedState.y;
+            bit::Output::Debug(ss.str());
             if(moveToTile(nextTile))
             {
                 path.pop_back();
@@ -57,6 +60,21 @@ void Character::setControllingPlayer(Player* player)
 bool Character::isTileBlocked(Tile* tile)
 {
     return (!tile || (tile->body && tile->body != this));
+}
+
+bool Character::isTileBlockedForPathfinding(Tile* tile)
+{
+    // Look at all tiles within my width and height
+    std::vector<Tile*> tiles = world->getTilesWithinRectangle(tile->fixedState.x, tile->fixedState.y, Body::deltaState.width, Body::deltaState.height);
+    for(unsigned int i=0; i < tiles.size(); i++)
+    {
+        if(isTileBlocked(tiles[i]))
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 bool Character::moveUp()
@@ -120,7 +138,7 @@ bool Character::moveToPosition(float x, float y)
 void Character::pathToPosition(float x, float y)
 {
     path.clear();
-    path = world->getShortestPath(Body::deltaState.x, Body::deltaState.y, x, y, std::bind(&Character::isTileBlocked, this, std::placeholders::_1), std::bind(&World::getCardinalTiles, world, std::placeholders::_1));
+    path = world->getShortestPath(Body::deltaState.x, Body::deltaState.y, x, y, std::bind(&Character::isTileBlockedForPathfinding, this, std::placeholders::_1), std::bind(&World::getCardinalTiles, world, std::placeholders::_1));
 }
 
 void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
