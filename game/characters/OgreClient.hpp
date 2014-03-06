@@ -7,6 +7,7 @@
 #include "SFML/Network.hpp"
 #include "../../bitengine/Game.hpp"
 #include "../../bitengine/Network.hpp"
+#include "../../bitengine/Graphics.hpp"
 #include <deque>
 
 class WorldClient;
@@ -18,11 +19,11 @@ public:
     OgreClient();
 
     WorldClient* world;
-    sf::Sprite renderSprite;
-    sf::Texture* renderTexture;
     float renderX, renderY;
+    bit::Sprite* sprite;
+    unsigned int quadIndex;
 
-    void clientLoad(WorldClient* world, sf::Texture* renderTexture);
+    void clientLoad(WorldClient* world);
 
     void clientUpdate(sf::Time &gameTime);
 

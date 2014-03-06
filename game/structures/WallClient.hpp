@@ -6,6 +6,7 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
 #include "../../bitengine/Game.hpp"
+#include "../../bitengine/Graphics.hpp"
 #include "../../bitengine/Network.hpp"
 
 class WorldClient;
@@ -17,10 +18,10 @@ public:
     WallClient();
 
     WorldClient* world;
-    sf::Sprite renderSprite;
-    sf::Texture* renderTexture;
+    bit::Sprite* sprite;
+    unsigned int quadIndex;
 
-    void clientLoad(WorldClient* world, sf::Texture* renderTexture);
+    void clientLoad(WorldClient* world);
 
     void clientUpdate(sf::Time &gameTime);
 

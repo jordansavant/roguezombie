@@ -4,6 +4,7 @@
 #include "../WorldClient.hpp"
 #include "../GameplayState.hpp"
 #include "../../bitengine/Game.hpp"
+#include "../../bitengine/Graphics.hpp"
 #include "../../bitengine/Network.hpp"
 #include "../../bitengine/Input.hpp"
 #include "../../bitengine/Math.hpp"
@@ -14,11 +15,13 @@ ZombieClient::ZombieClient()
 {
 }
 
-void ZombieClient::clientLoad(WorldClient* _world, sf::Texture* texture)
+void ZombieClient::clientLoad(WorldClient* _world)
 {
     world = _world;
-    renderTexture = texture;
-    renderSprite.setTexture(*texture);
+
+    quadIndex = world->vertexMap_01.requestVertexIndex();
+    sprite = world->state->game->spriteLoader->getSprite("Zombie");
+    sprite->applyToQuad(&world->vertexMap_01.vertexArray[quadIndex]);
 }
 
 void ZombieClient::clientUpdate(sf::Time &gameTime)
@@ -32,15 +35,17 @@ void ZombieClient::clientUpdate(sf::Time &gameTime)
     float worldCenterX = renderX + Body::deltaState.width / 2;
     float worldCenterY = renderY + Body::deltaState.height / 2;
 
-    sf::Vector2f renderPosition = bit::VectorMath::normalToIsometric(worldCenterX, worldCenterY);
-    renderPosition.x = renderPosition.x - spriteWidth / 2 + xFootOffset / 2;
-    renderPosition.y = renderPosition.y - spriteHeight + yFootOffset;
-    renderSprite.setPosition(renderPosition.x, renderPosition.y);
+    sf::Vector2f r = bit::VectorMath::normalToIsometric(worldCenterX, worldCenterY);
+    r.x = r.x - spriteWidth / 2 + xFootOffset / 2;
+    r.y = r.y - spriteHeight + yFootOffset;
+
+    float z = bit::Math::calculateDrawDepth(r.y + spriteHeight);
+    bit::Vertex3* quad = &world->vertexMap_01.vertexArray[quadIndex];
+    bit::VertexHelper::positionQuad(quad, r.x, r.y, z, spriteWidth, spriteHeight);
 }
 
 void ZombieClient::clientDraw(sf::RenderWindow &window, sf::Time &gameTime)
 {
-    window.draw(renderSprite);
 }
 
 void ZombieClient::handleSnapshot(bit::ServerPacket &packet, bool full)

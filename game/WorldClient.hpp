@@ -5,6 +5,7 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
 #include "../bitengine/Network.hpp"
+#include "../bitengine/Graphics.hpp"
 #include <map>
 
 class ZombieClient;
@@ -13,7 +14,7 @@ class TileClient;
 class WallClient;
 class GameplayState;
 
-class WorldClient
+class WorldClient : public sf::Drawable, public sf::Transformable
 {
 public:
 
@@ -26,20 +27,24 @@ public:
     std::map<unsigned int, OgreClient*> ogres;
     std::map<unsigned int, TileClient*> tiles;
     std::map<unsigned int, WallClient*> walls;
-    sf::Texture zombieimage;
-    sf::Texture ogreimage;
-    sf::Texture tileimage;
-    sf::Texture wallimage;
     sf::Font font;
     TileClient* hoveredTile;
+
+    // Spritesheet 01;
+    sf::Texture texture_spritesheet_01;
+    bit::VertexMap vertexMap_01;
 
     void load(GameplayState* state);
 
     void update(sf::RenderWindow &window, sf::Time &gameTime);
 
-    void draw(sf::RenderWindow &window, sf::Time &gameTime);
+    void draw2(sf::RenderWindow &window, sf::Time &gameTime);
 
     void handleSnapshot(bit::ServerPacket &packet, bool full = false);
+
+private:
+
+    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 
 #endif

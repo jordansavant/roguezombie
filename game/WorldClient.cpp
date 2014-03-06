@@ -34,11 +34,11 @@ WorldClient::~WorldClient()
 void WorldClient::load(GameplayState* _state)
 {
     state = _state;
-    zombieimage.loadFromFile(resourcePath() + "Zombie.png");
-    ogreimage.loadFromFile(resourcePath() + "Ogre.png");
-    tileimage.loadFromFile(resourcePath() + "Water.png");
-    wallimage.loadFromFile(resourcePath() + "Wall.png");
+
     font.loadFromFile(resourcePath() + "Agency.ttf");
+    state->game->spriteLoader->loadSprites(resourcePath() + "spritesheet_01.csv");
+    texture_spritesheet_01.loadFromFile(resourcePath() + "spritesheet_01.png");
+    vertexMap_01.load(&texture_spritesheet_01, sf::PrimitiveType::Quads);
 }
 
 void WorldClient::update(sf::RenderWindow &window, sf::Time &gameTime)
@@ -61,7 +61,7 @@ void WorldClient::update(sf::RenderWindow &window, sf::Time &gameTime)
     }
 }
 
-void WorldClient::draw(sf::RenderWindow &window, sf::Time &gameTime)
+void WorldClient::draw2(sf::RenderWindow &window, sf::Time &gameTime)
 {
     for(auto iterator = tiles.begin(); iterator != tiles.end(); iterator++)
     {
@@ -80,6 +80,23 @@ void WorldClient::draw(sf::RenderWindow &window, sf::Time &gameTime)
         iterator->second->clientDraw(window, gameTime);
     }
 }
+
+void WorldClient::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+    bit::Game::depthTestBegin();
+
+    // apply the transform
+    states.transform *= getTransform();
+
+    // apply the tileset texture
+    states.texture = vertexMap_01.texture;
+
+    // draw the vertex arrays z-sorted
+    target.draw(vertexMap_01.vertexArray, states);
+
+    bit::Game::depthTestEnd();
+}
+
 
 void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
@@ -102,7 +119,7 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
         else
         {
             t = new TileClient();
-            t->clientLoad(this, &tileimage, &font);
+            t->clientLoad(this, &font);
             tiles.insert(std::pair<unsigned int, TileClient*>(tileId, t));
         }
         t->handleSnapshot(packet, full);
@@ -127,7 +144,7 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
         else
         {
             z = new ZombieClient();
-            z->clientLoad(this, &zombieimage);
+            z->clientLoad(this);
             zombies.insert(std::pair<unsigned int, ZombieClient*>(zombieId, z));
         }
         z->handleSnapshot(packet, full);
@@ -152,7 +169,7 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
         else
         {
             o = new OgreClient();
-            o->clientLoad(this, &ogreimage);
+            o->clientLoad(this);
             ogres.insert(std::pair<unsigned int, OgreClient*>(ogreId, o));
         }
         o->handleSnapshot(packet, full);
@@ -177,7 +194,7 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
         else
         {
             w = new WallClient();
-            w->clientLoad(this, &wallimage);
+            w->clientLoad(this);
             walls.insert(std::pair<unsigned int, WallClient*>(wallId, w));
         }
         w->handleSnapshot(packet, full);

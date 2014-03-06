@@ -1,0 +1,5 @@
+trimmed_name,frame_x,frame_y,frame_width,frame_height,sprite_x,sprite_y,sprite_width,sprite_height,rotated
+Ogre,2,2,84,116,0,0,84,116,false
+Wall,2,120,64,64,0,0,64,64,false
+Water,2,186,64,32,0,0,64,32,false
+Zombie,88,2,21,29,0,0,21,29,false

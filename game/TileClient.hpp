@@ -5,6 +5,7 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
 #include "../bitengine/Game.hpp"
+#include "../bitengine/Graphics.hpp"
 #include "../bitengine/Network.hpp"
 #include "Tile.hpp"
 #include <deque>
@@ -18,12 +19,12 @@ public:
     TileClient();
 
     WorldClient* world;
-    sf::Sprite renderSprite;
-    sf::Texture* renderTexture;
     sf::Text text;
     sf::Font* font;
+    bit::Sprite* sprite;
+    unsigned int quadIndex;
 
-    void clientLoad(WorldClient* world, sf::Texture* renderTexture, sf::Font* font);
+    void clientLoad(WorldClient* world, sf::Font* font);
 
     void clientUpdate(sf::RenderWindow &window, sf::Time &gameTime);
 
