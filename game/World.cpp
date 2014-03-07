@@ -1,6 +1,7 @@
 #include "World.hpp"
 #include "Player.hpp"
 #include "Tile.hpp"
+#include "Light.hpp"
 #include "characters/Zombie.hpp"
 #include "characters/Ogre.hpp"
 #include "structures/Wall.hpp"
@@ -9,7 +10,9 @@
 #include "../bitengine/Math.hpp"
 #include "../bitengine/System.hpp"
 #include "../bitengine/Intelligence.hpp"
+#include "../bitengine/Intelligence/Shadowcaster.hpp"
 #include "../ResourcePath.h"
+#include <functional>
 #include <sstream>
 #include <map>
 
@@ -44,6 +47,11 @@ World::~World()
     {
         delete walls[i];
     }
+
+    for(unsigned int i=0; i < lights.size(); i++)
+    {
+        delete lights[i];
+    }
 }
 
 
@@ -61,7 +69,7 @@ void World::load()
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 3, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
@@ -102,6 +110,14 @@ void World::load()
 
             switch(logic)
             {
+                case 1:
+                {
+                    Wall* w = new Wall();
+                    w->load(this, walls.size(), t->fixedState.x, t->fixedState.y);
+                    walls.push_back(w);
+                    t->setOccupyingBody(w);
+                    break;
+                }
                 case 2:
                 {
                     Zombie* z = new Zombie();
@@ -110,12 +126,11 @@ void World::load()
                     t->setOccupyingBody(z);
                     break;
                 }
-                case 1:
+                case 3:
                 {
-                    Wall* w = new Wall();
-                    w->load(this, walls.size(), t->fixedState.x, t->fixedState.y);
-                    walls.push_back(w);
-                    t->setOccupyingBody(w);
+                    Light* l = new Light();
+                    l->load(this, t->fixedState.x, t->fixedState.y, 4);
+                    lights.push_back(l);
                     break;
                 }
             }
@@ -133,7 +148,14 @@ void World::update(sf::Time &gameTime)
     if(players.size() > 0 && players[1]->character)
     {
         Tile* t = getTileAtPosition(players[1]->character->Body::deltaState.x, players[1]->character->Body::deltaState.y);
-        bit::Shadowcaster::computeFoV(*this, t->fixedState.x / tileWidth, t->fixedState.y / tileHeight, 8);
+
+        bit::Shadowcaster::computeFoV(t->fixedState.x / tileWidth, t->fixedState.y / tileHeight, 8,
+            std::bind(&World::shadowcastSetVisible, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+            std::bind(&World::shadowcastIsBlocked, this, std::placeholders::_1, std::placeholders::_2));
+    }
+    for(unsigned int i=0; i < lights.size(); i++)
+    {
+        lights[i]->update(gameTime);
     }
     for(unsigned int i=0; i < zombies.size(); i++)
     {
@@ -299,18 +321,26 @@ unsigned int World::shadowcastGetWidth()
 {
     return tileColumns;
 }
+
 unsigned int World::shadowcastGetHeight()
 {
     return tileRows;
 }
+
 void World::shadowcastSetVisible(int x, int y, int distance)
 {
     Tile* t = getTileAtPosition(x * tileWidth, y * tileHeight);
     if(t)
     {
-        t->deltaState.illumination = .1f + .9f * (1 - (float)distance / (float)8);
+        float currentLight = t->deltaState.illumination;
+        float thisLight = (.1f + .9f * (1 - (float)distance / (float)8));
+        float combinedLight = currentLight + thisLight;
+        float newLight = bit::Math::clamp(combinedLight, currentLight, 1.0f);
+ //       t->deltaState.illumination = newLight;
+        t->deltaState.illumination = thisLight;
     }
 }
+
 bool World::shadowcastIsBlocked(int x, int y)
 {
     Tile* t = getTileAtPosition(x * tileWidth, y * tileHeight);

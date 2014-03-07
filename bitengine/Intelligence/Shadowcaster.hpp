@@ -3,10 +3,8 @@
 #define BIT_SHADOWCASTER_H
 
 #include <functional>
-#include <vector>
-#include <list>
 #include <complex>
-#include <cmath>
+#include <vector>
 #include "Node.hpp"
 #include "../Math/Math.hpp"
 #include "../Math/VectorMath.hpp"
@@ -20,16 +18,15 @@ namespace bit
         // Determines which co-ordinates on a 2D grid are visible from a particular co-ordinate.
         // x, y: center of view
         // radius: how far field of view extends
-        template<class Map>
-        static void computeFoV(Map& map, unsigned int x, unsigned int y, unsigned int radius)
+        static void computeFoV(unsigned int x, unsigned int y, unsigned int radius, std::function<void(int, int, int)> setVisible, std::function<bool(int, int)> isBlocked)
         {
             // Always mark base point
-            map.shadowcastSetVisible(x, y, 1);
+            setVisible(x, y, 1);
 
             // Iterate across the octants and cast
             for (unsigned int i = 0; i < 8; i++)
             {
-                castLight(map, x, y, radius, 1, 1.0, 0.0, multipliers[0][i], multipliers[1][i], multipliers[2][i], multipliers[3][i]);
+                castLight(x, y, radius, setVisible, isBlocked, 1, 1.0, 0.0, multipliers[0][i], multipliers[1][i], multipliers[2][i], multipliers[3][i]);
             }
         }
 
@@ -39,8 +36,7 @@ namespace bit
         static int multipliers[4][8];
 
         // Recursive light casting function
-        template<class Map>
-        static void castLight(Map& map, unsigned int x, unsigned int y, unsigned int radius, unsigned int row, float start_slope, float end_slope, unsigned int xx, unsigned int xy, unsigned int yx,  unsigned int yy)
+        static void castLight(unsigned int x, unsigned int y, unsigned int radius, std::function<void(int, int, int)> setVisible, std::function<bool(int, int)> isBlocked, unsigned int row, float start_slope, float end_slope, unsigned int xx, unsigned int xy, unsigned int yx,  unsigned int yy)
         {
             // If light start is less than light end, return
             if (start_slope < end_slope)
@@ -79,22 +75,24 @@ namespace bit
 
                     unsigned int ax = x + sax;
                     unsigned int ay = y + say;
-                    if (ax >= map.shadowcastGetWidth() || ay >= map.shadowcastGetHeight())
-                    {
-                        continue;
-                    }
+                    // Commenting this out to remove dependency on Map
+                    // looks like bounds checking for perf boost in edget of map
+                    //if (ax >= map.shadowcastGetWidth() || ay >= map.shadowcastGetHeight())
+                    //{
+                    //    continue;
+                    //}
 
                     // Our light beam is touching this square; light it
                     unsigned int radius2 = radius * radius;
                     if ((unsigned int)(dx * dx + dy * dy) < radius2)
                     {
-                        map.shadowcastSetVisible(ax, ay, i);
+                        setVisible(ax, ay, i);
                     }
 
                     if (blocked)
                     {
                         // We're scanning a row of blocked squares
-                        if (map.shadowcastIsBlocked(ax, ay))
+                        if (isBlocked(ax, ay))
                         {
                             next_start_slope = r_slope;
                             continue;
@@ -105,11 +103,11 @@ namespace bit
                             start_slope = next_start_slope;
                         }
                     }
-                    else if (map.shadowcastIsBlocked(ax, ay))
+                    else if (isBlocked(ax, ay))
                     {
                         blocked = true;
                         next_start_slope = r_slope;
-                        castLight(map, x, y, radius, i + 1, start_slope, l_slope, xx, xy, yx, yy);
+                        castLight(x, y, radius, setVisible, isBlocked, i + 1, start_slope, l_slope, xx, xy, yx, yy);
                     }
                 }
 

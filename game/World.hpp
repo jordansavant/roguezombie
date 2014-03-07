@@ -15,6 +15,7 @@ class Ogre;
 class Player;
 class Tile;
 class Wall;
+class Light;
 
 class World
 {
@@ -28,6 +29,7 @@ public:
     std::vector<Ogre*> ogres;
     std::vector<Wall*> walls;
     std::vector<Tile*> tiles;
+    std::vector<Light*> lights;
 	std::map<unsigned int, Player*> players;
     unsigned int tileWidth, tileHeight, tileRows, tileColumns, tileCount, mapWidth, mapHeight;
 
