@@ -18,10 +18,10 @@ namespace bit
         // Determines which co-ordinates on a 2D grid are visible from a particular co-ordinate.
         // x, y: center of view
         // radius: how far field of view extends
-        static void computeFoV(unsigned int x, unsigned int y, unsigned int radius, std::function<void(int, int, int)> setVisible, std::function<bool(int, int)> isBlocked)
+        static void computeFoV(unsigned int x, unsigned int y, unsigned int radius, std::function<void(int, int, float)> setVisible, std::function<bool(int, int)> isBlocked)
         {
             // Always mark base point
-            setVisible(x, y, 1);
+            setVisible(x, y, 0);
 
             // Iterate across the octants and cast
             for (unsigned int i = 0; i < 8; i++)
@@ -36,7 +36,7 @@ namespace bit
         static int multipliers[4][8];
 
         // Recursive light casting function
-        static void castLight(unsigned int x, unsigned int y, unsigned int radius, std::function<void(int, int, int)> setVisible, std::function<bool(int, int)> isBlocked, unsigned int row, float start_slope, float end_slope, unsigned int xx, unsigned int xy, unsigned int yx,  unsigned int yy)
+        static void castLight(unsigned int x, unsigned int y, unsigned int radius, std::function<void(int, int, float)> setVisible, std::function<bool(int, int)> isBlocked, unsigned int row, float start_slope, float end_slope, unsigned int xx, unsigned int xy, unsigned int yx,  unsigned int yy)
         {
             // If light start is less than light end, return
             if (start_slope < end_slope)
@@ -86,7 +86,7 @@ namespace bit
                     unsigned int radius2 = radius * radius;
                     if ((unsigned int)(dx * dx + dy * dy) < radius2)
                     {
-                        setVisible(ax, ay, i);
+                        setVisible(ax, ay, (float)i / (float)radius);
                     }
 
                     if (blocked)

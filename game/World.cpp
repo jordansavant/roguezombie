@@ -69,12 +69,12 @@ void World::load()
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 3, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+        0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 3,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3,
         0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
         0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0,
         0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 0, 0, 0, 1, 0,
@@ -327,13 +327,13 @@ unsigned int World::shadowcastGetHeight()
     return tileRows;
 }
 
-void World::shadowcastSetVisible(int x, int y, int distance)
+void World::shadowcastSetVisible(int x, int y, float distance)
 {
     Tile* t = getTileAtPosition(x * tileWidth, y * tileHeight);
     if(t)
     {
         float currentLight = t->deltaState.illumination;
-        float thisLight = (.1f + .9f * (1 - (float)distance / (float)8));
+        float thisLight = (.1f + .9f * (1 - distance));
         float combinedLight = currentLight + thisLight;
         float newLight = bit::Math::clamp(combinedLight, currentLight, 1.0f);
  //       t->deltaState.illumination = newLight;
