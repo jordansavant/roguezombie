@@ -24,6 +24,7 @@ public:
 
     World* world;
     Body* body;
+    unsigned int metadata_shadowcastId;
 
     struct FixedState
     {

@@ -6,6 +6,7 @@
 #include "World.hpp"
 #include "Body.hpp"
 #include "Tile.hpp"
+#include "Light.hpp"
 #include "Player.hpp"
 
 Character::Character()
@@ -27,6 +28,7 @@ void Character::update(sf::Time &gameTime)
 {
     Body::update(gameTime);
 
+    // Follow designation path points
     if(path.size() > 0 && moveTimer.update(gameTime))
     {
         Tile* nextTile = path.back();
@@ -42,6 +44,13 @@ void Character::update(sf::Time &gameTime)
         {
             path.pop_back();
         }
+    }
+
+    // If I am a player character and I have a light, update it
+    if(fixedState.isPlayerCharacter && light)
+    {
+        light->x = Body::deltaState.x;
+        light->y = Body::deltaState.y;
     }
 }
 

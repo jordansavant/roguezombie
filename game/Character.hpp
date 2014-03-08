@@ -10,6 +10,7 @@
 
 class World;
 class Player;
+class Light;
 class Tile;
 
 class Character : public Body
@@ -26,6 +27,7 @@ public:
 
     std::vector<Tile*> path;
     bit::GameTimer moveTimer;
+    Light* light;
 
 	struct FixedState
 	{

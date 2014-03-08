@@ -17,7 +17,8 @@
 #include <map>
 
 World::World()
-    : tileWidth(0), tileHeight(0), tileRows(0), tileColumns(0), tileCount(0)
+    : tileWidth(0), tileHeight(0), tileRows(0), tileColumns(0), tileCount(0),
+      zombies(), ogres(), walls(), tiles(), lights()
 {
 }
 
@@ -54,7 +55,6 @@ World::~World()
     }
 }
 
-
 /*
  * Game Logic
  */
@@ -66,15 +66,15 @@ void World::load()
     {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 3,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3,
+        0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
         0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
         0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0,
         0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 0, 0, 0, 1, 0,
@@ -145,18 +145,6 @@ void World::update(sf::Time &gameTime)
         tiles[i]->update(gameTime);
         tiles[i]->deltaState.illumination = .1f;
     }
-    if(players.size() > 0 && players[1]->character)
-    {
-        Tile* t = getTileAtPosition(players[1]->character->Body::deltaState.x, players[1]->character->Body::deltaState.y);
-
-        bit::Shadowcaster::computeFoV(t->fixedState.x / tileWidth, t->fixedState.y / tileHeight, 8,
-            std::bind(&World::shadowcastSetVisible, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-            std::bind(&World::shadowcastIsBlocked, this, std::placeholders::_1, std::placeholders::_2));
-    }
-    for(unsigned int i=0; i < lights.size(); i++)
-    {
-        lights[i]->update(gameTime);
-    }
     for(unsigned int i=0; i < zombies.size(); i++)
     {
         zombies[i]->update(gameTime);
@@ -169,28 +157,49 @@ void World::update(sf::Time &gameTime)
     {
         walls[i]->update(gameTime);
     }
+    for(unsigned int i=0; i < lights.size(); i++)
+    {
+        lights[i]->update(gameTime);
+    }
 }
 
 void World::createPlayer(bit::RemoteClient &client)
 {
 	if(players.find(client.id) == players.end())
 	{
+        // Spawn character
 		Ogre* ogre = new Ogre();
-        ogre->load(this, zombies.size(), tiles[0]->fixedState.x, tiles[0]->fixedState.y);
+        ogre->load(this, ogres.size(), tiles[14]->fixedState.x, tiles[14]->fixedState.y);
 		ogres.push_back(ogre);
 
+        // Spawn light source for character's vision
+        Light* light = new Light();
+        light->load(this, ogre->Body::deltaState.x, ogre->Body::deltaState.y, 8);
+        lights.push_back(light);
+
+        // Create Player
 		Player* player = new Player();
         player->load(this, ogre, client.id);
-        ogre->setControllingPlayer(player);
-
 		players.insert(std::pair<unsigned int, Player*>(client.id, player));
+
+        // Assign the character as a player and set his light
+        ogre->setControllingPlayer(player);
+        ogre->light = light;
 	}
 }
-
 
 /*
  * Tile Positioning and Pathfinding
  */
+
+Tile* World::getTileAtIndices(int x, int y)
+{
+    unsigned int index = x + (tileColumns * y);
+
+    if(index < tiles.size())
+        return tiles[index];
+    return NULL;
+}
 
 bool World::isCoordinateInMap(float x, float y)
 {
@@ -209,7 +218,6 @@ Tile* World::getTileAtPosition(float x, float y)
 
     unsigned int tx = (unsigned int)std::floor((float)x / (float)tileWidth);
     unsigned int ty = (unsigned int)std::floor((float)y / (float)tileHeight);
-
     unsigned int index = tx + (tileColumns * ty);
 
     return tiles[index];
@@ -296,7 +304,7 @@ void World::raycastTiles(float startX, float startY, float endX, float endY, std
     unsigned int ety = (unsigned int)std::floor((float)endY / (float)tileHeight);
 
     std::vector<sf::Vector2i> line = bit::VectorMath::bresenhamLine(stx, sty, etx, ety);
-    
+
     for(unsigned int i=0; i < line.size(); i++)
     {
         unsigned int index = line[i].x + line[i].y * tileColumns;
@@ -311,7 +319,6 @@ void World::raycastTiles(float startX, float startY, float endX, float endY, std
         }
     }
 }
-
 
 /*
  * Field of View
@@ -336,8 +343,8 @@ void World::shadowcastSetVisible(int x, int y, float distance)
         float thisLight = (.1f + .9f * (1 - distance));
         float combinedLight = currentLight + thisLight;
         float newLight = bit::Math::clamp(combinedLight, currentLight, 1.0f);
- //       t->deltaState.illumination = newLight;
-        t->deltaState.illumination = thisLight;
+        t->deltaState.illumination = newLight;
+ //       t->deltaState.illumination = thisLight;
     }
 }
 
@@ -346,8 +353,6 @@ bool World::shadowcastIsBlocked(int x, int y)
     Tile* t = getTileAtPosition(x * tileWidth, y * tileHeight);
     return (t && t->body && t->body->fixedState.type == Body::Type::Structure);
 }
-
-
 
 /*
  * Networking

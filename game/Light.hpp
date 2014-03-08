@@ -21,6 +21,11 @@ public:
 
     virtual void update(sf::Time &gameTime);
 
+private:
+
+    virtual void setVisible(int x, int y, float distance);
+
+    virtual bool isBlocked(int x, int y);
 };
 
 #endif

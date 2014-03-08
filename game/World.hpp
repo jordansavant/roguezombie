@@ -33,7 +33,6 @@ public:
 	std::map<unsigned int, Player*> players;
     unsigned int tileWidth, tileHeight, tileRows, tileColumns, tileCount, mapWidth, mapHeight;
 
-
     // Game Logic
 
     void load();
@@ -42,8 +41,9 @@ public:
 
 	void createPlayer(bit::RemoteClient &client);
 
-
     // Tile Positioning and Pathfinding
+
+    Tile* getTileAtIndices(int x, int y);
 
     bool isCoordinateInMap(float x, float y);
 
@@ -59,7 +59,6 @@ public:
 
     void raycastTiles(float startX, float startY, float endX, float endY, std::function<bool(Tile*)> inspect);
 
-
     // Field of View
 
     unsigned int shadowcastGetWidth();
@@ -70,13 +69,11 @@ public:
 
     bool shadowcastIsBlocked(int x, int y);
 
-
     // Networking
 
     void handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type command);
 
     void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
-
 };
 
 #endif
