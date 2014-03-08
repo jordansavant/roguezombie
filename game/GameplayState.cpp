@@ -13,7 +13,7 @@
 #include <sstream>
 
 GameplayState::GameplayState(bit::StateStack &stack, bit::Game* _game, bool isHost)
-    : bit::ClientServerState(stack, _game, isHost)
+    : bit::ClientServerState(stack, _game, isHost), fps(resourcePath() + "Agency.ttf", 10, 10)
 {
     createCamera(*game->renderWindow, 0, 0, 1, 1);
     cameras[0]->lockOnPoint(0, 160);
@@ -29,6 +29,8 @@ void GameplayState::load()
 bool GameplayState::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::ClientServerState::update(window, gameTime);
+
+    fps.update(gameTime);
 
 	// Listen for Game Commands
     if(game->inputManager->isButtonPressed(sf::Keyboard::W))
@@ -93,6 +95,13 @@ bool GameplayState::update(sf::RenderWindow &window, sf::Time &gameTime)
     worldClient.update(window, gameTime);
 
     return true;
+}
+
+void GameplayState::draw(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    bit::ClientServerState::draw(window, gameTime);
+
+    fps.draw(window, gameTime);
 }
 
 void GameplayState::drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera)

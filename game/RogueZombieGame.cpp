@@ -8,13 +8,8 @@
 #include <sstream>
 
 RogueZombieGame::RogueZombieGame()
-	: Game("Rogue Zombie", 1280, 720, false)
+	: Game("Rogue Zombie", 1280, 720, false), fps(resourcePath() + "Agency.ttf", 10, 10)
 {
-    fpsFont.loadFromFile(resourcePath() + "Agency.ttf");
-    fpsText.setFont(fpsFont);
-    fpsText.setCharacterSize(16);
-    fpsText.setPosition(10, 10);
-
     Game::stateStack->pushState(startMenuState);
 }
 
@@ -46,21 +41,14 @@ void RogueZombieGame::update(sf::RenderWindow &window, sf::Time &gameTime)
     if(inputManager->isButtonPressed(sf::Keyboard::Comma))
         this->setVerticalSync(!this->verticalSync);
 
-	fpsUpdateMicro = gameTime;
+    fps.update(gameTime);
 }
 
 void RogueZombieGame::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
 	Game::draw(window, gameTime);
 
-    fpsDrawMicro = gameTime;
-	std::stringstream t  (std::stringstream::in | std::stringstream::out);
-	int u = 1 / fpsUpdateMicro.asSeconds();
-	int d = 1 / fpsDrawMicro.asSeconds();
-	t << "FPS U: " << u << " / D: " << d;
-	fpsText.setString(t.str());
-
-	window.draw(fpsText);
+    fps.draw(window, gameTime);
 }
 
 void RogueZombieGame::registerStates()
