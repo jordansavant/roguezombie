@@ -14,7 +14,7 @@ Ogre::Ogre()
 
 void Ogre::load(World* _world, unsigned int _id, float _x, float _y)
 {
-    Character::load(_world, _id, Character::Type::Ogre, _x, _y, _world->tileWidth * 1, _world->tileHeight * 1);
+    Character::load(_world, _id, Character::Type::Ogre, _x, _y, _world->tileWidth * 2, _world->tileHeight * 2);
 }
 
 void Ogre::update(sf::Time &gameTime)

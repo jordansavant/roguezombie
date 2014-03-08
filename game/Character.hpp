@@ -27,7 +27,7 @@ public:
 
     std::vector<Tile*> path;
     bit::GameTimer moveTimer;
-    Light* light;
+    std::vector<Light*> lights;
 
 	struct FixedState
 	{

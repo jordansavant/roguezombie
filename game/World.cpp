@@ -63,14 +63,14 @@ void World::load()
     // Tiles
     const int tileArray[] =
     {
-        3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 3, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
@@ -126,10 +126,16 @@ void World::load()
                     break;
                 }
                 case 3:
-                case 4:
-                case 5:
                 {
-                    sf::Color c = logic == 3 ? sf::Color::Red : logic == 4 ? sf::Color::Green : sf::Color::Blue;
+                    Ogre* o = new Ogre();
+                    o->load(this, ogres.size(), t->fixedState.x, t->fixedState.y);
+                    ogres.push_back(o);
+                    t->setOccupyingBody(o);
+                    break;
+                }
+                case 4:
+                {
+                    sf::Color c = sf::Color::Red;
                     Light* l = new Light();
                     l->load(this, t->fixedState.x, t->fixedState.y, 4, c, .66);
                     lights.push_back(l);
@@ -169,23 +175,27 @@ void World::createPlayer(bit::RemoteClient &client)
 	if(players.find(client.id) == players.end())
 	{
         // Spawn character
-		Ogre* ogre = new Ogre();
-        ogre->load(this, ogres.size(), tiles[14]->fixedState.x, tiles[14]->fixedState.y);
-		ogres.push_back(ogre);
-
-        // Spawn light source for character's vision
-        Light* light = new Light();
-        light->load(this, ogre->Body::deltaState.x, ogre->Body::deltaState.y, 8, sf::Color::White, 1);
-        lights.push_back(light);
+		Zombie* zombie = new Zombie();
+        zombie->load(this, zombies.size(), tiles[14]->fixedState.x, tiles[14]->fixedState.y);
+		zombies.push_back(zombie);
 
         // Create Player
 		Player* player = new Player();
-        player->load(this, ogre, client.id);
+        player->load(this, zombie, client.id);
 		players.insert(std::pair<unsigned int, Player*>(client.id, player));
+        zombie->setControllingPlayer(player);
 
-        // Assign the character as a player and set his light
-        ogre->setControllingPlayer(player);
-        ogre->light = light;
+        // Spawn light source for character's vision
+        Light* light = new Light();
+        light->load(this, zombie->Body::deltaState.x, zombie->Body::deltaState.y, 12, sf::Color(220, 255, 175), .4);
+        lights.push_back(light);
+        zombie->lights.push_back(light);
+
+        // Spawn closer orb light
+        Light* orbLight = new Light();
+        orbLight->load(this, zombie->Body::deltaState.x, zombie->Body::deltaState.y, 4, sf::Color::White, .6);
+        lights.push_back(orbLight);
+        zombie->lights.push_back(orbLight);
 	}
 }
 

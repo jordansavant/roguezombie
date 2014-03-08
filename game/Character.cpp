@@ -47,10 +47,13 @@ void Character::update(sf::Time &gameTime)
     }
 
     // If I am a player character and I have a light, update it
-    if(fixedState.isPlayerCharacter && light)
+    if(fixedState.isPlayerCharacter)
     {
-        light->x = Body::deltaState.x;
-        light->y = Body::deltaState.y;
+        for(unsigned int i=0; i < lights.size(); i++)
+        {
+            lights[i]->x = Body::deltaState.x;
+            lights[i]->y = Body::deltaState.y;
+        }
     }
 }
 
