@@ -404,7 +404,7 @@ void World::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
     Player* p = players[client.id];
 
     // Get a subset of visible tiles for the player within 8 tiles
-    std::vector<sf::Vector2i> visibles;
+    std::vector<Tile*> visibles;
     World* w = this;
     bit::Shadowcaster::computeFoV(p->character->Body::deltaState.x / tileWidth, p->character->Body::deltaState.y / tileHeight, tileRows, tileColumns, 30,
         [&visibles, w] (int x, int y, float radius)
@@ -413,9 +413,7 @@ void World::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
             if(t->metadata_shadowcastId != bit::Shadowcaster::shadowcastId)
             {
                 t->metadata_shadowcastId = bit::Shadowcaster::shadowcastId;
-
-                sf::Vector2i v(x, y);
-                visibles.push_back(v);
+                visibles.push_back(t);
             }
         },
         [&visibles, w] (int x, int y) -> bool
@@ -424,83 +422,54 @@ void World::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
         }
     );
 
-    int noBody = 777;
-    int wallType = 222;
-    int zombieType = 333;
-    int ogreType = 444;
-
     // indicate number of tiles
-    sf::Uint32 tileCount = visibles.size();
-    packet << tileCount;
+    packet << sf::Uint32(visibles.size());
 
     for(unsigned int i=0; i < visibles.size(); i++)
     {
-        Tile* t = getTileAtIndices(visibles[i].x, visibles[i].y);
+        Tile* t = visibles[i];
 
         // shove a tile type and tile info on there
         sf::Uint32 tileId = t->fixedState.id;
         packet << tileId;
         t->prepareSnapshot(packet, full);
 
-        // does this tile have a body?
-        if(t->body)
+        if(!t->body)
         {
-            switch(t->body->fixedState.type)
+            // If no body, say no body
+            packet << sf::Uint32(Body::Type::None);
+            continue;
+        }
+
+        // break open body
+        switch(t->body->fixedState.type)
+        {
+            case Body::Type::Character:
             {
-                case Body::Type::Character:
+                Character* c = static_cast<Character*>(t->body);
+                switch(c->fixedState.type)
                 {
-                    Character* c = static_cast<Character*>(t->body);
-
-                    switch(c->fixedState.type)
-                    {
-                        case Character::Type::Zombie:
-                        {
-                            // Send zombie
-                            packet << sf::Uint32(zombieType);
-                            Zombie* z = static_cast<Zombie*>(c);
-                            sf::Uint32 zombieId = z->Body::fixedState.id;
-                            packet << zombieId;
-                            z->prepareSnapshot(packet, full);
-                            break;
-                        }
-                        case Character::Type::Ogre:
-                        {
-                            // Send ogre
-                            packet << sf::Uint32(ogreType);
-                            Ogre* o = static_cast<Ogre*>(c);
-                            sf::Uint32 ogreId = o->Body::fixedState.id;
-                            packet << ogreId;
-                            o->prepareSnapshot(packet, full);
-                            break;
-                        }
-                    }
-
-                    break;
+                    case Character::Type::Zombie:
+                        packNetworkBody<Zombie, Character>(packet, full, c, t->body->fixedState.type, c->fixedState.type);
+                        break;
+                    case Character::Type::Ogre:
+                        packNetworkBody<Ogre, Character>(packet, full, c, t->body->fixedState.type, c->fixedState.type);
+                        break;
                 }
-                case Body::Type::Structure:
-                {
-                    Structure* s = static_cast<Structure*>(t->body);
-                    switch(s->fixedState.type)
-                    {
-                        case Structure::Type::Wall:
-                        {
-                            // Send wall
-                            packet << sf::Uint32(wallType);
-                            Wall* w = static_cast<Wall*>(s);
-                            sf::Uint32 wallId = w->Body::fixedState.id;
-                            packet << wallId;
-                            w->prepareSnapshot(packet, full);
-                            break;
-                        }
-                    }
-                    break;
-                }
+                break;
             }
-        } // end if body
-        else
-        {
-            // pack a no body indicator
-            packet << sf::Uint32(noBody);
+
+            case Body::Type::Structure:
+            {
+                Structure* s = static_cast<Structure*>(t->body);
+                switch(s->fixedState.type)
+                {
+                    case Structure::Type::Wall:
+                        packNetworkBody<Wall, Structure>(packet, full, s, t->body->fixedState.type, s->fixedState.type);
+                        break;
+                }
+                break;
+            }
         }
     }
 }

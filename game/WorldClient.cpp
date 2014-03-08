@@ -111,164 +111,51 @@ void WorldClient::draw(sf::RenderTarget& target, sf::RenderStates states) const
 void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
     // Update / Create all entities
-    sf::Uint32 tileCount;
+    unsigned int tileCount;
     packet >> tileCount;
     for(unsigned int i=0; i < tileCount; i++)
     {
-        unpackTile(packet, full);
-        unpackBody(packet, full);
+        unpackNetworkEntity<TileClient>(packet, full, tiles, tilePool);
+
+        // unpack body
+        unsigned int bodyType;
+        packet >> bodyType;
+        switch(static_cast<Body::Type>(bodyType))
+        {
+            case Body::Type::Character:
+            {
+                unsigned int characterType;
+                packet >> characterType;
+                switch(static_cast<Character::Type>(characterType))
+                {
+                    case Character::Type::Zombie:
+                        unpackNetworkEntity<ZombieClient>(packet, full, zombies, zombiePool);
+                        break;
+                    case Character::Type::Ogre:
+                        unpackNetworkEntity<OgreClient>(packet, full, ogres, ogrePool);
+                        break;
+                }
+                break;
+            }
+            case Body::Type::Structure:
+            {
+                unsigned int structureType;
+                packet >> structureType;
+                switch(static_cast<Structure::Type>(structureType))
+                {
+                    case Structure::Type::Wall:
+                        unpackNetworkEntity<WallClient>(packet, full, walls, wallPool);
+                        break;
+                }
+                break;
+            }
+            default: case Body::Type::None: break;
+        }
     }
 
     // Delete missing entities
-    auto tile_itr = tiles.begin();
-    while(tile_itr != tiles.end())
-    {
-        if (tile_itr->second->lastSnapshotId != state->lastSnapshotId)
-        {
-            tilePool.recycle(tile_itr->second);
-            tiles.erase(tile_itr++);
-        }
-        else
-        {
-            ++tile_itr;
-        }
-    }
-    auto zombie_itr = zombies.begin();
-    while(zombie_itr != zombies.end())
-    {
-        if (zombie_itr->second->lastSnapshotId != state->lastSnapshotId)
-        {
-            zombiePool.recycle(zombie_itr->second);
-            zombies.erase(zombie_itr++);
-        }
-        else
-        {
-            ++zombie_itr;
-        }
-    }
-    auto ogre_itr = ogres.begin();
-    while(ogre_itr != ogres.end())
-    {
-        if (ogre_itr->second->lastSnapshotId != state->lastSnapshotId)
-        {
-            ogrePool.recycle(ogre_itr->second);
-            ogres.erase(ogre_itr++);
-        }
-        else
-        {
-            ++ogre_itr;
-        }
-    }
-    auto wall_itr = walls.begin();
-    while(wall_itr != walls.end())
-    {
-        if (wall_itr->second->lastSnapshotId != state->lastSnapshotId)
-        {
-            wallPool.recycle(wall_itr->second);
-            walls.erase(wall_itr++);
-        }
-        else
-        {
-            ++wall_itr;
-        }
-    }
-}
-
-void WorldClient::unpackTile(bit::ServerPacket &packet, bool full)
-{
-    // Pull the tile id off
-    unsigned int tileId;
-    packet >> tileId;
-
-    // Unpack the tile
-    TileClient* t;
-    auto itr = tiles.find(tileId);
-    if(itr != tiles.end())
-    {
-        t = itr->second;
-    }
-    else
-    {
-        t = new TileClient();
-        t->clientLoad(this);
-        tiles.insert(std::pair<unsigned int, TileClient*>(tileId, t));
-    }
-    t->lastSnapshotId = state->lastSnapshotId; // update snapshot id
-    t->handleSnapshot(packet, full);
-}
-
-void WorldClient::unpackBody(bit::ServerPacket &packet, bool full)
-{
-    // Get type
-    unsigned int bodyType;
-    packet >> bodyType;
-    switch(bodyType)
-    {
-        default:
-        case 777: // noBody
-            break;
-        case 333: // zombie
-        {
-            unsigned int zombieId;
-            packet >> zombieId;
-            ZombieClient* z;
-            auto itr = zombies.find(zombieId);
-            if(itr != zombies.end())
-            {
-                z = itr->second;
-            }
-            else
-            {
-                z = new ZombieClient();
-                z->clientLoad(this);
-                zombies.insert(std::pair<unsigned int, ZombieClient*>(zombieId, z));
-            }
-            z->lastSnapshotId = state->lastSnapshotId; // update snapshot id
-            z->handleSnapshot(packet, full);
-
-            break;
-        }
-        case 444: // ogre
-        {
-            unsigned int ogreId;
-            packet >> ogreId;
-            OgreClient* o;
-            auto itr = ogres.find(ogreId);
-            if(itr != ogres.end())
-            {
-                o = itr->second;
-            }
-            else
-            {
-                o = new OgreClient();
-                o->clientLoad(this);
-                ogres.insert(std::pair<unsigned int, OgreClient*>(ogreId, o));
-            }
-            o->lastSnapshotId = state->lastSnapshotId; // update snapshot id
-            o->handleSnapshot(packet, full);
-
-            break;
-        }
-        case 222: // wall
-        {
-            unsigned int wallId;
-            packet >> wallId;
-            WallClient* w;
-            auto itr = walls.find(wallId);
-            if(itr != walls.end())
-            {
-                w = itr->second;
-            }
-            else
-            {
-                w = new WallClient();
-                w->clientLoad(this);
-                walls.insert(std::pair<unsigned int, WallClient*>(wallId, w));
-            }
-            w->lastSnapshotId = state->lastSnapshotId; // update snapshot id
-            w->handleSnapshot(packet, full);
-
-            break;
-        }
-    }
+    diffNetworkEntity<TileClient>(tiles, tilePool);
+    diffNetworkEntity<ZombieClient>(zombies, zombiePool);
+    diffNetworkEntity<OgreClient>(ogres, ogrePool);
+    diffNetworkEntity<WallClient>(walls, wallPool);
 }

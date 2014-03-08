@@ -26,6 +26,8 @@ void WallClient::clientLoad(WorldClient* _world)
 
 void WallClient::clientUpdate(sf::Time &gameTime)
 {
+    sprite->applyToQuad(&world->vertexMap_01.vertexArray[quadIndex]);
+
     float spriteWidth = 64;
     float spriteHeight = 64;
     float xFootOffset = 0;

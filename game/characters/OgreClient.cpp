@@ -26,6 +26,8 @@ void OgreClient::clientLoad(WorldClient* _world)
 
 void OgreClient::clientUpdate(sf::Time &gameTime)
 {
+    sprite->applyToQuad(&world->vertexMap_01.vertexArray[quadIndex]);
+
     bit::VectorMath::incrementTowards(renderX, renderY, Body::deltaState.x, Body::deltaState.y, 4);
 
     float spriteWidth = 84;
@@ -57,5 +59,6 @@ void OgreClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 
 void OgreClient::reset()
 {
+    renderX = renderY = 0;
     bit::VertexHelper::resetQuad(&world->vertexMap_01.vertexArray[quadIndex]);
 }

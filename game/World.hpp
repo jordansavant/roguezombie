@@ -70,6 +70,19 @@ public:
     void handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type command);
 
     void prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client, bool full = false);
+
+private:
+
+    template <class T, class C>
+    void packNetworkBody(bit::ServerPacket &packet, bool full, C* c, unsigned int bodyType, unsigned int subType)
+    {
+        packet << sf::Uint32(bodyType);
+        packet << sf::Uint32(subType);
+        T* entity = static_cast<T*>(c);
+        sf::Uint32 id = entity->Body::fixedState.id;
+        packet << id;
+        entity->prepareSnapshot(packet, full);
+    }
 };
 
 #endif

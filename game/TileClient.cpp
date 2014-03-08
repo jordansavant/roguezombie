@@ -17,6 +17,7 @@ TileClient::TileClient()
 
 TileClient::~TileClient()
 {
+    int j = 0;
 }
 
 void TileClient::clientLoad(WorldClient* _world)
@@ -30,6 +31,8 @@ void TileClient::clientLoad(WorldClient* _world)
 
 void TileClient::clientUpdate(sf::RenderWindow &window, sf::Time &gameTime)
 {
+    sprite->applyToQuad(&world->vertexMap_01.vertexArray[quadIndex]);
+
     sf::Vector2f isoPosition = bit::VectorMath::normalToIsometric(fixedState.x, fixedState.y);
     bit::Vertex3* quad = &world->vertexMap_01.vertexArray[quadIndex];
     bit::VertexHelper::positionQuad(quad, isoPosition.x - fixedState.width, isoPosition.y, 0, 64, 32);

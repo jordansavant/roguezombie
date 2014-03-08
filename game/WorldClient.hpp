@@ -45,13 +45,50 @@ public:
 
     void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 
-    void unpackTile(bit::ServerPacket &packet, bool full);
-
-    void unpackBody(bit::ServerPacket &packet, bool full);
-
 private:
 
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+    template <class T>
+    void diffNetworkEntity(std::map<unsigned int, T*> &map, bit::Pool<T> &pool)
+    {
+        auto itr = map.begin();
+        while(itr != map.end())
+        {
+            if (itr->second->lastSnapshotId != state->lastSnapshotId)
+            {
+                pool.recycle(itr->second);
+                map.erase(itr++);
+            }
+            else
+            {
+                ++itr;
+            }
+        }
+    }
+
+    template <class T>
+    T* unpackNetworkEntity(bit::ServerPacket &packet, bool full, std::map<unsigned int, T*> &map, bit::Pool<T> &pool)
+    {
+        unsigned int id;
+        packet >> id;
+
+        T* entity;
+        auto itr = map.find(id);
+        if(itr != map.end())
+        {
+            entity = itr->second;
+        }
+        else
+        {
+            entity = pool.fetch();
+            map.insert(std::pair<unsigned int, T*>(id, entity));
+        }
+        entity->lastSnapshotId = state->lastSnapshotId; // update snapshot id
+        entity->handleSnapshot(packet, full);
+
+        return entity;
+    }
 };
 
 #endif

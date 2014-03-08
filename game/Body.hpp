@@ -17,6 +17,7 @@ public:
 
     enum Type
     {
+        None,
         Character,
         Structure
     };
