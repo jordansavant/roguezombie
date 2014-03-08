@@ -131,7 +131,7 @@ void World::load()
                 {
                     sf::Color c = logic == 3 ? sf::Color::Red : logic == 4 ? sf::Color::Green : sf::Color::Blue;
                     Light* l = new Light();
-                    l->load(this, t->fixedState.x, t->fixedState.y, 4, c);
+                    l->load(this, t->fixedState.x, t->fixedState.y, 4, c, .66);
                     lights.push_back(l);
                     break;
                 }
@@ -175,7 +175,7 @@ void World::createPlayer(bit::RemoteClient &client)
 
         // Spawn light source for character's vision
         Light* light = new Light();
-        light->load(this, ogre->Body::deltaState.x, ogre->Body::deltaState.y, 8, sf::Color::White);
+        light->load(this, ogre->Body::deltaState.x, ogre->Body::deltaState.y, 8, sf::Color::White, 1);
         lights.push_back(light);
 
         // Create Player

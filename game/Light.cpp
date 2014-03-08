@@ -11,13 +11,14 @@ Light::Light()
 {
 }
 
-void Light::load(World* _world, float _x, float _y, float _radius, sf::Color _color)
+void Light::load(World* _world, float _x, float _y, float _radius, sf::Color _color, float _brightness)
 {
     world = _world;
     x = _x;
     y = _y;
     radius = _radius;
     color = _color;
+    brightness = _brightness;
 }
 
 void Light::update(sf::Time &gameTime)
@@ -36,7 +37,7 @@ void Light::setVisible(int x, int y, float distance)
 
         // Calculate brightness
         float currentLight = t->deltaState.illumination;
-        float addition = (1 - distance);
+        float addition = (1 - distance) * brightness;
         float combinedLight = currentLight + addition;
         float newLight = bit::Math::clamp(combinedLight, currentLight, 1.0f);
         t->deltaState.illumination = newLight;

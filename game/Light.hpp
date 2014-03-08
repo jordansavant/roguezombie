@@ -17,8 +17,9 @@ public:
     World* world;
     float x, y, radius;
     sf::Color color;
+    float brightness;
 
-    virtual void load(World* world, float x, float y, float radius, sf::Color color);
+    virtual void load(World* world, float x, float y, float radius, sf::Color color, float brightness);
 
     virtual void update(sf::Time &gameTime);
 
