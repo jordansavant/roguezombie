@@ -17,8 +17,7 @@
 #include <map>
 
 World::World()
-    : tileWidth(0), tileHeight(0), tileRows(0), tileColumns(0), tileCount(0),
-      zombies(), ogres(), walls(), tiles(), lights()
+    : tileWidth(0), tileHeight(0), tileRows(0), tileColumns(0), tileCount(0)
 {
 }
 
@@ -65,8 +64,8 @@ void World::load()
     const int tileArray[] =
     {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
@@ -143,7 +142,7 @@ void World::update(sf::Time &gameTime)
     for(unsigned int i=0; i < tiles.size(); i++)
     {
         tiles[i]->update(gameTime);
-        tiles[i]->deltaState.illumination = .1f;
+        tiles[i]->deltaState.illumination = .0f;
     }
     for(unsigned int i=0; i < zombies.size(); i++)
     {

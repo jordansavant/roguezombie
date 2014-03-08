@@ -34,8 +34,9 @@ void Light::setVisible(int x, int y, float distance)
         t->metadata_shadowcastId = bit::Shadowcaster::shadowcastId;
 
         float currentLight = t->deltaState.illumination;
-        float addition = (.1f + .9f * (1 - distance));
+        float addition = (1 - distance);
         float combinedLight = currentLight + addition;
+
         float newLight = bit::Math::clamp(combinedLight, currentLight, 1.0f);
         t->deltaState.illumination = newLight;
     }
