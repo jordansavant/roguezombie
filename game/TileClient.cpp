@@ -49,8 +49,11 @@ void TileClient::clientUpdate(sf::RenderWindow &window, sf::Time &gameTime)
     }
     else
     {
-        sf::Color white(255 * deltaState.illumination, 255 * deltaState.illumination, 255 * deltaState.illumination);
-        bit::VertexHelper::colorQuad(quad, white);
+        int r = deltaState.rshade * deltaState.illumination;
+        int g = deltaState.gshade * deltaState.illumination;
+        int b = deltaState.bshade * deltaState.illumination;
+        sf::Color c(r, g, b);
+        bit::VertexHelper::colorQuad(quad, c);
 
         // Unset if I was previously set
         if(world->hoveredTile == this)

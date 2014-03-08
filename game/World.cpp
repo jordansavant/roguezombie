@@ -63,12 +63,12 @@ void World::load()
     // Tiles
     const int tileArray[] =
     {
+        3, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+        5, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
@@ -126,9 +126,12 @@ void World::load()
                     break;
                 }
                 case 3:
+                case 4:
+                case 5:
                 {
+                    sf::Color c = logic == 3 ? sf::Color::Red : logic == 4 ? sf::Color::Green : sf::Color::Blue;
                     Light* l = new Light();
-                    l->load(this, t->fixedState.x, t->fixedState.y, 4);
+                    l->load(this, t->fixedState.x, t->fixedState.y, 4, c);
                     lights.push_back(l);
                     break;
                 }
@@ -142,7 +145,6 @@ void World::update(sf::Time &gameTime)
     for(unsigned int i=0; i < tiles.size(); i++)
     {
         tiles[i]->update(gameTime);
-        tiles[i]->deltaState.illumination = .0f;
     }
     for(unsigned int i=0; i < zombies.size(); i++)
     {
@@ -173,7 +175,7 @@ void World::createPlayer(bit::RemoteClient &client)
 
         // Spawn light source for character's vision
         Light* light = new Light();
-        light->load(this, ogre->Body::deltaState.x, ogre->Body::deltaState.y, 8);
+        light->load(this, ogre->Body::deltaState.x, ogre->Body::deltaState.y, 8, sf::Color::White);
         lights.push_back(light);
 
         // Create Player

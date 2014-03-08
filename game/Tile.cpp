@@ -27,12 +27,22 @@ void Tile::load(World* _world, unsigned int _id, Type _type, int _x, int _y, int
     fixedState.centerX = _x + _width / 2;
     fixedState.centerY = _y + _height / 2;
     deltaState.illumination = 0.0f;
+    deltaState.rshade = 0;
+    deltaState.gshade = 0;
+    deltaState.bshade = 0;
 
     this->node = new bit::Node(_x, _y, this);
 }
 
 void Tile::update(sf::Time &gameTime)
 {
+    // Reset brightness to none
+    deltaState.illumination = 0.0f;
+
+    // Reset color to black
+    deltaState.rshade = 0;
+    deltaState.gshade = 0;
+    deltaState.bshade = 0;
 }
 
 void Tile::setOccupyingBody(Body* _body)

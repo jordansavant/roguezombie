@@ -69,14 +69,15 @@ public:
     {
         unsigned int bodyId;
         float illumination; // how illuminated this tile is
+        unsigned char rshade, gshade, bshade; // color of light
 
         friend sf::Packet& operator <<(sf::Packet& packet, const DeltaState &state)
         {
-            return packet << sf::Uint32(state.bodyId) << state.illumination;
+            return packet << sf::Uint32(state.bodyId) << state.illumination << state.rshade << state.gshade << state.bshade;
         }
         friend sf::Packet& operator >>(sf::Packet& packet, DeltaState &state)
         {
-            return packet >> state.bodyId >> state.illumination;
+            return packet >> state.bodyId >> state.illumination >> state.rshade >> state.gshade >> state.bshade;
         }
     };
     DeltaState deltaState;
