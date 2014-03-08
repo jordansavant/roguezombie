@@ -26,8 +26,10 @@ void WallClient::clientLoad(WorldClient* _world)
 
 void WallClient::clientUpdate(sf::Time &gameTime)
 {
+    // Sprite
     sprite->applyToQuad(&world->vertexMap_01.vertexArray[quadIndex]);
 
+    // Position
     float spriteWidth = 64;
     float spriteHeight = 64;
     float xFootOffset = 0;
@@ -45,6 +47,10 @@ void WallClient::clientUpdate(sf::Time &gameTime)
     float z = bit::Math::calculateDrawDepth(renderY + spriteHeight);
     bit::Vertex3* quad = &world->vertexMap_01.vertexArray[quadIndex];
     bit::VertexHelper::positionQuad(quad, renderX, renderY, z, spriteWidth, spriteHeight);
+
+    // Color and luminence
+    sf::Color color(255 * Body::deltaState.illumination, 255 * Body::deltaState.illumination, 255 * Body::deltaState.illumination);
+    bit::VertexHelper::colorQuad(quad, color);
 }
 
 void WallClient::reset()

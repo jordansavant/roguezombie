@@ -50,14 +50,15 @@ public:
 	{
 		float x, y;
         float width, height;
+        float illumination;
 
         friend sf::Packet& operator <<(sf::Packet& packet, const Body::DeltaState &state)
         {
-            return packet << state.x << state.y << state.width << state.height;
+            return packet << state.x << state.y << state.width << state.height << state.illumination;
         }
         friend sf::Packet& operator >>(sf::Packet& packet, Body::DeltaState &state)
         {
-            return packet >> state.x >> state.y >> state.width >> state.height;
+            return packet >> state.x >> state.y >> state.width >> state.height >> state.illumination;
         }
 	};
 	DeltaState deltaState;

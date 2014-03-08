@@ -43,6 +43,12 @@ void Tile::update(sf::Time &gameTime)
     deltaState.rshade = 0;
     deltaState.gshade = 0;
     deltaState.bshade = 0;
+
+    // Reset body's illuminance
+    if(body)
+    {
+        body->deltaState.illumination = 0;
+    }
 }
 
 void Tile::setOccupyingBody(Body* _body)

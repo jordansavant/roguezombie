@@ -42,6 +42,9 @@ void Light::setVisible(int x, int y, float distance)
         float newLight = bit::Math::clamp(combinedLight, currentLight, 1.0f);
         t->deltaState.illumination = newLight;
 
+        if(t->body)
+            t->body->deltaState.illumination = newLight;
+
         // Calculate color shades based on brightness dominance and lighting
         // aF = aB / eB
         // eF = 1 - aB /eB + 1
