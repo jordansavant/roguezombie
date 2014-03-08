@@ -107,6 +107,7 @@ void GameplayState::draw(sf::RenderWindow &window, sf::Time &gameTime)
 void GameplayState::drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera)
 {
     window.draw(worldClient);
+    window.draw(worldClient.minimap);
 }
 
 bit::Server* GameplayState::newServer()

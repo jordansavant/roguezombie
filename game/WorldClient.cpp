@@ -44,6 +44,9 @@ void WorldClient::load(GameplayState* _state)
     texture_spritesheet_01.loadFromFile(resourcePath() + "spritesheet_01.png");
     vertexMap_01.load(&texture_spritesheet_01, sf::PrimitiveType::Quads);
 
+    // load minimap
+    minimap.load(this, texture_spritesheet_01);
+
     // Fill pools
     WorldClient* w = this;
     tilePool.factoryMethod = [w] () -> TileClient* {
@@ -115,7 +118,8 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
     packet >> tileCount;
     for(unsigned int i=0; i < tileCount; i++)
     {
-        unpackNetworkEntity<TileClient>(packet, full, tiles, tilePool);
+        bool addMini = true;
+        TileClient* t = unpackNetworkEntity<TileClient>(packet, full, tiles, tilePool);
 
         // unpack body
         unsigned int bodyType;
@@ -145,11 +149,20 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
                 {
                     case Structure::Type::Wall:
                         unpackNetworkEntity<WallClient>(packet, full, walls, wallPool);
+                        addMini = false;
                         break;
                 }
                 break;
             }
-            default: case Body::Type::None: break;
+            default:
+            case Body::Type::None:
+                // add minimap point
+                break;
+        }
+
+        if(addMini)
+        {
+            minimap.addPoint(t->fixedState.id, t->fixedState.x, t->fixedState.y);
         }
     }
 

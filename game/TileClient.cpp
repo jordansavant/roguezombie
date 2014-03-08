@@ -24,6 +24,7 @@ void TileClient::clientLoad(WorldClient* _world)
 {
     world = _world;
 
+    // Game quad
     quadIndex = world->vertexMap_01.requestVertexIndex();
     sprite = world->state->game->spriteLoader->getSprite("Water");
     sprite->applyToQuad(&world->vertexMap_01.vertexArray[quadIndex]);

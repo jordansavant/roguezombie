@@ -7,6 +7,7 @@
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Graphics.hpp"
 #include "../bitengine/Structures.hpp"
+#include "Minimap.hpp"
 #include <map>
 
 class ZombieClient;
@@ -34,6 +35,7 @@ public:
     bit::Pool<WallClient> wallPool;
     sf::Font font;
     TileClient* hoveredTile;
+    Minimap minimap;
 
     // Spritesheet 01;
     sf::Texture texture_spritesheet_01;
