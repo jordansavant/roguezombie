@@ -63,12 +63,12 @@ void World::load()
     // Tiles
     const int tileArray[] =
     {
-        3, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-        5, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
@@ -325,16 +325,6 @@ void World::raycastTiles(float startX, float startY, float endX, float endY, std
  * Field of View
  */
 
-unsigned int World::shadowcastGetWidth()
-{
-    return tileColumns;
-}
-
-unsigned int World::shadowcastGetHeight()
-{
-    return tileRows;
-}
-
 void World::shadowcastSetVisible(int x, int y, float distance)
 {
     Tile* t = getTileAtPosition(x * tileWidth, y * tileHeight);
@@ -409,49 +399,108 @@ void World::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &cl
 	}
 }
 
-void World::prepareSnapshot(bit::ServerPacket &packet, bool full)
+void World::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client, bool full)
 {
-    // Tiles
-    sf::Uint32 tileCount = tiles.size();
+    Player* p = players[client.id];
+
+    // Get a subset of visible tiles for the player within 8 tiles
+    std::vector<sf::Vector2i> visibles;
+    World* w = this;
+    bit::Shadowcaster::computeFoV(p->character->Body::deltaState.x / tileWidth, p->character->Body::deltaState.y / tileHeight, tileRows, tileColumns, 30,
+        [&visibles, w] (int x, int y, float radius)
+        {
+            Tile* t = w->getTileAtIndices(x, y);
+            if(t->metadata_shadowcastId != bit::Shadowcaster::shadowcastId)
+            {
+                t->metadata_shadowcastId = bit::Shadowcaster::shadowcastId;
+
+                sf::Vector2i v(x, y);
+                visibles.push_back(v);
+            }
+        },
+        [&visibles, w] (int x, int y) -> bool
+        {
+            return w->shadowcastIsBlocked(x, y);
+        }
+    );
+
+    int noBody = 777;
+    int wallType = 222;
+    int zombieType = 333;
+    int ogreType = 444;
+
+    // indicate number of tiles
+    sf::Uint32 tileCount = visibles.size();
     packet << tileCount;
 
-    for(unsigned int i=0; i < tiles.size(); i++)
+    for(unsigned int i=0; i < visibles.size(); i++)
     {
-        sf::Uint32 tileId = tiles[i]->fixedState.id;
+        Tile* t = getTileAtIndices(visibles[i].x, visibles[i].y);
+
+        // shove a tile type and tile info on there
+        sf::Uint32 tileId = t->fixedState.id;
         packet << tileId;
-        tiles[i]->prepareSnapshot(packet, full);
-    }
+        t->prepareSnapshot(packet, full);
 
-    // Zombies
-    sf::Uint32 zombieCount = zombies.size();
-    packet << zombieCount;
+        // does this tile have a body?
+        if(t->body)
+        {
+            switch(t->body->fixedState.type)
+            {
+                case Body::Type::Character:
+                {
+                    Character* c = static_cast<Character*>(t->body);
 
-    for(unsigned int i=0; i < zombies.size(); i++)
-    {
-        sf::Uint32 zombieId = zombies[i]->Body::fixedState.id;
-        packet << zombieId;
-        zombies[i]->prepareSnapshot(packet, full);
-    }
+                    switch(c->fixedState.type)
+                    {
+                        case Character::Type::Zombie:
+                        {
+                            // Send zombie
+                            packet << sf::Uint32(zombieType);
+                            Zombie* z = static_cast<Zombie*>(c);
+                            sf::Uint32 zombieId = z->Body::fixedState.id;
+                            packet << zombieId;
+                            z->prepareSnapshot(packet, full);
+                            break;
+                        }
+                        case Character::Type::Ogre:
+                        {
+                            // Send ogre
+                            packet << sf::Uint32(ogreType);
+                            Ogre* o = static_cast<Ogre*>(c);
+                            sf::Uint32 ogreId = o->Body::fixedState.id;
+                            packet << ogreId;
+                            o->prepareSnapshot(packet, full);
+                            break;
+                        }
+                    }
 
-    // Ogres
-    sf::Uint32 ogreCount = ogres.size();
-    packet << ogreCount;
-
-    for(unsigned int i=0; i < ogres.size(); i++)
-    {
-        sf::Uint32 ogreId = ogres[i]->Body::fixedState.id;
-        packet << ogreId;
-        ogres[i]->prepareSnapshot(packet, full);
-    }
-
-    // Walls
-    sf::Uint32 wallCount = walls.size();
-    packet << wallCount;
-
-    for(unsigned int i=0; i < walls.size(); i++)
-    {
-        sf::Uint32 wallId = walls[i]->Body::fixedState.id;
-        packet << wallId;
-        walls[i]->prepareSnapshot(packet, full);
+                    break;
+                }
+                case Body::Type::Structure:
+                {
+                    Structure* s = static_cast<Structure*>(t->body);
+                    switch(s->fixedState.type)
+                    {
+                        case Structure::Type::Wall:
+                        {
+                            // Send wall
+                            packet << sf::Uint32(wallType);
+                            Wall* w = static_cast<Wall*>(s);
+                            sf::Uint32 wallId = w->Body::fixedState.id;
+                            packet << wallId;
+                            w->prepareSnapshot(packet, full);
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        } // end if body
+        else
+        {
+            // pack a no body indicator
+            packet << sf::Uint32(noBody);
+        }
     }
 }

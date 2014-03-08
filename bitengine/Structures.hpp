@@ -3,6 +3,5 @@
 
 #include "Structures/Exception.hpp"
 #include "Structures/Pool.hpp"
-#include "Structures/Quadtree.hpp"
 
 #endif

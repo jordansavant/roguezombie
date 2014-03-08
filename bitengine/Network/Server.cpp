@@ -117,11 +117,20 @@ void bit::Server::tick()
     snapshotId++;
 
     // Send world objects to the clients
-    ServerPacket packet;
-    packet << static_cast<sf::Int32>(Server::ServerPacketType::ServerUpdate);
-    packet << snapshotId;
-    preparePacket_ServerUpdate(packet);
-    sendToAllClients(packet);
+    for(unsigned int i=0; i < clients.size(); i++)
+    {
+        RemoteClient* client = clients[i];
+
+        if(client->isConfirmed)
+        {
+            ServerPacket packet;
+            packet << static_cast<sf::Int32>(Server::ServerPacketType::ServerUpdate);
+            packet << snapshotId;
+            preparePacket_ServerUpdate(packet, *client);
+            client->socket.send(packet);
+        }
+    }
+    
 }
 
 sf::Time bit::Server::now()
@@ -194,7 +203,7 @@ void bit::Server::handlePacket(ClientPacket &packet, RemoteClient &client, bool 
             // Send them the full world
             bit::ServerPacket worldPacket;
             worldPacket << static_cast<sf::Int32>(Server::ServerPacketType::InitializeWorld);
-            preparePacket_InitializeWorld(worldPacket);
+            preparePacket_InitializeWorld(worldPacket, client);
             client.socket.send(worldPacket);
 
             break;
@@ -318,7 +327,7 @@ void bit::Server::handleNewClient(RemoteClient &client)
     ServerPacket packet_InitializeSelf;
     packet_InitializeSelf << static_cast<sf::Int32>(Server::ServerPacketType::InitializeSelf);
     packet_InitializeSelf << sf::Uint32(client.id);
-    preparePacket_InitializeSelf(packet_InitializeSelf);
+    preparePacket_InitializeSelf(packet_InitializeSelf, client);
     client.socket.send(packet_InitializeSelf);
 
     // Notify all other clients of new connection

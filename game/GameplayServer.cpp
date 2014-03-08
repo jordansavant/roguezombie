@@ -55,16 +55,16 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
  * Prepare Outgoing Server Packets
  **/
 
-void GameplayServer::preparePacket_InitializeSelf(bit::ServerPacket &packet)
+void GameplayServer::preparePacket_InitializeSelf(bit::ServerPacket &packet, bit::RemoteClient &client)
 {
     bit::Output::Debug("Server prepare initialize self");
 }
 
-void GameplayServer::preparePacket_InitializeWorld(bit::ServerPacket &packet)
+void GameplayServer::preparePacket_InitializeWorld(bit::ServerPacket &packet, bit::RemoteClient &client)
 {
     bit::Output::Debug("Server prepare initialize world");
 
-    world.prepareSnapshot(packet, true);
+    world.prepareSnapshot(packet, client, true);
 }
 
 void GameplayServer::preparePacket_PeerClientConnected(bit::ServerPacket &packet)
@@ -77,9 +77,9 @@ void GameplayServer::preparePacket_PeerClientDisconnected(bit::ServerPacket &pac
     bit::Output::Debug("Server prepare initialize client disconnected");
 }
 
-void GameplayServer::preparePacket_ServerUpdate(bit::ServerPacket &packet)
+void GameplayServer::preparePacket_ServerUpdate(bit::ServerPacket &packet, bit::RemoteClient &client)
 {
     //bit::Output::Debug("Server prepare server update");
 
-    world.prepareSnapshot(packet);
+    world.prepareSnapshot(packet, client, true);
 }

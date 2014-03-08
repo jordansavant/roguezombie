@@ -6,6 +6,7 @@
 #include "SFML/Network.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Graphics.hpp"
+#include "../bitengine/Structures.hpp"
 #include <map>
 
 class ZombieClient;
@@ -27,6 +28,10 @@ public:
     std::map<unsigned int, OgreClient*> ogres;
     std::map<unsigned int, TileClient*> tiles;
     std::map<unsigned int, WallClient*> walls;
+    bit::Pool<TileClient> tilePool;
+    bit::Pool<ZombieClient> zombiePool;
+    bit::Pool<OgreClient> ogrePool;
+    bit::Pool<WallClient> wallPool;
     sf::Font font;
     TileClient* hoveredTile;
 
@@ -39,6 +44,10 @@ public:
     void update(sf::RenderWindow &window, sf::Time &gameTime);
 
     void handleSnapshot(bit::ServerPacket &packet, bool full = false);
+
+    void unpackTile(bit::ServerPacket &packet, bool full);
+
+    void unpackBody(bit::ServerPacket &packet, bool full);
 
 private:
 

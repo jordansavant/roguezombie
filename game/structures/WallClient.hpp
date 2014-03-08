@@ -20,10 +20,13 @@ public:
     WorldClient* world;
     bit::Sprite* sprite;
     unsigned int quadIndex;
+    unsigned int lastSnapshotId;
 
     void clientLoad(WorldClient* world);
 
     void clientUpdate(sf::Time &gameTime);
+
+    void reset();
 };
 
 #endif

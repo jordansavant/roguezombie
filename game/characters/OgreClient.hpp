@@ -22,12 +22,15 @@ public:
     float renderX, renderY;
     bit::Sprite* sprite;
     unsigned int quadIndex;
+    unsigned int lastSnapshotId;
 
     void clientLoad(WorldClient* world);
 
     void clientUpdate(sf::Time &gameTime);
 
     virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
+
+    void reset();
 };
 
 #endif

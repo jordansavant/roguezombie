@@ -145,7 +145,7 @@ void GameplayState::handlePacket_ServerUpdate(bit::ServerPacket &packet)
 {
     //bit::Output::Debug("Client handle server update");
 
-    worldClient.handleSnapshot(packet);
+    worldClient.handleSnapshot(packet, true);
 }
 
 void GameplayState::handlePacket_Shutdown(bit::ServerPacket &packet)

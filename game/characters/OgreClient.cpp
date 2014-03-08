@@ -11,7 +11,7 @@
 #include "../../bitengine/System.hpp"
 
 OgreClient::OgreClient()
-    : Ogre(), renderX(0), renderY(0)
+    : Ogre(), renderX(0), renderY(0), lastSnapshotId(0)
 {
 }
 
@@ -48,9 +48,14 @@ void OgreClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
 	Ogre::handleSnapshot(packet, full);
 
-    if(full)
+    if(renderX == 0 && renderY == 0)
     {
         renderX = Body::deltaState.x;
         renderY = Body::deltaState.y;
     }
+}
+
+void OgreClient::reset()
+{
+    bit::VertexHelper::resetQuad(&world->vertexMap_01.vertexArray[quadIndex]);
 }

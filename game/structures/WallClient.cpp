@@ -11,7 +11,7 @@
 #include "../../bitengine/System.hpp"
 
 WallClient::WallClient()
-    : Wall()
+    : Wall(), lastSnapshotId(0)
 {
 }
 
@@ -43,4 +43,9 @@ void WallClient::clientUpdate(sf::Time &gameTime)
     float z = bit::Math::calculateDrawDepth(renderY + spriteHeight);
     bit::Vertex3* quad = &world->vertexMap_01.vertexArray[quadIndex];
     bit::VertexHelper::positionQuad(quad, renderX, renderY, z, spriteWidth, spriteHeight);
+}
+
+void WallClient::reset()
+{
+    bit::VertexHelper::resetQuad(&world->vertexMap_01.vertexArray[quadIndex]);
 }

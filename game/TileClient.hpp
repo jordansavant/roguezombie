@@ -17,14 +17,18 @@ class TileClient : public Tile
 public:
 
     TileClient();
+    ~TileClient();
 
     WorldClient* world;
     bit::Sprite* sprite;
     unsigned int quadIndex;
+    unsigned int lastSnapshotId;
 
     void clientLoad(WorldClient* world);
 
     void clientUpdate(sf::RenderWindow &window, sf::Time &gameTime);
+
+    void reset();
 };
 
 #endif

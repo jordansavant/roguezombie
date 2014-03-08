@@ -61,10 +61,6 @@ public:
 
     // Field of View
 
-    unsigned int shadowcastGetWidth();
-
-    unsigned int shadowcastGetHeight();
-
     void shadowcastSetVisible(int x, int y, float distance);
 
     bool shadowcastIsBlocked(int x, int y);
@@ -73,7 +69,7 @@ public:
 
     void handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type command);
 
-    void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
+    void prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client, bool full = false);
 };
 
 #endif

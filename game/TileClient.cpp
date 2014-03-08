@@ -11,7 +11,11 @@
 #include <sstream>
 
 TileClient::TileClient()
-    : Tile()
+    : Tile(), lastSnapshotId(0)
+{
+}
+
+TileClient::~TileClient()
 {
 }
 
@@ -61,4 +65,9 @@ void TileClient::clientUpdate(sf::RenderWindow &window, sf::Time &gameTime)
             world->hoveredTile = NULL;
         }
     }
+}
+
+void TileClient::reset()
+{
+    bit::VertexHelper::resetQuad(&world->vertexMap_01.vertexArray[quadIndex]);
 }

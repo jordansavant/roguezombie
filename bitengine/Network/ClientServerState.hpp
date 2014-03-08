@@ -24,6 +24,7 @@ namespace bit
         virtual ~ClientServerState();
 
         sf::Uint32 clientId;
+        sf::Uint32 lastSnapshotId;
 
         virtual void load();
 
@@ -31,7 +32,6 @@ namespace bit
 
     protected:
 
-        sf::Uint32 lastSnapshotId;
         bool isHost;
         Server* server;
         sf::IpAddress ipAddress;

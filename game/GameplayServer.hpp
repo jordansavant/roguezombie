@@ -24,15 +24,15 @@ private:
 
     // Packet sending
 
-    virtual void preparePacket_InitializeSelf(bit::ServerPacket &packet);
+    virtual void preparePacket_InitializeSelf(bit::ServerPacket &packet, bit::RemoteClient &client);
 
-    virtual void preparePacket_InitializeWorld(bit::ServerPacket &packet);
+    virtual void preparePacket_InitializeWorld(bit::ServerPacket &packet, bit::RemoteClient &client);
 
     virtual void preparePacket_PeerClientConnected(bit::ServerPacket &packet);
 
     virtual void preparePacket_PeerClientDisconnected(bit::ServerPacket &packet);
 
-    virtual void preparePacket_ServerUpdate(bit::ServerPacket &packet);
+    virtual void preparePacket_ServerUpdate(bit::ServerPacket &packet, bit::RemoteClient &client);
 };
 
 #endif

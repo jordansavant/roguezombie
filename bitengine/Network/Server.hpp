@@ -94,15 +94,15 @@ namespace bit
 
         // Packet sending
 
-        virtual void preparePacket_InitializeSelf(ServerPacket &packet) = 0;
+        virtual void preparePacket_InitializeSelf(ServerPacket &packet, RemoteClient &client) = 0;
 
-        virtual void preparePacket_InitializeWorld(ServerPacket &packet) = 0;
+        virtual void preparePacket_InitializeWorld(ServerPacket &packet, RemoteClient &client) = 0;
 
         virtual void preparePacket_PeerClientConnected(ServerPacket &packet) = 0;
 
         virtual void preparePacket_PeerClientDisconnected(ServerPacket &packet) = 0;
 
-        virtual void preparePacket_ServerUpdate(ServerPacket &packet) = 0;
+        virtual void preparePacket_ServerUpdate(ServerPacket &packet, RemoteClient &client) = 0;
     };
 }
 
