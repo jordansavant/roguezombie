@@ -16,7 +16,6 @@ GameplayState::GameplayState(bit::StateStack &stack, bit::Game* _game, bool isHo
     : bit::ClientServerState(stack, _game, isHost), fps(resourcePath() + "Agency.ttf", 10, 10)
 {
     createCamera(*game->renderWindow, 0, 0, 1, 1);
-    cameras[0]->lockMode = bit::Camera::LockMode::Pan;
     cameras[0]->panSpeed = 3;
     cameras[0]->view.setCenter(50, 200);
 }
@@ -35,13 +34,13 @@ bool GameplayState::update(sf::RenderWindow &window, sf::Time &gameTime)
     fps.update(gameTime);
 
     if(game->inputManager->isButtonDown(sf::Keyboard::Up))
-        cameras[0]->panDirection.y = -1;
+        cameras[0]->direction.y = -1;
     if(game->inputManager->isButtonDown(sf::Keyboard::Down))
-        cameras[0]->panDirection.y = 1;
+        cameras[0]->direction.y = 1;
     if(game->inputManager->isButtonDown(sf::Keyboard::Left))
-        cameras[0]->panDirection.x = -1;
+        cameras[0]->direction.x = -1;
     if(game->inputManager->isButtonDown(sf::Keyboard::Right))
-        cameras[0]->panDirection.x = 1;
+        cameras[0]->direction.x = 1;
 
 	// Listen for Game Commands
     if(game->inputManager->isButtonPressed(sf::Keyboard::W))
