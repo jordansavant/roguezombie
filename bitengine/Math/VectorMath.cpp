@@ -38,21 +38,21 @@ sf::Vector2f bit::VectorMath::lerp(float x1, float y1, float x2, float y2, float
 	return sf::Vector2f((x1 + ratio * (x2 - x1)), (y1 + ratio * (y2 - y1)));
 }
 
-void bit::VectorMath::incrementTowards(float &x1, float &y1, float x2, float y2, float amount)
+void bit::VectorMath::incrementTowards(float &x1, float &y1, float x2, float y2, float xAmount, float yAmount)
 {
-    if((std::abs(x2 - x1) > amount || std::abs(y2 - y1) > amount))
+    if((std::abs(x2 - x1) > xAmount || std::abs(y2 - y1) > yAmount))
     {
         if(x2 > x1)
-            x1 += amount;
+            x1 += xAmount;
         else if(x2 < x1)
-            x1 -= amount;
+            x1 -= xAmount;
         else
             x1 = x2;
 
         if(y2 > y1)
-            y1 += amount;
+            y1 += yAmount;
         else if(y2 < y1)
-            y1 -= amount;
+            y1 -= yAmount;
         else
             y1 = y2;
     }

@@ -12,7 +12,7 @@
 #include <map>
 
 WorldClient::WorldClient()
-    : state(NULL), tilePool(), zombiePool(), ogrePool(), wallPool(), hoveredTile(NULL)
+    : state(NULL), tilePool(), zombiePool(), ogrePool(), wallPool(), hoveredTile(NULL), playerCharacter(NULL)
 {
 }
 
@@ -44,13 +44,14 @@ void WorldClient::load(GameplayState* _state)
 {
     state = _state;
 
-    font.loadFromFile(resourcePath() + "Agency.ttf");
     state->game->spriteLoader->loadSprites(resourcePath() + "spritesheet_01.csv");
-    texture_spritesheet_01.loadFromFile(resourcePath() + "spritesheet_01.png");
-    vertexMap_01.load(&texture_spritesheet_01, sf::PrimitiveType::Quads);
+    texture_spritesheet_01_unsmooth.loadFromFile(resourcePath() + "spritesheet_01.png");
+    texture_spritesheet_01_smooth.loadFromFile(resourcePath() + "spritesheet_01.png");
+    texture_spritesheet_01_smooth.setSmooth(true);
+    vertexMap_01.load(&texture_spritesheet_01_unsmooth, sf::PrimitiveType::Quads);
 
     // load minimap
-    minimap.load(this, texture_spritesheet_01);
+    minimap.load(this, texture_spritesheet_01_smooth);
 
     // Fill pools
     WorldClient* w = this;
@@ -143,17 +144,26 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
         {
             case Body::Type::Character:
             {
+                Character* c;
+
                 unsigned int characterType;
                 packet >> characterType;
                 switch(static_cast<Character::Type>(characterType))
                 {
                     case Character::Type::Zombie:
-                        unpackNetworkEntity<ZombieClient>(packet, full, zombies, zombiePool);
+                        c = unpackNetworkEntity<ZombieClient>(packet, full, zombies, zombiePool);
                         break;
                     case Character::Type::Ogre:
-                        unpackNetworkEntity<OgreClient>(packet, full, ogres, ogrePool);
+                        c = unpackNetworkEntity<OgreClient>(packet, full, ogres, ogrePool);
                         break;
                 }
+
+                // Player character
+                if(c->fixedState.clientId == state->clientId)
+                {
+                    playerCharacter = c;
+                }
+
                 break;
             }
             case Body::Type::Structure:

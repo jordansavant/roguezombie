@@ -17,7 +17,6 @@ GameplayState::GameplayState(bit::StateStack &stack, bit::Game* _game, bool isHo
 {
     createCamera(*game->renderWindow, 0, 0, 1, 1);
     cameras[0]->panSpeed = 3;
-    cameras[0]->view.setCenter(50, 200);
 }
 
 void GameplayState::load()
@@ -104,7 +103,18 @@ bool GameplayState::update(sf::RenderWindow &window, sf::Time &gameTime)
 
     worldClient.update(window, gameTime);
     
-    worldClient.minimap.setPosition(150, 50);
+    worldClient.minimap.setPosition(150 * game->currentResolutionRatioX, 50 * game->currentResolutionRatioY);
+    worldClient.minimap.setScale(game->currentResolutionRatio, game->currentResolutionRatio);
+
+    if(worldClient.playerCharacter)
+    {
+        float toleranceX = 250 * game->currentResolutionRatioX;
+        float toleranceY = 150 * game->currentResolutionRatioY;
+
+        sf::Vector2f position(worldClient.playerCharacter->Body::deltaState.x, worldClient.playerCharacter->Body::deltaState.y);
+        position = bit::VectorMath::normalToIsometric(position.x, position.y);
+        cameras[0]->lock(position.x, position.y, toleranceX, toleranceY, 4.0, 100.0);
+    }
 
     return true;
 }

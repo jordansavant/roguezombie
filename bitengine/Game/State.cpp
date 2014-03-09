@@ -22,6 +22,11 @@ bool bit::State::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     if(cameras.size() > 0)
     {
+        for(unsigned int i = 0; i < cameras.size(); i++)
+        {
+            cameras[i]->update(window, gameTime);
+        }
+
         Camera* camera = cameras[0];
         window.setView(camera->view);
     }
@@ -31,11 +36,6 @@ bool bit::State::update(sf::RenderWindow &window, sf::Time &gameTime)
 
 void bit::State::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
-    for(unsigned int i = 0; i < cameras.size(); i++)
-    {
-        cameras[i]->update(window, gameTime);
-    }
-
     for(unsigned int i = 0; i < cameras.size(); i++)
     {
         Camera* camera = cameras[i];

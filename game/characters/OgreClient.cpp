@@ -30,7 +30,7 @@ void OgreClient::clientUpdate(sf::Time &gameTime)
     sprite->applyToQuad(&world->vertexMap_01.vertexArray[quadIndex]);
 
     // Position
-    bit::VectorMath::incrementTowards(renderX, renderY, Body::deltaState.x, Body::deltaState.y, 4);
+    bit::VectorMath::incrementTowards(renderX, renderY, Body::deltaState.x, Body::deltaState.y, 4, 4);
 
     float spriteWidth = 84;
     float spriteHeight = 116;

@@ -15,6 +15,7 @@ class OgreClient;
 class TileClient;
 class WallClient;
 class DoorClient;
+class Character;
 class GameplayState;
 
 class WorldClient : public sf::Drawable, public sf::Transformable
@@ -36,12 +37,13 @@ public:
     bit::Pool<OgreClient> ogrePool;
     bit::Pool<WallClient> wallPool;
     bit::Pool<DoorClient> doorPool;
-    sf::Font font;
     TileClient* hoveredTile;
+    Character* playerCharacter;
     Minimap minimap;
 
     // Spritesheet 01;
-    sf::Texture texture_spritesheet_01;
+    sf::Texture texture_spritesheet_01_unsmooth;
+    sf::Texture texture_spritesheet_01_smooth;
     bit::VertexMap vertexMap_01;
 
     void load(GameplayState* state);

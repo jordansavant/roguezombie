@@ -24,6 +24,10 @@ namespace bit
         int masterResolutionWidth;
         int masterResolutionHeight;
 
+        float lockX, lockY;
+        float lockToleranceX, lockToleranceY;
+        float lockBufferAmount, lockBufferMax;
+
         void resetZoom();
 
         virtual void changeZoom(int adjustBy);
@@ -32,7 +36,7 @@ namespace bit
 
         virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
-        virtual void updatePan(sf::RenderWindow &window, sf::Time &gameTime);
+        virtual void lock(float x, float y, float toleranceX, float toleranceY, float bufferSpeed = 2.0, float bufferMax = 30.0);
 
     private:
 

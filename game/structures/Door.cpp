@@ -6,7 +6,7 @@
 #include "../Structure.hpp"
 
 Door::Door()
-    : Structure(), testTimer(2)
+    : Structure(), testTimer(7)
 {
 }
 
