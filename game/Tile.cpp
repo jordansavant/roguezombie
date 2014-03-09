@@ -46,9 +46,9 @@ void Tile::update(sf::Time &gameTime)
 
     // Reset body's illuminance
     if(body)
-    {
         body->deltaState.illumination = 0;
-    }
+    if(door)
+        door->deltaState.illumination = 0;
 }
 
 void Tile::setOccupyingBody(Body* _body)

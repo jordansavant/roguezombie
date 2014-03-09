@@ -60,7 +60,7 @@ void WorldClient::load(GameplayState* _state)
         t->clientLoad(w);
         return t;
     };
-    tilePool.add(200);
+    tilePool.add(2000);
     zombiePool.factoryMethod = [w] () -> ZombieClient* {
         ZombieClient* t = new ZombieClient();
         t->clientLoad(w);
@@ -78,13 +78,13 @@ void WorldClient::load(GameplayState* _state)
         t->clientLoad(w);
         return t;
     };
-    wallPool.add(100);
+    wallPool.add(500);
     doorPool.factoryMethod = [w] () -> DoorClient* {
         DoorClient* t = new DoorClient();
         t->clientLoad(w);
         return t;
     };
-    doorPool.add(100);
+    doorPool.add(10);
 }
 
 void WorldClient::update(sf::RenderWindow &window, sf::Time &gameTime)
@@ -198,4 +198,5 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
     diffNetworkEntity<ZombieClient>(zombies, zombiePool);
     diffNetworkEntity<OgreClient>(ogres, ogrePool);
     diffNetworkEntity<WallClient>(walls, wallPool);
+    diffNetworkEntity<DoorClient>(doors, doorPool);
 }

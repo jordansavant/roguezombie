@@ -106,6 +106,7 @@ bool GameplayState::update(sf::RenderWindow &window, sf::Time &gameTime)
     worldClient.minimap.setPosition(150 * game->currentResolutionRatioX, 50 * game->currentResolutionRatioY);
     worldClient.minimap.setScale(game->currentResolutionRatio, game->currentResolutionRatio);
 
+    // Camera
     if(worldClient.playerCharacter)
     {
         float toleranceX = 250 * game->currentResolutionRatioX;

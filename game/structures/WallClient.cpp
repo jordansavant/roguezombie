@@ -55,5 +55,5 @@ void WallClient::clientUpdate(sf::Time &gameTime)
 
 void WallClient::reset()
 {
-    bit::VertexHelper::resetQuad(&world->vertexMap_01.vertexArray[quadIndex]);
+     bit::VertexHelper::resetQuad(&world->vertexMap_01.vertexArray[quadIndex]);
 }
