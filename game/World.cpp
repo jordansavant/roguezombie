@@ -68,7 +68,7 @@ void World::load()
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 3, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
@@ -88,13 +88,14 @@ void World::load()
     mapWidth = tileWidth * tileColumns;
     mapHeight = tileHeight * tileRows;
     tiles.resize(tileCount, NULL);
+
+    // Load Tiles
     for (unsigned int j = 0; j < tileRows; ++j)
     {
         for (unsigned int i = 0; i < tileColumns; ++i)
         {
             // get the current tile information
             int index = i + j * tileColumns;
-            int logic = tileArray[index];
             Tile::Type tileType = Tile::Type::Ground;
 
             // build the quad and its position on the map
@@ -106,6 +107,17 @@ void World::load()
             Tile* t = new Tile();
             t->load(this, index, tileType, originX, originY, tileWidth, tileHeight);
             tiles[index] = t;
+        }
+    }
+
+    // Load entities
+    for (unsigned int j = 0; j < tileRows; ++j)
+    {
+        for (unsigned int i = 0; i < tileColumns; ++i)
+        {
+            int index = i + j * tileColumns;
+            int logic = tileArray[index];
+            Tile* t = tiles[index];
 
             switch(logic)
             {
@@ -114,7 +126,6 @@ void World::load()
                     Wall* w = new Wall();
                     w->load(this, walls.size(), t->fixedState.x, t->fixedState.y);
                     walls.push_back(w);
-                    t->setOccupyingBody(w);
                     break;
                 }
                 case 2:
@@ -122,7 +133,6 @@ void World::load()
                     Zombie* z = new Zombie();
                     z->load(this, zombies.size(), t->fixedState.x, t->fixedState.y);
                     zombies.push_back(z);
-                    t->setOccupyingBody(z);
                     break;
                 }
                 case 3:
@@ -130,7 +140,6 @@ void World::load()
                     Ogre* o = new Ogre();
                     o->load(this, ogres.size(), t->fixedState.x, t->fixedState.y);
                     ogres.push_back(o);
-                    t->setOccupyingBody(o);
                     break;
                 }
                 case 4:
@@ -146,7 +155,6 @@ void World::load()
                     Door* d = new Door();
                     d->load(this, doors.size(), t->fixedState.x, t->fixedState.y);
                     doors.push_back(d);
-                    t->setOccupyingBody(d);
                     break;
                 }
             }
@@ -450,26 +458,37 @@ void World::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
         packet << tileId;
         t->prepareSnapshot(packet, full);
 
-        if(!t->body)
+        Body* b;
+        // If no body or door, say no body
+        if(!t->body && !t->door)
         {
-            // If no body, say no body
             packet << sf::Uint32(Body::Type::None);
             continue;
         }
+        // If there is a body, use it
+        else if(t->body)
+        {
+            b = t->body;
+        }
+        // If there is a door, use it
+        else
+        {
+            b = t->door;
+        }
 
         // break open body
-        switch(t->body->fixedState.type)
+        switch(b->fixedState.type)
         {
             case Body::Type::Character:
             {
-                Character* c = static_cast<Character*>(t->body);
+                Character* c = static_cast<Character*>(b);
                 switch(c->fixedState.type)
                 {
                     case Character::Type::Zombie:
-                        packNetworkBody<Zombie, Character>(packet, full, c, t->body->fixedState.type, c->fixedState.type);
+                        packNetworkBody<Zombie, Character>(packet, full, c, b->fixedState.type, c->fixedState.type);
                         break;
                     case Character::Type::Ogre:
-                        packNetworkBody<Ogre, Character>(packet, full, c, t->body->fixedState.type, c->fixedState.type);
+                        packNetworkBody<Ogre, Character>(packet, full, c, b->fixedState.type, c->fixedState.type);
                         break;
                 }
                 break;
@@ -477,14 +496,14 @@ void World::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
 
             case Body::Type::Structure:
             {
-                Structure* s = static_cast<Structure*>(t->body);
+                Structure* s = static_cast<Structure*>(b);
                 switch(s->fixedState.type)
                 {
                     case Structure::Type::Wall:
-                        packNetworkBody<Wall, Structure>(packet, full, s, t->body->fixedState.type, s->fixedState.type);
+                        packNetworkBody<Wall, Structure>(packet, full, s, b->fixedState.type, s->fixedState.type);
                         break;
                     case Structure::Type::Door:
-                        packNetworkBody<Door, Structure>(packet, full, s, t->body->fixedState.type, s->fixedState.type);
+                        packNetworkBody<Door, Structure>(packet, full, s, b->fixedState.type, s->fixedState.type);
                         break;
                 }
                 break;

@@ -4,7 +4,7 @@
 #include "../bitengine/Math.hpp"
 
 Tile::Tile()
-    : bit::NodeContainer(), fixedState(), deltaState(), world(NULL), body(NULL), metadata_shadowcastId(0)
+    : bit::NodeContainer(), fixedState(), deltaState(), world(NULL), body(NULL), door(NULL), metadata_shadowcastId(0)
 {
 }
 
@@ -62,6 +62,20 @@ void Tile::setOccupyingBody(Body* _body)
     {
         body = _body;
         deltaState.bodyId = body->fixedState.id;
+    }
+}
+
+void Tile::setOccupyingDoor(Body* _door)
+{
+    if(!_door)
+    {
+        door = NULL;
+        deltaState.doorId = 0;
+    }
+    else
+    {
+        door = _door;
+        deltaState.doorId = body->fixedState.id;
     }
 }
 

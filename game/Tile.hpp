@@ -24,6 +24,7 @@ public:
 
     World* world;
     Body* body;
+    Body* door;
     unsigned int metadata_shadowcastId;
 
     struct FixedState
@@ -68,16 +69,17 @@ public:
     struct DeltaState
     {
         unsigned int bodyId;
+        unsigned int doorId;
         float illumination; // how illuminated this tile is
         unsigned char rshade, gshade, bshade; // color of light
 
         friend sf::Packet& operator <<(sf::Packet& packet, const DeltaState &state)
         {
-            return packet << sf::Uint32(state.bodyId) << state.illumination << state.rshade << state.gshade << state.bshade;
+            return packet << sf::Uint32(state.bodyId) << sf::Uint32(state.doorId) << state.illumination << state.rshade << state.gshade << state.bshade;
         }
         friend sf::Packet& operator >>(sf::Packet& packet, DeltaState &state)
         {
-            return packet >> state.bodyId >> state.illumination >> state.rshade >> state.gshade >> state.bshade;
+            return packet >> state.bodyId >> state.doorId >> state.illumination >> state.rshade >> state.gshade >> state.bshade;
         }
     };
     DeltaState deltaState;
@@ -87,6 +89,8 @@ public:
     virtual void update(sf::Time &gameTime);
 
     virtual void setOccupyingBody(Body* body);
+
+    virtual void setOccupyingDoor(Body* body);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 
