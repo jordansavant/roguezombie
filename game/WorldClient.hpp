@@ -14,6 +14,7 @@ class ZombieClient;
 class OgreClient;
 class TileClient;
 class WallClient;
+class DoorClient;
 class GameplayState;
 
 class WorldClient : public sf::Drawable, public sf::Transformable
@@ -29,10 +30,12 @@ public:
     std::map<unsigned int, OgreClient*> ogres;
     std::map<unsigned int, TileClient*> tiles;
     std::map<unsigned int, WallClient*> walls;
+    std::map<unsigned int, DoorClient*> doors;
     bit::Pool<TileClient> tilePool;
     bit::Pool<ZombieClient> zombiePool;
     bit::Pool<OgreClient> ogrePool;
     bit::Pool<WallClient> wallPool;
+    bit::Pool<DoorClient> doorPool;
     sf::Font font;
     TileClient* hoveredTile;
     Minimap minimap;

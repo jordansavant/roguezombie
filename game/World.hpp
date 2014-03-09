@@ -14,6 +14,7 @@ class Zombie;
 class Ogre;
 class Player;
 class Tile;
+class Door;
 class Wall;
 class Light;
 
@@ -28,6 +29,7 @@ public:
     std::vector<Zombie*> zombies;
     std::vector<Ogre*> ogres;
     std::vector<Wall*> walls;
+    std::vector<Door*> doors;
     std::vector<Tile*> tiles;
     std::vector<Light*> lights;
 	std::map<unsigned int, Player*> players;

@@ -5,6 +5,7 @@
 #include "characters/Zombie.hpp"
 #include "characters/Ogre.hpp"
 #include "structures/Wall.hpp"
+#include "structures/Door.hpp"
 #include "SFML/Network.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Math.hpp"
@@ -27,27 +28,26 @@ World::~World()
     {
         delete tiles[i];
     }
-
     for(unsigned int i=0; i < zombies.size(); i++)
     {
         delete zombies[i];
     }
-
     for(unsigned int i=0; i < ogres.size(); i++)
     {
         delete ogres[i];
     }
-
     for(auto iterator = players.begin(); iterator != players.end(); iterator++)
     {
 		delete iterator->second;
     }
-
     for(unsigned int i=0; i < walls.size(); i++)
     {
         delete walls[i];
     }
-
+    for(unsigned int i=0; i < doors.size(); i++)
+    {
+        delete doors[i];
+    }
     for(unsigned int i=0; i < lights.size(); i++)
     {
         delete lights[i];
@@ -66,7 +66,7 @@ void World::load()
         4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
@@ -141,6 +141,14 @@ void World::load()
                     lights.push_back(l);
                     break;
                 }
+                case 5:
+                {
+                    Door* d = new Door();
+                    d->load(this, doors.size(), t->fixedState.x, t->fixedState.y);
+                    doors.push_back(d);
+                    t->setOccupyingBody(d);
+                    break;
+                }
             }
         }
     }
@@ -163,6 +171,10 @@ void World::update(sf::Time &gameTime)
     for(unsigned int i=0; i < walls.size(); i++)
     {
         walls[i]->update(gameTime);
+    }
+    for(unsigned int i=0; i < doors.size(); i++)
+    {
+        doors[i]->update(gameTime);
     }
     for(unsigned int i=0; i < lights.size(); i++)
     {
@@ -476,6 +488,9 @@ void World::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
                 {
                     case Structure::Type::Wall:
                         packNetworkBody<Wall, Structure>(packet, full, s, t->body->fixedState.type, s->fixedState.type);
+                        break;
+                    case Structure::Type::Door:
+                        packNetworkBody<Door, Structure>(packet, full, s, t->body->fixedState.type, s->fixedState.type);
                         break;
                 }
                 break;

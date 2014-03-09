@@ -4,6 +4,7 @@
 #include "characters/ZombieClient.hpp"
 #include "characters/OgreClient.hpp"
 #include "structures/WallClient.hpp"
+#include "structures/DoorClient.hpp"
 #include "../bitengine/Math.hpp"
 #include "../bitengine/Network.hpp"
 #include "../ResourcePath.h"
@@ -32,6 +33,10 @@ WorldClient::~WorldClient()
     for(unsigned int i=0; i < walls.size(); i++)
     {
         delete walls[i];
+    }
+    for(unsigned int i=0; i < doors.size(); i++)
+    {
+        delete doors[i];
     }
 }
 
@@ -73,6 +78,12 @@ void WorldClient::load(GameplayState* _state)
         return t;
     };
     wallPool.add(100);
+    doorPool.factoryMethod = [w] () -> DoorClient* {
+        DoorClient* t = new DoorClient();
+        t->clientLoad(w);
+        return t;
+    };
+    doorPool.add(100);
 }
 
 void WorldClient::update(sf::RenderWindow &window, sf::Time &gameTime)
@@ -90,6 +101,10 @@ void WorldClient::update(sf::RenderWindow &window, sf::Time &gameTime)
         iterator->second->clientUpdate(gameTime);
     }
     for(auto iterator = walls.begin(); iterator != walls.end(); iterator++)
+    {
+        iterator->second->clientUpdate(gameTime);
+    }
+    for(auto iterator = doors.begin(); iterator != doors.end(); iterator++)
     {
         iterator->second->clientUpdate(gameTime);
     }
@@ -151,12 +166,14 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
                         unpackNetworkEntity<WallClient>(packet, full, walls, wallPool);
                         addMini = false;
                         break;
+                    case Structure::Type::Door:
+                        unpackNetworkEntity<DoorClient>(packet, full, doors, doorPool);
+                        break;
                 }
                 break;
             }
             default:
             case Body::Type::None:
-                // add minimap point
                 break;
         }
 

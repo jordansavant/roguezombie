@@ -20,7 +20,8 @@ public:
 
     enum Type
     {
-       Wall
+       Wall,
+       Door,
     };
 
 	struct FixedState
