@@ -18,7 +18,7 @@ namespace bit
         static unsigned int aStarID;
 
         template<class T>
-        static std::vector<T*> pathfind(T* startNodeContainer, T* endNodeContainer, std::function<bool(T*)> isBlocked, std::function<std::vector<T*>(T*)> getNeighbors, bool manhattan = false)
+        static std::vector<T*> pathfind(T* startNodeContainer, T* endNodeContainer, std::function<bool(T*)> isBlocked, std::function<void(T*, std::vector<T*>&)> getNeighbors, std::vector<T*> &fill, bool manhattan = false)
         {
             aStarID++;
 
@@ -27,7 +27,6 @@ namespace bit
 
             std::list<T*> OpenList;
             std::list<T*> ClosedList;
-            std::vector<T*> path;
 
             // add start node to open list
             T* currentNodeContainer = startNodeContainer;
@@ -43,7 +42,8 @@ namespace bit
             while (!currentNodeContainer->node->equals(endNodeContainer->node))
             {
                 // Mechanism for comparing neighbors
-                std::vector<T*> surrounding = getNeighbors(currentNodeContainer);
+                std::vector<T*> surrounding;
+                getNeighbors(currentNodeContainer, surrounding);
 
                 // Loop to look for best candidate via A*
                 for (int i = 0; i < surrounding.size(); i++)
@@ -190,21 +190,21 @@ namespace bit
                 if (workingNodeContainer->node->aStarParent == NULL)
                 {
                     // Push the final game object
-                    path.push_back(workingNodeContainer);
+                    fill.push_back(workingNodeContainer);
                     break;
                 }
                 // If I have more traversal to do
                 else
                 {
                     // Push the current game object
-                    path.push_back(workingNodeContainer);
+                    fill.push_back(workingNodeContainer);
 
                     // Update my working object to my next parent
                     workingNodeContainer = static_cast<T*>(workingNodeContainer->node->aStarParent->parentContainer);
                 }
             }
 
-            return path;
+            return fill;
         }
     };
 }

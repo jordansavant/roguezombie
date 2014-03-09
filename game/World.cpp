@@ -246,30 +246,27 @@ Tile* World::getTileAtPosition(float x, float y)
     return tiles[index];
 }
 
-std::vector<Tile*> World::getTilesWithinRectangle(float left, float top, float width, float height)
+void World::getTilesWithinRectangle(float left, float top, float width, float height, std::vector<Tile*> &fill)
 {
     // Get the total size of the tiles
     int recTileWidth = (int)width / tileWidth;
     int recTileHeight = (int)height / tileHeight;
     int totalTiles = recTileWidth * recTileHeight;
 
-    std::vector<Tile*> tiles;
-    tiles.resize(totalTiles, NULL);
+    fill.resize(fill.size() + totalTiles, NULL);
 
     int i=0;
     for(int x = left; x < left + width; x += tileWidth)
     {
         for(int y = top; y < top + height; y += tileHeight)
         {
-            tiles[i] = getTileAtPosition(x, y);
+            fill[i] = getTileAtPosition(x, y);
             i++;
         }
     }
-
-    return tiles;
 }
 
-std::vector<Tile*> World::getShortestPath(float startX, float startY, float endX, float endY, std::function<bool(Tile*)> isBlocked, std::function<std::vector<Tile*>(Tile*)> getNeighbors)
+void World::getShortestPath(float startX, float startY, float endX, float endY, std::function<bool(Tile*)> isBlocked, std::function<void(Tile*, std::vector<Tile*>&)> getNeighbors, std::vector<Tile*> &fill)
 {
     // Translate start and finish to tiles
     Tile* closestStartNode = getTileAtPosition(startX, startY);
@@ -277,45 +274,42 @@ std::vector<Tile*> World::getShortestPath(float startX, float startY, float endX
 
     // Return empty list if there is no path
     if (closestStartNode == NULL || closestFinishNode == NULL || isBlocked(closestStartNode) || isBlocked(closestFinishNode))
-        return std::vector<Tile*>();
+        return;
 
-    return bit::Astar::pathfind(closestStartNode, closestFinishNode, isBlocked, getNeighbors);
+    bit::Astar::pathfind(closestStartNode, closestFinishNode, isBlocked, getNeighbors, fill);
 }
 
-std::vector<Tile*> World::getCardinalTiles(Tile* tile)
+void World::getCardinalTiles(Tile* tile, std::vector<Tile*> &fill)
 {
-    return getCardinalTiles(tile, true);
+    getCardinalTiles(tile, fill, true);
 }
 
-std::vector<Tile*> World::getCardinalTiles(Tile* tile, bool nullsafe)
+void World::getCardinalTiles(Tile* tile, std::vector<Tile*> &fill, bool nullsafe)
 {
-    std::vector<Tile*> tiles;
     Tile* top = getTileAtPosition(tile->fixedState.x, tile->fixedState.y - tile->fixedState.height);
     Tile* bottom = getTileAtPosition(tile->fixedState.x, tile->fixedState.y + tile->fixedState.height);
     Tile* left = getTileAtPosition(tile->fixedState.x - tile->fixedState.width, tile->fixedState.y);
     Tile* right = getTileAtPosition(tile->fixedState.x + tile->fixedState.width, tile->fixedState.y);
 
     if(top)
-        tiles.push_back(top);
+        fill.push_back(top);
     else if(!nullsafe)
-        tiles.push_back(top);
+        fill.push_back(top);
 
     if(bottom)
-        tiles.push_back(bottom);
+        fill.push_back(bottom);
     else if(!nullsafe)
-        tiles.push_back(bottom);
+        fill.push_back(bottom);
 
     if(left)
-        tiles.push_back(left);
+        fill.push_back(left);
     else if(!nullsafe)
-        tiles.push_back(left);
+        fill.push_back(left);
 
     if(right)
-        tiles.push_back(right);
+        fill.push_back(right);
     else if(!nullsafe)
-        tiles.push_back(right);
-
-    return tiles;
+        fill.push_back(right);
 }
 
 void World::raycastTiles(float startX, float startY, float endX, float endY, std::function<bool(Tile*)> inspect)

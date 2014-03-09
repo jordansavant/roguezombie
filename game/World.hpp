@@ -51,13 +51,13 @@ public:
 
     Tile* getTileAtPosition(float x, float y);
 
-    std::vector<Tile*> getTilesWithinRectangle(float top, float left, float width, float height);
+    void getTilesWithinRectangle(float top, float left, float width, float height, std::vector<Tile*> &fill);
 
-    std::vector<Tile*> getShortestPath(float startX, float startY, float endX, float endY, std::function<bool(Tile*)> isBlocked, std::function<std::vector<Tile*>(Tile*)> getNeighbors);
+    void getShortestPath(float startX, float startY, float endX, float endY, std::function<bool(Tile*)> isBlocked, std::function<void(Tile*, std::vector<Tile*>&)> getNeighbors, std::vector<Tile*> &fill);
 
-    std::vector<Tile*> getCardinalTiles(Tile* tile);
+    void getCardinalTiles(Tile* tile, std::vector<Tile*> &fill);
 
-    std::vector<Tile*> getCardinalTiles(Tile* tile, bool nullsafe);
+    void getCardinalTiles(Tile* tile, std::vector<Tile*> &fill, bool nullsafe);
 
     void raycastTiles(float startX, float startY, float endX, float endY, std::function<bool(Tile*)> inspect);
 
