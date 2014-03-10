@@ -16,6 +16,8 @@ class Baserunner
 public:
     Baserunner() { }
 
+    virtual ~Baserunner() { }
+
     virtual void buildPool() = 0;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime) = 0;
@@ -28,17 +30,26 @@ template <class T>
 class Runner : public Baserunner
 {
 public:
-    Runner(WorldClient* _world, std::map<unsigned int, T*>* _list, bit::Pool<T>* _pool, unsigned int _poolCount)
+    Runner(WorldClient* _world, std::map<unsigned int, T*>* _map, bit::Pool<T>* _pool, unsigned int _poolCount)
         : Baserunner()
     {
         world = _world;
-        list = _list;
+        map = _map;
         pool = _pool;
         poolCount = _poolCount;
     }
 
+    virtual ~Runner()
+    {
+        for(unsigned int i=0; i < map->size(); i++)
+        {
+            T* t = (*map)[i];
+            delete t;
+        }
+    }
+
     WorldClient* world;
-    std::map<unsigned int, T*>* list;
+    std::map<unsigned int, T*>* map;
     bit::Pool<T>* pool;
     unsigned int poolCount;
 
@@ -49,12 +60,12 @@ public:
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime)
     {
-        world->updateEntity(*list, window, gameTime);
+        world->updateEntity(*map, window, gameTime);
     }
 
     virtual void diffNetwork()
     {
-        world->diffNetworkEntity(*list, *pool);
+        world->diffNetworkEntity(*map, *pool);
     }
 };
 
@@ -73,7 +84,7 @@ public:
 
     WorldClient();
 
-    ~WorldClient();
+    virtual ~WorldClient();
 
     GameplayState* state;
     std::map<unsigned int, ZombieClient*> zombies;

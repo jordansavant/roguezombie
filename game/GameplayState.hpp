@@ -14,6 +14,8 @@ public:
 
     GameplayState(bit::StateStack &stack, bit::Game* game, bool isHost);
 
+    virtual ~GameplayState();
+
     WorldClient worldClient;
 	std::vector<Command> commandQueue;
     sf::Vector2f mousePositionInWorld;

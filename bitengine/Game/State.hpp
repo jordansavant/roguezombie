@@ -16,6 +16,8 @@ namespace bit
 
         State(StateStack &stack, Game* game);
 
+        virtual ~State();
+
         Game* game;
 
         virtual bool handleInput(sf::RenderWindow &window, sf::Time &gameTime);

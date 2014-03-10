@@ -9,6 +9,10 @@ bit::State::State(StateStack &stack, bit::Game* _game)
 {
 }
 
+bit::State::~State()
+{
+}
+
 void bit::State::load()
 {
 }

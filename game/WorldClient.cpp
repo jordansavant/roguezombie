@@ -18,25 +18,9 @@ WorldClient::WorldClient()
 
 WorldClient::~WorldClient()
 {
-    for(unsigned int i=0; i < tiles.size(); i++)
+    for(unsigned int i=0; i < runners.size(); i++)
     {
-        delete tiles[i];
-    }
-    for(unsigned int i=0; i < zombies.size(); i++)
-    {
-        delete zombies[i];
-    }
-    for(unsigned int i=0; i < ogres.size(); i++)
-    {
-        delete ogres[i];
-    }
-    for(unsigned int i=0; i < walls.size(); i++)
-    {
-        delete walls[i];
-    }
-    for(unsigned int i=0; i < doors.size(); i++)
-    {
-        delete doors[i];
+        delete runners[i];
     }
 }
 

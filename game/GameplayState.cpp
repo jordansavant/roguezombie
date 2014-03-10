@@ -19,6 +19,10 @@ GameplayState::GameplayState(bit::StateStack &stack, bit::Game* _game, bool isHo
     cameras[0]->panSpeed = 3;
 }
 
+GameplayState::~GameplayState()
+{
+}
+
 void GameplayState::load()
 {
     bit::ClientServerState::load();
