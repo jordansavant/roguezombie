@@ -6,6 +6,7 @@
 #include "SFML/Network.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
+#include "WorldRunner.hpp"
 #include "Command.hpp"
 #include <map>
 #include <functional>
@@ -34,6 +35,8 @@ public:
     std::vector<Light*> lights;
 	std::map<unsigned int, Player*> players;
     unsigned int tileWidth, tileHeight, tileRows, tileColumns, tileCount, mapWidth, mapHeight;
+
+    std::vector<BaseWorldRunner*> runners;
 
     // Game Logic
 
@@ -72,8 +75,6 @@ public:
     void handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type command);
 
     void prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client, bool full = false);
-
-private:
 
     template <class T, class C>
     void packNetworkBody(bit::ServerPacket &packet, bool full, C* c, unsigned int bodyType, unsigned int subType)

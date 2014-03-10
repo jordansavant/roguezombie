@@ -2,6 +2,7 @@
 #include "Player.hpp"
 #include "Tile.hpp"
 #include "Light.hpp"
+#include "WorldRunner.hpp"
 #include "characters/Zombie.hpp"
 #include "characters/Ogre.hpp"
 #include "structures/Wall.hpp"
@@ -24,33 +25,9 @@ World::World()
 
 World::~World()
 {
-    for(unsigned int i=0; i < tiles.size(); i++)
+    for(unsigned int i=0; i < runners.size(); i++)
     {
-        delete tiles[i];
-    }
-    for(unsigned int i=0; i < zombies.size(); i++)
-    {
-        delete zombies[i];
-    }
-    for(unsigned int i=0; i < ogres.size(); i++)
-    {
-        delete ogres[i];
-    }
-    for(auto iterator = players.begin(); iterator != players.end(); iterator++)
-    {
-		delete iterator->second;
-    }
-    for(unsigned int i=0; i < walls.size(); i++)
-    {
-        delete walls[i];
-    }
-    for(unsigned int i=0; i < doors.size(); i++)
-    {
-        delete doors[i];
-    }
-    for(unsigned int i=0; i < lights.size(); i++)
-    {
-        delete lights[i];
+        delete runners[i];
     }
 }
 
@@ -60,6 +37,14 @@ World::~World()
 
 void World::load()
 {
+    // Runners
+    runners.push_back(new WorldRunner<Tile>(this, &tiles));
+    runners.push_back(new WorldRunner<Zombie>(this, &zombies));
+    runners.push_back(new WorldRunner<Ogre>(this, &ogres));
+    runners.push_back(new WorldRunner<Wall>(this, &walls));
+    runners.push_back(new WorldRunner<Door>(this, &doors));
+    runners.push_back(new WorldRunner<Light>(this, &lights));
+    
     // Tiles
     const int tileArray[] =
     {
@@ -180,29 +165,10 @@ void World::load()
 
 void World::update(sf::Time &gameTime)
 {
-    for(unsigned int i=0; i < tiles.size(); i++)
+    // Update entities
+    for(unsigned int i=0; i < runners.size(); i++)
     {
-        tiles[i]->update(gameTime);
-    }
-    for(unsigned int i=0; i < zombies.size(); i++)
-    {
-        zombies[i]->update(gameTime);
-    }
-    for(unsigned int i=0; i < ogres.size(); i++)
-    {
-        ogres[i]->update(gameTime);
-    }
-    for(unsigned int i=0; i < walls.size(); i++)
-    {
-        walls[i]->update(gameTime);
-    }
-    for(unsigned int i=0; i < doors.size(); i++)
-    {
-        doors[i]->update(gameTime);
-    }
-    for(unsigned int i=0; i < lights.size(); i++)
-    {
-        lights[i]->update(gameTime);
+        runners[i]->update(gameTime);
     }
 }
 

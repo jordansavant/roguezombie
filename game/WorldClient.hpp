@@ -7,68 +7,9 @@
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Graphics.hpp"
 #include "../bitengine/Structures.hpp"
+#include "WorldClientRunner.hpp"
 #include "Minimap.hpp"
 #include <map>
-
-
-class Baserunner
-{
-public:
-    Baserunner() { }
-
-    virtual ~Baserunner() { }
-
-    virtual void buildPool() = 0;
-
-    virtual void update(sf::RenderWindow &window, sf::Time &gameTime) = 0;
-
-    virtual void diffNetwork() = 0;
-};
-
-
-template <class T>
-class Runner : public Baserunner
-{
-public:
-    Runner(WorldClient* _world, std::map<unsigned int, T*>* _map, bit::Pool<T>* _pool, unsigned int _poolCount)
-        : Baserunner()
-    {
-        world = _world;
-        map = _map;
-        pool = _pool;
-        poolCount = _poolCount;
-    }
-
-    virtual ~Runner()
-    {
-        for(unsigned int i=0; i < map->size(); i++)
-        {
-            T* t = (*map)[i];
-            delete t;
-        }
-    }
-
-    WorldClient* world;
-    std::map<unsigned int, T*>* map;
-    bit::Pool<T>* pool;
-    unsigned int poolCount;
-
-    virtual void buildPool()
-    {
-        world->setupEntityPool(*pool, poolCount);
-    }
-
-    virtual void update(sf::RenderWindow &window, sf::Time &gameTime)
-    {
-        world->updateEntity(*map, window, gameTime);
-    }
-
-    virtual void diffNetwork()
-    {
-        world->diffNetworkEntity(*map, *pool);
-    }
-};
-
 
 class ZombieClient;
 class OgreClient;
@@ -107,52 +48,13 @@ public:
     bit::VertexMap vertexMap_01;
 
     // logical
-    std::vector<Baserunner*> runners;
+    std::vector<BaseWorldClientRunner*> runners;
 
     void load(GameplayState* state);
 
     void update(sf::RenderWindow &window, sf::Time &gameTime);
 
     void handleSnapshot(bit::ServerPacket &packet, bool full = false);
-
-    template <class T>
-    void setupEntityPool(bit::Pool<T> &pool, unsigned int count)
-    {
-        WorldClient* w = this;
-        pool.factoryMethod = [w] () -> T* {
-        T* t = new T();
-            t->clientLoad(w);
-            return t;
-        };
-        pool.add(count);
-    }
-
-    template <class T>
-    void updateEntity(std::map<unsigned int, T*> &map, sf::RenderWindow &window, sf::Time &gameTime)
-    {
-        for(auto iterator = map.begin(); iterator != map.end(); iterator++)
-        {
-            iterator->second->clientUpdate(window, gameTime);
-        }
-    }
-
-    template <class T>
-    void diffNetworkEntity(std::map<unsigned int, T*> &map, bit::Pool<T> &pool)
-    {
-        auto itr = map.begin();
-        while(itr != map.end())
-        {
-            if (itr->second->lastSnapshotId != state->lastSnapshotId)
-            {
-                pool.recycle(itr->second);
-                map.erase(itr++);
-            }
-            else
-            {
-                ++itr;
-            }
-        }
-    }
 
     template <class T>
     T* unpackNetworkEntity(bit::ServerPacket &packet, bool full, std::map<unsigned int, T*> &map, bit::Pool<T> &pool)

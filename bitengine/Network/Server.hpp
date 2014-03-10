@@ -21,7 +21,7 @@ namespace bit
 
         Server();
 
-        ~Server();
+        virtual ~Server();
 
         enum ServerPacketType
         {
