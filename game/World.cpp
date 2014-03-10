@@ -327,29 +327,6 @@ void World::raycastTiles(float startX, float startY, float endX, float endY, std
     }
 }
 
-/*
- * Field of View
- */
-
-void World::shadowcastSetVisible(int x, int y, float distance)
-{
-    Tile* t = getTileAtPosition(x * tileWidth, y * tileHeight);
-    if(t)
-    {
-        float currentLight = t->deltaState.illumination;
-        float thisLight = (.1f + .9f * (1 - distance));
-        float combinedLight = currentLight + thisLight;
-        float newLight = bit::Math::clamp(combinedLight, currentLight, 1.0f);
-        t->deltaState.illumination = newLight;
- //       t->deltaState.illumination = thisLight;
-    }
-}
-
-bool World::shadowcastIsBlocked(int x, int y)
-{
-    Tile* t = getTileAtPosition(x * tileWidth, y * tileHeight);
-    return (t && t->body && t->body->fixedState.type == Body::Type::Structure);
-}
 
 /*
  * Networking
@@ -424,7 +401,8 @@ void World::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
         },
         [&visibles, w] (int x, int y) -> bool
         {
-            return w->shadowcastIsBlocked(x, y);
+            Tile* t = w->getTileAtPosition(x * w->tileWidth, y * w->tileHeight);
+            return (t && t->body && t->body->fixedState.type == Body::Type::Structure);
         }
     );
 

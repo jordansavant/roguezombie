@@ -8,6 +8,12 @@
 
 class GameplayServer : public bit::Server
 {
+public:
+
+    GameplayServer();
+
+    virtual ~GameplayServer();
+
 private:
 
     World world;

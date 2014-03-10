@@ -3,6 +3,15 @@
 #include "../bitengine/System.hpp"
 #include "Command.hpp"
 
+GameplayServer::GameplayServer()
+    : bit::Server()
+{
+}
+
+GameplayServer::~GameplayServer()
+{
+}
+
 void GameplayServer::load()
 {
     world.load();

@@ -24,9 +24,6 @@ bit::Server::Server()
 
 bit::Server::~Server()
 {
-    waitingThreadEnd = true;
-    thread.wait();
-
     for(unsigned int i=0; i < clients.size(); i++)
     {
         if(clients[i])
@@ -39,6 +36,12 @@ bit::Server::~Server()
 void bit::Server::start()
 {
 	thread.launch();
+}
+
+void bit::Server::stop()
+{
+    waitingThreadEnd = true;
+    thread.wait();
 }
 
 void bit::Server::setListeningState(bool state)

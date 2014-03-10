@@ -64,12 +64,6 @@ public:
 
     void raycastTiles(float startX, float startY, float endX, float endY, std::function<bool(Tile*)> inspect);
 
-    // Field of View
-
-    void shadowcastSetVisible(int x, int y, float distance);
-
-    bool shadowcastIsBlocked(int x, int y);
-
     // Networking
 
     void handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type command);

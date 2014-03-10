@@ -27,6 +27,8 @@ bit::ClientServerState::~ClientServerState()
 {
     if(server)
     {
+        server->stop();
+
         delete server;
     }
 }

@@ -43,6 +43,8 @@ namespace bit
 
 		void start();
 
+		void stop();
+
     protected:
 
         sf::Uint32 snapshotId;
