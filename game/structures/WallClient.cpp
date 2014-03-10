@@ -24,7 +24,7 @@ void WallClient::clientLoad(WorldClient* _world)
     sprite->applyToQuad(&world->vertexMap_01.vertexArray[quadIndex]);
 }
 
-void WallClient::clientUpdate(sf::Time &gameTime)
+void WallClient::clientUpdate(sf::RenderWindow &window, sf::Time &gameTime)
 {
     // Sprite
     sprite->applyToQuad(&world->vertexMap_01.vertexArray[quadIndex]);

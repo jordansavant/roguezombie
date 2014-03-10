@@ -44,70 +44,36 @@ void WorldClient::load(GameplayState* _state)
 {
     state = _state;
 
+    // Assets
     state->game->spriteLoader->loadSprites(resourcePath() + "spritesheet_01.csv");
     texture_spritesheet_01_unsmooth.loadFromFile(resourcePath() + "spritesheet_01.png");
     texture_spritesheet_01_smooth.loadFromFile(resourcePath() + "spritesheet_01.png");
     texture_spritesheet_01_smooth.setSmooth(true);
     vertexMap_01.load(&texture_spritesheet_01_unsmooth, sf::PrimitiveType::Quads);
 
-    // load minimap
+    // Minimap
     minimap.load(this, texture_spritesheet_01_smooth);
 
+    // Load game runners
+    runners.push_back(new Runner<TileClient>(this, &tiles, &tilePool, 2000));
+    runners.push_back(new Runner<ZombieClient>(this, &zombies, &zombiePool, 10));
+    runners.push_back(new Runner<OgreClient>(this, &ogres, &ogrePool, 10));
+    runners.push_back(new Runner<WallClient>(this, &walls, &wallPool, 500));
+    runners.push_back(new Runner<DoorClient>(this, &doors, &doorPool, 20));
+
     // Fill pools
-    WorldClient* w = this;
-    tilePool.factoryMethod = [w] () -> TileClient* {
-        TileClient* t = new TileClient();
-        t->clientLoad(w);
-        return t;
-    };
-    tilePool.add(2000);
-    zombiePool.factoryMethod = [w] () -> ZombieClient* {
-        ZombieClient* t = new ZombieClient();
-        t->clientLoad(w);
-        return t;
-    };
-    zombiePool.add(50);
-    ogrePool.factoryMethod = [w] () -> OgreClient* {
-        OgreClient* t = new OgreClient();
-        t->clientLoad(w);
-        return t;
-    };
-    ogrePool.add(10);
-    wallPool.factoryMethod = [w] () -> WallClient* {
-        WallClient* t = new WallClient();
-        t->clientLoad(w);
-        return t;
-    };
-    wallPool.add(500);
-    doorPool.factoryMethod = [w] () -> DoorClient* {
-        DoorClient* t = new DoorClient();
-        t->clientLoad(w);
-        return t;
-    };
-    doorPool.add(10);
+    for(unsigned int i=0; i < runners.size(); i++)
+    {
+        runners[i]->buildPool();
+    }
 }
 
 void WorldClient::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
-    for(auto iterator = tiles.begin(); iterator != tiles.end(); iterator++)
+    // Update
+    for(unsigned int i=0; i < runners.size(); i++)
     {
-        iterator->second->clientUpdate(window, gameTime);
-    }
-    for(auto iterator = zombies.begin(); iterator != zombies.end(); iterator++)
-    {
-        iterator->second->clientUpdate(gameTime);
-    }
-    for(auto iterator = ogres.begin(); iterator != ogres.end(); iterator++)
-    {
-        iterator->second->clientUpdate(gameTime);
-    }
-    for(auto iterator = walls.begin(); iterator != walls.end(); iterator++)
-    {
-        iterator->second->clientUpdate(gameTime);
-    }
-    for(auto iterator = doors.begin(); iterator != doors.end(); iterator++)
-    {
-        iterator->second->clientUpdate(gameTime);
+        runners[i]->update(window, gameTime);
     }
 }
 
@@ -194,9 +160,8 @@ void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
     }
 
     // Delete missing entities
-    diffNetworkEntity<TileClient>(tiles, tilePool);
-    diffNetworkEntity<ZombieClient>(zombies, zombiePool);
-    diffNetworkEntity<OgreClient>(ogres, ogrePool);
-    diffNetworkEntity<WallClient>(walls, wallPool);
-    diffNetworkEntity<DoorClient>(doors, doorPool);
+    for(unsigned int i=0; i < runners.size(); i++)
+    {
+        runners[i]->diffNetwork();
+    }
 }

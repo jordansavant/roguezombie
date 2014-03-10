@@ -24,7 +24,7 @@ public:
 
     void clientLoad(WorldClient* world);
 
-    void clientUpdate(sf::Time &gameTime);
+    void clientUpdate(sf::RenderWindow &window, sf::Time &gameTime);
 
     void reset();
 };

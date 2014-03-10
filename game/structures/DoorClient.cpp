@@ -24,7 +24,7 @@ void DoorClient::clientLoad(WorldClient* _world)
     sprite->applyToQuad(&world->vertexMap_01.vertexArray[quadIndex]);
 }
 
-void DoorClient::clientUpdate(sf::Time &gameTime)
+void DoorClient::clientUpdate(sf::RenderWindow &window, sf::Time &gameTime)
 {
     // Sprite
     sprite->applyToQuad(&world->vertexMap_01.vertexArray[quadIndex]);

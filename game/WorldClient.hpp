@@ -10,6 +10,55 @@
 #include "Minimap.hpp"
 #include <map>
 
+
+class Baserunner
+{
+public:
+    Baserunner() { }
+
+    virtual void buildPool() = 0;
+
+    virtual void update(sf::RenderWindow &window, sf::Time &gameTime) = 0;
+
+    virtual void diffNetwork() = 0;
+};
+
+
+template <class T>
+class Runner : public Baserunner
+{
+public:
+    Runner(WorldClient* _world, std::map<unsigned int, T*>* _list, bit::Pool<T>* _pool, unsigned int _poolCount)
+        : Baserunner()
+    {
+        world = _world;
+        list = _list;
+        pool = _pool;
+        poolCount = _poolCount;
+    }
+
+    WorldClient* world;
+    std::map<unsigned int, T*>* list;
+    bit::Pool<T>* pool;
+    unsigned int poolCount;
+
+    virtual void buildPool()
+    {
+        world->setupEntityPool(*pool, poolCount);
+    }
+
+    virtual void update(sf::RenderWindow &window, sf::Time &gameTime)
+    {
+        world->updateEntity(*list, window, gameTime);
+    }
+
+    virtual void diffNetwork()
+    {
+        world->diffNetworkEntity(*list, *pool);
+    }
+};
+
+
 class ZombieClient;
 class OgreClient;
 class TileClient;
@@ -46,15 +95,35 @@ public:
     sf::Texture texture_spritesheet_01_smooth;
     bit::VertexMap vertexMap_01;
 
+    // logical
+    std::vector<Baserunner*> runners;
+
     void load(GameplayState* state);
 
     void update(sf::RenderWindow &window, sf::Time &gameTime);
 
     void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 
-private:
+    template <class T>
+    void setupEntityPool(bit::Pool<T> &pool, unsigned int count)
+    {
+        WorldClient* w = this;
+        pool.factoryMethod = [w] () -> T* {
+        T* t = new T();
+            t->clientLoad(w);
+            return t;
+        };
+        pool.add(count);
+    }
 
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+    template <class T>
+    void updateEntity(std::map<unsigned int, T*> &map, sf::RenderWindow &window, sf::Time &gameTime)
+    {
+        for(auto iterator = map.begin(); iterator != map.end(); iterator++)
+        {
+            iterator->second->clientUpdate(window, gameTime);
+        }
+    }
 
     template <class T>
     void diffNetworkEntity(std::map<unsigned int, T*> &map, bit::Pool<T> &pool)
@@ -96,6 +165,11 @@ private:
 
         return entity;
     }
+
+private:
+
+    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+    
 };
 
 #endif
