@@ -4,9 +4,10 @@
 #include "../World.hpp"
 #include "../Tile.hpp"
 #include "../Structure.hpp"
+#include <functional>
 
 Door::Door()
-    : Structure(), testTimer(7)
+    : Structure()
 {
 }
 
@@ -21,20 +22,20 @@ void Door::load(World* _world, unsigned int _id, float _x, float _y)
         currentTiles[i]->setOccupyingDoor(this);
     }
 
+    std::vector<Tile*> cardinalTiles;
+    world->getCardinalTiles(world->getTileAtPosition(_x, _y), cardinalTiles);
+    for(unsigned int i=0; i < cardinalTiles.size(); i++)
+    {
+        registerTileTriggers(cardinalTiles[i]);
+    }
+
     deltaState.isOpen = false;
+    deltaState.isLocked = false;
 }
 
 void Door::update(sf::Time &gameTime)
 {
     Structure::update(gameTime);
-
-    if(testTimer.update(gameTime))
-    {
-        if(deltaState.isOpen)
-            attemptClose();
-        else
-            attemptOpen();
-    }
 }
 
 void Door::attemptOpen()
@@ -74,6 +75,22 @@ void Door::attemptClose()
         }
 
         deltaState.isOpen = false;
+    }
+}
+
+void Door::registerTileTriggers(Tile* tile)
+{
+    Door* d = this;
+
+    if(tile)
+    {
+        tile->onBodyEnter.push_back([d] (Tile* t, Body* b) {
+            if(b->Body::fixedState.type == Body::Type::Character)
+                d->attemptOpen();
+        });
+        tile->onBodyLeave.push_back([d] (Tile* t) {
+            d->attemptClose();
+        });
     }
 }
 

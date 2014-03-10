@@ -53,15 +53,19 @@ void Tile::update(sf::Time &gameTime)
 
 void Tile::setOccupyingBody(Body* _body)
 {
-    if(!_body)
+    if(!_body && body)
     {
         body = NULL;
         deltaState.bodyId = 0;
+
+        runOnBodyLeave();
     }
-    else
+    else if(_body)
     {
         body = _body;
         deltaState.bodyId = body->fixedState.id;
+
+        runOnBodyEnter(body);
     }
 }
 
@@ -76,6 +80,22 @@ void Tile::setOccupyingDoor(Body* _door)
     {
         door = _door;
         deltaState.doorId = body->fixedState.id;
+    }
+}
+
+void Tile::runOnBodyEnter(Body* body)
+{
+    for(unsigned int i=0; i < onBodyEnter.size(); i++)
+    {
+        onBodyEnter[i](this, body);
+    }
+}
+
+void Tile::runOnBodyLeave()
+{
+    for(unsigned int i=0; i < onBodyLeave.size(); i++)
+    {
+        onBodyLeave[i](this);
     }
 }
 

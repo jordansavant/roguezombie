@@ -14,19 +14,18 @@ public:
 
     Door();
 
-    bit::GameTimer testTimer;
-
     struct DeltaState
     {
         bool isOpen;
+        bool isLocked;
 
         friend sf::Packet& operator <<(sf::Packet& packet, const DeltaState &state)
         {
-            return packet << state.isOpen;
+            return packet << state.isOpen << state.isLocked;
         }
         friend sf::Packet& operator >>(sf::Packet& packet, DeltaState &state)
         {
-            return packet >> state.isOpen;
+            return packet >> state.isOpen >> state.isLocked;
         }
     };
     DeltaState deltaState;
@@ -42,6 +41,10 @@ public:
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 
     virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
+
+private:
+
+    void registerTileTriggers(Tile* tile);
 
 };
 

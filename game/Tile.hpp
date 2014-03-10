@@ -5,6 +5,7 @@
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Intelligence.hpp"
+#include <functional>
 
 class World;
 class Body;
@@ -26,6 +27,9 @@ public:
     Body* body;
     Body* door;
     unsigned int metadata_shadowcastId;
+
+    std::vector<std::function<void(Tile* t, Body* body)>> onBodyEnter;
+    std::vector<std::function<void(Tile* t)>> onBodyLeave;
 
     struct FixedState
     {
@@ -95,6 +99,13 @@ public:
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 
     virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
+
+private:
+
+    void runOnBodyEnter(Body* body);
+
+    void runOnBodyLeave();
+
 };
 
 #endif
