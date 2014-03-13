@@ -34,6 +34,21 @@ void WorldClient::load(GameplayState* _state)
     texture_spritesheet_01_smooth.loadFromFile(resourcePath() + "spritesheet_01.png");
     texture_spritesheet_01_smooth.setSmooth(true);
     vertexMap_01.load(&texture_spritesheet_01_unsmooth, sf::PrimitiveType::Quads);
+    testFont.loadFromFile(resourcePath() + "Agency.ttf");
+    //testText.setFont(testFont);
+    //testText.setString("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    //testText.setCharacterSize(24);
+    //testSprite.setTexture(testFont.getTexture(24));
+
+    fontMap.load(&testFont);
+    for(int i = 0; i < 1000; i++)
+    {
+        unsigned int quindex = fontMap.vertexMap.requestVertexIndex();
+        quad = &fontMap.vertexMap.vertexArray[quindex];
+        std::string aaa = "a";
+        fontMap.applyCharacter(quad, aaa);
+        bit::VertexHelper::positionQuad(quad, bit::Math::random(1300), bit::Math::random(700), 1, 20, 40);
+    }
 
     // Minimap
     minimap.load(this, texture_spritesheet_01_smooth);
@@ -59,6 +74,10 @@ void WorldClient::update(sf::RenderWindow &window, sf::Time &gameTime)
     {
         runners[i]->update(window, gameTime);
     }
+
+    //sf::Glyph g = testFont.getGlyph(65, 24, false);
+    //testSprite.setTextureRect(g.textureRect);
+    //testSprite.setPosition(400, 20);
 }
 
 void WorldClient::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -74,7 +93,12 @@ void WorldClient::draw(sf::RenderTarget& target, sf::RenderStates states) const
     // draw the vertex arrays z-sorted
     target.draw(vertexMap_01.vertexArray, states);
 
+    states.texture = fontMap.vertexMap.texture;
+    target.draw(fontMap.vertexMap.vertexArray, states);
+
     bit::Game::depthTestEnd();
+
+    //target.draw(testSprite);
 }
 
 void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)

@@ -48,6 +48,12 @@ public:
     bit::VertexMap vertexMap_01;
 
     // logical
+    sf::Font testFont;
+    sf::Sprite testSprite;
+    sf::Text testText;
+    bit::VertexFontMap fontMap;
+    bit::Vertex3* quad;
+
     std::vector<BaseWorldClientRunner*> runners;
 
     void load(GameplayState* state);

@@ -120,6 +120,41 @@ bool Character::moveToPosition(float x, float y)
         Body::deltaState.y = y;
     }
 
+        //    for(unsigned int i=0; i < currentTiles.size(); i++)
+        //{
+        //    bool stillOn = false;
+        //    for(unsigned int i=0; i < newTiles.size(); i++)
+        //    {
+        //        if(currentTiles[i] == newTiles[i])
+        //        {
+        //            stillOn = true;
+        //            break;
+        //        }
+        //    }
+        //    if(!stillOn)
+        //    {
+        //        currentTiles[i]->setOccupyingBody(NULL);
+        //    }
+        //}
+
+        //for(unsigned int i=0; i < newTiles.size(); i++)
+        //{
+        //    bool isNotNew = false;
+        //    for(unsigned int i=0; i < currentTiles.size(); i++)
+        //    {
+        //        if(newTiles[i] == currentTiles[i])
+        //        {
+        //            isNotNew = true;
+        //            break;
+        //        }
+        //    }
+        //    if(!isNotNew)
+        //    {
+        //        newTiles[i]->setOccupyingBody(this);
+        //    }
+        //}
+
+
     return canMove;
 }
 

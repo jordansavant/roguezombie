@@ -29,7 +29,7 @@ public:
     unsigned int metadata_shadowcastId;
 
     std::vector<std::function<void(Tile* t, Body* body)>> onBodyEnter;
-    std::vector<std::function<void(Tile* t)>> onBodyLeave;
+    std::vector<std::function<void(Tile* t, Body* body)>> onBodyLeave;
 
     struct FixedState
     {
@@ -104,7 +104,7 @@ private:
 
     void runOnBodyEnter(Body* body);
 
-    void runOnBodyLeave();
+    void runOnBodyLeave(Body* body);
 
 };
 

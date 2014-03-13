@@ -7,6 +7,7 @@
 #include "Graphics/SpriteLoader.hpp"
 #include "Graphics/Vertex3.hpp"
 #include "Graphics/Vertex3Array.hpp"
+#include "Graphics/VertexFontMap.hpp"
 #include "Graphics/VertexHelper.hpp"
 #include "Graphics/VertexMap.hpp"
 

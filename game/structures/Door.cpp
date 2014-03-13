@@ -88,8 +88,9 @@ void Door::registerTileTriggers(Tile* tile)
             if(b->Body::fixedState.type == Body::Type::Character)
                 d->attemptOpen();
         });
-        tile->onBodyLeave.push_back([d] (Tile* t) {
-            d->attemptClose();
+        tile->onBodyLeave.push_back([d] (Tile* t, Body* b) {
+            if(b->Body::fixedState.type == Body::Type::Character)
+                d->attemptClose();
         });
     }
 }

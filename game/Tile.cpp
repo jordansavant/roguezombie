@@ -37,7 +37,7 @@ void Tile::load(World* _world, unsigned int _id, Type _type, int _x, int _y, int
 void Tile::update(sf::Time &gameTime)
 {
     // Reset brightness to none
-    deltaState.illumination = 0.0f;
+    deltaState.illumination = .0f;
 
     // Reset color to black
     deltaState.rshade = 0;
@@ -55,12 +55,14 @@ void Tile::setOccupyingBody(Body* _body)
 {
     if(!_body && body)
     {
+        Body* pre = body;
         body = NULL;
         deltaState.bodyId = 0;
 
-        runOnBodyLeave();
+        runOnBodyLeave(pre);
     }
-    else if(_body)
+    
+    if(_body)
     {
         body = _body;
         deltaState.bodyId = body->fixedState.id;
@@ -91,11 +93,11 @@ void Tile::runOnBodyEnter(Body* body)
     }
 }
 
-void Tile::runOnBodyLeave()
+void Tile::runOnBodyLeave(Body* body)
 {
     for(unsigned int i=0; i < onBodyLeave.size(); i++)
     {
-        onBodyLeave[i](this);
+        onBodyLeave[i](this, body);
     }
 }
 
