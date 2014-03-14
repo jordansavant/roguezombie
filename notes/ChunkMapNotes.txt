@@ -1,0 +1,74 @@
+// Stolen from Minecraft :DDD
+
+Level
+{
+	Chunk[int, int]
+	chunkRows
+	chunkCols
+	
+	update()
+	{
+		foreach player
+		{
+			if(!getChunkAt(player.x, player.y))
+			{
+				loadChunkAt(player.x, player.y);
+			}
+		}
+	}
+	
+	loadChunkAt(int x, int y)
+	{
+		// Simple loaded version
+		Chunk[x, y] = new Chunk();
+		Chunk[x, y].load(x, y)
+		
+		// Persistant
+		Chunk[x, y] = new Chunk();
+		Chunk[x, y].Tiles = Persistance::LoadChunkFrom(x, y);
+		Chunk[x, y].load()
+	}
+	
+	getChunkAt(int x, int y)
+	{
+		return Chunk[x, y]
+	}
+	
+	getTileAt(int x, int y)
+	{
+		Chunk = getChunkAt(x, y)
+		Tile = Chunk.getTileAt(x, y)
+		
+		return Tile
+	}
+}
+
+Chunk
+{
+	x
+	y
+	Tiles[]
+	tileRows
+	tileCols
+	
+	load(int x, int y)
+	{
+		x = x;
+		y = y;
+		Tiles[] = { 0 1, ,1, 1,. ... };
+	}
+	
+	getTileAt(int x, int y)
+	{
+		int index = x + y * tileCols
+		
+		return Tiles[index]
+	}
+}
+
+Tile
+{
+	Type
+	x
+	y
+}
