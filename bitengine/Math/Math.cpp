@@ -41,6 +41,26 @@ int bit::Math::random(int max)
     return std::rand() % max;
 }
 
+int bit::Math::floorMod(int value, int precision)
+{
+    if(std::abs(value) % std::abs(precision) == 0)
+        return value;
+    else if(value >= 0)
+        return value - (value % precision);
+    else
+        return 0 - ceilMod(std::abs(value), precision);
+}
+
+int bit::Math::ceilMod(int value, int precision)
+{
+    if(std::abs(value) % std::abs(precision) == 0)
+        return value;
+    else if(value >= 0)
+        return value + (precision - (value % precision));
+    else
+        return 0 - floorMod(std::abs(value), precision);
+}
+
 float bit::Math::calculateDrawDepth(float y, bool invert)
 {
     float drawDepth = y;

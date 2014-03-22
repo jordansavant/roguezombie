@@ -6,9 +6,11 @@
 #include "SFML/Network.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
+#include "../bitengine/Structures.hpp"
 #include "WorldRunner.hpp"
 #include "Command.hpp"
 #include <map>
+#include <unordered_map>
 #include <functional>
 
 class Zombie;
@@ -19,7 +21,6 @@ class Door;
 class Wall;
 class Light;
 class Chunk;
-class Block;
 
 class World
 {
@@ -36,9 +37,12 @@ public:
     std::vector<Tile*> tiles;
     std::vector<Light*> lights;
 	std::map<unsigned int, Player*> players;
-    unsigned int tileWidth, tileHeight, tileRows, tileColumns, tileCount, mapWidth, mapHeight;
+    unsigned int tileWidth, tileHeight, tileRows, tileColumns, mapWidth, mapHeight;
 
-    std::map<int, std::map<int, Chunk*>> chunks;
+    unsigned int tileIdCounter;
+
+    std::unordered_map<int, std::unordered_map<int, Chunk*>> chunks;
+    unsigned int chunkWidth, chunkHeight;
 
     std::vector<BaseWorldRunner*> runners;
 
@@ -52,11 +56,13 @@ public:
 
     // Chunks
 
+    void regionalizeChunks(int x, int y);
+
     void loadChunkAt(int x, int y);
 
     Chunk* getChunkAt(int x, int y);
 
-    Block* getBlockAt(int x, int y);
+    Tile* getTileAt(int x, int y);
 
     // Tile Positioning and Pathfinding
 
@@ -64,7 +70,7 @@ public:
 
     bool isCoordinateInMap(float x, float y);
 
-    Tile* getTileAtPosition(float x, float y);
+    Tile* getTileAtPosition(int x, int y);
 
     void getTilesWithinRectangle(float top, float left, float width, float height, std::vector<Tile*> &fill);
 

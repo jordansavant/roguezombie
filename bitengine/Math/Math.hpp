@@ -25,6 +25,10 @@ namespace bit
 
         static int random(int max);
 
+        static int floorMod(int value, int precision);
+
+        static int ceilMod(int value, int precision);
+
         static float calculateDrawDepth(float y, bool invert = false);
 
         static float calculateDrawDepth(float y, int layer, int layerCount, bool invert = false);

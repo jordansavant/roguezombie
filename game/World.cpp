@@ -14,14 +14,13 @@
 #include "../bitengine/Intelligence.hpp"
 #include "../bitengine/Intelligence/Shadowcaster.hpp"
 #include "../ResourcePath.h"
-#include "map/Chunk.hpp"
-#include "map/Block.hpp"
+#include "Chunk.hpp"
 #include <functional>
 #include <sstream>
 #include <map>
 
 World::World()
-    : tileWidth(0), tileHeight(0), tileRows(0), tileColumns(0), tileCount(0)
+    : tileWidth(32), tileHeight(32), tileRows(0), tileColumns(0), tileIdCounter(1), chunkWidth(5 * 32), chunkHeight(5 * 32)
 {
 }
 
@@ -54,125 +53,64 @@ void World::load()
     runners.push_back(new WorldRunner<Wall>(this, &walls));
     runners.push_back(new WorldRunner<Door>(this, &doors));
     runners.push_back(new WorldRunner<Light>(this, &lights));
+}
 
+void World::regionalizeChunks(int x, int y)
+{
+    // Middle
+    int cx = x;
+    int cy = y;
+    loadChunkAt(cx, cy);
 
-    loadChunkAt(320, 320);
-    
-    // Tiles
-    const int tileArray[] =
+    // Left
+    int lcx = cx - chunkWidth;
+    int lcy = cy;
+    loadChunkAt(lcx, lcy);
+
+    // Right
+    int rcx = cx + chunkWidth;
+    int rcy = cy;
+    loadChunkAt(rcx, rcy);
+
+    // Top
+    int tcx = cx;
+    int tcy = cy - chunkHeight;
+    loadChunkAt(tcx, tcy);
+
+    // Bottom
+    int bcx = cx;
+    int bcy = cy + chunkHeight;
+    loadChunkAt(bcx, bcy);
+}
+
+void World::loadChunkAt(int x, int y)
+{
+    bool isNew = false;
+
+    // Convert the x and y to be chunk width and height
+    int cx = bit::Math::floorMod(x, chunkWidth);
+    int cy = bit::Math::floorMod(y, chunkHeight);
+
+    // Create the chunk if needed
+    if(chunks.find(cx) == chunks.end())
     {
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 0, 0, 0, 1, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0,   0, 0, 5, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1,
-        1, 0, 3, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,   0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1,
-        1, 0, 4, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,   0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1,
-        1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,   0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
-        1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,   0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
-        1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1,   1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
-        1, 0, 4, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
-        1, 1, 5, 1, 1, 0, 0, 0, 0, 0, 5, 0, 0, 0, 5,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                                                      
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 5, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5, 1, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 3, 0, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1,
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1,
-        1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1,
-        1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   2, 0, 0, 0, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    };
-
-    tileRows = 15 * 2;
-    tileColumns = 15 * 2;
-    tileCount = tileRows * tileColumns;
-    tileWidth = 32;
-    tileHeight = 32;
-    mapWidth = tileWidth * tileColumns;
-    mapHeight = tileHeight * tileRows;
-    tiles.resize(tileCount, NULL);
-
-    // Load Tiles
-    for (unsigned int j = 0; j < tileRows; ++j)
+        chunks[cx] = std::unordered_map<int, Chunk*>();
+        isNew = true;
+    }
+    if(chunks[cx].find(cy) == chunks[cx].end())
     {
-        for (unsigned int i = 0; i < tileColumns; ++i)
-        {
-            // get the current tile information
-            int index = i + j * tileColumns;
-            Tile::Type tileType = Tile::Type::Ground;
-
-            // build the quad and its position on the map
-            float originZ = 0;
-            float originX = i * tileWidth;
-            float originY = j * tileHeight;
-
-            // Load our tile
-            Tile* t = new Tile();
-            t->load(this, index, tileType, originX, originY, tileWidth, tileHeight);
-            tiles[index] = t;
-        }
+        chunks[cx][cy] = new Chunk();
+        isNew = true;
     }
 
-    // Load entities
-    for (unsigned int j = 0; j < tileRows; ++j)
+    // Load it if it is new
+    if(isNew)
     {
-        for (unsigned int i = 0; i < tileColumns; ++i)
-        {
-            int index = i + j * tileColumns;
-            int logic = tileArray[index];
-            Tile* t = tiles[index];
-
-            switch(logic)
-            {
-                case 1:
-                {
-                    Wall* w = new Wall();
-                    w->load(this, walls.size(), t->fixedState.x, t->fixedState.y);
-                    walls.push_back(w);
-                    break;
-                }
-                case 2:
-                {
-                    Zombie* z = new Zombie();
-                    z->load(this, zombies.size(), t->fixedState.x, t->fixedState.y);
-                    zombies.push_back(z);
-                    break;
-                }
-                case 3:
-                {
-                    Ogre* o = new Ogre();
-                    o->load(this, ogres.size(), t->fixedState.x, t->fixedState.y);
-                    ogres.push_back(o);
-                    break;
-                }
-                case 4:
-                {
-                    sf::Color c = sf::Color::Red;
-                    Light* l = new Light();
-                    l->load(this, t->fixedState.x, t->fixedState.y, 4, c, .66);
-                    lights.push_back(l);
-                    break;
-                }
-                case 5:
-                {
-                    Door* d = new Door();
-                    d->load(this, doors.size(), t->fixedState.x, t->fixedState.y);
-                    doors.push_back(d);
-                    break;
-                }
-            }
-        }
+        chunks[cx][cy]->load(this, cx, cy, tileWidth, tileHeight);
+        tileRows = 5;
+        tileColumns = 5;
+        mapWidth = tileWidth * tileColumns;
+        mapHeight = tileHeight * tileRows;
     }
 }
 
@@ -183,15 +121,27 @@ void World::update(sf::Time &gameTime)
     {
         runners[i]->update(gameTime);
     }
+
+    // Update chunks for players
+    for(auto iterator = players.begin(); iterator != players.end(); iterator++)
+    {
+        regionalizeChunks(iterator->second->character->Body::deltaState.x, iterator->second->character->Body::deltaState.y);
+    }
 }
 
 void World::createPlayer(bit::RemoteClient &client)
 {
 	if(players.find(client.id) == players.end())
 	{
+        int playerPositionX = 0;
+        int playerPositionY = 0;
+
+        // Ensure our player has a chunk to load into
+        regionalizeChunks(playerPositionX, playerPositionY);
+
         // Spawn character
 		Zombie* zombie = new Zombie();
-        zombie->load(this, zombies.size(), tiles[44]->fixedState.x, tiles[44]->fixedState.y);
+        zombie->load(this, zombies.size(), playerPositionX, playerPositionY);
 		zombies.push_back(zombie);
 
         // Create Player
@@ -215,35 +165,37 @@ void World::createPlayer(bit::RemoteClient &client)
 }
 
 
-void World::loadChunkAt(int x, int y)
-{
-    if(chunks.find(x) == chunks.end())
-    {
-        chunks.insert(std::pair<int, std::map<int, Chunk*>>(x, std::map<int, Chunk*>()));
-    }
-
-    if(chunks[x].find(y) == chunks[x].end())
-    {
-        chunks[x].insert(std::pair<int, Chunk*>(y, new Chunk()));
-    }
-
-    chunks[x][y]->load(x, y, 32, 32);
-}
-
-
 
 Chunk* World::getChunkAt(int x, int y)
 {
-    return chunks[x][y];
+    // Convert the x and y to chunk coordinates
+    int cx = bit::Math::floorMod(x, chunkWidth);
+    int cy = bit::Math::floorMod(y, chunkHeight);
+
+    return chunks[cx][cy];
 }
 
-Block* World::getBlockAt(int x, int y)
+Tile* World::getTileAt(int x, int y)
 {
-    int cx = (int)std::floor((float)x / (float)32);
-    int cy = (int)std::floor((float)y / (float)32);
+    // Convert the x and y to chunk coordinates
+    int cx = bit::Math::floorMod(x, chunkWidth);
+    int cy = bit::Math::floorMod(y, chunkHeight);
+    std::pair<int, int> p(cx, cy);
 
-    return &chunks[cx][cy]->getTileAt(x, y);
+    auto i = chunks.find(cx);
+    if(i != chunks.end())
+    {
+        auto j = i->second.find(cy);
+        if(j != i->second.end())
+        {
+            return j->second->getTileAt(x, y);
+        }
+    }
+
+    return NULL;
 }
+
+
 
 
 /*
@@ -269,8 +221,10 @@ bool World::isCoordinateInMap(float x, float y)
     return true;
 }
 
-Tile* World::getTileAtPosition(float x, float y)
+Tile* World::getTileAtPosition(int x, int y)
 {
+    return getTileAt(x, y);
+
     if(!isCoordinateInMap(x, y))
         return NULL;
 
@@ -437,8 +391,12 @@ void World::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
     bit::Shadowcaster::computeFoV(p->character->Body::deltaState.x / tileWidth, p->character->Body::deltaState.y / tileHeight, tileRows, tileColumns, 30,
         [&visibles, w] (int x, int y, float radius)
         {
-            Tile* t = w->getTileAtIndices(x, y);
-            if(t->metadata_shadowcastId != bit::Shadowcaster::shadowcastId)
+            if(y == 1)
+            {
+                int ax = 0;
+            }
+            Tile* t = w->getTileAtPosition(x * w->tileWidth, y * w->tileHeight);
+            if(t && t->metadata_shadowcastId != bit::Shadowcaster::shadowcastId)
             {
                 t->metadata_shadowcastId = bit::Shadowcaster::shadowcastId;
                 visibles.push_back(t);

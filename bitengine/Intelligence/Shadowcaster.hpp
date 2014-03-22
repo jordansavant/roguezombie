@@ -20,7 +20,7 @@ namespace bit
         // Determines which co-ordinates on a 2D grid are visible from a particular co-ordinate.
         // x, y: center of view
         // radius: how far field of view extends
-        static void computeFoV(unsigned int x, unsigned int y, unsigned int xMax, unsigned int yMax, unsigned int radius, std::function<void(int, int, float)> setVisible, std::function<bool(int, int)> isBlocked)
+        static void computeFoV(int x, int y, int xMax, int yMax, unsigned int radius, std::function<void(int, int, float)> setVisible, std::function<bool(int, int)> isBlocked)
         {
             // Increment our global usage id
             shadowcastId++;
@@ -40,7 +40,7 @@ namespace bit
         static int multipliers[4][8];
 
         // Recursive light casting function
-        static void castLight(unsigned int x, unsigned int y, unsigned int xMax, unsigned int yMax, unsigned int radius, std::function<void(int, int, float)> setVisible, std::function<bool(int, int)> isBlocked, unsigned int octanct, unsigned int row, float start_slope, float end_slope, unsigned int xx, unsigned int xy, unsigned int yx,  unsigned int yy)
+        static void castLight(int x, int y, int xMax, int yMax, unsigned int radius, std::function<void(int, int, float)> setVisible, std::function<bool(int, int)> isBlocked, unsigned int octanct, unsigned int row, float start_slope, float end_slope, unsigned int xx, unsigned int xy, unsigned int yx,  unsigned int yy)
         {
             // If light start is less than light end, return
             if (start_slope < end_slope)
@@ -85,10 +85,10 @@ namespace bit
                     // Commenting this out to remove dependency on Map
                     // looks like bounds checking for perf boost in edget of map
                     //if (ax >= map.shadowcastGetWidth() || ay >= map.shadowcastGetHeight())
-                    if (ax >= xMax || ay >= yMax)
+                    /*if (ax >= xMax || ay >= yMax)
                     {
                         continue;
-                    }
+                    }*/
 
                     // Our light beam is touching this square; light it
                     unsigned int radius2 = radius * radius;

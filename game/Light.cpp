@@ -30,7 +30,7 @@ void Light::update(sf::Time &gameTime)
 
 void Light::setVisible(int x, int y, float distance)
 {
-    Tile* t = world->getTileAtIndices(x, y);
+    Tile* t = world->getTileAtPosition(x * world->tileWidth, y * world->tileHeight);
     if(t && t->metadata_shadowcastId != bit::Shadowcaster::shadowcastId)
     {
         t->metadata_shadowcastId = bit::Shadowcaster::shadowcastId;
