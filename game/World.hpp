@@ -18,8 +18,6 @@ class Tile;
 class Door;
 class Wall;
 class Light;
-class Chunk;
-class Block;
 
 class World
 {
@@ -38,8 +36,6 @@ public:
 	std::map<unsigned int, Player*> players;
     unsigned int tileWidth, tileHeight, tileRows, tileColumns, tileCount, mapWidth, mapHeight;
 
-    std::map<int, std::map<int, Chunk*>> chunks;
-
     std::vector<BaseWorldRunner*> runners;
 
     // Game Logic
@@ -49,14 +45,6 @@ public:
     void update(sf::Time &gameTime);
 
 	void createPlayer(bit::RemoteClient &client);
-
-    // Chunks
-
-    void loadChunkAt(int x, int y);
-
-    Chunk* getChunkAt(int x, int y);
-
-    Block* getBlockAt(int x, int y);
 
     // Tile Positioning and Pathfinding
 

@@ -14,8 +14,6 @@
 #include "../bitengine/Intelligence.hpp"
 #include "../bitengine/Intelligence/Shadowcaster.hpp"
 #include "../ResourcePath.h"
-#include "map/Chunk.hpp"
-#include "map/Block.hpp"
 #include <functional>
 #include <sstream>
 #include <map>
@@ -30,14 +28,6 @@ World::~World()
     for(unsigned int i=0; i < runners.size(); i++)
     {
         delete runners[i];
-    }
-
-    for(auto iterator = chunks.begin(); iterator != chunks.end(); iterator++)
-    {
-        for(auto iterator2 = iterator->second.begin(); iterator2 != iterator->second.end(); iterator2++)
-        {
-            delete iterator2->second;
-        }
     }
 }
 
@@ -54,9 +44,6 @@ void World::load()
     runners.push_back(new WorldRunner<Wall>(this, &walls));
     runners.push_back(new WorldRunner<Door>(this, &doors));
     runners.push_back(new WorldRunner<Light>(this, &lights));
-
-
-    loadChunkAt(320, 320);
     
     // Tiles
     const int tileArray[] =
@@ -213,38 +200,6 @@ void World::createPlayer(bit::RemoteClient &client)
         zombie->lights.push_back(orbLight);
 	}
 }
-
-
-void World::loadChunkAt(int x, int y)
-{
-    if(chunks.find(x) == chunks.end())
-    {
-        chunks.insert(std::pair<int, std::map<int, Chunk*>>(x, std::map<int, Chunk*>()));
-    }
-
-    if(chunks[x].find(y) == chunks[x].end())
-    {
-        chunks[x].insert(std::pair<int, Chunk*>(y, new Chunk()));
-    }
-
-    chunks[x][y]->load(x, y, 32, 32);
-}
-
-
-
-Chunk* World::getChunkAt(int x, int y)
-{
-    return chunks[x][y];
-}
-
-Block* World::getBlockAt(int x, int y)
-{
-    int cx = (int)std::floor((float)x / (float)32);
-    int cy = (int)std::floor((float)y / (float)32);
-
-    return &chunks[cx][cy]->getTileAt(x, y);
-}
-
 
 /*
  * Tile Positioning and Pathfinding
