@@ -7,7 +7,7 @@
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Graphics.hpp"
 #include "../bitengine/Structures.hpp"
-#include "WorldClientRunner.hpp"
+#include "LevelClientRunner.hpp"
 #include "Minimap.hpp"
 #include <map>
 
@@ -19,13 +19,13 @@ class DoorClient;
 class Character;
 class GameplayState;
 
-class WorldClient : public sf::Drawable, public sf::Transformable
+class LevelClient : public sf::Drawable, public sf::Transformable
 {
 public:
 
-    WorldClient();
+    LevelClient();
 
-    virtual ~WorldClient();
+    virtual ~LevelClient();
 
     GameplayState* state;
     std::map<unsigned int, ZombieClient*> zombies;
@@ -48,7 +48,7 @@ public:
     bit::VertexMap vertexMap_01;
 
     // logical
-    std::vector<BaseWorldClientRunner*> runners;
+    std::vector<BaseLevelClientRunner*> runners;
 
     void load(GameplayState* state);
 

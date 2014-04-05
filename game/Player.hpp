@@ -5,7 +5,7 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
 
-class World;
+class Level;
 class Character;
 
 class Player
@@ -14,13 +14,13 @@ public:
 
     Player();
 
-    World* world;
+    Level* level;
 	Character* character;
     unsigned int clientId;
 
     void load(unsigned int clientId);
 
-    void setWorld(World* world);
+    void setLevel(Level* level);
 
     void setCharacter(Character* character);
 };

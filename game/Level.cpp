@@ -1,8 +1,8 @@
-#include "World.hpp"
+#include "Level.hpp"
 #include "Player.hpp"
 #include "Tile.hpp"
 #include "Light.hpp"
-#include "WorldRunner.hpp"
+#include "LevelRunner.hpp"
 #include "characters/Zombie.hpp"
 #include "characters/Ogre.hpp"
 #include "structures/Wall.hpp"
@@ -18,12 +18,12 @@
 #include <sstream>
 #include <map>
 
-World::World()
+Level::Level()
     : id(0), tileWidth(0), tileHeight(0), tileRows(0), tileColumns(0), tileCount(0)
 {
 }
 
-World::~World()
+Level::~Level()
 {
     for(unsigned int i=0; i < runners.size(); i++)
     {
@@ -35,17 +35,17 @@ World::~World()
  * Game Logic
  */
 
-void World::load(unsigned int _id)
+void Level::load(unsigned int _id)
 {
     id = _id;
 
     // Runners
-    runners.push_back(new WorldRunner<Tile>(this, &tiles));
-    runners.push_back(new WorldRunner<Zombie>(this, &zombies));
-    runners.push_back(new WorldRunner<Ogre>(this, &ogres));
-    runners.push_back(new WorldRunner<Wall>(this, &walls));
-    runners.push_back(new WorldRunner<Door>(this, &doors));
-    runners.push_back(new WorldRunner<Light>(this, &lights));
+    runners.push_back(new LevelRunner<Tile>(this, &tiles));
+    runners.push_back(new LevelRunner<Zombie>(this, &zombies));
+    runners.push_back(new LevelRunner<Ogre>(this, &ogres));
+    runners.push_back(new LevelRunner<Wall>(this, &walls));
+    runners.push_back(new LevelRunner<Door>(this, &doors));
+    runners.push_back(new LevelRunner<Light>(this, &lights));
     
     // Tiles
     const int tileArray[] =
@@ -165,7 +165,7 @@ void World::load(unsigned int _id)
     }
 }
 
-void World::update(sf::Time &gameTime)
+void Level::update(sf::Time &gameTime)
 {
     // Update entities
     for(unsigned int i=0; i < runners.size(); i++)
@@ -174,12 +174,12 @@ void World::update(sf::Time &gameTime)
     }
 }
 
-void World::createPlayer(Player* player)
+void Level::createPlayer(Player* player)
 {
     if(players.find(player->clientId) == players.end())
 	{
-        // Connect to World
-        player->setWorld(this);
+        // Connect to Level
+        player->setLevel(this);
         players[player->clientId] = player;
 
         // Spawn character
@@ -209,7 +209,7 @@ void World::createPlayer(Player* player)
  * Tile Positioning and Pathfinding
  */
 
-Tile* World::getTileAtIndices(int x, int y)
+Tile* Level::getTileAtIndices(int x, int y)
 {
     unsigned int index = x + (tileColumns * y);
 
@@ -218,7 +218,7 @@ Tile* World::getTileAtIndices(int x, int y)
     return NULL;
 }
 
-bool World::isCoordinateInMap(float x, float y)
+bool Level::isCoordinateInMap(float x, float y)
 {
     if(x >= mapWidth || x < 0)
         return false;
@@ -228,7 +228,7 @@ bool World::isCoordinateInMap(float x, float y)
     return true;
 }
 
-Tile* World::getTileAtPosition(float x, float y)
+Tile* Level::getTileAtPosition(float x, float y)
 {
     if(!isCoordinateInMap(x, y))
         return NULL;
@@ -240,7 +240,7 @@ Tile* World::getTileAtPosition(float x, float y)
     return tiles[index];
 }
 
-void World::getTilesWithinRectangle(float left, float top, float width, float height, std::vector<Tile*> &fill)
+void Level::getTilesWithinRectangle(float left, float top, float width, float height, std::vector<Tile*> &fill)
 {
     // Get the total size of the tiles
     int recTileWidth = (int)width / tileWidth;
@@ -260,7 +260,7 @@ void World::getTilesWithinRectangle(float left, float top, float width, float he
     }
 }
 
-void World::getShortestPath(float startX, float startY, float endX, float endY, std::function<bool(Tile*)> isBlocked, std::function<void(Tile*, std::vector<Tile*>&)> getNeighbors, std::vector<Tile*> &fill)
+void Level::getShortestPath(float startX, float startY, float endX, float endY, std::function<bool(Tile*)> isBlocked, std::function<void(Tile*, std::vector<Tile*>&)> getNeighbors, std::vector<Tile*> &fill)
 {
     // Translate start and finish to tiles
     Tile* closestStartNode = getTileAtPosition(startX, startY);
@@ -273,12 +273,12 @@ void World::getShortestPath(float startX, float startY, float endX, float endY, 
     bit::Astar::pathfind(closestStartNode, closestFinishNode, isBlocked, getNeighbors, fill);
 }
 
-void World::getCardinalTiles(Tile* tile, std::vector<Tile*> &fill)
+void Level::getCardinalTiles(Tile* tile, std::vector<Tile*> &fill)
 {
     getCardinalTiles(tile, fill, true);
 }
 
-void World::getCardinalTiles(Tile* tile, std::vector<Tile*> &fill, bool nullsafe)
+void Level::getCardinalTiles(Tile* tile, std::vector<Tile*> &fill, bool nullsafe)
 {
     Tile* top = getTileAtPosition(tile->fixedState.x, tile->fixedState.y - tile->fixedState.height);
     Tile* bottom = getTileAtPosition(tile->fixedState.x, tile->fixedState.y + tile->fixedState.height);
@@ -306,7 +306,7 @@ void World::getCardinalTiles(Tile* tile, std::vector<Tile*> &fill, bool nullsafe
         fill.push_back(right);
 }
 
-void World::raycastTiles(float startX, float startY, float endX, float endY, std::function<bool(Tile*)> inspect)
+void Level::raycastTiles(float startX, float startY, float endX, float endY, std::function<bool(Tile*)> inspect)
 {
     // Convert to tile coordinates
     unsigned int stx = (unsigned int)std::floor((float)startX / (float)tileWidth);
@@ -336,7 +336,7 @@ void World::raycastTiles(float startX, float startY, float endX, float endY, std
  * Networking
  */
 
-void World::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type commandType)
+void Level::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type commandType)
 {
 	Player* player = players[client.id];
 	sf::Vector2f d(0, 0);
@@ -386,13 +386,13 @@ void World::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &cl
 	}
 }
 
-void World::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client, bool full)
+void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client, bool full)
 {
     Player* p = players[client.id];
 
     // Get a subset of visible tiles for the player within a radius of tiles
     std::vector<Tile*> visibles;
-    World* w = this;
+    Level* w = this;
     bit::Shadowcaster::computeFoV(p->character->Body::deltaState.x / tileWidth, p->character->Body::deltaState.y / tileHeight, tileRows, tileColumns, 30,
         [&visibles, w] (int x, int y, float radius)
         {

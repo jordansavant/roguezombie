@@ -3,7 +3,7 @@
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Math.hpp"
-#include "World.hpp"
+#include "Level.hpp"
 #include "Body.hpp"
 #include "Tile.hpp"
 #include "Light.hpp"
@@ -14,9 +14,9 @@ Character::Character()
 {
 }
 
-void Character::load(World* _world, unsigned int _id, Type _type, float _x, float _y, float _width, float _height)
+void Character::load(Level* _level, unsigned int _id, Type _type, float _x, float _y, float _width, float _height)
 {
-    Body::load(_world, _id, Body::Type::Character, _x, _y, _width, _height);
+    Body::load(_level, _id, Body::Type::Character, _x, _y, _width, _height);
     fixedState.type = _type;
     fixedState.maxHealth = 100;
 	deltaState.health = 100;
@@ -65,22 +65,22 @@ void Character::setControllingPlayer(Player* player)
 
 bool Character::moveUp()
 {
-    return moveToPosition(Body::deltaState.x, Body::deltaState.y - world->tileHeight);
+    return moveToPosition(Body::deltaState.x, Body::deltaState.y - level->tileHeight);
 }
 
 bool Character::moveDown()
 {
-    return moveToPosition(Body::deltaState.x, Body::deltaState.y + world->tileHeight);
+    return moveToPosition(Body::deltaState.x, Body::deltaState.y + level->tileHeight);
 }
 
 bool Character::moveLeft()
 {
-    return moveToPosition(Body::deltaState.x - world->tileWidth, Body::deltaState.y);
+    return moveToPosition(Body::deltaState.x - level->tileWidth, Body::deltaState.y);
 }
 
 bool Character::moveRight()
 {
-    return moveToPosition(Body::deltaState.x + world->tileWidth, Body::deltaState.y);
+    return moveToPosition(Body::deltaState.x + level->tileWidth, Body::deltaState.y);
 }
 
 bool Character::moveToTile(Tile* t)
@@ -91,9 +91,9 @@ bool Character::moveToTile(Tile* t)
 bool Character::moveToPosition(float x, float y)
 {
     std::vector<Tile*> newTiles;
-    world->getTilesWithinRectangle(x, y, Body::deltaState.width, Body::deltaState.height, newTiles);
+    level->getTilesWithinRectangle(x, y, Body::deltaState.width, Body::deltaState.height, newTiles);
     std::vector<Tile*> currentTiles;
-    world->getTilesWithinRectangle(Body::deltaState.x, Body::deltaState.y, Body::deltaState.width, Body::deltaState.height, currentTiles);
+    level->getTilesWithinRectangle(Body::deltaState.x, Body::deltaState.y, Body::deltaState.width, Body::deltaState.height, currentTiles);
 
     // Check if I can move
     bool canMove = true;
@@ -126,7 +126,7 @@ bool Character::moveToPosition(float x, float y)
 void Character::pathToPosition(float x, float y)
 {
     path.clear();
-    world->getShortestPath(Body::deltaState.x, Body::deltaState.y, x, y, std::bind(&Character::isTileBlockedForPathfinding, this, std::placeholders::_1), std::bind(&World::getCardinalTiles, world, std::placeholders::_1, std::placeholders::_2), path);
+    level->getShortestPath(Body::deltaState.x, Body::deltaState.y, x, y, std::bind(&Character::isTileBlockedForPathfinding, this, std::placeholders::_1), std::bind(&Level::getCardinalTiles, level, std::placeholders::_1, std::placeholders::_2), path);
 }
 
 bool Character::isTileBlocked(Tile* tile)
@@ -138,7 +138,7 @@ bool Character::isTileBlockedForPathfinding(Tile* tile)
 {
     // Look at all tiles within my width and height
     std::vector<Tile*> tiles;
-    world->getTilesWithinRectangle(tile->fixedState.x, tile->fixedState.y, Body::deltaState.width, Body::deltaState.height, tiles);
+    level->getTilesWithinRectangle(tile->fixedState.x, tile->fixedState.y, Body::deltaState.width, Body::deltaState.height, tiles);
     for(unsigned int i=0; i < tiles.size(); i++)
     {
         if(isTileBlocked(tiles[i]))

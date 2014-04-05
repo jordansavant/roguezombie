@@ -7,7 +7,7 @@
 #include "../bitengine/Intelligence.hpp"
 #include <functional>
 
-class World;
+class Level;
 class Body;
 
 class Tile : public bit::NodeContainer
@@ -23,7 +23,7 @@ public:
         Ground,
     };
 
-    World* world;
+    Level* level;
     Body* body;
     Body* door;
     unsigned int metadata_shadowcastId;
@@ -88,7 +88,7 @@ public:
     };
     DeltaState deltaState;
 
-    virtual void load(World* world, unsigned int id, Type type, int x, int y, int width, int height);
+    virtual void load(Level* level, unsigned int id, Type type, int x, int y, int width, int height);
 
     virtual void update(sf::Time &gameTime);
 

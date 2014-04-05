@@ -10,7 +10,7 @@
 #include "Tile.hpp"
 #include <deque>
 
-class WorldClient;
+class LevelClient;
 
 class TileClient : public Tile
 {
@@ -19,12 +19,12 @@ public:
     TileClient();
     ~TileClient();
 
-    WorldClient* world;
+    LevelClient* level;
     bit::Sprite* sprite;
     unsigned int quadIndex;
     unsigned int lastSnapshotId;
 
-    void clientLoad(WorldClient* world);
+    void clientLoad(LevelClient* level);
 
     void clientUpdate(sf::RenderWindow &window, sf::Time &gameTime);
 

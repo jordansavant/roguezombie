@@ -5,14 +5,14 @@
 #include "SFML/Graphics.hpp"
 #include <map>
 
-class WorldClient;
+class LevelClient;
 
-class BaseWorldClientRunner
+class BaseLevelClientRunner
 {
 public:
-    BaseWorldClientRunner() { }
+    BaseLevelClientRunner() { }
 
-    virtual ~BaseWorldClientRunner() { }
+    virtual ~BaseLevelClientRunner() { }
 
     virtual void buildPool() = 0;
 
@@ -23,19 +23,19 @@ public:
 
 
 template <class T>
-class WorldClientRunner : public BaseWorldClientRunner
+class LevelClientRunner : public BaseLevelClientRunner
 {
 public:
-    WorldClientRunner(WorldClient* _world, std::map<unsigned int, T*>* _map, bit::Pool<T>* _pool, unsigned int _poolCount)
-        : BaseWorldClientRunner()
+    LevelClientRunner(LevelClient* _level, std::map<unsigned int, T*>* _map, bit::Pool<T>* _pool, unsigned int _poolCount)
+        : BaseLevelClientRunner()
     {
-        world = _world;
+        level = _level;
         map = _map;
         pool = _pool;
         poolCount = _poolCount;
     }
 
-    virtual ~WorldClientRunner()
+    virtual ~LevelClientRunner()
     {
         for(unsigned int i=0; i < map->size(); i++)
         {
@@ -44,14 +44,14 @@ public:
         }
     }
 
-    WorldClient* world;
+    LevelClient* level;
     std::map<unsigned int, T*>* map;
     bit::Pool<T>* pool;
     unsigned int poolCount;
 
     virtual void buildPool()
     {
-        WorldClient* w = world;
+        LevelClient* w = level;
         pool->factoryMethod = [w] () -> T* {
         T* t = new T();
             t->clientLoad(w);
@@ -73,7 +73,7 @@ public:
         auto itr = map->begin();
         while(itr != map->end())
         {
-            if (itr->second->lastSnapshotId != world->state->lastSnapshotId)
+            if (itr->second->lastSnapshotId != level->state->lastSnapshotId)
             {
                 pool->recycle(itr->second);
                 map->erase(itr++);

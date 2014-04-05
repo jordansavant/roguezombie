@@ -1,4 +1,4 @@
-#include "WorldClient.hpp"
+#include "LevelClient.hpp"
 #include "TileClient.hpp"
 #include "GameplayState.hpp"
 #include "characters/ZombieClient.hpp"
@@ -11,12 +11,12 @@
 #include "SFML/Network.hpp"
 #include <map>
 
-WorldClient::WorldClient()
+LevelClient::LevelClient()
     : state(NULL), tilePool(), zombiePool(), ogrePool(), wallPool(), hoveredTile(NULL), playerCharacter(NULL)
 {
 }
 
-WorldClient::~WorldClient()
+LevelClient::~LevelClient()
 {
     for(unsigned int i=0; i < runners.size(); i++)
     {
@@ -24,7 +24,7 @@ WorldClient::~WorldClient()
     }
 }
 
-void WorldClient::load(GameplayState* _state)
+void LevelClient::load(GameplayState* _state)
 {
     state = _state;
 
@@ -39,11 +39,11 @@ void WorldClient::load(GameplayState* _state)
     minimap.load(this, texture_spritesheet_01_smooth);
 
     // Load game runners
-    runners.push_back(new WorldClientRunner<TileClient>(this, &tiles, &tilePool, 2000));
-    runners.push_back(new WorldClientRunner<ZombieClient>(this, &zombies, &zombiePool, 10));
-    runners.push_back(new WorldClientRunner<OgreClient>(this, &ogres, &ogrePool, 10));
-    runners.push_back(new WorldClientRunner<WallClient>(this, &walls, &wallPool, 500));
-    runners.push_back(new WorldClientRunner<DoorClient>(this, &doors, &doorPool, 20));
+    runners.push_back(new LevelClientRunner<TileClient>(this, &tiles, &tilePool, 2000));
+    runners.push_back(new LevelClientRunner<ZombieClient>(this, &zombies, &zombiePool, 10));
+    runners.push_back(new LevelClientRunner<OgreClient>(this, &ogres, &ogrePool, 10));
+    runners.push_back(new LevelClientRunner<WallClient>(this, &walls, &wallPool, 500));
+    runners.push_back(new LevelClientRunner<DoorClient>(this, &doors, &doorPool, 20));
 
     // Fill pools
     for(unsigned int i=0; i < runners.size(); i++)
@@ -52,7 +52,7 @@ void WorldClient::load(GameplayState* _state)
     }
 }
 
-void WorldClient::update(sf::RenderWindow &window, sf::Time &gameTime)
+void LevelClient::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     // Update
     for(unsigned int i=0; i < runners.size(); i++)
@@ -61,7 +61,7 @@ void WorldClient::update(sf::RenderWindow &window, sf::Time &gameTime)
     }
 }
 
-void WorldClient::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void LevelClient::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     bit::Game::depthTestBegin();
 
@@ -77,7 +77,7 @@ void WorldClient::draw(sf::RenderTarget& target, sf::RenderStates states) const
     bit::Game::depthTestEnd();
 }
 
-void WorldClient::handleSnapshot(bit::ServerPacket &packet, bool full)
+void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
     // Update / Create all entities
     unsigned int tileCount;

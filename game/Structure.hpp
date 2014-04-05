@@ -8,7 +8,7 @@
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
 
-class World;
+class Level;
 class Player;
 class Tile;
 
@@ -56,7 +56,7 @@ public:
 	};
 	DeltaState deltaState;
 
-    virtual void load(World* world, unsigned int id, Type type, float x, float y, float width, float height);
+    virtual void load(Level* level, unsigned int id, Type type, float x, float y, float width, float height);
 
     virtual void update(sf::Time &gameTime);
 

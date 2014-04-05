@@ -4,7 +4,7 @@
 
 #include "SFML/Network.hpp"
 #include "../bitengine/Network.hpp"
-#include "World.hpp"
+#include "Level.hpp"
 
 class GameplayServer : public bit::Server
 {
@@ -16,8 +16,8 @@ public:
 
 private:
 
-    World world;
-    std::vector<World> worlds;
+    Level level;
+    std::vector<Level> levels;
 	std::map<unsigned int, Player*> players;
 
     virtual void load();

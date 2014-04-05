@@ -1,9 +1,9 @@
 #include "Player.hpp"
-#include "World.hpp"
+#include "Level.hpp"
 #include "Character.hpp"
 
 Player::Player()
-    : world(NULL), character(NULL), clientId(0)
+    : level(NULL), character(NULL), clientId(0)
 {
 }
 
@@ -12,9 +12,9 @@ void Player::load(unsigned int _clientId)
     clientId = _clientId;
 }
 
-void Player::setWorld(World* world)
+void Player::setLevel(Level* level)
 {
-    this->world = world;
+    this->level = level;
 }
 
 void Player::setCharacter(Character* character)

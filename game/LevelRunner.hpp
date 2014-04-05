@@ -5,14 +5,14 @@
 #include "SFML/Graphics.hpp"
 #include <map>
 
-class World;
+class Level;
 
-class BaseWorldRunner
+class BaseLevelRunner
 {
 public:
-    BaseWorldRunner() { }
+    BaseLevelRunner() { }
 
-    virtual ~BaseWorldRunner() { }
+    virtual ~BaseLevelRunner() { }
 
     virtual void update(sf::Time &gameTime) = 0;
 
@@ -20,17 +20,17 @@ public:
 
 
 template <class T>
-class WorldRunner : public BaseWorldRunner
+class LevelRunner : public BaseLevelRunner
 {
 public:
-    WorldRunner(World* _world, std::vector<T*>* _list)
-        : BaseWorldRunner()
+    LevelRunner(Level* _level, std::vector<T*>* _list)
+        : BaseLevelRunner()
     {
-        world = _world;
+        level = _level;
         list = _list;
     }
 
-    virtual ~WorldRunner()
+    virtual ~LevelRunner()
     {
         for(unsigned int i=0; i < list->size(); i++)
         {
@@ -39,7 +39,7 @@ public:
         }
     }
 
-    World* world;
+    Level* level;
     std::vector<T*>* list;
 
     virtual void update(sf::Time &gameTime)

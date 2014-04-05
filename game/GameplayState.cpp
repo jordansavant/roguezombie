@@ -6,7 +6,7 @@
 #include "../bitengine/System.hpp"
 #include "../ResourcePath.h"
 #include "GameplayServer.hpp"
-#include "WorldClient.hpp"
+#include "LevelClient.hpp"
 #include "TileClient.hpp"
 #include "Command.hpp"
 #include "characters/ZombieClient.hpp"
@@ -27,7 +27,7 @@ void GameplayState::load()
 {
     bit::ClientServerState::load();
 
-    worldClient.load(this);
+    levelClient.load(this);
 }
 
 bool GameplayState::update(sf::RenderWindow &window, sf::Time &gameTime)
@@ -73,9 +73,9 @@ bool GameplayState::update(sf::RenderWindow &window, sf::Time &gameTime)
     if(game->inputManager->isButtonReleased(sf::Mouse::Left))
     {
         // See if a tile is being hovered over
-        if(worldClient.hoveredTile)
+        if(levelClient.hoveredTile)
         {
-            TileClient* t = worldClient.hoveredTile;
+            TileClient* t = levelClient.hoveredTile;
             Command cmd;
             cmd.type = Command::Type::PlayerClickTile;
             cmd.pack = [t] (sf::Packet &packet) {
@@ -87,9 +87,9 @@ bool GameplayState::update(sf::RenderWindow &window, sf::Time &gameTime)
     if(game->inputManager->isButtonReleased(sf::Mouse::Right))
     {
         // See if a tile is being hovered over
-        if(worldClient.hoveredTile)
+        if(levelClient.hoveredTile)
         {
-            TileClient* t = worldClient.hoveredTile;
+            TileClient* t = levelClient.hoveredTile;
             Command cmd;
             cmd.type = Command::Type::PlayerRightClickTile;
             cmd.pack = [t] (sf::Packet &packet) {
@@ -105,18 +105,18 @@ bool GameplayState::update(sf::RenderWindow &window, sf::Time &gameTime)
         requestStateClear();
     }
 
-    worldClient.update(window, gameTime);
+    levelClient.update(window, gameTime);
     
-    worldClient.minimap.setPosition(150 * game->currentResolutionRatioX, 50 * game->currentResolutionRatioY);
-    worldClient.minimap.setScale(game->currentResolutionRatio, game->currentResolutionRatio);
+    levelClient.minimap.setPosition(150 * game->currentResolutionRatioX, 50 * game->currentResolutionRatioY);
+    levelClient.minimap.setScale(game->currentResolutionRatio, game->currentResolutionRatio);
 
     // Camera
-    if(worldClient.playerCharacter)
+    if(levelClient.playerCharacter)
     {
         float toleranceX = 250 * game->currentResolutionRatioX;
         float toleranceY = 150 * game->currentResolutionRatioY;
 
-        sf::Vector2f position(worldClient.playerCharacter->Body::deltaState.x, worldClient.playerCharacter->Body::deltaState.y);
+        sf::Vector2f position(levelClient.playerCharacter->Body::deltaState.x, levelClient.playerCharacter->Body::deltaState.y);
         position = bit::VectorMath::normalToIsometric(position.x, position.y);
         cameras[0]->lock(position.x, position.y, toleranceX, toleranceY, 4.0, 100.0);
     }
@@ -128,14 +128,14 @@ void GameplayState::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::ClientServerState::draw(window, gameTime);
     
-    window.draw(worldClient.minimap);
+    window.draw(levelClient.minimap);
 
     fps.draw(window, gameTime);
 }
 
 void GameplayState::drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera)
 {
-    window.draw(worldClient);
+    window.draw(levelClient);
 }
 
 bit::Server* GameplayState::newServer()
@@ -166,7 +166,7 @@ void GameplayState::handlePacket_InitializeWorld(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle initialize world");
 
-    worldClient.handleSnapshot(packet, true);
+    levelClient.handleSnapshot(packet, true);
 }
 
 void GameplayState::handlePacket_PeerClientConnected(bit::ServerPacket &packet)
@@ -183,7 +183,7 @@ void GameplayState::handlePacket_ServerUpdate(bit::ServerPacket &packet)
 {
     //bit::Output::Debug("Client handle server update");
 
-    worldClient.handleSnapshot(packet, true);
+    levelClient.handleSnapshot(packet, true);
 }
 
 void GameplayState::handlePacket_Shutdown(bit::ServerPacket &packet)

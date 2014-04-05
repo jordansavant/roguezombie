@@ -6,7 +6,7 @@
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Intelligence.hpp"
 
-class World;
+class Level;
 
 class Light
 {
@@ -14,12 +14,12 @@ public:
 
     Light();
 
-    World* world;
+    Level* level;
     float x, y, radius;
     sf::Color color;
     float brightness;
 
-    virtual void load(World* world, float x, float y, float radius, sf::Color color, float brightness);
+    virtual void load(Level* level, float x, float y, float radius, sf::Color color, float brightness);
 
     virtual void update(sf::Time &gameTime);
 

@@ -1,7 +1,7 @@
 #include "OgreClient.hpp"
 #include "Ogre.hpp"
 #include "SFML/Graphics.hpp"
-#include "../WorldClient.hpp"
+#include "../LevelClient.hpp"
 #include "../GameplayState.hpp"
 #include "../../bitengine/Game.hpp"
 #include "../../bitengine/Graphics.hpp"
@@ -15,19 +15,19 @@ OgreClient::OgreClient()
 {
 }
 
-void OgreClient::clientLoad(WorldClient* _world)
+void OgreClient::clientLoad(LevelClient* _level)
 {
-    world = _world;
+    level = _level;
 
-    quadIndex = world->vertexMap_01.requestVertexIndex();
-    sprite = world->state->game->spriteLoader->getSprite("Ogre");
-    sprite->applyToQuad(&world->vertexMap_01.vertexArray[quadIndex]);
+    quadIndex = level->vertexMap_01.requestVertexIndex();
+    sprite = level->state->game->spriteLoader->getSprite("Ogre");
+    sprite->applyToQuad(&level->vertexMap_01.vertexArray[quadIndex]);
 }
 
 void OgreClient::clientUpdate(sf::RenderWindow &window, sf::Time &gameTime)
 {
     // Sprite
-    sprite->applyToQuad(&world->vertexMap_01.vertexArray[quadIndex]);
+    sprite->applyToQuad(&level->vertexMap_01.vertexArray[quadIndex]);
 
     // Position
     bit::VectorMath::incrementTowards(renderX, renderY, Body::deltaState.x, Body::deltaState.y, 4, 4);
@@ -36,15 +36,15 @@ void OgreClient::clientUpdate(sf::RenderWindow &window, sf::Time &gameTime)
     float spriteHeight = 116;
     float xFootOffset = 30;
     float yFootOffset = 20;
-    float worldCenterX = renderX + Body::deltaState.width / 2;
-    float worldCenterY = renderY + Body::deltaState.height / 2;
+    float levelCenterX = renderX + Body::deltaState.width / 2;
+    float levelCenterY = renderY + Body::deltaState.height / 2;
 
-    sf::Vector2f r = bit::VectorMath::normalToIsometric(worldCenterX, worldCenterY);
+    sf::Vector2f r = bit::VectorMath::normalToIsometric(levelCenterX, levelCenterY);
     r.x = r.x - spriteWidth / 2 + xFootOffset / 2;
     r.y = r.y - spriteHeight + yFootOffset;
 
     float z = bit::Math::calculateDrawDepth(r.y + spriteHeight);
-    bit::Vertex3* quad = &world->vertexMap_01.vertexArray[quadIndex];
+    bit::Vertex3* quad = &level->vertexMap_01.vertexArray[quadIndex];
     bit::VertexHelper::positionQuad(quad, r.x, r.y, z, spriteWidth, spriteHeight);
 
     // Color and luminence
@@ -66,5 +66,5 @@ void OgreClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 void OgreClient::reset()
 {
     renderX = renderY = 0;
-    bit::VertexHelper::resetQuad(&world->vertexMap_01.vertexArray[quadIndex]);
+    bit::VertexHelper::resetQuad(&level->vertexMap_01.vertexArray[quadIndex]);
 }

@@ -3,17 +3,17 @@
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Math.hpp"
-#include "World.hpp"
+#include "Level.hpp"
 #include "Tile.hpp"
 
 Body::Body()
-    : fixedState(), deltaState(), world(NULL)
+    : fixedState(), deltaState(), level(NULL)
 {
 }
 
-void Body::load(World* _world, unsigned int _id, Type _type, float _x, float _y, float _width, float _height)
+void Body::load(Level* _level, unsigned int _id, Type _type, float _x, float _y, float _width, float _height)
 {
-    world = _world;
+    level = _level;
     fixedState.id = _id;
     fixedState.type = _type;
     deltaState.x = _x;

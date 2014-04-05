@@ -1,6 +1,6 @@
 #include "Wall.hpp"
 #include "SFML/System.hpp"
-#include "../World.hpp"
+#include "../Level.hpp"
 #include "../Tile.hpp"
 #include "../Structure.hpp"
 
@@ -9,9 +9,9 @@ Wall::Wall()
 {
 }
 
-void Wall::load(World* _world, unsigned int _id, float _x, float _y)
+void Wall::load(Level* _level, unsigned int _id, float _x, float _y)
 {
-    Structure::load(_world, _id, Structure::Type::Wall, _x, _y, _world->tileWidth, _world->tileHeight);
+    Structure::load(_level, _id, Structure::Type::Wall, _x, _y, _level->tileWidth, _level->tileHeight);
 }
 
 void Wall::update(sf::Time &gameTime)

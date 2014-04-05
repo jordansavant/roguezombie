@@ -1,7 +1,7 @@
 #include "Door.hpp"
 #include "../../bitengine/Game.hpp"
 #include "SFML/System.hpp"
-#include "../World.hpp"
+#include "../Level.hpp"
 #include "../Tile.hpp"
 #include "../Structure.hpp"
 #include <functional>
@@ -11,19 +11,19 @@ Door::Door()
 {
 }
 
-void Door::load(World* _world, unsigned int _id, float _x, float _y)
+void Door::load(Level* _level, unsigned int _id, float _x, float _y)
 {
-    Structure::load(_world, _id, Structure::Type::Door, _x, _y, _world->tileWidth, _world->tileHeight);
+    Structure::load(_level, _id, Structure::Type::Door, _x, _y, _level->tileWidth, _level->tileHeight);
 
     std::vector<Tile*> currentTiles;
-    world->getTilesWithinRectangle(Body::deltaState.x, Body::deltaState.y, Body::deltaState.width, Body::deltaState.height, currentTiles);
+    level->getTilesWithinRectangle(Body::deltaState.x, Body::deltaState.y, Body::deltaState.width, Body::deltaState.height, currentTiles);
     for(unsigned int i=0; i < currentTiles.size(); i++)
     {
         currentTiles[i]->setOccupyingDoor(this);
     }
 
     std::vector<Tile*> cardinalTiles;
-    world->getCardinalTiles(world->getTileAtPosition(_x, _y), cardinalTiles);
+    level->getCardinalTiles(level->getTileAtPosition(_x, _y), cardinalTiles);
     for(unsigned int i=0; i < cardinalTiles.size(); i++)
     {
         registerTileTriggers(cardinalTiles[i]);
@@ -42,7 +42,7 @@ void Door::attemptOpen()
 {
     // Unset any tiles I am on as a body
     std::vector<Tile*> currentTiles;
-    world->getTilesWithinRectangle(Body::deltaState.x, Body::deltaState.y, Body::deltaState.width, Body::deltaState.height, currentTiles);
+    level->getTilesWithinRectangle(Body::deltaState.x, Body::deltaState.y, Body::deltaState.width, Body::deltaState.height, currentTiles);
     for(unsigned int i=0; i < currentTiles.size(); i++)
     {
         currentTiles[i]->setOccupyingBody(NULL);
@@ -55,7 +55,7 @@ void Door::attemptClose()
 {
     bool canClose = true;
     std::vector<Tile*> currentTiles;
-    world->getTilesWithinRectangle(Body::deltaState.x, Body::deltaState.y, Body::deltaState.width, Body::deltaState.height, currentTiles);
+    level->getTilesWithinRectangle(Body::deltaState.x, Body::deltaState.y, Body::deltaState.width, Body::deltaState.height, currentTiles);
     for(unsigned int i=0; i < currentTiles.size(); i++)
     {
         if(currentTiles[i]->body)

@@ -1,5 +1,5 @@
 #include "Light.hpp"
-#include "World.hpp"
+#include "Level.hpp"
 #include "Tile.hpp"
 #include "Body.hpp"
 #include "../bitengine/Math.hpp"
@@ -7,13 +7,13 @@
 #include <functional>
 
 Light::Light()
-    : world(NULL)
+    : level(NULL)
 {
 }
 
-void Light::load(World* _world, float _x, float _y, float _radius, sf::Color _color, float _brightness)
+void Light::load(Level* _level, float _x, float _y, float _radius, sf::Color _color, float _brightness)
 {
-    world = _world;
+    level = _level;
     x = _x;
     y = _y;
     radius = _radius;
@@ -23,14 +23,14 @@ void Light::load(World* _world, float _x, float _y, float _radius, sf::Color _co
 
 void Light::update(sf::Time &gameTime)
 {
-    bit::Shadowcaster::computeFoV(x / world->tileWidth, y / world->tileHeight, world->tileRows, world->tileColumns, radius,
+    bit::Shadowcaster::computeFoV(x / level->tileWidth, y / level->tileHeight, level->tileRows, level->tileColumns, radius,
         std::bind(&Light::setVisible, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
         std::bind(&Light::isBlocked, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 void Light::setVisible(int x, int y, float distance)
 {
-    Tile* t = world->getTileAtIndices(x, y);
+    Tile* t = level->getTileAtIndices(x, y);
     if(t && t->metadata_shadowcastId != bit::Shadowcaster::shadowcastId)
     {
         t->metadata_shadowcastId = bit::Shadowcaster::shadowcastId;
@@ -98,7 +98,7 @@ void Light::setVisible(int x, int y, float distance)
 
 bool Light::isBlocked(int x, int y)
 {
-    Tile* t = world->getTileAtIndices(x, y);
+    Tile* t = level->getTileAtIndices(x, y);
 
     return (t && t->body && t->body->fixedState.type == Body::Type::Structure);
 }

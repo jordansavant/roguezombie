@@ -9,7 +9,7 @@
 #include "../../bitengine/Graphics.hpp"
 #include "../../bitengine/Network.hpp"
 
-class WorldClient;
+class LevelClient;
 
 class DoorClient : public Door
 {
@@ -17,12 +17,12 @@ public:
 
     DoorClient();
 
-    WorldClient* world;
+    LevelClient* level;
     bit::Sprite* sprite;
     unsigned int quadIndex;
     unsigned int lastSnapshotId;
 
-    void clientLoad(WorldClient* world);
+    void clientLoad(LevelClient* level);
 
     void clientUpdate(sf::RenderWindow &window, sf::Time &gameTime);
 

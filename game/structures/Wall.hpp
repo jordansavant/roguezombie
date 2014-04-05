@@ -6,7 +6,7 @@
 #include "../../bitengine/Game.hpp"
 #include "../Structure.hpp"
 
-class World;
+class Level;
 
 class Wall : public Structure
 {
@@ -14,7 +14,7 @@ public:
 
     Wall();
 
-    virtual void load(World* world, unsigned int id, float x, float y);
+    virtual void load(Level* level, unsigned int id, float x, float y);
 
     virtual void update(sf::Time &gameTime);
 };

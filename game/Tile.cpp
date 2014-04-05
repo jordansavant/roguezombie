@@ -4,7 +4,7 @@
 #include "../bitengine/Math.hpp"
 
 Tile::Tile()
-    : bit::NodeContainer(), fixedState(), deltaState(), world(NULL), body(NULL), door(NULL), metadata_shadowcastId(0)
+    : bit::NodeContainer(), fixedState(), deltaState(), level(NULL), body(NULL), door(NULL), metadata_shadowcastId(0)
 {
 }
 
@@ -16,9 +16,9 @@ Tile::~Tile()
     }
 }
 
-void Tile::load(World* _world, unsigned int _id, Type _type, int _x, int _y, int _width, int _height)
+void Tile::load(Level* _level, unsigned int _id, Type _type, int _x, int _y, int _width, int _height)
 {
-    world = _world;
+    level = _level;
     fixedState.id = _id;
     fixedState.x = _x;
     fixedState.y = _y;

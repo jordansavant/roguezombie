@@ -4,7 +4,7 @@
 #include "../../bitengine/Network.hpp"
 #include "../../bitengine/Math.hpp"
 #include "../../bitengine/System.hpp"
-#include "../World.hpp"
+#include "../Level.hpp"
 #include "../Tile.hpp"
 
 Zombie::Zombie()
@@ -12,9 +12,9 @@ Zombie::Zombie()
 {
 }
 
-void Zombie::load(World* _world, unsigned int _id, float _x, float _y)
+void Zombie::load(Level* _level, unsigned int _id, float _x, float _y)
 {
-    Character::load(_world, _id, Character::Type::Zombie, _x, _y, _world->tileWidth * 1, _world->tileHeight * 1);
+    Character::load(_level, _id, Character::Type::Zombie, _x, _y, _level->tileWidth * 1, _level->tileHeight * 1);
 }
 
 void Zombie::update(sf::Time &gameTime)

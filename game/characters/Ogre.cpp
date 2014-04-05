@@ -4,7 +4,7 @@
 #include "../../bitengine/Network.hpp"
 #include "../../bitengine/Math.hpp"
 #include "../../bitengine/System.hpp"
-#include "../World.hpp"
+#include "../Level.hpp"
 #include "../Tile.hpp"
 
 Ogre::Ogre()
@@ -12,9 +12,9 @@ Ogre::Ogre()
 {
 }
 
-void Ogre::load(World* _world, unsigned int _id, float _x, float _y)
+void Ogre::load(Level* _level, unsigned int _id, float _x, float _y)
 {
-    Character::load(_world, _id, Character::Type::Ogre, _x, _y, _world->tileWidth * 2, _world->tileHeight * 2);
+    Character::load(_level, _id, Character::Type::Ogre, _x, _y, _level->tileWidth * 2, _level->tileHeight * 2);
 }
 
 void Ogre::update(sf::Time &gameTime)

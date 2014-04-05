@@ -19,18 +19,18 @@ GameplayServer::~GameplayServer()
 
 void GameplayServer::load()
 {
-    worlds.resize(2);
-    for(unsigned int i=0; i < worlds.size(); i++)
+    levels.resize(2);
+    for(unsigned int i=0; i < levels.size(); i++)
     {
-        worlds[i].load(i);
+        levels[i].load(i);
     }
 }
 
 void GameplayServer::update(sf::Time &gameTime)
 {
-    for(unsigned int i=0; i < worlds.size(); i++)
+    for(unsigned int i=0; i < levels.size(); i++)
     {
-        worlds[i].update(gameTime);
+        levels[i].update(gameTime);
     }
 }
 
@@ -46,7 +46,7 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
         p->load(client.id);
         players[client.id] = p;
 
-	    worlds[0].createPlayer(p);
+	    levels[0].createPlayer(p);
     }
 }
 
@@ -74,7 +74,7 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
 			case Command::Type::PlayerMoveRight:
             case Command::Type::PlayerClickTile:
             case Command::Type::PlayerRightClickTile:
-                player->world->handlePlayerCommand(packet, client, static_cast<Command::Type>(commandType));
+                player->level->handlePlayerCommand(packet, client, static_cast<Command::Type>(commandType));
 				break;
 		}
 	}
@@ -91,10 +91,10 @@ void GameplayServer::preparePacket_InitializeSelf(bit::ServerPacket &packet, bit
 
 void GameplayServer::preparePacket_InitializeWorld(bit::ServerPacket &packet, bit::RemoteClient &client)
 {
-    bit::Output::Debug("Server prepare initialize world");
+    bit::Output::Debug("Server prepare initialize level");
 
     Player* player = players[client.id];
-    player->world->prepareSnapshot(packet, client, true);
+    player->level->prepareSnapshot(packet, client, true);
 }
 
 void GameplayServer::preparePacket_PeerClientConnected(bit::ServerPacket &packet)
@@ -112,5 +112,5 @@ void GameplayServer::preparePacket_ServerUpdate(bit::ServerPacket &packet, bit::
     //bit::Output::Debug("Server prepare server update");
 
     Player* player = players[client.id];
-    player->world->prepareSnapshot(packet, client, true);
+    player->level->prepareSnapshot(packet, client, true);
 }

@@ -10,7 +10,7 @@
 #include "../../bitengine/Network.hpp"
 #include <deque>
 
-class WorldClient;
+class LevelClient;
 
 class ZombieClient : public Zombie
 {
@@ -18,13 +18,13 @@ public:
 
     ZombieClient();
 
-    WorldClient* world;
+    LevelClient* level;
     float renderX, renderY;
     bit::Sprite* sprite;
     unsigned int quadIndex;
     unsigned int lastSnapshotId;
 
-    void clientLoad(WorldClient* world);
+    void clientLoad(LevelClient* level);
 
     void clientUpdate(sf::RenderWindow &window, sf::Time &gameTime);
 

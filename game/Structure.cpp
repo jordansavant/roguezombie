@@ -3,7 +3,7 @@
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Math.hpp"
-#include "World.hpp"
+#include "Level.hpp"
 #include "Body.hpp"
 #include "Tile.hpp"
 
@@ -12,13 +12,13 @@ Structure::Structure()
 {
 }
 
-void Structure::load(World* _world, unsigned int _id, Type _type, float _x, float _y, float _width, float _height)
+void Structure::load(Level* _level, unsigned int _id, Type _type, float _x, float _y, float _width, float _height)
 {
-    Body::load(_world, _id, Body::Type::Structure, _x, _y, _width, _height);
+    Body::load(_level, _id, Body::Type::Structure, _x, _y, _width, _height);
     fixedState.type = _type;
 
     std::vector<Tile*> currentTiles;
-    world->getTilesWithinRectangle(Body::deltaState.x, Body::deltaState.y, Body::deltaState.width, Body::deltaState.height, currentTiles);
+    level->getTilesWithinRectangle(Body::deltaState.x, Body::deltaState.y, Body::deltaState.width, Body::deltaState.height, currentTiles);
     for(unsigned int i=0; i < currentTiles.size(); i++)
     {
         currentTiles[i]->setOccupyingBody(this);

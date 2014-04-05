@@ -1,12 +1,12 @@
 #pragma once
-#ifndef RZ_WORLD_H
-#define RZ_WORLD_H
+#ifndef RZ_LEVEL_H
+#define RZ_LEVEL_H
 
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
-#include "WorldRunner.hpp"
+#include "LevelRunner.hpp"
 #include "Command.hpp"
 #include <map>
 #include <functional>
@@ -19,13 +19,13 @@ class Door;
 class Wall;
 class Light;
 
-class World
+class Level
 {
 public:
 
-    World();
+    Level();
 
-    ~World();
+    ~Level();
 
     unsigned int id;
     std::vector<Zombie*> zombies;
@@ -37,7 +37,7 @@ public:
 	std::map<unsigned int, Player*> players;
     unsigned int tileWidth, tileHeight, tileRows, tileColumns, tileCount, mapWidth, mapHeight;
 
-    std::vector<BaseWorldRunner*> runners;
+    std::vector<BaseLevelRunner*> runners;
 
     // Game Logic
 

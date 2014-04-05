@@ -10,7 +10,7 @@
 #include "Tile.hpp"
 #include <map>
 
-class WorldClient;
+class LevelClient;
 
 class Minimap : public sf::Drawable, public sf::Transformable
 {
@@ -18,13 +18,13 @@ public:
 
     Minimap();
 
-    WorldClient* world;
+    LevelClient* level;
     sf::Texture* texture;
     bit::Sprite* sprite;
     bit::VertexMap vertexMap;
     std::map<unsigned int, sf::Vector2i> points;
 
-    void load(WorldClient* world, sf::Texture &texture);
+    void load(LevelClient* level, sf::Texture &texture);
 
     void addPoint(unsigned int tileId, int x, int y);
 

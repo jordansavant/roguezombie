@@ -77,7 +77,7 @@ bool bit::ClientServerState::update(sf::RenderWindow &window, sf::Time &gameTime
         // If the game is not paused and the window is in focus
         if(!isPaused && game->isInFocus)
         {
-            // Pulls items from the world into a command queue
+            // Pulls items from the level into a command queue
             // Calls ->handleRealtimeInput(Command c) ??
         }
 

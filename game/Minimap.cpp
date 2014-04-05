@@ -1,17 +1,17 @@
 #include "Minimap.hpp"
-#include "WorldClient.hpp"
+#include "LevelClient.hpp"
 #include "GameplayState.hpp"
 
 Minimap::Minimap()
 {
 }
 
-void Minimap::load(WorldClient* _world, sf::Texture &_texture)
+void Minimap::load(LevelClient* _level, sf::Texture &_texture)
 {
-    world = _world;
+    level = _level;
     texture = &_texture;
     vertexMap.load(texture, sf::PrimitiveType::Quads);
-    sprite = world->state->game->spriteLoader->getSprite("Tickmark");
+    sprite = level->state->game->spriteLoader->getSprite("Tickmark");
 }
 
 void Minimap::addPoint(unsigned int tileId, int x, int y)
