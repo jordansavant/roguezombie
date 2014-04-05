@@ -19,7 +19,7 @@
 #include <map>
 
 World::World()
-    : tileWidth(0), tileHeight(0), tileRows(0), tileColumns(0), tileCount(0)
+    : id(0), tileWidth(0), tileHeight(0), tileRows(0), tileColumns(0), tileCount(0)
 {
 }
 
@@ -35,8 +35,10 @@ World::~World()
  * Game Logic
  */
 
-void World::load()
+void World::load(unsigned int _id)
 {
+    id = _id;
+
     // Runners
     runners.push_back(new WorldRunner<Tile>(this, &tiles));
     runners.push_back(new WorldRunner<Zombie>(this, &zombies));
@@ -172,19 +174,21 @@ void World::update(sf::Time &gameTime)
     }
 }
 
-void World::createPlayer(bit::RemoteClient &client)
+void World::createPlayer(Player* player)
 {
-	if(players.find(client.id) == players.end())
+    if(players.find(player->clientId) == players.end())
 	{
+        // Connect to World
+        player->setWorld(this);
+        players[player->clientId] = player;
+
         // Spawn character
 		Zombie* zombie = new Zombie();
         zombie->load(this, zombies.size(), tiles[44]->fixedState.x, tiles[44]->fixedState.y);
 		zombies.push_back(zombie);
 
-        // Create Player
-		Player* player = new Player();
-        player->load(this, zombie, client.id);
-		players.insert(std::pair<unsigned int, Player*>(client.id, player));
+        // Assign Characer
+        player->setCharacter(zombie);
         zombie->setControllingPlayer(player);
 
         // Spawn light source for character's vision
@@ -386,7 +390,7 @@ void World::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
 {
     Player* p = players[client.id];
 
-    // Get a subset of visible tiles for the player within 8 tiles
+    // Get a subset of visible tiles for the player within a radius of tiles
     std::vector<Tile*> visibles;
     World* w = this;
     bit::Shadowcaster::computeFoV(p->character->Body::deltaState.x / tileWidth, p->character->Body::deltaState.y / tileHeight, tileRows, tileColumns, 30,

@@ -17,6 +17,8 @@ public:
 private:
 
     World world;
+    std::vector<World> worlds;
+	std::map<unsigned int, Player*> players;
 
     virtual void load();
 

@@ -18,7 +18,11 @@ public:
 	Character* character;
     unsigned int clientId;
 
-    void load(World* world, Character* character, unsigned int clientId);
+    void load(unsigned int clientId);
+
+    void setWorld(World* world);
+
+    void setCharacter(Character* character);
 };
 
 #endif

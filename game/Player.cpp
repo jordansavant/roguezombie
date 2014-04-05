@@ -7,9 +7,17 @@ Player::Player()
 {
 }
 
-void Player::load(World* _world, Character* _character, unsigned int _clientId)
+void Player::load(unsigned int _clientId)
 {
-	world = _world;
-    character = _character;
     clientId = _clientId;
+}
+
+void Player::setWorld(World* world)
+{
+    this->world = world;
+}
+
+void Player::setCharacter(Character* character)
+{
+    this->character = character;
 }

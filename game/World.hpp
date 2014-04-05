@@ -27,6 +27,7 @@ public:
 
     ~World();
 
+    unsigned int id;
     std::vector<Zombie*> zombies;
     std::vector<Ogre*> ogres;
     std::vector<Wall*> walls;
@@ -40,11 +41,11 @@ public:
 
     // Game Logic
 
-    void load();
+    void load(unsigned int id);
 
     void update(sf::Time &gameTime);
 
-	void createPlayer(bit::RemoteClient &client);
+	void createPlayer(Player* player);
 
     // Tile Positioning and Pathfinding
 
