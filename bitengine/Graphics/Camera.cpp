@@ -1,6 +1,7 @@
 #include "Camera.hpp"
 #include "SFML/Graphics.hpp"
 #include "../Math/VectorMath.hpp"
+#include <cmath>
 
 bit::Camera::Camera(sf::RenderWindow &window, float relativeX, float relativeY, float relativeWidth, float relativeHeight, int masterResolutionWidth, int masterResolutionHeight)
     : relativeRectangle(relativeX, relativeY, relativeWidth, relativeHeight),
