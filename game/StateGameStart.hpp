@@ -14,11 +14,11 @@ namespace bit
 
 class RogueZombieGame;
 
-class StartMenuState : public bit::State
+class StateGameStart : public bit::State
 {
 public:
 
-    StartMenuState(bit::StateStack &stack, RogueZombieGame* game);
+    StateGameStart(bit::StateStack &stack, RogueZombieGame* game);
 
     RogueZombieGame* rogueZombieGame;
 	sf::CircleShape shape;

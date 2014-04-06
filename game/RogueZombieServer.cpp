@@ -1,18 +1,18 @@
 #include "RogueZombieServer.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Input.hpp"
-#include "StartMenuState.hpp"
-#include "ServerOnlyState.hpp"
+#include "StateGameStart.hpp"
+#include "StateServerPlay.hpp"
 #include <iostream>
 #include <sstream>
 
 RogueZombieServer::RogueZombieServer()
 	: bit::Game()
 {
-    Game::stateStack->pushState(serverState);
+    Game::stateStack->pushState(stateServerPlay);
 }
 
-unsigned int RogueZombieServer::serverState = 1;
+unsigned int RogueZombieServer::stateServerPlay = 1;
 
 void RogueZombieServer::update(sf::Time &gameTime)
 {
@@ -21,5 +21,5 @@ void RogueZombieServer::update(sf::Time &gameTime)
 
 void RogueZombieServer::registerStates()
 {
-    stateStack->registerState<ServerOnlyState, RogueZombieServer>(this, serverState);
+    stateStack->registerState<StateServerPlay, RogueZombieServer>(this, stateServerPlay);
 }

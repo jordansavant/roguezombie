@@ -1,22 +1,22 @@
-#include "StartMenuState.hpp"
+#include "StateGameStart.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Graphics.hpp"
 #include "../bitengine/Input.hpp"
 #include "../ResourcePath.h"
 #include "RogueZombieGame.hpp"
 
-StartMenuState::StartMenuState(bit::StateStack &stack, RogueZombieGame* _game)
+StateGameStart::StateGameStart(bit::StateStack &stack, RogueZombieGame* _game)
     : bit::State(stack, _game), rogueZombieGame(_game), shape(200)
 {
     createCamera(rogueZombieGame, 0, 0, 1, 1);
 }
 
-bool StartMenuState::handleInput(sf::RenderWindow &window, sf::Time &gameTime)
+bool StateGameStart::handleInput(sf::RenderWindow &window, sf::Time &gameTime)
 {
     return true;
 }
 
-bool StartMenuState::update(sf::Time &gameTime)
+bool StateGameStart::update(sf::Time &gameTime)
 {
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
     {
@@ -25,23 +25,23 @@ bool StartMenuState::update(sf::Time &gameTime)
     else if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Return))
     {
         requestStateClear();
-        requestStackPush(RogueZombieGame::hostState);
+        requestStackPush(RogueZombieGame::stateGamePlayHost);
     }
     else if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Delete))
     {
         requestStateClear();
-        requestStackPush(RogueZombieGame::clientState);
+        requestStackPush(RogueZombieGame::stateGamePlayClient);
     }
 
     return true;
 }
 
-void StartMenuState::draw(sf::RenderWindow &window, sf::Time &gameTime)
+void StateGameStart::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::State::draw(window, gameTime);
 }
 
-void StartMenuState::drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera)
+void StateGameStart::drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera)
 {
 	window.draw(shape);
 }

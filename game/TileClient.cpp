@@ -1,7 +1,7 @@
 #include "TileClient.hpp"
 #include "Tile.hpp"
 #include "LevelClient.hpp"
-#include "ClientGameplayState.hpp"
+#include "StateGamePlay.hpp"
 #include "RogueZombieGame.hpp"
 #include "SFML/Graphics.hpp"
 #include "../bitengine/Game.hpp"

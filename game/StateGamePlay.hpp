@@ -1,24 +1,38 @@
 #pragma once
-#ifndef RZ_SERVERONLYSTATE_H
-#define RZ_SERVERONLYSTATE_H
+#ifndef RZ_GAMEPLAYSTATE_H
+#define RZ_GAMEPLAYSTATE_H
 
 #include "../bitengine/Network.hpp"
+#include "../bitengine/Game.hpp"
+#include "../bitengine/Graphics.hpp"
+#include "Command.hpp"
 
-class RogueZombieServer;
+class LevelClient;
+class RogueZombieGame;
 
-class ServerOnlyState : public bit::ClientServerState
+class StateGamePlay : public bit::ClientServerState
 {
 public:
 
-    ServerOnlyState(bit::StateStack &stack, RogueZombieServer* game);
+    StateGamePlay(bit::StateStack &stack, RogueZombieGame* game, bool isClient, bool isHost);
 
-    virtual ~ServerOnlyState();
+    virtual ~StateGamePlay();
 
-    RogueZombieServer* rogueZombieServer;
+    RogueZombieGame* rogueZombieGame;
+    LevelClient* levelClient;
+	std::vector<Command> commandQueue;
+    sf::Vector2f mousePositionInLevel;
+    bit::FrameTimer fps;
 
     virtual void load();
 
+	void now();
+
     virtual bool update(sf::Time &gameTime);
+
+    virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
+
+    virtual void drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera);
 
 protected:
 

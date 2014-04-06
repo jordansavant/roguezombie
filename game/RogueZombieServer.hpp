@@ -10,7 +10,7 @@ class RogueZombieServer: public bit::Game
 public:
 		RogueZombieServer();
 
-        static unsigned int serverState;
+        static unsigned int stateServerPlay;
 
 		virtual void update(sf::Time &gameTime);
 

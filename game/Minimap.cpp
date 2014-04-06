@@ -1,6 +1,6 @@
 #include "Minimap.hpp"
 #include "LevelClient.hpp"
-#include "ClientGameplayState.hpp"
+#include "StateGamePlay.hpp"
 #include "RogueZombieGame.hpp"
 
 Minimap::Minimap()

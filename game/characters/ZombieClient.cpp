@@ -2,7 +2,7 @@
 #include "Zombie.hpp"
 #include "SFML/Graphics.hpp"
 #include "../LevelClient.hpp"
-#include "../ClientGameplayState.hpp"
+#include "../StateGamePlay.hpp"
 #include "../RogueZombieGame.hpp"
 #include "../../bitengine/Game.hpp"
 #include "../../bitengine/Graphics.hpp"

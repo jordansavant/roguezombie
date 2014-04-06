@@ -2,8 +2,8 @@
 #include "../ResourcePath.h"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Input.hpp"
-#include "StartMenuState.hpp"
-#include "ClientGameplayState.hpp"
+#include "StateGameStart.hpp"
+#include "StateGamePlay.hpp"
 #include <iostream>
 #include <sstream>
 
@@ -12,13 +12,14 @@ RogueZombieGame::RogueZombieGame()
 {
     std::string fpsFontPath(resourcePath() + "Agency.ttf");
     fps.load(fpsFontPath, 10, 10);
-    Game::stateStack->pushState(startMenuState);
+
+    Game::stateStack->pushState(stateGameStart);
 }
 
-unsigned int RogueZombieGame::introState = 1;
-unsigned int RogueZombieGame::startMenuState = 2;
-unsigned int RogueZombieGame::hostState = 3;
-unsigned int RogueZombieGame::clientState = 4;
+unsigned int RogueZombieGame::stateGameIntroduction = 1;
+unsigned int RogueZombieGame::stateGameStart = 2;
+unsigned int RogueZombieGame::stateGamePlayHost = 3;
+unsigned int RogueZombieGame::stateGamePlayClient = 4;
 
 void RogueZombieGame::update(sf::Time &gameTime)
 {
@@ -55,7 +56,7 @@ void RogueZombieGame::draw(sf::RenderWindow &window, sf::Time &gameTime)
 
 void RogueZombieGame::registerStates()
 {
-    stateStack->registerState<StartMenuState, RogueZombieGame>(this, startMenuState);
-    stateStack->registerState<ClientGameplayState, RogueZombieGame>(this, hostState, true, true);
-    stateStack->registerState<ClientGameplayState, RogueZombieGame>(this, clientState, true, false);
+    stateStack->registerState<StateGameStart, RogueZombieGame>(this, stateGameStart);
+    stateStack->registerState<StateGamePlay, RogueZombieGame>(this, stateGamePlayHost, true, true);
+    stateStack->registerState<StateGamePlay, RogueZombieGame>(this, stateGamePlayClient, true, false);
 }

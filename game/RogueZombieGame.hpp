@@ -10,10 +10,10 @@ class RogueZombieGame: public bit::VideoGame
 public:
 		RogueZombieGame();
 
-        static unsigned int introState;
-        static unsigned int startMenuState;
-        static unsigned int hostState;
-        static unsigned int clientState;
+        static unsigned int stateGameIntroduction;
+        static unsigned int stateGameStart;
+        static unsigned int stateGamePlayHost;
+        static unsigned int stateGamePlayClient;
 
         bit::FrameTimer fps;
 
