@@ -16,7 +16,7 @@ namespace bit
 
         virtual ~GameComponent();
 
-        virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
+        virtual void update(sf::Time &gameTime);
 
         virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
 

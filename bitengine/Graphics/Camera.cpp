@@ -38,7 +38,7 @@ void bit::Camera::handleWindowChange(sf::RenderWindow &window)
     setView();
 }
 
-void bit::Camera::update(sf::RenderWindow &window, sf::Time &gameTime)
+void bit::Camera::update(sf::Time &gameTime)
 {
     sf::Vector2f destination = view.getCenter();
 

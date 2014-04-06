@@ -12,17 +12,20 @@ namespace bit
     class Game;
 }
 
+class RogueZombieGame;
+
 class StartMenuState : public bit::State
 {
 public:
 
-    StartMenuState(bit::StateStack &stack, bit::Game* game);
+    StartMenuState(bit::StateStack &stack, RogueZombieGame* game);
 
+    RogueZombieGame* rogueZombieGame;
 	sf::CircleShape shape;
 
     virtual bool handleInput(sf::RenderWindow &window, sf::Time &gameTime);
 
-    virtual bool update(sf::RenderWindow &window, sf::Time &gameTime);
+    virtual bool update(sf::Time &gameTime);
 
     virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
 

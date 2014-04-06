@@ -5,7 +5,7 @@
 #include "SFML/Graphics.hpp"
 #include "../bitengine/Game.hpp"
 
-class RogueZombieGame: public bit::Game
+class RogueZombieGame: public bit::VideoGame
 {
 public:
 		RogueZombieGame();
@@ -17,9 +17,9 @@ public:
 
         bit::FrameTimer fps;
 
-		void update(sf::RenderWindow &window, sf::Time &gameTime);
+		virtual void update(sf::Time &gameTime);
 
-		void draw(sf::RenderWindow &window, sf::Time &gameTime);
+		virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
 
         virtual void registerStates();
 };

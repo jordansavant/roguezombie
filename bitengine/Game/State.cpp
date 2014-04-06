@@ -2,6 +2,7 @@
 #include "StateStack.hpp"
 #include "../Graphics/Camera.hpp"
 #include "../Game/Game.hpp"
+#include "../Game/VideoGame.hpp"
 #include "SFML/Graphics.hpp"
 
 bit::State::State(StateStack &stack, bit::Game* _game)
@@ -21,22 +22,22 @@ void bit::State::load()
 {
 }
 
-bool bit::State::handleInput(sf::RenderWindow &window, sf::Time &gameTime)
+bool bit::State::handleInput(sf::Time &gameTime)
 {
     return true;
 }
 
-bool bit::State::update(sf::RenderWindow &window, sf::Time &gameTime)
+bool bit::State::update(sf::Time &gameTime)
 {
     if(cameras.size() > 0)
     {
         for(unsigned int i = 0; i < cameras.size(); i++)
         {
-            cameras[i]->update(window, gameTime);
+            cameras[i]->update(gameTime);
         }
 
         Camera* camera = cameras[0];
-        window.setView(camera->view);
+        camera->renderWindow->setView(camera->view);
     }
 
     return true;
@@ -77,9 +78,9 @@ void bit::State::requestStateClear()
     stateStack->clearStates();
 }
 
-bit::Camera* bit::State::createCamera(sf::RenderWindow &window, float x, float y, float width, float height)
+bit::Camera* bit::State::createCamera(bit::VideoGame* videoGame, float x, float y, float width, float height)
 {
-    Camera* camera = new Camera(window, x, y, width, height, bit::Game::targetResolution.x, bit::Game::targetResolution.y);
+    Camera* camera = new Camera(*videoGame->renderWindow, x, y, width, height, bit::VideoGame::targetResolution.x, bit::VideoGame::targetResolution.y);
     cameras.push_back(camera);
 
     return camera;

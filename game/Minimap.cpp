@@ -1,6 +1,7 @@
 #include "Minimap.hpp"
 #include "LevelClient.hpp"
 #include "GameplayState.hpp"
+#include "RogueZombieGame.hpp"
 
 Minimap::Minimap()
 {
@@ -11,7 +12,7 @@ void Minimap::load(LevelClient* _level, sf::Texture &_texture)
     level = _level;
     texture = &_texture;
     vertexMap.load(texture, sf::PrimitiveType::Quads);
-    sprite = level->state->game->spriteLoader->getSprite("Tickmark");
+    sprite = level->state->rogueZombieGame->spriteLoader->getSprite("Tickmark");
 }
 
 void Minimap::addPoint(unsigned int tileId, int x, int y)
@@ -32,7 +33,7 @@ void Minimap::addPoint(unsigned int tileId, int x, int y)
 
 void Minimap::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    bit::Game::depthTestBegin();
+    bit::VideoGame::depthTestBegin();
 
     // apply the transform
     states.transform *= getTransform();
@@ -43,5 +44,5 @@ void Minimap::draw(sf::RenderTarget& target, sf::RenderStates states) const
     // draw the vertex arrays z-sorted
     target.draw(vertexMap.vertexArray, states);
 
-    bit::Game::depthTestEnd();
+    bit::VideoGame::depthTestEnd();
 }

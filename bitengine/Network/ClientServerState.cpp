@@ -68,19 +68,12 @@ void bit::ClientServerState::load()
     socket.setBlocking(false);
 }
 
-bool bit::ClientServerState::update(sf::RenderWindow &window, sf::Time &gameTime)
+bool bit::ClientServerState::update(sf::Time &gameTime)
 {
-    bit::State::update(window, gameTime);
+    bit::State::update(gameTime);
 
     if(isConnected)
     {
-        // If the game is not paused and the window is in focus
-        if(!isPaused && game->isInFocus)
-        {
-            // Pulls items from the level into a command queue
-            // Calls ->handleRealtimeInput(Command c) ??
-        }
-
         // Handle the network input
         ServerPacket packet;
         if(socket.receive(packet) == sf::Socket::Done)

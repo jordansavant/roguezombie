@@ -49,7 +49,7 @@ namespace bit
             DpadVector,
         };
 
-        void update(sf::RenderWindow &window, sf::Time &gameTime);
+        void update(sf::Time &gameTime);
 
         void updateControls();
 

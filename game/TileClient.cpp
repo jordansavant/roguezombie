@@ -2,6 +2,7 @@
 #include "Tile.hpp"
 #include "LevelClient.hpp"
 #include "GameplayState.hpp"
+#include "RogueZombieGame.hpp"
 #include "SFML/Graphics.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Graphics.hpp"
@@ -25,11 +26,11 @@ void TileClient::clientLoad(LevelClient* _level)
 
     // Game quad
     quadIndex = level->vertexMap_01.requestVertexIndex();
-    sprite = level->state->game->spriteLoader->getSprite("Water");
+    sprite = level->state->rogueZombieGame->spriteLoader->getSprite("Water");
     sprite->applyToQuad(&level->vertexMap_01.vertexArray[quadIndex]);
 }
 
-void TileClient::clientUpdate(sf::RenderWindow &window, sf::Time &gameTime)
+void TileClient::clientUpdate(sf::Time &gameTime)
 {
     // Sprite
     sprite->applyToQuad(&level->vertexMap_01.vertexArray[quadIndex]);
@@ -40,7 +41,7 @@ void TileClient::clientUpdate(sf::RenderWindow &window, sf::Time &gameTime)
     bit::VertexHelper::positionQuad(quad, isoPosition.x - fixedState.width, isoPosition.y, 0, 64, 32);
 
     // Test Mouse translation
-    sf::Vector2f mouseLevelIsoPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+    sf::Vector2f mouseLevelIsoPos = level->state->rogueZombieGame->renderWindow->mapPixelToCoords(sf::Mouse::getPosition(*level->state->rogueZombieGame->renderWindow));
     sf::Vector2f mouseLevelPosition = bit::VectorMath::isometricToNormal(mouseLevelIsoPos.x, mouseLevelIsoPos.y);
 
     float mx = std::floor((float)mouseLevelPosition.x / (float)fixedState.width);

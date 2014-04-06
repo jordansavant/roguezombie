@@ -4,7 +4,7 @@
 #include <list>
 #include <functional>
 #include "Effect.hpp"
-#include "../Game/Game.hpp"
+#include "../Game/VideoGame.hpp"
 
 bit::Element::Element()
     : sf::FloatRect(), parentElement(NULL), relativePosition(), anchorType(), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL)
@@ -140,7 +140,7 @@ bool bit::Element::listenForInput(sf::RenderWindow &window, sf::Time &gameTime)
 
 float bit::Element::calculateViewRatio()
 {
-    return std::min((float)Game::currentResolution.x / (float)Game::targetResolution.x, (float)Game::currentResolution.y / (float)Game::targetResolution.y);
+    return std::min((float)VideoGame::currentResolution.x / (float)VideoGame::targetResolution.x, (float)VideoGame::currentResolution.y / (float)VideoGame::targetResolution.y);
 }
 
 void bit::Element::updateEffects(sf::RenderWindow &window, sf::Time &gameTime)

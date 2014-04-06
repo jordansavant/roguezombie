@@ -1,7 +1,7 @@
 #include "Mouse.hpp"
 #include <string>
 #include "SFML/Graphics.hpp"
-#include "../Game/Game.hpp"
+#include "../Game/VideoGame.hpp"
 
 bit::Mouse::Mouse(std::string textureName)
     : color(255, 255, 255, 255)
@@ -13,7 +13,7 @@ bit::Mouse::Mouse(std::string textureName)
 
 void bit::Mouse::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
-    float scale = std::min((float)Game::currentResolution.x / (float)Game::targetResolution.x, (float)Game::currentResolution.y / (float)Game::targetResolution.y);
+    float scale = std::min((float)VideoGame::currentResolution.x / (float)VideoGame::targetResolution.x, (float)VideoGame::currentResolution.y / (float)VideoGame::targetResolution.y);
     window.setMouseCursorVisible(false);
     sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
     sprite.setPosition(pixelPos.x, pixelPos.y);

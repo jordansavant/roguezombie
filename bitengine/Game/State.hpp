@@ -9,6 +9,7 @@ namespace bit
     class StateStack;
     class Camera;
     class Game;
+    class VideoGame;
 
     class State
     {
@@ -20,17 +21,17 @@ namespace bit
 
         Game* game;
 
-        virtual bool handleInput(sf::RenderWindow &window, sf::Time &gameTime);
+        virtual bool handleInput(sf::Time &gameTime);
 
         virtual void load();
 
-        virtual bool update(sf::RenderWindow &window, sf::Time &gameTime);
+        virtual bool update(sf::Time &gameTime);
 
         virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
 
         virtual void drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, Camera &camera);
 
-        Camera* createCamera(sf::RenderWindow &window, float x, float y, float width, float height);
+        Camera* createCamera(bit::VideoGame* videoGame, float x, float y, float width, float height);
 
         void requestStackPush(unsigned int stateId);
 

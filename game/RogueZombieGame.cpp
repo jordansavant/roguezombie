@@ -8,7 +8,7 @@
 #include <sstream>
 
 RogueZombieGame::RogueZombieGame()
-	: Game("Rogue Zombie", 1280, 720, false), fps()
+	: VideoGame("Rogue Zombie", 1280, 720, false), fps()
 {
     std::string fpsFontPath(resourcePath() + "Agency.ttf");
     fps.load(fpsFontPath, 10, 10);
@@ -20,9 +20,9 @@ unsigned int RogueZombieGame::startMenuState = 2;
 unsigned int RogueZombieGame::hostState = 3;
 unsigned int RogueZombieGame::clientState = 4;
 
-void RogueZombieGame::update(sf::RenderWindow &window, sf::Time &gameTime)
+void RogueZombieGame::update(sf::Time &gameTime)
 {
-	Game::update(window, gameTime);
+	VideoGame::update(gameTime);
 
     if(inputManager->isButtonPressed(sf::Keyboard::Numpad0))
         changeResolution(640, 480); // 4:3
@@ -48,14 +48,14 @@ void RogueZombieGame::update(sf::RenderWindow &window, sf::Time &gameTime)
 
 void RogueZombieGame::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
-	Game::draw(window, gameTime);
+	VideoGame::draw(window, gameTime);
 
     fps.draw(window, gameTime);
 }
 
 void RogueZombieGame::registerStates()
 {
-    stateStack->registerState<StartMenuState>(startMenuState);
-    stateStack->registerState<GameplayState>(hostState, true);
-    stateStack->registerState<GameplayState>(clientState, false);
+    stateStack->registerState<StartMenuState, RogueZombieGame>(this, startMenuState);
+    stateStack->registerState<GameplayState, RogueZombieGame>(this, hostState, true);
+    stateStack->registerState<GameplayState, RogueZombieGame>(this, clientState, false);
 }

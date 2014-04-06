@@ -3,6 +3,7 @@
 #include "SFML/Graphics.hpp"
 #include "../LevelClient.hpp"
 #include "../GameplayState.hpp"
+#include "../RogueZombieGame.hpp"
 #include "../../bitengine/Game.hpp"
 #include "../../bitengine/Graphics.hpp"
 #include "../../bitengine/Network.hpp"
@@ -20,11 +21,11 @@ void OgreClient::clientLoad(LevelClient* _level)
     level = _level;
 
     quadIndex = level->vertexMap_01.requestVertexIndex();
-    sprite = level->state->game->spriteLoader->getSprite("Ogre");
+    sprite = level->state->rogueZombieGame->spriteLoader->getSprite("Ogre");
     sprite->applyToQuad(&level->vertexMap_01.vertexArray[quadIndex]);
 }
 
-void OgreClient::clientUpdate(sf::RenderWindow &window, sf::Time &gameTime)
+void OgreClient::clientUpdate(sf::Time &gameTime)
 {
     // Sprite
     sprite->applyToQuad(&level->vertexMap_01.vertexArray[quadIndex]);

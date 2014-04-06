@@ -26,7 +26,7 @@ public:
 
     void clientLoad(LevelClient* level);
 
-    void clientUpdate(sf::RenderWindow &window, sf::Time &gameTime);
+    void clientUpdate(sf::Time &gameTime);
 
     void reset();
 };

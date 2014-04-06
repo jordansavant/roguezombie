@@ -2,6 +2,7 @@
 #include "LevelClientRunner.hpp"
 #include "TileClient.hpp"
 #include "GameplayState.hpp"
+#include "RogueZombieGame.hpp"
 #include "characters/ZombieClient.hpp"
 #include "characters/OgreClient.hpp"
 #include "structures/WallClient.hpp"
@@ -30,7 +31,7 @@ void LevelClient::load(GameplayState* _state)
     state = _state;
 
     // Assets
-    state->game->spriteLoader->loadSprites(resourcePath() + "spritesheet_01.csv");
+    state->rogueZombieGame->spriteLoader->loadSprites(resourcePath() + "spritesheet_01.csv");
     texture_spritesheet_01_unsmooth.loadFromFile(resourcePath() + "spritesheet_01.png");
     texture_spritesheet_01_smooth.loadFromFile(resourcePath() + "spritesheet_01.png");
     texture_spritesheet_01_smooth.setSmooth(true);
@@ -53,18 +54,18 @@ void LevelClient::load(GameplayState* _state)
     }
 }
 
-void LevelClient::update(sf::RenderWindow &window, sf::Time &gameTime)
+void LevelClient::update(sf::Time &gameTime)
 {
     // Update
     for(unsigned int i=0; i < runners.size(); i++)
     {
-        runners[i]->update(window, gameTime);
+        runners[i]->update(gameTime);
     }
 }
 
 void LevelClient::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    bit::Game::depthTestBegin();
+    bit::VideoGame::depthTestBegin();
 
     // apply the transform
     states.transform *= getTransform();
@@ -75,7 +76,7 @@ void LevelClient::draw(sf::RenderTarget& target, sf::RenderStates states) const
     // draw the vertex arrays z-sorted
     target.draw(vertexMap_01.vertexArray, states);
 
-    bit::Game::depthTestEnd();
+    bit::VideoGame::depthTestEnd();
 }
 
 void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)

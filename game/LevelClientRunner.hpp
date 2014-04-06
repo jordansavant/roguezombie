@@ -17,7 +17,7 @@ public:
 
     virtual void buildPool() = 0;
 
-    virtual void update(sf::RenderWindow &window, sf::Time &gameTime) = 0;
+    virtual void update(sf::Time &gameTime) = 0;
 
     virtual void diffNetwork() = 0;
 };
@@ -61,11 +61,11 @@ public:
         pool->add(poolCount);
     }
 
-    virtual void update(sf::RenderWindow &window, sf::Time &gameTime)
+    virtual void update(sf::Time &gameTime)
     {
         for(auto iterator = map->begin(); iterator != map->end(); iterator++)
         {
-            iterator->second->clientUpdate(window, gameTime);
+            iterator->second->clientUpdate(gameTime);
         }
     }
 

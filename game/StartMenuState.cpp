@@ -5,11 +5,11 @@
 #include "../ResourcePath.h"
 #include "RogueZombieGame.hpp"
 
-StartMenuState::StartMenuState(bit::StateStack &stack, bit::Game* _game)
-    : bit::State(stack, _game), shape(200)
+StartMenuState::StartMenuState(bit::StateStack &stack, RogueZombieGame* _game)
+    : bit::State(stack, _game), rogueZombieGame(_game), shape(200)
 {
-    game->setVerticalSync(true);
-    createCamera(*game->renderWindow, 0, 0, 1, 1);
+    rogueZombieGame->setVerticalSync(true);
+    createCamera(rogueZombieGame, 0, 0, 1, 1);
 }
 
 bool StartMenuState::handleInput(sf::RenderWindow &window, sf::Time &gameTime)
@@ -17,18 +17,18 @@ bool StartMenuState::handleInput(sf::RenderWindow &window, sf::Time &gameTime)
     return true;
 }
 
-bool StartMenuState::update(sf::RenderWindow &window, sf::Time &gameTime)
+bool StartMenuState::update(sf::Time &gameTime)
 {
-    if(game->inputManager->isButtonPressed(sf::Keyboard::Escape))
+    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
     {
         requestStateClear();
     }
-    else if(game->inputManager->isButtonPressed(sf::Keyboard::Return))
+    else if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Return))
     {
         requestStateClear();
         requestStackPush(RogueZombieGame::hostState);
     }
-    else if(game->inputManager->isButtonPressed(sf::Keyboard::Delete))
+    else if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Delete))
     {
         requestStateClear();
         requestStackPush(RogueZombieGame::clientState);

@@ -8,15 +8,17 @@
 #include "Command.hpp"
 
 class LevelClient;
+class RogueZombieGame;
 
 class GameplayState : public bit::ClientServerState
 {
 public:
 
-    GameplayState(bit::StateStack &stack, bit::Game* game, bool isHost);
+    GameplayState(bit::StateStack &stack, RogueZombieGame* game, bool isHost);
 
     virtual ~GameplayState();
 
+    RogueZombieGame* rogueZombieGame;
     LevelClient* levelClient;
 	std::vector<Command> commandQueue;
     sf::Vector2f mousePositionInLevel;
@@ -26,7 +28,7 @@ public:
 
 	void now();
 
-    virtual bool update(sf::RenderWindow &window, sf::Time &gameTime);
+    virtual bool update(sf::Time &gameTime);
 
     virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
 

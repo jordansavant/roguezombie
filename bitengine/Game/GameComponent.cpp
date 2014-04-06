@@ -10,7 +10,7 @@ bit::GameComponent::~GameComponent()
 {
 }
 
-void bit::GameComponent::update(sf::RenderWindow &window, sf::Time &gameTime)
+void bit::GameComponent::update(sf::Time &gameTime)
 {
 }
 

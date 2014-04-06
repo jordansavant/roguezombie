@@ -18,14 +18,14 @@ bit::StateStack::~StateStack()
     }
 }
 
-void bit::StateStack::update(sf::RenderWindow &window, sf::Time &gameTime)
+void bit::StateStack::update(sf::Time &gameTime)
 {
 	applyPendingChanges();
 
     for(unsigned int i=0; i < stack.size(); i++)
 	{
         // If a state steals input do not run the others
-		if(!stack[i]->handleInput(window, gameTime))
+		if(!stack[i]->handleInput(gameTime))
 		{
 			break;
 		}
@@ -34,7 +34,7 @@ void bit::StateStack::update(sf::RenderWindow &window, sf::Time &gameTime)
     for(unsigned int i=0; i < stack.size(); i++)
 	{
         // If a state cancels updating do not update others
-		if(!stack[i]->update(window, gameTime))
+		if(!stack[i]->update(gameTime))
 		{
 			return;
 		}

@@ -7,5 +7,6 @@
 #include "Game/GameTimer.hpp"
 #include "Game/State.hpp"
 #include "Game/StateStack.hpp"
+#include "Game/VideoGame.hpp"
 
 #endif

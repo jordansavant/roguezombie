@@ -28,7 +28,7 @@ namespace bit
 
         virtual void load();
 
-        virtual bool update(sf::RenderWindow &window, sf::Time &gameTime);
+        virtual bool update(sf::Time &gameTime);
 
     protected:
 

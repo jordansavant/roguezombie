@@ -27,15 +27,15 @@ namespace bit
             Clear
         };
 
-        void update(sf::RenderWindow &window, sf::Time &gameTime);
+        virtual void update(sf::Time &gameTime);
 
-        void draw(sf::RenderWindow &window, sf::Time &gameTime);
+        virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
 
-        template <typename T>
-	    void registerState(unsigned int stateId);
+        template <typename T, class G>
+	    void registerState(G* game, unsigned int stateId);
 
-        template <typename T, typename Param1>
-	    void registerState(unsigned int stateId, Param1 arg1);
+        template <typename T, class G, typename Param1>
+	    void registerState(G* game, unsigned int stateId, Param1 arg1);
 
         void pushState(unsigned int StateId);
 
@@ -66,10 +66,10 @@ namespace bit
     };
 }
 
-template <typename T>
-void bit::StateStack::registerState(unsigned int stateId)
+template <typename T, class G>
+void bit::StateStack::registerState(G* game, unsigned int stateId)
 {
-	factories[stateId] = [this] () -> T*
+	factories[stateId] = [this, game] () -> T*
 	{
 		T* t = new T(*this, game);
         t->load();
@@ -77,10 +77,10 @@ void bit::StateStack::registerState(unsigned int stateId)
 	};
 }
 
-template <typename T, typename Param1>
-void bit::StateStack::registerState(unsigned int stateId, Param1 arg1)
+template <typename T, class G, typename Param1>
+void bit::StateStack::registerState(G* game, unsigned int stateId, Param1 arg1)
 {
-	factories[stateId] = [this, arg1] () -> T*
+	factories[stateId] = [this, game, arg1] () -> T*
 	{
 		T* t = new T(*this, game, arg1);
         t->load();

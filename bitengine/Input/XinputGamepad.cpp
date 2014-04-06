@@ -20,7 +20,7 @@ bit::XinputGamepad::XinputGamepad(int _index, float _defaultDeadzone)
     updateControls();
 }
 
-void bit::XinputGamepad::update(sf::RenderWindow &window, sf::Time &gameTime)
+void bit::XinputGamepad::update(sf::Time &gameTime)
 {
     updateControls();
 }

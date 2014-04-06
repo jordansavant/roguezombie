@@ -5,6 +5,7 @@
 #include "../bitengine/Graphics.hpp"
 #include "../bitengine/System.hpp"
 #include "../ResourcePath.h"
+#include "RogueZombieGame.hpp"
 #include "GameplayServer.hpp"
 #include "LevelClient.hpp"
 #include "TileClient.hpp"
@@ -12,12 +13,12 @@
 #include "characters/ZombieClient.hpp"
 #include <sstream>
 
-GameplayState::GameplayState(bit::StateStack &stack, bit::Game* _game, bool isHost)
-    : bit::ClientServerState(stack, _game, isHost), fps()
+GameplayState::GameplayState(bit::StateStack &stack, RogueZombieGame* _game, bool isHost)
+    : bit::ClientServerState(stack, _game, isHost), rogueZombieGame(_game), fps()
 {
     std::string fpsFontPath(resourcePath() + "Agency.ttf");
     fps.load(fpsFontPath, 10, 10);
-    createCamera(*game->renderWindow, 0, 0, 1, 1);
+    createCamera(rogueZombieGame, 0, 0, 1, 1);
     cameras[0]->panSpeed = 3;
     levelClient = new LevelClient();
 }
@@ -32,53 +33,53 @@ void GameplayState::load()
     bit::ClientServerState::load();
 }
 
-bool GameplayState::update(sf::RenderWindow &window, sf::Time &gameTime)
+bool GameplayState::update(sf::Time &gameTime)
 {
-    bit::ClientServerState::update(window, gameTime);
+    bit::ClientServerState::update(gameTime);
 
     fps.update(gameTime);
 
-    if(game->inputManager->isButtonDown(sf::Keyboard::Up))
+    if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Up))
         cameras[0]->direction.y = -1;
-    if(game->inputManager->isButtonDown(sf::Keyboard::Down))
+    if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Down))
         cameras[0]->direction.y = 1;
-    if(game->inputManager->isButtonDown(sf::Keyboard::Left))
+    if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Left))
         cameras[0]->direction.x = -1;
-    if(game->inputManager->isButtonDown(sf::Keyboard::Right))
+    if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Right))
         cameras[0]->direction.x = 1;
 
 	// Listen for Game Commands
-    if(game->inputManager->isButtonPressed(sf::Keyboard::X))
+    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::X))
 	{
 		Command cmd;
         cmd.type = Command::Type::PlayerSwitchLevel;
 		commandQueue.push_back(cmd);
 	}
-    if(game->inputManager->isButtonPressed(sf::Keyboard::W))
+    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::W))
 	{
         Command cmd;
         cmd.type = Command::Type::PlayerMoveUp;
 		commandQueue.push_back(cmd);
 	}
-	if(game->inputManager->isButtonPressed(sf::Keyboard::S))
+	if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::S))
 	{
 		Command cmd;
         cmd.type = Command::Type::PlayerMoveDown;
 		commandQueue.push_back(cmd);
 	}
-	if(game->inputManager->isButtonPressed(sf::Keyboard::A))
+	if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::A))
 	{
 		Command cmd;
         cmd.type = Command::Type::PlayerMoveLeft;
 		commandQueue.push_back(cmd);
 	}
-	if(game->inputManager->isButtonPressed(sf::Keyboard::D))
+	if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::D))
 	{
 		Command cmd;
         cmd.type = Command::Type::PlayerMoveRight;
 		commandQueue.push_back(cmd);
 	}
-    if(game->inputManager->isButtonReleased(sf::Mouse::Left))
+    if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
     {
         // See if a tile is being hovered over
         if(levelClient->hoveredTile)
@@ -92,7 +93,7 @@ bool GameplayState::update(sf::RenderWindow &window, sf::Time &gameTime)
 		    commandQueue.push_back(cmd);
         }
     }
-    if(game->inputManager->isButtonReleased(sf::Mouse::Right))
+    if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Right))
     {
         // See if a tile is being hovered over
         if(levelClient->hoveredTile)
@@ -108,21 +109,21 @@ bool GameplayState::update(sf::RenderWindow &window, sf::Time &gameTime)
     }
 
 	// Exit
-    if(game->inputManager->isButtonPressed(sf::Keyboard::Escape))
+    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
     {
         requestStateClear();
     }
 
-    levelClient->update(window, gameTime);
+    levelClient->update(gameTime);
     
-    levelClient->minimap.setPosition(150 * game->currentResolutionRatioX, 50 * game->currentResolutionRatioY);
-    levelClient->minimap.setScale(game->currentResolutionRatio, game->currentResolutionRatio);
+    levelClient->minimap.setPosition(150 * rogueZombieGame->currentResolutionRatioX, 50 * rogueZombieGame->currentResolutionRatioY);
+    levelClient->minimap.setScale(rogueZombieGame->currentResolutionRatio, rogueZombieGame->currentResolutionRatio);
 
     // Camera
     if(levelClient->playerCharacter)
     {
-        float toleranceX = 250 * game->currentResolutionRatioX;
-        float toleranceY = 150 * game->currentResolutionRatioY;
+        float toleranceX = 250 * rogueZombieGame->currentResolutionRatioX;
+        float toleranceY = 150 * rogueZombieGame->currentResolutionRatioY;
 
         sf::Vector2f position(levelClient->playerCharacter->Body::deltaState.x, levelClient->playerCharacter->Body::deltaState.y);
         position = bit::VectorMath::normalToIsometric(position.x, position.y);

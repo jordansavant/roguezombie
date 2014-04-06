@@ -50,7 +50,7 @@ void bit::InputManager::inspectMouseWheelEvent(sf::Event e)
     }
 }
 
-void bit::InputManager::update(sf::RenderWindow &window, sf::Time &gameTime)
+void bit::InputManager::update(sf::Time &gameTime)
 {
 	// Mouse
 	for ( int i = sf::Mouse::Button::Left; i < sf::Mouse::Button::XButton2; i++ )
@@ -74,7 +74,7 @@ void bit::InputManager::update(sf::RenderWindow &window, sf::Time &gameTime)
     {
         if(gamepads[i].isConnected)
         {
-            gamepads[i].update(window, gameTime);
+            gamepads[i].update(gameTime);
         }
     }
 

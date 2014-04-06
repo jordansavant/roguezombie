@@ -53,7 +53,7 @@ public:
 
     void load(GameplayState* state);
 
-    void update(sf::RenderWindow &window, sf::Time &gameTime);
+    void update(sf::Time &gameTime);
 
     void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 

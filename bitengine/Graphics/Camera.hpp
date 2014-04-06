@@ -34,7 +34,7 @@ namespace bit
 
         void handleWindowChange(sf::RenderWindow &window);
 
-        virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
+        virtual void update(sf::Time &gameTime);
 
         virtual void lock(float x, float y, float toleranceX, float toleranceY, float bufferSpeed = 2.0, float bufferMax = 30.0);
 
