@@ -18,6 +18,8 @@ namespace bit
 
         StateStack(Game* game);
 
+        virtual ~StateStack();
+
         enum Action
         {
             Push,

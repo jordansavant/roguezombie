@@ -10,6 +10,14 @@ bit::StateStack::StateStack(bit::Game*_game)
 {
 }
 
+bit::StateStack::~StateStack()
+{
+    for(unsigned int i=0; i < stack.size(); i++)
+    {
+        delete stack[i];
+    }
+}
+
 void bit::StateStack::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
 	applyPendingChanges();

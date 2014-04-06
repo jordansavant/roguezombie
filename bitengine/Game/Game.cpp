@@ -174,7 +174,6 @@ void bit::Game::registerStates()
 void bit::Game::quit()
 {
     running = false;
-    stateStack->clearStates();
 }
 
 void bit::Game::setVerticalSync(bool vSync)
