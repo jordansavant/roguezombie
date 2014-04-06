@@ -19,7 +19,7 @@ namespace bit
     {
     public:
 
-        ClientServerState(StateStack &stack, Game* game, bool isHost);
+        ClientServerState(StateStack &stack, Game* game, bool isClient, bool isHost);
 
         virtual ~ClientServerState();
 
@@ -32,6 +32,7 @@ namespace bit
 
     protected:
 
+        bool isClient;
         bool isHost;
         Server* server;
         sf::IpAddress ipAddress;

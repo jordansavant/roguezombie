@@ -9,10 +9,11 @@
 #include "SFML/Network.hpp"
 #include "SFML/System.hpp"
 
-bit::ClientServerState::ClientServerState(StateStack &stack, Game* game, bool isHost)
+bit::ClientServerState::ClientServerState(StateStack &stack, Game* game, bool isClient, bool isHost)
     : bit::State(stack, game),
       clientId(0),
       lastSnapshotId(0),
+      isClient(isClient),
       isHost(isHost),
       server(NULL),
       isConnected(false),
@@ -48,71 +49,77 @@ void bit::ClientServerState::load()
         ipAddress = "127.0.0.1";
         port = BIT_SERVER_PORT;
     }
-    else
+    else if(isClient)
     {
         ipAddress = getServerIpAddress();
         port = BIT_SERVER_PORT;
     }
 
     // Connect to server
-    if(socket.connect(ipAddress, port, sf::seconds(5.0f)) == sf::TcpSocket::Done)
+    if(isClient)
     {
-        isConnected = true;
-    }
-    else
-    {
-        failedConnectionClock.restart();
-    }
+        if(socket.connect(ipAddress, port, sf::seconds(5.0f)) == sf::TcpSocket::Done)
+        {
+            isConnected = true;
+        }
+        else
+        {
+            failedConnectionClock.restart();
+        }
 
-    // Do not block
-    socket.setBlocking(false);
+        // Do not block
+        socket.setBlocking(false);
+    }
 }
 
 bool bit::ClientServerState::update(sf::Time &gameTime)
 {
     bit::State::update(gameTime);
 
-    if(isConnected)
+    if(isClient)
     {
-        // Handle the network input
-        ServerPacket packet;
-        if(socket.receive(packet) == sf::Socket::Done)
+        if(isConnected)
         {
-            // Pull the header type and pass into handlePacket
-            timeSinceLastPacket = sf::seconds(0.0f);
-            sf::Int32 packetType;
-            packet >> packetType;
-            handlePacket(packetType, packet);
-        }
-        else
-        {
-            // Check for connection timeout
-            if(timeSinceLastPacket > clientTimeout)
+            // Handle the network input
+            ServerPacket packet;
+            if(socket.receive(packet) == sf::Socket::Done)
             {
-                isConnected = false;
-                failedConnectionClock.restart();
+                // Pull the header type and pass into handlePacket
+                timeSinceLastPacket = sf::seconds(0.0f);
+                sf::Int32 packetType;
+                packet >> packetType;
+                handlePacket(packetType, packet);
             }
-        }
+            else
+            {
+                // Check for connection timeout
+                if(timeSinceLastPacket > clientTimeout)
+                {
+                    isConnected = false;
+                    failedConnectionClock.restart();
+                }
+            }
 
-        // Send update to the server
-        if(tickTimer.update(gameTime) && isConfirmed)
+            // Send update to the server
+            if(tickTimer.update(gameTime) && isConfirmed)
+            {
+                // Send client update packet with last acknowledged snapshot id
+                bit::ClientPacket packet;
+                packet << static_cast<sf::Int32>(Server::ClientPacketType::ClientUpdate) << lastSnapshotId;
+                preparePacket_ClientUpdate(packet);
+                socket.send(packet);
+            }
+
+            // Update packet duration via gameTime
+            timeSinceLastPacket += gameTime;
+        }
+        else if(failedConnectionClock.getElapsedTime() >= sf::seconds(5.0f))
         {
-            // Send client update packet with last acknowledged snapshot id
-            bit::ClientPacket packet;
-            packet << static_cast<sf::Int32>(Server::ClientPacketType::ClientUpdate) << lastSnapshotId;
-            preparePacket_ClientUpdate(packet);
-            socket.send(packet);
+            // TODO
+            // Connection was not established, pop to previous state?
+            // Override this in game code?
+            requestStackPop();
         }
-
-        // Update packet duration via gameTime
-        timeSinceLastPacket += gameTime;
-    }
-    else if(failedConnectionClock.getElapsedTime() >= sf::seconds(5.0f))
-    {
-        // TODO
-        // Connection was not established, pop to previous state?
-        // Override this in game code?
-        requestStackPop();
     }
 
     return true;
@@ -120,69 +127,72 @@ bool bit::ClientServerState::update(sf::Time &gameTime)
 
 void bit::ClientServerState::handlePacket(sf::Int32 packetType, bit::ServerPacket &packet)
 {
-    switch(packetType)
+    if(isClient)
     {
-        case Server::ServerPacketType::Broadcast:
-
-            handlePacket_Broadcast(packet);
-
-            break;
-
-        case Server::ServerPacketType::InitializeSelf:
-		{
-            packet >> clientId;
-            handlePacket_InitializeSelf(packet);
-
-		    // Send information packet to confirm connection with server
-			bit::ClientPacket infoPacket;
-			infoPacket << static_cast<sf::Uint32>(Server::ClientPacketType::ClientInformation);
-			preparePacket_ClientInformation(infoPacket);
-			socket.send(infoPacket);
-
-			// Update confirmation flag
-			isConfirmed = true;
-
-            break;
-		}
-        case Server::ServerPacketType::InitializeWorld:
-		{
-            handlePacket_InitializeWorld(packet);
-
-            break;
-		}
-        case Server::ServerPacketType::PeerClientConnected:
+        switch(packetType)
         {
-            handlePacket_PeerClientConnected(packet);
+            case Server::ServerPacketType::Broadcast:
 
-            break;
-        }
-        case Server::ServerPacketType::PeerClientDisconnected:
-        {
-            handlePacket_ClientDisonnected(packet);
+                handlePacket_Broadcast(packet);
 
-            break;
-        }
-        case Server::ServerPacketType::ServerUpdate:
-        {
-            // Get the snapshot id
-            sf::Uint32 snapshotId;
-            packet >> snapshotId;
+                break;
 
-            // If it is newer
-            if(lastSnapshotId < snapshotId || snapshotId == 0)
+            case Server::ServerPacketType::InitializeSelf:
+		    {
+                packet >> clientId;
+                handlePacket_InitializeSelf(packet);
+
+		        // Send information packet to confirm connection with server
+			    bit::ClientPacket infoPacket;
+			    infoPacket << static_cast<sf::Uint32>(Server::ClientPacketType::ClientInformation);
+			    preparePacket_ClientInformation(infoPacket);
+			    socket.send(infoPacket);
+
+			    // Update confirmation flag
+			    isConfirmed = true;
+
+                break;
+		    }
+            case Server::ServerPacketType::InitializeWorld:
+		    {
+                handlePacket_InitializeWorld(packet);
+
+                break;
+		    }
+            case Server::ServerPacketType::PeerClientConnected:
             {
-                // Update our client snapshot
-                lastSnapshotId = snapshotId;
-                handlePacket_ServerUpdate(packet);
+                handlePacket_PeerClientConnected(packet);
+
+                break;
             }
+            case Server::ServerPacketType::PeerClientDisconnected:
+            {
+                handlePacket_ClientDisonnected(packet);
 
-            break;
-        }
-        case Server::ServerPacketType::Shutdown:
-        {
-            handlePacket_Shutdown(packet);
+                break;
+            }
+            case Server::ServerPacketType::ServerUpdate:
+            {
+                // Get the snapshot id
+                sf::Uint32 snapshotId;
+                packet >> snapshotId;
 
-            break;
+                // If it is newer
+                if(lastSnapshotId < snapshotId || snapshotId == 0)
+                {
+                    // Update our client snapshot
+                    lastSnapshotId = snapshotId;
+                    handlePacket_ServerUpdate(packet);
+                }
+
+                break;
+            }
+            case Server::ServerPacketType::Shutdown:
+            {
+                handlePacket_Shutdown(packet);
+
+                break;
+            }
         }
     }
 }

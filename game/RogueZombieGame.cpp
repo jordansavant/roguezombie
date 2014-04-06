@@ -3,7 +3,7 @@
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Input.hpp"
 #include "StartMenuState.hpp"
-#include "GameplayState.hpp"
+#include "ClientGameplayState.hpp"
 #include <iostream>
 #include <sstream>
 
@@ -56,6 +56,6 @@ void RogueZombieGame::draw(sf::RenderWindow &window, sf::Time &gameTime)
 void RogueZombieGame::registerStates()
 {
     stateStack->registerState<StartMenuState, RogueZombieGame>(this, startMenuState);
-    stateStack->registerState<GameplayState, RogueZombieGame>(this, hostState, true);
-    stateStack->registerState<GameplayState, RogueZombieGame>(this, clientState, false);
+    stateStack->registerState<ClientGameplayState, RogueZombieGame>(this, hostState, true, true);
+    stateStack->registerState<ClientGameplayState, RogueZombieGame>(this, clientState, true, false);
 }

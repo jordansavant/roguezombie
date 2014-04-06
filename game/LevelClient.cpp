@@ -1,7 +1,7 @@
 #include "LevelClient.hpp"
 #include "LevelClientRunner.hpp"
 #include "TileClient.hpp"
-#include "GameplayState.hpp"
+#include "ClientGameplayState.hpp"
 #include "RogueZombieGame.hpp"
 #include "characters/ZombieClient.hpp"
 #include "characters/OgreClient.hpp"
@@ -26,7 +26,7 @@ LevelClient::~LevelClient()
     }
 }
 
-void LevelClient::load(GameplayState* _state)
+void LevelClient::load(ClientGameplayState* _state)
 {
     state = _state;
 

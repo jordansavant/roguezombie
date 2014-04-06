@@ -1,4 +1,4 @@
-#include "GameplayState.hpp"
+#include "ClientGameplayState.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Input.hpp"
@@ -13,8 +13,8 @@
 #include "characters/ZombieClient.hpp"
 #include <sstream>
 
-GameplayState::GameplayState(bit::StateStack &stack, RogueZombieGame* _game, bool isHost)
-    : bit::ClientServerState(stack, _game, isHost), rogueZombieGame(_game), fps()
+ClientGameplayState::ClientGameplayState(bit::StateStack &stack, RogueZombieGame* _game, bool isClient, bool isHost)
+    : bit::ClientServerState(stack, _game, isClient, isHost), rogueZombieGame(_game), fps()
 {
     std::string fpsFontPath(resourcePath() + "Agency.ttf");
     fps.load(fpsFontPath, 10, 10);
@@ -23,17 +23,17 @@ GameplayState::GameplayState(bit::StateStack &stack, RogueZombieGame* _game, boo
     levelClient = new LevelClient();
 }
 
-GameplayState::~GameplayState()
+ClientGameplayState::~ClientGameplayState()
 {
     delete levelClient;
 }
 
-void GameplayState::load()
+void ClientGameplayState::load()
 {
     bit::ClientServerState::load();
 }
 
-bool GameplayState::update(sf::Time &gameTime)
+bool ClientGameplayState::update(sf::Time &gameTime)
 {
     bit::ClientServerState::update(gameTime);
 
@@ -133,7 +133,7 @@ bool GameplayState::update(sf::Time &gameTime)
     return true;
 }
 
-void GameplayState::draw(sf::RenderWindow &window, sf::Time &gameTime)
+void ClientGameplayState::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::ClientServerState::draw(window, gameTime);
     
@@ -142,17 +142,17 @@ void GameplayState::draw(sf::RenderWindow &window, sf::Time &gameTime)
     fps.draw(window, gameTime);
 }
 
-void GameplayState::drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera)
+void ClientGameplayState::drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera)
 {
     window.draw(*levelClient);
 }
 
-bit::Server* GameplayState::newServer()
+bit::Server* ClientGameplayState::newServer()
 {
     return new GameplayServer();
 }
 
-std::string GameplayState::getServerIpAddress()
+std::string ClientGameplayState::getServerIpAddress()
 {
     return "192.168.0.100";
 }
@@ -161,17 +161,17 @@ std::string GameplayState::getServerIpAddress()
  * Packet handling
  */
 
-void GameplayState::handlePacket_Broadcast(bit::ServerPacket &packet)
+void ClientGameplayState::handlePacket_Broadcast(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle broadcast");
 }
 
-void GameplayState::handlePacket_InitializeSelf(bit::ServerPacket &packet)
+void ClientGameplayState::handlePacket_InitializeSelf(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle initialize self");
 }
 
-void GameplayState::handlePacket_InitializeWorld(bit::ServerPacket &packet)
+void ClientGameplayState::handlePacket_InitializeWorld(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle initialize world");
 
@@ -182,17 +182,17 @@ void GameplayState::handlePacket_InitializeWorld(bit::ServerPacket &packet)
     levelClient->handleSnapshot(packet, true);
 }
 
-void GameplayState::handlePacket_PeerClientConnected(bit::ServerPacket &packet)
+void ClientGameplayState::handlePacket_PeerClientConnected(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle client connected");
 }
 
-void GameplayState::handlePacket_ClientDisonnected(bit::ServerPacket &packet)
+void ClientGameplayState::handlePacket_ClientDisonnected(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle client disconnected");
 }
 
-void GameplayState::handlePacket_ServerUpdate(bit::ServerPacket &packet)
+void ClientGameplayState::handlePacket_ServerUpdate(bit::ServerPacket &packet)
 {
     //bit::Output::Debug("Client handle server update");
 
@@ -210,7 +210,7 @@ void GameplayState::handlePacket_ServerUpdate(bit::ServerPacket &packet)
     levelClient->handleSnapshot(packet, true);
 }
 
-void GameplayState::handlePacket_Shutdown(bit::ServerPacket &packet)
+void ClientGameplayState::handlePacket_Shutdown(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle server shutdown");
 }
@@ -219,12 +219,12 @@ void GameplayState::handlePacket_Shutdown(bit::ServerPacket &packet)
  * Packet sending
  */
 
-void GameplayState::preparePacket_ClientInformation(bit::ClientPacket &packet)
+void ClientGameplayState::preparePacket_ClientInformation(bit::ClientPacket &packet)
 {
     bit::Output::Debug("Client prepare client information");
 }
 
-void GameplayState::preparePacket_ClientUpdate(bit::ClientPacket &packet)
+void ClientGameplayState::preparePacket_ClientUpdate(bit::ClientPacket &packet)
 {
     //bit::Output::Debug("Client prepare client update");
 

@@ -8,7 +8,6 @@
 StartMenuState::StartMenuState(bit::StateStack &stack, RogueZombieGame* _game)
     : bit::State(stack, _game), rogueZombieGame(_game), shape(200)
 {
-    rogueZombieGame->setVerticalSync(true);
     createCamera(rogueZombieGame, 0, 0, 1, 1);
 }
 

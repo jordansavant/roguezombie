@@ -10,13 +10,13 @@
 class LevelClient;
 class RogueZombieGame;
 
-class GameplayState : public bit::ClientServerState
+class ClientGameplayState : public bit::ClientServerState
 {
 public:
 
-    GameplayState(bit::StateStack &stack, RogueZombieGame* game, bool isHost);
+    ClientGameplayState(bit::StateStack &stack, RogueZombieGame* game, bool isClient, bool isHost);
 
-    virtual ~GameplayState();
+    virtual ~ClientGameplayState();
 
     RogueZombieGame* rogueZombieGame;
     LevelClient* levelClient;

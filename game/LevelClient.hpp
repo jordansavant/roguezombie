@@ -7,7 +7,7 @@
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Graphics.hpp"
 #include "../bitengine/Structures.hpp"
-#include "GameplayState.hpp"
+#include "ClientGameplayState.hpp"
 #include "Minimap.hpp"
 #include <map>
 
@@ -27,7 +27,7 @@ public:
 
     virtual ~LevelClient();
 
-    GameplayState* state;
+    ClientGameplayState* state;
     unsigned int levelId;
     std::map<unsigned int, ZombieClient*> zombies;
     std::map<unsigned int, OgreClient*> ogres;
@@ -51,7 +51,7 @@ public:
     // logical
     std::vector<BaseLevelClientRunner*> runners;
 
-    void load(GameplayState* state);
+    void load(ClientGameplayState* state);
 
     void update(sf::Time &gameTime);
 
