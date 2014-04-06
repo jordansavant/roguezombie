@@ -3,8 +3,16 @@
 #include "../Math/VectorMath.hpp"
 
 bit::Camera::Camera(sf::RenderWindow &window, float relativeX, float relativeY, float relativeWidth, float relativeHeight, int masterResolutionWidth, int masterResolutionHeight)
-    : relativeRectangle(relativeX, relativeY, relativeWidth, relativeHeight), masterResolutionWidth(masterResolutionWidth), masterResolutionHeight(masterResolutionHeight),
-      panSpeed(1), lockX(0), lockY(0), lockToleranceX(0), lockToleranceY(0), lockBufferAmount(0), lockBufferMax(1)
+    : relativeRectangle(relativeX, relativeY, relativeWidth, relativeHeight),
+      masterResolutionWidth(masterResolutionWidth),
+      masterResolutionHeight(masterResolutionHeight),
+      panSpeed(1),
+      lockX(0),
+      lockY(0),
+      lockToleranceX(0),
+      lockToleranceY(0),
+      lockBufferAmount(0),
+      lockBufferMax(1)
 {
     renderWindow = &window;
     panSpeed = 1;

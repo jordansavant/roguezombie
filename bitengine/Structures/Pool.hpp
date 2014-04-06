@@ -30,7 +30,7 @@ namespace bit
 
 	    ~Pool()
 	    {
-            for(int i = 0; i < pool.size(); i++)
+            for(unsigned int i = 0; i < pool.size(); i++)
 		    {
 			    delete pool[i];
 		    }
@@ -46,7 +46,7 @@ namespace bit
 		    {
 			    T* ob = create();
 			    pool.push_back(ob);
-                maximumCreated = std::max(maximumCreated, pool.size());
+                maximumCreated = std::max((unsigned int)maximumCreated, (unsigned int)pool.size());
 		    }
 	    }
 
@@ -71,7 +71,7 @@ namespace bit
 	    {
 		    ob->reset();
             pool.push_back(ob);
-            maximumCreated = std::max(maximumCreated, pool.size());
+            maximumCreated = std::max((unsigned int)maximumCreated, (unsigned int)pool.size());
 	    }
 
         T* create()

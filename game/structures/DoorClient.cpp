@@ -1,4 +1,4 @@
-#include "DoorCLient.hpp"
+#include "DoorClient.hpp"
 #include "Door.hpp"
 #include "SFML/Graphics.hpp"
 #include "../LevelClient.hpp"
@@ -54,7 +54,8 @@ void DoorClient::clientUpdate(sf::RenderWindow &window, sf::Time &gameTime)
 
     if(deltaState.isOpen)
     {
-        bit::VertexHelper::colorQuad(quad, sf::Color(color.r, color.g, color.b, 0));
+        sf::Color dc(color.r, color.g, color.b, 0);
+        bit::VertexHelper::colorQuad(quad, dc);
     }
 }
 

@@ -46,7 +46,7 @@ namespace bit
                 getNeighbors(currentNodeContainer, surrounding);
 
                 // Loop to look for best candidate via A*
-                for (int i = 0; i < surrounding.size(); i++)
+                for (unsigned int i = 0; i < surrounding.size(); i++)
                 {
                     T* checkNodeContainer = surrounding[i];
                     checkNodeContainer->node->cleanAstar(aStarID);

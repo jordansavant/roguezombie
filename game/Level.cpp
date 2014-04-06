@@ -102,7 +102,6 @@ void Level::load(unsigned int _id)
             Tile::Type tileType = Tile::Type::Ground;
 
             // build the quad and its position on the map
-            float originZ = 0;
             float originX = i * tileWidth;
             float originY = j * tileHeight;
 
@@ -500,6 +499,8 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
                 }
                 break;
             }
+            case Body::Type::None:
+                break;
         }
     }
 }

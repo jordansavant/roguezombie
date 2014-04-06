@@ -17,7 +17,6 @@ TileClient::TileClient()
 
 TileClient::~TileClient()
 {
-    int j = 0;
 }
 
 void TileClient::clientLoad(LevelClient* _level)

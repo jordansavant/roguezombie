@@ -7,7 +7,7 @@
 #include "Tile.hpp"
 
 Body::Body()
-    : fixedState(), deltaState(), level(NULL)
+    : level(NULL), fixedState(), deltaState()
 {
 }
 

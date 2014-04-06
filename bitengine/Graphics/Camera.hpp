@@ -18,12 +18,12 @@ namespace bit
         sf::FloatRect relativeRectangle;
         sf::Vector2f direction;
 
-        float panSpeed;
         float baseZoom;
         float currentZoom;
         int masterResolutionWidth;
         int masterResolutionHeight;
 
+        float panSpeed;
         float lockX, lockY;
         float lockToleranceX, lockToleranceY;
         float lockBufferAmount, lockBufferMax;

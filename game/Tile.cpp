@@ -4,7 +4,7 @@
 #include "../bitengine/Math.hpp"
 
 Tile::Tile()
-    : bit::NodeContainer(), fixedState(), deltaState(), level(NULL), body(NULL), door(NULL), metadata_shadowcastId(0)
+    : bit::NodeContainer(), level(NULL), body(NULL), door(NULL), metadata_shadowcastId(0), fixedState(), deltaState()
 {
 }
 
