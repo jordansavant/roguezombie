@@ -13,8 +13,10 @@
 #include <sstream>
 
 GameplayState::GameplayState(bit::StateStack &stack, bit::Game* _game, bool isHost)
-    : bit::ClientServerState(stack, _game, isHost), fps(resourcePath() + "Agency.ttf", 10, 10)
+    : bit::ClientServerState(stack, _game, isHost), fps()
 {
+    std::string fpsFontPath(resourcePath() + "Agency.ttf");
+    fps.load(fpsFontPath, 10, 10);
     createCamera(*game->renderWindow, 0, 0, 1, 1);
     cameras[0]->panSpeed = 3;
     levelClient = new LevelClient();
@@ -189,9 +191,6 @@ void GameplayState::handlePacket_ClientDisonnected(bit::ServerPacket &packet)
     bit::Output::Debug("Client handle client disconnected");
 }
 
-#include <windows.h>
-#include <stdio.h> 
-
 void GameplayState::handlePacket_ServerUpdate(bit::ServerPacket &packet)
 {
     //bit::Output::Debug("Client handle server update");
@@ -232,11 +231,6 @@ void GameplayState::preparePacket_ClientUpdate(bit::ClientPacket &packet)
 	sf::Uint32 commandCount;
 	commandCount = commandQueue.size();
 	packet << commandCount;
-
-    if(commandCount == 1)
-    {
-        int fooop = 0;
-    }
 
 	for(unsigned int i=0; i < commandQueue.size(); i++)
 	{

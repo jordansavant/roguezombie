@@ -8,8 +8,10 @@
 #include <sstream>
 
 RogueZombieGame::RogueZombieGame()
-	: Game("Rogue Zombie", 1280, 720, false), fps(resourcePath() + "Agency.ttf", 10, 10)
+	: Game("Rogue Zombie", 1280, 720, false), fps()
 {
+    std::string fpsFontPath(resourcePath() + "Agency.ttf");
+    fps.load(fpsFontPath, 10, 10);
     Game::stateStack->pushState(startMenuState);
 }
 

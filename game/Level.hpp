@@ -8,6 +8,7 @@
 #include "../bitengine/Network.hpp"
 #include "LevelRunner.hpp"
 #include "Command.hpp"
+#include "Body.hpp"
 #include <map>
 #include <functional>
 
@@ -63,7 +64,7 @@ public:
 
     void getCardinalTiles(Tile* tile, std::vector<Tile*> &fill);
 
-    void getCardinalTiles(Tile* tile, std::vector<Tile*> &fill, bool nullsafe);
+    void getCardinalTilesNullsafe(Tile* tile, std::vector<Tile*> &fill, bool nullsafe);
 
     void raycastTiles(float startX, float startY, float endX, float endY, std::function<bool(Tile*)> inspect);
 

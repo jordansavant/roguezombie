@@ -6,7 +6,12 @@
 //{
 //}
 
-bit::FrameTimer::FrameTimer(std::string &fontPath, int _x, int _y)
+bit::FrameTimer::FrameTimer()
+    : loaded(false)
+{
+}
+
+void bit::FrameTimer::load(std::string &fontPath, int _x, int _y)
 {
     loaded = fpsFont.loadFromFile(fontPath);
     if(loaded)

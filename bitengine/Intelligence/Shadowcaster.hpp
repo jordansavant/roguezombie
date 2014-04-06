@@ -128,4 +128,4 @@ namespace bit
     };
 }
 
-#endif;
+#endif

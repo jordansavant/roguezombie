@@ -303,10 +303,10 @@ void Level::getShortestPath(float startX, float startY, float endX, float endY, 
 
 void Level::getCardinalTiles(Tile* tile, std::vector<Tile*> &fill)
 {
-    getCardinalTiles(tile, fill, true);
+    getCardinalTilesNullsafe(tile, fill, true);
 }
 
-void Level::getCardinalTiles(Tile* tile, std::vector<Tile*> &fill, bool nullsafe)
+void Level::getCardinalTilesNullsafe(Tile* tile, std::vector<Tile*> &fill, bool nullsafe)
 {
     Tile* top = getTileAtPosition(tile->fixedState.x, tile->fixedState.y - tile->fixedState.height);
     Tile* bottom = getTileAtPosition(tile->fixedState.x, tile->fixedState.y + tile->fixedState.height);

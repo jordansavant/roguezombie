@@ -10,15 +10,15 @@ namespace bit
     {
     public:
 
-        //FrameTimer();
-
-        FrameTimer(std::string &fontPath, int x, int y);
+        FrameTimer();
 
         sf::Font fpsFont;
         sf::Text fpsText;
 		sf::Time fpsUpdateMicro;
 		sf::Time fpsDrawMicro;
         int x, y;
+
+        void load(std::string &fontPath, int x, int y);
 
         void update(sf::Time &gameTime);
 

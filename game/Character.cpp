@@ -126,7 +126,21 @@ bool Character::moveToPosition(float x, float y)
 void Character::pathToPosition(float x, float y)
 {
     path.clear();
-    level->getShortestPath(Body::deltaState.x, Body::deltaState.y, x, y, std::bind(&Character::isTileBlockedForPathfinding, this, std::placeholders::_1), std::bind(&Level::getCardinalTiles, level, std::placeholders::_1, std::placeholders::_2), path);
+    level->getShortestPath(
+        Body::deltaState.x,
+        Body::deltaState.y,
+        x,
+        y,
+        std::bind(
+            &Character::isTileBlockedForPathfinding,
+            this,
+            std::placeholders::_1),
+        std::bind(
+            &Level::getCardinalTiles,
+            level,
+            std::placeholders::_1,
+            std::placeholders::_2),
+        path);
 }
 
 bool Character::isTileBlocked(Tile* tile)
