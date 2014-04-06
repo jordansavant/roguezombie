@@ -1,4 +1,5 @@
 #include "LevelClient.hpp"
+#include "LevelClientRunner.hpp"
 #include "TileClient.hpp"
 #include "GameplayState.hpp"
 #include "characters/ZombieClient.hpp"

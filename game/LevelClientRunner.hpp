@@ -3,6 +3,7 @@
 #define RZ_WORLDCLIENTRUNNER_H
 
 #include "SFML/Graphics.hpp"
+#include "LevelClient.hpp"
 #include <map>
 
 class LevelClient;

@@ -7,11 +7,11 @@
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Graphics.hpp"
 #include "../bitengine/Structures.hpp"
-#include "LevelClientRunner.hpp"
 #include "GameplayState.hpp"
 #include "Minimap.hpp"
 #include <map>
 
+class BaseLevelClientRunner;
 class ZombieClient;
 class OgreClient;
 class TileClient;
