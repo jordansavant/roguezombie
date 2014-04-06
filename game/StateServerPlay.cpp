@@ -32,7 +32,12 @@ bit::Server* StateServerPlay::newServer()
 
 std::string StateServerPlay::getServerIpAddress()
 {
-    return "192.168.0.100";
+    return "127.0.0.1";
+}
+
+unsigned short StateServerPlay::getServerPort()
+{
+    return BIT_SERVER_PORT;
 }
 
 /**

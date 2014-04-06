@@ -157,6 +157,11 @@ std::string StateGamePlay::getServerIpAddress()
     return "192.168.0.100";
 }
 
+unsigned short StateGamePlay::getServerPort()
+{
+    return BIT_SERVER_PORT;
+}
+
 /**
  * Packet handling
  */

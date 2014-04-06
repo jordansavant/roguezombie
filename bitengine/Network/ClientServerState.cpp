@@ -47,12 +47,12 @@ void bit::ClientServerState::load()
         server = newServer();
 		server->start();
         ipAddress = "127.0.0.1";
-        port = BIT_SERVER_PORT;
+        port = getServerPort();
     }
     else if(isClient)
     {
         ipAddress = getServerIpAddress();
-        port = BIT_SERVER_PORT;
+        port = getServerPort();
     }
 
     // Connect to server

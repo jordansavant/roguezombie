@@ -40,6 +40,8 @@ protected:
 
     virtual std::string getServerIpAddress();
 
+    virtual unsigned short getServerPort();
+
     // Packet Handling
 
     virtual void handlePacket_Broadcast(bit::ServerPacket &packet);

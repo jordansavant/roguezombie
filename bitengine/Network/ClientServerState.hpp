@@ -52,6 +52,8 @@ namespace bit
 
         virtual std::string getServerIpAddress() = 0;
 
+        virtual unsigned short getServerPort() = 0;
+
 		sf::Time now();
 
         void handlePacket(sf::Int32 packetType, ServerPacket &packet);
