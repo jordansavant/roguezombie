@@ -16,7 +16,7 @@ namespace bit
     public:
         MusicManager(Game* game);
 
-        ~MusicManager();
+        virtual ~MusicManager();
 
         std::vector<sf::Music*> musicStreams;
 

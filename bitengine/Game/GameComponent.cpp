@@ -6,6 +6,10 @@ bit::GameComponent::GameComponent(bit::Game* _game)
     game = _game;
 }
 
+bit::GameComponent::~GameComponent()
+{
+}
+
 void bit::GameComponent::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
 }

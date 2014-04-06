@@ -48,7 +48,8 @@ void ZombieClient::clientUpdate(sf::RenderWindow &window, sf::Time &gameTime)
     bit::VertexHelper::positionQuad(quad, r.x, r.y, z, spriteWidth, spriteHeight);
 
     // Color and luminence
-    sf::Color color(255 * Body::deltaState.illumination, 255 * Body::deltaState.illumination, 255 * Body::deltaState.illumination);
+    float i = Body::deltaState.illumination;
+    sf::Color color((int)(255.0f * Body::deltaState.illumination), (int)(255.0f * Body::deltaState.illumination), (int)(255.0f * Body::deltaState.illumination));
     bit::VertexHelper::colorQuad(quad, color);
 }
 

@@ -16,7 +16,7 @@ public:
 
     virtual ~GameplayState();
 
-    LevelClient levelClient;
+    LevelClient* levelClient;
 	std::vector<Command> commandQueue;
     sf::Vector2f mousePositionInLevel;
     bit::FrameTimer fps;

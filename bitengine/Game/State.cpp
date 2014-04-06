@@ -11,6 +11,10 @@ bit::State::State(StateStack &stack, bit::Game* _game)
 
 bit::State::~State()
 {
+    for(unsigned int i=0; i < cameras.size(); i++)
+    {
+        delete cameras[i];
+    }
 }
 
 void bit::State::load()

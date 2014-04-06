@@ -76,6 +76,19 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
             case Command::Type::PlayerRightClickTile:
                 player->level->handlePlayerCommand(packet, client, static_cast<Command::Type>(commandType));
 				break;
+            case Command::Type::PlayerSwitchLevel:
+                switch(player->level->id)
+                {
+                    case 0:
+                        levels[0].removePlayer(player);
+                        levels[1].createPlayer(player);
+                        break;
+                    case 1:
+                        levels[1].removePlayer(player);
+                        levels[0].createPlayer(player);
+                        break;
+                }
+                break;
 		}
 	}
 }
@@ -94,6 +107,7 @@ void GameplayServer::preparePacket_InitializeWorld(bit::ServerPacket &packet, bi
     bit::Output::Debug("Server prepare initialize level");
 
     Player* player = players[client.id];
+    packet << sf::Uint32(player->level->id);
     player->level->prepareSnapshot(packet, client, true);
 }
 
@@ -112,5 +126,6 @@ void GameplayServer::preparePacket_ServerUpdate(bit::ServerPacket &packet, bit::
     //bit::Output::Debug("Server prepare server update");
 
     Player* player = players[client.id];
+    packet << sf::Uint32(player->level->id);
     player->level->prepareSnapshot(packet, client, true);
 }

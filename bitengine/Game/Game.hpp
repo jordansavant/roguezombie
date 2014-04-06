@@ -3,6 +3,13 @@
 #define BIT_GAME_H
 
 #include "SFML/Graphics.hpp"
+#include "../System/PlatformDefinitions.hpp"
+
+#if defined(__OS_WIN__)
+#if defined(_DEBUG)
+#include "vld.h"
+#endif
+#endif
 
 namespace bit
 {

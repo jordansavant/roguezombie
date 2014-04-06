@@ -37,11 +37,11 @@ public:
 
     virtual ~LevelClientRunner()
     {
-        for(unsigned int i=0; i < map->size(); i++)
+        for(auto iterator = map->begin(); iterator != map->end(); iterator++)
         {
-            T* t = (*map)[i];
-            delete t;
+            delete iterator->second;
         }
+        map->clear();
     }
 
     LevelClient* level;

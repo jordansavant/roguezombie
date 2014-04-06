@@ -43,7 +43,13 @@ void Light::setVisible(int x, int y, float distance)
         t->deltaState.illumination = newLight;
 
         if(t->body)
+        {
             t->body->deltaState.illumination = newLight;
+            if(t->body->deltaState.illumination < .5)
+            {
+                int j=0;
+            }
+        }
 
         // Calculate color shades based on brightness dominance and lighting
         // aF = aB / eB

@@ -28,6 +28,7 @@ public:
     virtual ~LevelClient();
 
     GameplayState* state;
+    unsigned int levelId;
     std::map<unsigned int, ZombieClient*> zombies;
     std::map<unsigned int, OgreClient*> ogres;
     std::map<unsigned int, TileClient*> tiles;

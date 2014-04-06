@@ -183,7 +183,7 @@ void Level::createPlayer(Player* player)
         players[player->clientId] = player;
 
         // Spawn character
-		Zombie* zombie = new Zombie();
+        Zombie* zombie = new Zombie();
         zombie->load(this, zombies.size(), tiles[44]->fixedState.x, tiles[44]->fixedState.y);
 		zombies.push_back(zombie);
 
@@ -202,6 +202,34 @@ void Level::createPlayer(Player* player)
         orbLight->load(this, zombie->Body::deltaState.x, zombie->Body::deltaState.y, 4, sf::Color::White, .6);
         lights.push_back(orbLight);
         zombie->lights.push_back(orbLight);
+	}
+}
+
+void Level::removePlayer(Player* player)
+{
+    if(players.find(player->clientId) != players.end())
+	{
+        // Disconnect to Level
+        player->setLevel(NULL);
+        players.erase(player->clientId);
+
+        // Delete Character
+        Zombie* zombie = static_cast<Zombie*>(player->character);
+        std::vector<Tile*> tiles;
+        getTilesWithinRectangle(zombie->Body::deltaState.x, zombie->Body::deltaState.y, zombie->Body::deltaState.width, zombie->Body::deltaState.height, tiles);
+        for(unsigned int i=0; i < tiles.size(); i++)
+        {
+            tiles[i]->setOccupyingBody(NULL);
+        }
+        for(unsigned int i=0; i < zombie->lights.size(); i++)
+        {
+            lights.erase(std::remove(lights.begin(), lights.end(), zombie->lights[i]), lights.end());
+            delete zombie->lights[i];
+        }
+        zombie->lights.clear();
+        zombies.erase(std::remove(zombies.begin(), zombies.end(), zombie), zombies.end());
+        player->setCharacter(NULL);
+        delete zombie;
 	}
 }
 

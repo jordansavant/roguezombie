@@ -21,7 +21,7 @@ namespace bit
 
         SoundManager(Game* game);
 
-        ~SoundManager();
+        virtual ~SoundManager();
 
         std::vector<sf::SoundBuffer*> soundBuffers;
         std::vector<sf::Sound*> sounds;

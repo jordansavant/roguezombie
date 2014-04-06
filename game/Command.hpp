@@ -20,6 +20,7 @@ public:
 	    PlayerMoveRight,
         PlayerClickTile,
         PlayerRightClickTile,
+        PlayerSwitchLevel,
     };
     Type type;
 

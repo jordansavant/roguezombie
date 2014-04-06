@@ -49,6 +49,7 @@ bit::Game::~Game()
     delete inputManager;
     delete stateStack;
     delete soundManager;
+    delete musicManager;
     delete spriteLoader;
     delete renderWindow;
 }
