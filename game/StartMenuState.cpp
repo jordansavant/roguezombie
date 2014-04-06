@@ -8,9 +8,7 @@
 StartMenuState::StartMenuState(bit::StateStack &stack, bit::Game* _game)
     : bit::State(stack, _game), shape(200)
 {
-    zombieimage.loadFromFile(resourcePath() + "Zombie.png");
-    zombiesprite.setTexture(zombieimage);
-
+    game->setVerticalSync(true);
     createCamera(*game->renderWindow, 0, 0, 1, 1);
 }
 
@@ -47,5 +45,4 @@ void StartMenuState::draw(sf::RenderWindow &window, sf::Time &gameTime)
 void StartMenuState::drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera)
 {
 	window.draw(shape);
-    window.draw(zombiesprite);
 }

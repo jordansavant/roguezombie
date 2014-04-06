@@ -18,8 +18,6 @@ public:
 
     StartMenuState(bit::StateStack &stack, bit::Game* game);
 
-    sf::Texture zombieimage;
-    sf::Sprite zombiesprite;
 	sf::CircleShape shape;
 
     virtual bool handleInput(sf::RenderWindow &window, sf::Time &gameTime);
