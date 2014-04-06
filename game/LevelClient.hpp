@@ -8,6 +8,7 @@
 #include "../bitengine/Graphics.hpp"
 #include "../bitengine/Structures.hpp"
 #include "LevelClientRunner.hpp"
+#include "GameplayState.hpp"
 #include "Minimap.hpp"
 #include <map>
 
@@ -17,7 +18,6 @@ class TileClient;
 class WallClient;
 class DoorClient;
 class Character;
-class GameplayState;
 
 class LevelClient : public sf::Drawable, public sf::Transformable
 {

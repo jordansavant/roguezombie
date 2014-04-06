@@ -5,8 +5,9 @@
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Graphics.hpp"
-#include "LevelClient.hpp"
 #include "Command.hpp"
+
+class LevelClient;
 
 class GameplayState : public bit::ClientServerState
 {
