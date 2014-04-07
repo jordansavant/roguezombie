@@ -42,7 +42,7 @@ public:
 
     // Game Logic
 
-    void load(unsigned int id);
+    void load(unsigned int id, const int* t_array, int t_rows, int t_cols);
 
     void update(sf::Time &gameTime);
 

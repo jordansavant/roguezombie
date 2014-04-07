@@ -3,6 +3,7 @@
 #include "../bitengine/System.hpp"
 #include "Command.hpp"
 #include "Player.hpp"
+#include "levels/Interior.hpp"
 
 GameplayServer::GameplayServer()
     : bit::Server()
@@ -22,7 +23,19 @@ void GameplayServer::load()
     levels.resize(2);
     for(unsigned int i=0; i < levels.size(); i++)
     {
-        levels[i].load(i);
+        switch(i)
+        {
+            case 0:
+            {
+                levels[i].load(i, Interior::level_01, Interior::level_01_rows, Interior::level_01_cols);
+                break;
+            }
+            case 1:
+            {
+                levels[i].load(i, Interior::level_02, Interior::level_02_rows, Interior::level_02_cols);
+                break;
+            }
+        }
     }
 }
 
