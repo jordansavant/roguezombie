@@ -8,6 +8,7 @@
 #include "../bitengine/Gui.hpp"
 
 class RogueZombieGame;
+class StartMainMenu;
 
 class StateGameStart : public bit::State
 {
@@ -19,16 +20,12 @@ public:
 
     RogueZombieGame* rogueZombieGame;
 
-	sf::Font font;
+	sf::Font menuFont;
+    int menuFontSize;
     sf::Texture titleTexture;
 
     // Main Menu
-    bit::Container* mainMenu;
-    bit::Picture* titlePicture;
-    bit::Label* singleplayerLabel;
-    bit::Label* multiplayerLabel;
-    bit::Label* optionsLabel;
-    bit::Label* exitLabel;
+    StartMainMenu* mainMenu;
 
     virtual bool update(sf::Time &gameTime);
 
@@ -36,7 +33,6 @@ public:
 
     virtual void drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera);
 
-    void inflowLabel(bit::Element* element, float startingX, float startingY, float delay, float endX, float endY);
 
 };
 

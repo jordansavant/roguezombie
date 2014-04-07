@@ -29,6 +29,7 @@ public:
 
     StateGamePlay* state;
     unsigned int levelId;
+    std::vector<BaseLevelClientRunner*> runners;
     std::map<unsigned int, ZombieClient*> zombies;
     std::map<unsigned int, OgreClient*> ogres;
     std::map<unsigned int, TileClient*> tiles;
@@ -47,9 +48,6 @@ public:
     sf::Texture texture_spritesheet_01_unsmooth;
     sf::Texture texture_spritesheet_01_smooth;
     bit::VertexMap vertexMap_01;
-
-    // logical
-    std::vector<BaseLevelClientRunner*> runners;
 
     // Input
     sf::Vector2i mousePositionInScreen;
