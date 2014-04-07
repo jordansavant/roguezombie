@@ -4,13 +4,8 @@
 
 #include "SFML/Graphics.hpp"
 #include "../bitengine/Game.hpp"
-
-namespace bit
-{
-    class StateStack;
-    class Camera;
-    class Game;
-}
+#include "../bitengine/Graphics.hpp"
+#include "../bitengine/Gui.hpp"
 
 class RogueZombieGame;
 
@@ -21,15 +16,26 @@ public:
     StateGameStart(bit::StateStack &stack, RogueZombieGame* game);
 
     RogueZombieGame* rogueZombieGame;
-	sf::CircleShape shape;
 
-    virtual bool handleInput(sf::RenderWindow &window, sf::Time &gameTime);
+	sf::Font font;
+    sf::Texture titleTexture;
+
+    // Main Menu
+    bit::Container* mainMenu;
+    bit::Picture* titlePicture;
+    bit::Label* singleplayerLabel;
+    bit::Label* multiplayerLabel;
+    bit::Label* optionsLabel;
+    bit::Label* exitLabel;
 
     virtual bool update(sf::Time &gameTime);
 
     virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
 
     virtual void drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera);
+
+    void inflowLabel(bit::Element* element, float startingX, float startingY, float delay, float endX, float endY);
+
 };
 
 #endif
