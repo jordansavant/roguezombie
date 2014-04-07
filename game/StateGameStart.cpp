@@ -32,7 +32,11 @@ bool StateGameStart::update(sf::Time &gameTime)
 {
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
     {
-        requestStateClear();
+        requestStackPop();
+    }
+    else if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Return))
+    {
+        requestStackPush(RogueZombieGame::stateGamePlayHost);
     }
 
     mainMenu->update(*rogueZombieGame->renderWindow, gameTime);

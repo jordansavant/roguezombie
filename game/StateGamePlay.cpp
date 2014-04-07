@@ -113,7 +113,7 @@ bool StateGamePlay::update(sf::Time &gameTime)
 	// Exit
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
     {
-        requestStateClear();
+        requestStackPop();
     }
 
     levelClient->update(gameTime);

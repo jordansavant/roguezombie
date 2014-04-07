@@ -58,7 +58,7 @@ StartMainMenu::StartMainMenu(RogueZombieGame* rogueZombieGame, StateGameStart* s
         {
             if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
             {
-                state->requestStateClear();
+                //state->requestStateClear();
                 state->requestStackPush(RogueZombieGame::stateGamePlayHost);
                 return true;
             }
@@ -94,7 +94,7 @@ StartMainMenu::StartMainMenu(RogueZombieGame* rogueZombieGame, StateGameStart* s
         {
             if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
             {
-                state->requestStateClear();
+                state->requestStackPop();
                 return true;
             }
 
