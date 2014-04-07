@@ -6,7 +6,7 @@
 #include "levels/Interior.hpp"
 
 GameplayServer::GameplayServer()
-    : bit::Server()
+    : bit::Server(), tileIdCounter(0), bodyIdCounter(0)
 {
 }
 
@@ -27,12 +27,12 @@ void GameplayServer::load()
         {
             case 0:
             {
-                levels[i].load(i, Interior::level_01, Interior::level_01_rows, Interior::level_01_cols);
+                levels[i].load(this, i, Interior::level_01, Interior::level_01_rows, Interior::level_01_cols);
                 break;
             }
             case 1:
             {
-                levels[i].load(i, Interior::level_02, Interior::level_02_rows, Interior::level_02_cols);
+                levels[i].load(this, i, Interior::level_02, Interior::level_02_rows, Interior::level_02_cols);
                 break;
             }
         }
@@ -46,6 +46,17 @@ void GameplayServer::update(sf::Time &gameTime)
         levels[i].update(gameTime);
     }
 }
+
+unsigned int GameplayServer::getNextTileId()
+{
+    return ++tileIdCounter;
+}
+
+unsigned int GameplayServer::getNextBodyId()
+{
+    return ++bodyIdCounter;
+}
+
 
 // Packet Handling
 

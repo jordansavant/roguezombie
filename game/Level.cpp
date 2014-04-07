@@ -7,6 +7,7 @@
 #include "characters/Ogre.hpp"
 #include "structures/Wall.hpp"
 #include "structures/Door.hpp"
+#include "GameplayServer.hpp"
 #include "SFML/Network.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Math.hpp"
@@ -19,7 +20,7 @@
 #include <map>
 
 Level::Level()
-    : id(0), tileWidth(0), tileHeight(0), tileRows(0), tileColumns(0), tileCount(0)
+    : server(NULL), id(0), tileWidth(0), tileHeight(0), tileRows(0), tileColumns(0), tileCount(0)
 {
 }
 
@@ -35,8 +36,9 @@ Level::~Level()
  * Game Logic
  */
 
-void Level::load(unsigned int _id, const int* t_array, int t_rows, int t_cols)
+void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, int t_rows, int t_cols)
 {
+    server = _server;
     id = _id;
 
     // Runners
@@ -72,7 +74,7 @@ void Level::load(unsigned int _id, const int* t_array, int t_rows, int t_cols)
 
             // Load our tile
             Tile* t = new Tile();
-            t->load(this, index, tileType, originX, originY, tileWidth, tileHeight);
+            t->load(this, server->getNextTileId(), tileType, originX, originY, tileWidth, tileHeight);
             tiles[index] = t;
         }
     }
@@ -91,21 +93,21 @@ void Level::load(unsigned int _id, const int* t_array, int t_rows, int t_cols)
                 case 1:
                 {
                     Wall* w = new Wall();
-                    w->load(this, walls.size(), t->fixedState.x, t->fixedState.y);
+                    w->load(this, server->getNextBodyId(), t->fixedState.x, t->fixedState.y);
                     walls.push_back(w);
                     break;
                 }
                 case 2:
                 {
                     Zombie* z = new Zombie();
-                    z->load(this, zombies.size(), t->fixedState.x, t->fixedState.y);
+                    z->load(this, server->getNextBodyId(), t->fixedState.x, t->fixedState.y);
                     zombies.push_back(z);
                     break;
                 }
                 case 3:
                 {
                     Ogre* o = new Ogre();
-                    o->load(this, ogres.size(), t->fixedState.x, t->fixedState.y);
+                    o->load(this, server->getNextBodyId(), t->fixedState.x, t->fixedState.y);
                     ogres.push_back(o);
                     break;
                 }
@@ -120,7 +122,7 @@ void Level::load(unsigned int _id, const int* t_array, int t_rows, int t_cols)
                 case 5:
                 {
                     Door* d = new Door();
-                    d->load(this, doors.size(), t->fixedState.x, t->fixedState.y);
+                    d->load(this, server->getNextBodyId(), t->fixedState.x, t->fixedState.y);
                     doors.push_back(d);
                     break;
                 }

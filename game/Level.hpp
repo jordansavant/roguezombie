@@ -12,6 +12,7 @@
 #include <map>
 #include <functional>
 
+class GameplayServer;
 class Zombie;
 class Ogre;
 class Player;
@@ -28,7 +29,9 @@ public:
 
     ~Level();
 
+    GameplayServer* server;
     unsigned int id;
+
     std::vector<Zombie*> zombies;
     std::vector<Ogre*> ogres;
     std::vector<Wall*> walls;
@@ -42,7 +45,7 @@ public:
 
     // Game Logic
 
-    void load(unsigned int id, const int* t_array, int t_rows, int t_cols);
+    void load(GameplayServer* server, unsigned int id, const int* t_array, int t_rows, int t_cols);
 
     void update(sf::Time &gameTime);
 

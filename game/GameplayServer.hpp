@@ -14,11 +14,17 @@ public:
 
     virtual ~GameplayServer();
 
+    virtual unsigned int getNextTileId();
+
+    virtual unsigned int getNextBodyId();
+
 private:
 
     Level level;
     std::vector<Level> levels;
 	std::map<unsigned int, Player*> players;
+    unsigned int tileIdCounter;
+    unsigned int bodyIdCounter;
 
     virtual void load();
 
