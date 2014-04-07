@@ -51,6 +51,11 @@ public:
     // logical
     std::vector<BaseLevelClientRunner*> runners;
 
+    // Input
+    sf::Vector2i mousePositionInScreen;
+    sf::Vector2f mousePositionInIsoWorld;
+    sf::Vector2f mousePositionInWorld;
+
     void load(StateGamePlay* state);
 
     void update(sf::Time &gameTime);

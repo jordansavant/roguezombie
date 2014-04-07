@@ -102,6 +102,11 @@ StateGameStart::StateGameStart(bit::StateStack &stack, RogueZombieGame* _game)
     inflowLabel(exitLabel, 0, -600,  delay + 800, 0, 700);
 }
 
+StateGameStart::~StateGameStart()
+{
+    delete mainMenu;
+}
+
 bool StateGameStart::update(sf::Time &gameTime)
 {
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))

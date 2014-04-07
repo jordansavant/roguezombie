@@ -56,7 +56,12 @@ void LevelClient::load(StateGamePlay* _state)
 
 void LevelClient::update(sf::Time &gameTime)
 {
-    // Update
+    // Update inputs
+    mousePositionInScreen = sf::Mouse::getPosition(*state->rogueZombieGame->renderWindow);
+    mousePositionInIsoWorld = state->rogueZombieGame->renderWindow->mapPixelToCoords(mousePositionInScreen);
+    mousePositionInWorld = bit::VectorMath::isometricToNormal(mousePositionInIsoWorld.x, mousePositionInIsoWorld.y);
+
+    // Update entities
     for(unsigned int i=0; i < runners.size(); i++)
     {
         runners[i]->update(gameTime);

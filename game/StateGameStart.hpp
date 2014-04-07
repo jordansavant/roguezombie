@@ -15,6 +15,8 @@ public:
 
     StateGameStart(bit::StateStack &stack, RogueZombieGame* game);
 
+    virtual ~StateGameStart();
+
     RogueZombieGame* rogueZombieGame;
 
 	sf::Font font;

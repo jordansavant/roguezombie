@@ -41,11 +41,8 @@ void TileClient::clientUpdate(sf::Time &gameTime)
     bit::VertexHelper::positionQuad(quad, isoPosition.x - fixedState.width, isoPosition.y, 0, 64, 32);
 
     // Test Mouse translation
-    sf::Vector2f mouseLevelIsoPos = level->state->rogueZombieGame->renderWindow->mapPixelToCoords(sf::Mouse::getPosition(*level->state->rogueZombieGame->renderWindow));
-    sf::Vector2f mouseLevelPosition = bit::VectorMath::isometricToNormal(mouseLevelIsoPos.x, mouseLevelIsoPos.y);
-
-    float mx = std::floor((float)mouseLevelPosition.x / (float)fixedState.width);
-    float my = std::floor((float)mouseLevelPosition.y / (float)fixedState.height);
+    float mx = std::floor((float)level->mousePositionInWorld.x / (float)fixedState.width);
+    float my = std::floor((float)level->mousePositionInWorld.y / (float)fixedState.height);
     float tx = std::floor((float)fixedState.x / (float)fixedState.width);
     float ty = std::floor((float)fixedState.y / (float)fixedState.height);
 

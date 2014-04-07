@@ -31,6 +31,8 @@ StateGamePlay::~StateGamePlay()
 void StateGamePlay::load()
 {
     bit::ClientServerState::load();
+
+    levelClient->load(this);
 }
 
 bool StateGamePlay::update(sf::Time &gameTime)

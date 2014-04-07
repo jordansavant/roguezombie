@@ -36,6 +36,7 @@ bool bit::State::update(sf::Time &gameTime)
             cameras[i]->update(gameTime);
         }
 
+        // Ensure primary camera has modified the view for game elements
         Camera* camera = cameras[0];
         camera->renderWindow->setView(camera->view);
     }
