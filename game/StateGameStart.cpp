@@ -18,6 +18,11 @@ StateGameStart::StateGameStart(bit::StateStack &stack, RogueZombieGame* _game)
     font.loadFromFile(fontPath);
     int fontsize = 48;
 
+    int titleFadeDelay = 1000;
+    int titleFadeTime = 1000;
+    int titleMoveDelay = 500;
+    int titleMoveTime = 1000;
+
     mainMenu = new bit::Container(0, 0, rogueZombieGame->targetResolution.x, rogueZombieGame->targetResolution.y, bit::Element::AnchorType::Center);
 
     // Title image
@@ -25,13 +30,8 @@ StateGameStart::StateGameStart(bit::StateStack &stack, RogueZombieGame* _game)
     titlePicture->opacity = 0;
     titlePicture->setTexture(titleTexture);
 	titlePicture->setColor(sf::Color::White);
-    titlePicture->queueEffect(new bit::Effect(1000))->queueEffect(new bit::FadeEffect(1000, 1));
-
-    titlePicture->queueEffect(new bit::MoveEffect(1000, bit::Easing::Type::InBack, 0, -120));
-    titlePicture->queueEffect(new bit::MoveEffect(1000, bit::Easing::Type::OutBack, 0, -120));
-    titlePicture->queueEffect(new bit::MoveEffect(2000, bit::Easing::Type::InOutBack, 0, 240));
-    titlePicture->queueEffect(new bit::MoveEffect(2000, bit::Easing::Type::InOutBack, 0, -240));
-
+    titlePicture->queueEffect(new bit::Effect(titleFadeDelay))->queueEffect(new bit::FadeEffect(titleFadeTime, 1));
+    titlePicture->queueEffect(new bit::Effect(titleMoveDelay))->queueEffect(new bit::MoveEffect(titleMoveTime, bit::Easing::Type::InOutQuint, 0, -240));
     mainMenu->addChild(titlePicture);
 
     // Singleplayer
@@ -96,10 +96,10 @@ StateGameStart::StateGameStart(bit::StateStack &stack, RogueZombieGame* _game)
     mainMenu->addChild(exitLabel);
 
     int delay = 2000;
-    inflowLabel(singleplayerLabel, 0, -600, delay + 1000, 0, 520);
-    inflowLabel(multiplayerLabel, 0, -600,  delay + 1200, 0, 580);
-    inflowLabel(optionsLabel, 0, -600,  delay + 1400, 0, 640);
-    inflowLabel(exitLabel, 0, -600,  delay + 1600, 0, 700);
+    inflowLabel(singleplayerLabel, 0, -600, delay + 1100, 0, 520);
+    inflowLabel(multiplayerLabel, 0, -600,  delay + 1000, 0, 580);
+    inflowLabel(optionsLabel, 0, -600,  delay + 900, 0, 640);
+    inflowLabel(exitLabel, 0, -600,  delay + 800, 0, 700);
 }
 
 bool StateGameStart::update(sf::Time &gameTime)
