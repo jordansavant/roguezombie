@@ -7,7 +7,7 @@ int main(int argc, char* argv[])
     bit::Output::Debug(argc);
     srand(time(NULL));
 
-    if(argc == 1)
+    if(true || argc == 1)
     {
 	    RogueZombieGame game;
 	    game.run();
