@@ -18,7 +18,17 @@ public:
 
     virtual unsigned int getNextBodyId();
 
+    virtual void movePlayerToLevel(Player* player, unsigned int fromLevelId, unsigned int toLevelId);
+
 private:
+
+    struct PendingMovePlayer
+    {
+        Player* player;
+        unsigned int fromLevelId;
+	    unsigned int toLevelId;
+    };
+    std::vector<PendingMovePlayer> pendingMoves;
 
     Level level;
     std::vector<Level> levels;

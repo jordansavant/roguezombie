@@ -41,6 +41,14 @@ void GameplayServer::load()
 
 void GameplayServer::update(sf::Time &gameTime)
 {
+    // Serve requests
+    for(unsigned int i=0; i < pendingMoves.size(); i++)
+    {
+        levels[pendingMoves[i].fromLevelId].removePlayer(pendingMoves[i].player);
+        levels[pendingMoves[i].toLevelId].addPlayer(pendingMoves[i].player);
+    }
+    pendingMoves.clear();
+
     for(unsigned int i=0; i < levels.size(); i++)
     {
         levels[i].update(gameTime);
@@ -55,6 +63,15 @@ unsigned int GameplayServer::getNextTileId()
 unsigned int GameplayServer::getNextBodyId()
 {
     return ++bodyIdCounter;
+}
+
+void GameplayServer::movePlayerToLevel(Player* player, unsigned int fromLevelId, unsigned int toLevelId)
+{
+    PendingMovePlayer m;
+    m.player = player;
+    m.fromLevelId = fromLevelId;
+    m.toLevelId = toLevelId;
+    pendingMoves.push_back(m);
 }
 
 
@@ -104,12 +121,10 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
                 switch(player->level->id)
                 {
                     case 0:
-                        levels[0].removePlayer(player);
-                        levels[1].addPlayer(player);
+                        movePlayerToLevel(player, 0, 1);
                         break;
                     case 1:
-                        levels[1].removePlayer(player);
-                        levels[0].addPlayer(player);
+                        movePlayerToLevel(player, 1, 0);
                         break;
                 }
                 break;

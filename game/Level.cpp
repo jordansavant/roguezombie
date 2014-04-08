@@ -126,6 +126,38 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
                     doors.push_back(d);
                     break;
                 }
+                case 8:
+                {
+                    Level* l = this;
+                    t->onBodyEnter.push_back([l] (Tile* t, Body* b){
+                        if(b->fixedState.type == Body::Type::Character)
+                        {
+                            Character* c = static_cast<Character*>(b);
+                            if(c->fixedState.isPlayerCharacter)
+                            {
+                                Player* p = l->players[c->fixedState.clientId];
+                                l->server->movePlayerToLevel(p, l->id, 1);
+                            }
+                        }
+                    });
+                    break;
+                }
+                case 9:
+                {
+                    Level* l = this;
+                    t->onBodyEnter.push_back([l] (Tile* t, Body* b){
+                        if(b->fixedState.type == Body::Type::Character)
+                        {
+                            Character* c = static_cast<Character*>(b);
+                            if(c->fixedState.isPlayerCharacter)
+                            {
+                                Player* p = l->players[c->fixedState.clientId];
+                                l->server->movePlayerToLevel(p, l->id, 0);
+                            }
+                        }
+                    });
+                    break;
+                }
             }
         }
     }
