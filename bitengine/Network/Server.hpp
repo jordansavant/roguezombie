@@ -96,6 +96,8 @@ namespace bit
 
         virtual void handlePacket_ClientDisconnect(ClientPacket &packet, RemoteClient &client) = 0;
 
+        virtual void handle_ClientTimeout(RemoteClient &client) = 0;
+
         // Packet sending
 
         virtual void preparePacket_InitializeSelf(ServerPacket &packet, RemoteClient &client) = 0;

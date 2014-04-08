@@ -144,6 +144,22 @@ void GameplayServer::handlePacket_ClientDisconnect(bit::ClientPacket &packet, bi
 }
 
 
+void GameplayServer::handle_ClientTimeout(bit::RemoteClient &client)
+{
+    bit::Output::Debug("Server handle client timeout");
+
+    // Remove them from their last level
+    auto itr = players.find(client.id);
+    if(itr != players.end())
+    {
+        Player* p = itr->second;
+        players.erase(client.id);
+        p->level->deletePlayer(p);
+    }
+}
+
+
+
 /**
  * Prepare Outgoing Server Packets
  **/

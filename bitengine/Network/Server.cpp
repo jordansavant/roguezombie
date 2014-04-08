@@ -10,7 +10,7 @@ bit::Server::Server()
       thread(&Server::executionThread, this),
       waitingThreadEnd(false),
       isListening(false),
-      clientTimeoutTime(sf::seconds(30)),
+      clientTimeoutTime(sf::seconds(5)),
       maxConnectedClients(16),
       connectedClients(0),
 	  clientIdentifier(0),
@@ -173,6 +173,8 @@ void bit::Server::handleIncomingPackets()
             {
                 client->hasTimedOut = true;
                 detectedDisconnection = true;
+
+                handle_ClientTimeout(*client);
             }
         }
     }
