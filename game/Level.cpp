@@ -74,7 +74,7 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
 
             // Load our tile
             Tile* t = new Tile();
-            t->load(this, server->getNextTileId(), tileType, originX, originY, tileWidth, tileHeight);
+            t->load(this, index, tileType, originX, originY, tileWidth, tileHeight);
             tiles[index] = t;
         }
     }

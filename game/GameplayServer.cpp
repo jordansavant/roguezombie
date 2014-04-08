@@ -55,11 +55,6 @@ void GameplayServer::update(sf::Time &gameTime)
     }
 }
 
-unsigned int GameplayServer::getNextTileId()
-{
-    return ++tileIdCounter;
-}
-
 unsigned int GameplayServer::getNextBodyId()
 {
     return ++bodyIdCounter;

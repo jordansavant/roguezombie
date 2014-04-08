@@ -14,8 +14,6 @@ public:
 
     virtual ~GameplayServer();
 
-    virtual unsigned int getNextTileId();
-
     virtual unsigned int getNextBodyId();
 
     virtual void movePlayerToLevel(Player* player, unsigned int fromLevelId, unsigned int toLevelId);
