@@ -286,13 +286,8 @@ void bit::Server::handleDisconnections()
             else if(client->hasDisconnected)
                 bit::Output::Debug("CLIENT QUIT");
 
-            // Inform other clients of disconnection
-            ServerPacket packet_PeerClientDisconnected;
-            packet_PeerClientDisconnected << static_cast<sf::Int32>(Server::ServerPacketType::PeerClientDisconnected);
-            preparePacket_PeerClientDisconnected(packet_PeerClientDisconnected);
-            sendToAllClients(packet_PeerClientDisconnected);
-
             // Erase client
+            client->socket.disconnect();
             delete client;
 			itr = clients.erase(itr);
 
@@ -301,6 +296,14 @@ void bit::Server::handleDisconnections()
             {
                 clients.push_back(new RemoteClient());
                 setListeningState(true);
+            }
+            else
+            {
+                // Inform other clients of disconnection
+                ServerPacket packet_PeerClientDisconnected;
+                packet_PeerClientDisconnected << static_cast<sf::Int32>(Server::ServerPacketType::PeerClientDisconnected);
+                preparePacket_PeerClientDisconnected(packet_PeerClientDisconnected);
+                sendToAllClients(packet_PeerClientDisconnected);
             }
         }
         else

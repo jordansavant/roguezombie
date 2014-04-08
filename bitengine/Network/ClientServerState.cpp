@@ -174,6 +174,12 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, bit::ServerPacke
 
                 break;
 		    }
+            case Server::ServerPacketType::DisconnectAcknowledged:
+		    {
+                handlePacket_DisconnectAcknowledge(packet);
+
+                break;
+		    }
             case Server::ServerPacketType::PeerClientConnected:
             {
                 handlePacket_PeerClientConnected(packet);
