@@ -23,7 +23,7 @@ void Light::load(Level* _level, float _x, float _y, float _radius, sf::Color _co
 
 void Light::update(sf::Time &gameTime)
 {
-    bit::Shadowcaster::computeFoV(x / level->tileWidth, y / level->tileHeight, level->tileRows, level->tileColumns, radius,
+    bit::Shadowcaster::computeFoV(x / level->tileWidth, y / level->tileHeight, level->tileColumns, level->tileRows, radius,
         std::bind(&Light::setVisible, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
         std::bind(&Light::isBlocked, this, std::placeholders::_1, std::placeholders::_2));
 }
