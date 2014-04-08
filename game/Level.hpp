@@ -51,6 +51,8 @@ public:
 
 	void createPlayer(Player* player);
 
+    void addPlayer(Player* player);
+
 	void removePlayer(Player* player);
 
     // Tile Positioning and Pathfinding

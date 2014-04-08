@@ -142,60 +142,92 @@ void Level::update(sf::Time &gameTime)
 
 void Level::createPlayer(Player* player)
 {
+    // Spawn character
+    Zombie* zombie = new Zombie();
+    zombie->load(this, zombies.size(), 0, 0);
+
+    // Assign Characer
+    player->setCharacter(zombie);
+    zombie->setControllingPlayer(player);
+
+    // Spawn light source for character's vision
+    Light* light = new Light();
+    light->load(this, zombie->Body::deltaState.x, zombie->Body::deltaState.y, 12, sf::Color(220, 255, 175), .4);
+    zombie->lights.push_back(light);
+
+    // Spawn closer orb light
+    Light* orbLight = new Light();
+    orbLight->load(this, zombie->Body::deltaState.x, zombie->Body::deltaState.y, 4, sf::Color::White, .6);
+    zombie->lights.push_back(orbLight);
+
+    // Add player to this level's management
+    addPlayer(player);
+}
+
+void Level::addPlayer(Player* player)
+{
     if(players.find(player->clientId) == players.end())
-	{
+    {
         // Connect to Level
         player->setLevel(this);
         players[player->clientId] = player;
 
-        // Spawn character
-        Zombie* zombie = new Zombie();
-        zombie->load(this, zombies.size(), tiles[44]->fixedState.x, tiles[44]->fixedState.y);
-		zombies.push_back(zombie);
+        // Push character into management list
+        player->character->level = this;
+        switch(player->character->fixedState.type)
+        {
+            case Character::Type::Zombie:
+                zombies.push_back(static_cast<Zombie*>(player->character));
+                break;
+            case Character::Type::Ogre:
+                ogres.push_back(static_cast<Ogre*>(player->character));
+                break;
+        }
 
-        // Assign Characer
-        player->setCharacter(zombie);
-        zombie->setControllingPlayer(player);
+        // Manage lights for the character
+        for(unsigned int i=0; i < player->character->lights.size(); i++)
+        {
+            player->character->lights[i]->level = this;
+            lights.push_back(player->character->lights[i]);
+        }
 
-        // Spawn light source for character's vision
-        Light* light = new Light();
-        light->load(this, zombie->Body::deltaState.x, zombie->Body::deltaState.y, 12, sf::Color(220, 255, 175), .4);
-        lights.push_back(light);
-        zombie->lights.push_back(light);
-
-        // Spawn closer orb light
-        Light* orbLight = new Light();
-        orbLight->load(this, zombie->Body::deltaState.x, zombie->Body::deltaState.y, 4, sf::Color::White, .6);
-        lights.push_back(orbLight);
-        zombie->lights.push_back(orbLight);
-	}
+        // Add body to tiles
+        player->character->moveToPosition(tiles[44]->fixedState.x, tiles[44]->fixedState.y);
+    }
 }
 
 void Level::removePlayer(Player* player)
 {
     if(players.find(player->clientId) != players.end())
 	{
-        // Disconnect to Level
+        // Disconnect from Level
         player->setLevel(NULL);
         players.erase(player->clientId);
 
-        // Delete Character
-        Zombie* zombie = static_cast<Zombie*>(player->character);
+        // Remove body from tiles
         std::vector<Tile*> tiles;
-        getTilesWithinRectangle(zombie->Body::deltaState.x, zombie->Body::deltaState.y, zombie->Body::deltaState.width, zombie->Body::deltaState.height, tiles);
+        getTilesWithinRectangle(player->character->Body::deltaState.x, player->character->Body::deltaState.y, player->character->Body::deltaState.width, player->character->Body::deltaState.height, tiles);
         for(unsigned int i=0; i < tiles.size(); i++)
         {
             tiles[i]->setOccupyingBody(NULL);
         }
-        for(unsigned int i=0; i < zombie->lights.size(); i++)
+
+        // Remove lights from management list
+        for(unsigned int i=0; i < player->character->lights.size(); i++)
         {
-            lights.erase(std::remove(lights.begin(), lights.end(), zombie->lights[i]), lights.end());
-            delete zombie->lights[i];
+            lights.erase(std::remove(lights.begin(), lights.end(), player->character->lights[i]), lights.end());
         }
-        zombie->lights.clear();
-        zombies.erase(std::remove(zombies.begin(), zombies.end(), zombie), zombies.end());
-        player->setCharacter(NULL);
-        delete zombie;
+
+        // Remove character from management list
+        switch(player->character->fixedState.type)
+        {
+            case Character::Type::Zombie:
+                zombies.erase(std::remove(zombies.begin(), zombies.end(), static_cast<Zombie*>(player->character)), zombies.end());
+                break;
+            case Character::Type::Ogre:
+                ogres.erase(std::remove(ogres.begin(), ogres.end(), static_cast<Ogre*>(player->character)), ogres.end());
+                break;
+        }
 	}
 }
 

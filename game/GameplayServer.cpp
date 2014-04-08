@@ -105,11 +105,11 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
                 {
                     case 0:
                         levels[0].removePlayer(player);
-                        levels[1].createPlayer(player);
+                        levels[1].addPlayer(player);
                         break;
                     case 1:
                         levels[1].removePlayer(player);
-                        levels[0].createPlayer(player);
+                        levels[0].addPlayer(player);
                         break;
                 }
                 break;

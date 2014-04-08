@@ -86,11 +86,11 @@ public:
 
     virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 
-protected:
-
     virtual bool moveToTile(Tile* tile);
 
     virtual bool moveToPosition(float x, float y);
+
+protected:
 
     virtual bool isTileBlocked(Tile* tile);
 
