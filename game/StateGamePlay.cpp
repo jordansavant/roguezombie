@@ -114,7 +114,6 @@ bool StateGamePlay::update(sf::Time &gameTime)
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
     {
         disconnect();
-        requestStackPop();
     }
 
     levelClient->update(gameTime);
@@ -216,6 +215,14 @@ void StateGamePlay::handlePacket_ServerUpdate(bit::ServerPacket &packet)
     }
 
     levelClient->handleSnapshot(packet, true);
+}
+
+void StateGamePlay::handlePacket_DisconnectAcknowledge(bit::ServerPacket &packet)
+{
+    bit::Output::Debug("Client handle client disconnected acknowledged");
+
+    // Exit
+    requestStackPop();
 }
 
 void StateGamePlay::handlePacket_Shutdown(bit::ServerPacket &packet)

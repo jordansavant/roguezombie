@@ -196,3 +196,8 @@ void GameplayServer::preparePacket_ServerUpdate(bit::ServerPacket &packet, bit::
     packet << sf::Uint32(player->level->id);
     player->level->prepareSnapshot(packet, client, true);
 }
+
+void GameplayServer::preparePacket_DisconnectAcknowledge(bit::ServerPacket &packet, bit::RemoteClient &client)
+{
+    bit::Output::Debug("Server prepare server disconnect acknowledge");
+}

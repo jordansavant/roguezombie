@@ -200,6 +200,12 @@ void bit::Server::handlePacket(ClientPacket &packet, RemoteClient &client, bool 
 
             handlePacket_ClientDisconnect(packet, client);
 
+            // Send them the quit ack packet
+            bit::ServerPacket ackPacket;
+            ackPacket << static_cast<sf::Int32>(Server::ServerPacketType::DisconnectAcknowledged);
+            preparePacket_DisconnectAcknowledge(ackPacket, client);
+            client.socket.send(ackPacket);
+
             break;
         }
         case Server::ClientPacketType::ClientInformation:
