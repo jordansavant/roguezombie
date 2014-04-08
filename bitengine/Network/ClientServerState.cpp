@@ -8,6 +8,7 @@
 #include "ClientPacket.hpp"
 #include "SFML/Network.hpp"
 #include "SFML/System.hpp"
+#include "../System/Output.hpp"
 
 bit::ClientServerState::ClientServerState(StateStack &stack, Game* game, bool isClient, bool isHost)
     : bit::State(stack, game),
@@ -60,6 +61,7 @@ void bit::ClientServerState::load()
     {
         if(socket.connect(ipAddress, port, sf::seconds(5.0f)) == sf::TcpSocket::Done)
         {
+            bit::Output::Debug("SERVER SOCKET ESTABLISHED");
             isConnected = true;
         }
         else
@@ -95,6 +97,7 @@ bool bit::ClientServerState::update(sf::Time &gameTime)
                 // Check for connection timeout
                 if(timeSinceLastPacket > clientTimeout)
                 {
+                    bit::Output::Debug("SERVER PACKET TIMEOUT");
                     isConnected = false;
                     failedConnectionClock.restart();
                 }
@@ -115,6 +118,7 @@ bool bit::ClientServerState::update(sf::Time &gameTime)
         }
         else if(failedConnectionClock.getElapsedTime() >= sf::seconds(5.0f))
         {
+            bit::Output::Debug("SERVER SOCKET CANNOT BE ESTABLISHED AFTER 5 SECONDS OF TRYING");
             // TODO
             // Connection was not established, pop to previous state?
             // Override this in game code?
@@ -123,6 +127,17 @@ bool bit::ClientServerState::update(sf::Time &gameTime)
     }
 
     return true;
+}
+
+void bit::ClientServerState::disconnect()
+{
+    if(isClient && isConnected)
+    {
+        bit::ClientPacket packet;
+        packet << static_cast<sf::Int32>(Server::ClientPacketType::Quit);
+        preparePacket_ClientDisconnect(packet);
+        socket.send(packet);
+    }
 }
 
 void bit::ClientServerState::handlePacket(sf::Int32 packetType, bit::ServerPacket &packet)

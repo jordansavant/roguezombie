@@ -113,6 +113,7 @@ bool StateGamePlay::update(sf::Time &gameTime)
 	// Exit
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
     {
+        disconnect();
         requestStackPop();
     }
 
@@ -249,4 +250,9 @@ void StateGamePlay::preparePacket_ClientUpdate(bit::ClientPacket &packet)
 
 	// Clear commands
 	commandQueue.clear();
+}
+
+void StateGamePlay::preparePacket_ClientDisconnect(bit::ClientPacket &packet)
+{
+    bit::Output::Debug("Client prepare client disconnect");
 }

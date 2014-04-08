@@ -74,7 +74,7 @@ namespace bit
 
         void handleIncomingPackets();
 
-        void handlePacket(ClientPacket &packet, RemoteClient &receivingClient, bool &detectedTimeout);
+        void handlePacket(ClientPacket &packet, RemoteClient &receivingClient, bool &detectedDisconnection);
 
         void handleConnections();
 
@@ -93,6 +93,8 @@ namespace bit
         virtual void handlePacket_ClientInformation(ClientPacket &packet, RemoteClient &client) = 0;
 
         virtual void handlePacket_ClientUpdate(ClientPacket &packet, RemoteClient &client) = 0;
+
+        virtual void handlePacket_ClientDisconnect(ClientPacket &packet, RemoteClient &client) = 0;
 
         // Packet sending
 

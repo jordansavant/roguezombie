@@ -70,7 +70,9 @@ void GameplayServer::movePlayerToLevel(Player* player, unsigned int fromLevelId,
 }
 
 
-// Packet Handling
+/**
+ * Handle Incoming Client Packets
+ **/
 
 void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, bit::RemoteClient &client)
 {
@@ -126,6 +128,12 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
 		}
 	}
 }
+
+void GameplayServer::handlePacket_ClientDisconnect(bit::ClientPacket &packet, bit::RemoteClient &client)
+{
+    bit::Output::Debug("Server handle client disconnect");
+}
+
 
 /**
  * Prepare Outgoing Server Packets

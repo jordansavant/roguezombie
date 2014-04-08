@@ -2,6 +2,7 @@
 #include "RemoteClient.hpp"
 #include "ServerPacket.hpp"
 #include "ClientPacket.hpp"
+#include "../System/Output.hpp"
 
 bit::Server::Server()
     : snapshotId(0),
@@ -148,7 +149,7 @@ unsigned short bit::Server::getServerPort()
 
 void bit::Server::handleIncomingPackets()
 {
-    bool detectedTimeout = false;
+    bool detectedDisconnection = false;
 
     for(unsigned int i=0; i < clients.size(); i++)
     {
@@ -160,7 +161,7 @@ void bit::Server::handleIncomingPackets()
             while(client->socket.receive(packet) == sf::Socket::Done)
             {
                 // Handle incoming packet from client
-                handlePacket(packet, *client, detectedTimeout);
+                handlePacket(packet, *client, detectedDisconnection);
 
                 // Packet received, updatet the ping timer
                 client->lastPacketTime = now();
@@ -171,18 +172,18 @@ void bit::Server::handleIncomingPackets()
             if(now() >= client->lastPacketTime + clientTimeoutTime)
             {
                 client->hasTimedOut = true;
-                detectedTimeout = true;
+                detectedDisconnection = true;
             }
         }
     }
 
-    if(detectedTimeout)
+    if(detectedDisconnection)
     {
         handleDisconnections();
     }
 }
 
-void bit::Server::handlePacket(ClientPacket &packet, RemoteClient &client, bool &detectedTimeout)
+void bit::Server::handlePacket(ClientPacket &packet, RemoteClient &client, bool &detectedDisconnection)
 {
     sf::Int32 packetType;
     packet >> packetType;
@@ -191,8 +192,11 @@ void bit::Server::handlePacket(ClientPacket &packet, RemoteClient &client, bool 
     {
         case Server::ClientPacketType::Quit:
         {
-            client.hasTimedOut = true;
-            detectedTimeout = true;
+            // Mark client as disconnection received
+            client.hasDisconnected = true;
+            detectedDisconnection = true;
+
+            handlePacket_ClientDisconnect(packet, client);
 
             break;
         }
@@ -267,8 +271,13 @@ void bit::Server::handleDisconnections()
     {
         RemoteClient* client = (*itr);
 
-        if(client->hasTimedOut)
+        if(client->hasTimedOut || client->hasDisconnected)
         {
+            if(client->hasTimedOut)
+                bit::Output::Debug("CLIENT TIMEOUT");
+            else if(client->hasDisconnected)
+                bit::Output::Debug("CLIENT QUIT");
+
             // Inform other clients of disconnection
             ServerPacket packet_PeerClientDisconnected;
             packet_PeerClientDisconnected << static_cast<sf::Int32>(Server::ServerPacketType::PeerClientDisconnected);

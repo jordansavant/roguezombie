@@ -30,6 +30,8 @@ namespace bit
 
         virtual bool update(sf::Time &gameTime);
 
+        virtual void disconnect();
+
     protected:
 
         bool isClient;
@@ -79,6 +81,9 @@ namespace bit
         virtual void preparePacket_ClientInformation(bit::ClientPacket &packet) = 0;
 
         virtual void preparePacket_ClientUpdate(bit::ClientPacket &packet) = 0;
+
+        virtual void preparePacket_ClientDisconnect(bit::ClientPacket &packet) = 0;
+
     };
 }
 

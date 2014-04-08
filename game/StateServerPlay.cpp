@@ -83,3 +83,7 @@ void StateServerPlay::preparePacket_ClientInformation(bit::ClientPacket &packet)
 void StateServerPlay::preparePacket_ClientUpdate(bit::ClientPacket &packet)
 {
 }
+
+void StateServerPlay::preparePacket_ClientDisconnect(bit::ClientPacket &packet)
+{
+}

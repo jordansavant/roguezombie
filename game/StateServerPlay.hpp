@@ -49,6 +49,8 @@ protected:
     virtual void preparePacket_ClientInformation(bit::ClientPacket &packet);
 
     virtual void preparePacket_ClientUpdate(bit::ClientPacket &packet);
+
+    virtual void preparePacket_ClientDisconnect(bit::ClientPacket &packet);
 };
 
 #endif
