@@ -65,7 +65,7 @@ StartMainMenu::StartMainMenu(RogueZombieGame* rogueZombieGame, StateGameStart* s
             return false;
         }
     );
-    configureLabel(singleplayerLabel, "singleplayer");
+    configureLabel(singleplayerLabel, "host");
 
     // Multiplayer
     multiplayerLabel = new bit::Label(0, -600, 0, 0, bit::Element::AnchorType::Center,
@@ -80,7 +80,7 @@ StartMainMenu::StartMainMenu(RogueZombieGame* rogueZombieGame, StateGameStart* s
             return false;
         }
     );
-    configureLabel(multiplayerLabel, "multiplayer");
+    configureLabel(multiplayerLabel, "join");
 
     // Options
     settingsLabel = new bit::Label(0, -600, 0, 0, bit::Element::AnchorType::Center, std::bind(&StartMainMenu::onActivate_Settings, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));

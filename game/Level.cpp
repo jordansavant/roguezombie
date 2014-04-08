@@ -263,6 +263,23 @@ void Level::removePlayer(Player* player)
 	}
 }
 
+void Level::deletePlayer(Player* player)
+{
+    // Remove player
+    removePlayer(player);
+
+    // Despawn light source for character's vision
+    for(unsigned int i=0; i < player->character->lights.size(); i++)
+    {
+        delete player->character->lights[i];
+    }
+
+    // Despawn character
+    delete player->character;
+
+    // Despawn player
+    delete player;
+}
 /*
  * Tile Positioning and Pathfinding
  */

@@ -132,6 +132,15 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
 void GameplayServer::handlePacket_ClientDisconnect(bit::ClientPacket &packet, bit::RemoteClient &client)
 {
     bit::Output::Debug("Server handle client disconnect");
+
+    // Remove them from their last level
+    auto itr = players.find(client.id);
+    if(itr != players.end())
+    {
+        Player* p = itr->second;
+        players.erase(client.id);
+        p->level->deletePlayer(p);
+    }
 }
 
 

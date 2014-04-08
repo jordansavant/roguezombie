@@ -55,6 +55,8 @@ public:
 
 	void removePlayer(Player* player);
 
+	void deletePlayer(Player* player);
+
     // Tile Positioning and Pathfinding
 
     Tile* getTileAtIndices(int x, int y);
