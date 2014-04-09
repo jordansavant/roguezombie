@@ -18,6 +18,7 @@ namespace bit
         bool isConfirmed;
         bool hasTimedOut;
         bool hasDisconnected;
+        bool hasBeenKicked;
         sf::Uint32 lastAcknowledgedSnapshotId;
     };
 }

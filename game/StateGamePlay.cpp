@@ -242,6 +242,26 @@ void StateGamePlay::handle_DisconnectTimeout()
     requestStackPop();
 }
 
+void StateGamePlay::handlePacket_Kick(bit::ServerPacket &packet)
+{
+    bit::Output::Debug("Client handle client kick");
+
+    unsigned int kickCode;
+    packet >> kickCode;
+
+    switch(static_cast<GameplayServer::KickReason>(kickCode))
+    {
+        case GameplayServer::KickReason::NoSpawn:
+            rogueZombieGame->errorMessage = "No room for spawn.";
+            break;
+        case GameplayServer::KickReason::CheatDetected:
+            rogueZombieGame->errorMessage = "Cheating detected.";
+            break;
+    }
+
+    requestStateClearTo(RogueZombieGame::stateGameError);
+}
+
 /**
  * Packet sending
  */

@@ -167,7 +167,7 @@ void bit::Server::handleIncomingPackets()
             while(client->socket.receive(packet) == sf::Socket::Done)
             {
                 // Handle incoming packet from client
-                handlePacket(packet, *client, detectedDisconnection);
+                handlePacket(packet, *client);
 
                 // Packet received, updatet the ping timer
                 client->lastPacketTime = now();
@@ -185,13 +185,10 @@ void bit::Server::handleIncomingPackets()
         }
     }
 
-    if(detectedDisconnection)
-    {
-        handleDisconnections();
-    }
+    handleDisconnections();
 }
 
-void bit::Server::handlePacket(ClientPacket &packet, RemoteClient &client, bool &detectedDisconnection)
+void bit::Server::handlePacket(ClientPacket &packet, RemoteClient &client)
 {
     sf::Int32 packetType;
     packet >> packetType;
@@ -202,7 +199,6 @@ void bit::Server::handlePacket(ClientPacket &packet, RemoteClient &client, bool 
         {
             // Mark client as disconnection received
             client.hasDisconnected = true;
-            detectedDisconnection = true;
 
             handlePacket_ClientDisconnect(packet, client);
 
@@ -285,12 +281,14 @@ void bit::Server::handleDisconnections()
     {
         RemoteClient* client = (*itr);
 
-        if(client->hasTimedOut || client->hasDisconnected)
+        if(client->hasTimedOut || client->hasDisconnected || client->hasBeenKicked)
         {
             if(client->hasTimedOut)
                 bit::Output::Debug("CLIENT TIMEOUT");
             else if(client->hasDisconnected)
                 bit::Output::Debug("CLIENT QUIT");
+            else if(client->hasBeenKicked)
+                bit::Output::Debug("CLIENT KICKED");
 
             // Erase client
             client->socket.disconnect();
@@ -335,6 +333,17 @@ void bit::Server::broadcastMessage(std::string &message)
             client->socket.send(packet_broadcastMessage);
         }
     }
+}
+
+void bit::Server::kickClient(bit::RemoteClient &client, unsigned int kickCode)
+{
+    bit::Output::Debug("Server prepare server kick client");
+
+    bit::ServerPacket packet;
+    packet << sf::Uint32(kickCode);
+    client.socket.send(packet);
+
+    client.hasBeenKicked = true;
 }
 
 void bit::Server::sendToAllClients(ServerPacket &packet)

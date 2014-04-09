@@ -172,7 +172,13 @@ void Level::update(sf::Time &gameTime)
     }
 }
 
-void Level::createPlayer(Player* player)
+
+
+/*
+ * Player Management
+ */
+
+bool Level::createPlayer(Player* player)
 {
     // Spawn character
     Ogre* zombie = new Ogre();
@@ -193,39 +199,56 @@ void Level::createPlayer(Player* player)
     zombie->lights.push_back(orbLight);
 
     // Add player to this level's management
-    addPlayer(player);
+    if(!addPlayer(player))
+    {
+        deletePlayer(player);
+
+        return false;
+    }
+
+    return true;
 }
 
-void Level::addPlayer(Player* player)
+bool Level::addPlayer(Player* player)
 {
-    if(players.find(player->clientId) == players.end())
+    // Player already added
+    if(players.find(player->clientId) != players.end())
     {
-        // Connect to Level
-        player->setLevel(this);
-        players[player->clientId] = player;
-
-        // Push character into management list
-        player->character->level = this;
-        switch(player->character->fixedState.type)
-        {
-            case Character::Type::Zombie:
-                zombies.push_back(static_cast<Zombie*>(player->character));
-                break;
-            case Character::Type::Ogre:
-                ogres.push_back(static_cast<Ogre*>(player->character));
-                break;
-        }
-
-        // Manage lights for the character
-        for(unsigned int i=0; i < player->character->lights.size(); i++)
-        {
-            player->character->lights[i]->level = this;
-            lights.push_back(player->character->lights[i]);
-        }
-
-        // Add body to tiles
-        player->character->moveToPosition(tiles[44]->fixedState.x, tiles[44]->fixedState.y);
+        return true;
     }
+
+    // Connect to Level
+    player->setLevel(this);
+    players[player->clientId] = player;
+
+    // Push character into management list
+    player->character->level = this;
+    switch(player->character->fixedState.type)
+    {
+        case Character::Type::Zombie:
+            zombies.push_back(static_cast<Zombie*>(player->character));
+            break;
+        case Character::Type::Ogre:
+            ogres.push_back(static_cast<Ogre*>(player->character));
+            break;
+    }
+
+    // Manage lights for the character
+    for(unsigned int i=0; i < player->character->lights.size(); i++)
+    {
+        player->character->lights[i]->level = this;
+        lights.push_back(player->character->lights[i]);
+    }
+
+    // Add body to tiles
+    if(!player->character->moveToPosition(tiles[44]->fixedState.x, tiles[44]->fixedState.y))
+    {
+        removePlayer(player);
+
+        return false;
+    }
+
+    return true;
 }
 
 void Level::removePlayer(Player* player)
@@ -241,7 +264,10 @@ void Level::removePlayer(Player* player)
         getTilesWithinRectangle(player->character->Body::deltaState.x, player->character->Body::deltaState.y, player->character->Body::deltaState.width, player->character->Body::deltaState.height, tiles);
         for(unsigned int i=0; i < tiles.size(); i++)
         {
-            tiles[i]->setOccupyingBody(NULL);
+            if(tiles[i]->body && tiles[i]->body == player->character)
+            {
+                tiles[i]->setOccupyingBody(NULL);
+            }
         }
 
         // Remove lights from management list
@@ -280,6 +306,9 @@ void Level::deletePlayer(Player* player)
     // Despawn player
     delete player;
 }
+
+
+
 /*
  * Tile Positioning and Pathfinding
  */

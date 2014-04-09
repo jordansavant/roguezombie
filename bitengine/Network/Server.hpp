@@ -29,10 +29,11 @@ namespace bit
             InitializeSelf,             // tell client we have acknowledged their connection
             InitializeWorld,            // tell client of the full world
             DisconnectAcknowledged,     // tell client we have acknowledge their disconnection
+            Kick,                       // tell client we have kicked them
             PeerClientConnected,        // tell connected clients about a new client
             PeerClientDisconnected,     // tell connected clients about a lost client
             ServerUpdate,               // tick update for world snapshot 1/20th a second
-            Shutdown                    // tell connected clients that the server is shutting down
+            Shutdown,                   // tell connected clients that the server is shutting down
         };
 
         enum ClientPacketType
@@ -75,13 +76,15 @@ namespace bit
 
         void handleIncomingPackets();
 
-        void handlePacket(ClientPacket &packet, RemoteClient &receivingClient, bool &detectedDisconnection);
+        void handlePacket(ClientPacket &packet, RemoteClient &receivingClient);
 
         void handleConnections();
 
         void handleDisconnections();
 
         void broadcastMessage(std::string &message);
+
+        void kickClient(bit::RemoteClient &client, unsigned int kickCode);
 
         void sendToAllClients(ServerPacket &packet);
 

@@ -80,6 +80,10 @@ void StateServerPlay::handle_DisconnectTimeout()
 {
 }
 
+void StateServerPlay::handlePacket_Kick(bit::ServerPacket &packet)
+{
+}
+
 /**
  * Packet sending
  */

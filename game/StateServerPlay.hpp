@@ -48,6 +48,8 @@ protected:
 
     virtual void handle_DisconnectTimeout();
 
+    virtual void handlePacket_Kick(bit::ServerPacket &packet);
+
     // Packet Sending
 
     virtual void preparePacket_ClientInformation(bit::ClientPacket &packet);

@@ -70,6 +70,7 @@ void GameplayServer::movePlayerToLevel(Player* player, unsigned int fromLevelId,
 }
 
 
+
 /**
  * Handle Incoming Client Packets
  **/
@@ -84,7 +85,12 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
         p->load(client.id);
         players[client.id] = p;
 
-	    levels[0].createPlayer(p);
+        if(!levels[0].createPlayer(p) && !levels[1].createPlayer(p))
+        {
+            bit::Output::Debug("Server cannot create player, no room in the inn");
+
+            kickClient(client, KickReason::NoSpawn);
+        }
     }
 }
 
