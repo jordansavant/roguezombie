@@ -7,7 +7,7 @@
 #include <functional>
 
 Door::Door()
-    : Structure()
+    : Structure(), openerCount(0)
 {
 }
 
@@ -45,7 +45,10 @@ void Door::attemptOpen()
     level->getTilesWithinRectangle(Body::deltaState.x, Body::deltaState.y, Body::deltaState.width, Body::deltaState.height, currentTiles);
     for(unsigned int i=0; i < currentTiles.size(); i++)
     {
-        currentTiles[i]->setOccupyingBody(NULL);
+        if(currentTiles[i]->body && currentTiles[i]->body == this)
+        {
+            currentTiles[i]->setOccupyingBody(NULL);
+        }
     }
 
     deltaState.isOpen = true;
@@ -86,10 +89,17 @@ void Door::registerTileTriggers(Tile* tile)
     {
         tile->onBodyEnter.push_back([d] (Tile* t, Body* b) {
             if(b->Body::fixedState.type == Body::Type::Character)
+            {
+                d->openerCount++;
                 d->attemptOpen();
+            }
         });
         tile->onBodyLeave.push_back([d] (Tile* t) {
-            d->attemptClose();
+            d->openerCount--;
+            if(d->openerCount == 0)
+            {
+                d->attemptClose();
+            }
         });
     }
 }

@@ -14,6 +14,8 @@ public:
 
     Door();
 
+    unsigned int openerCount;
+
     struct DeltaState
     {
         bool isOpen;
