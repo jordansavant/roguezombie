@@ -4,6 +4,7 @@
 
 #include "SFML/Graphics.hpp"
 #include "../bitengine/Game.hpp"
+#include <string>
 
 class RogueZombieGame: public bit::VideoGame
 {
@@ -14,8 +15,10 @@ public:
         static unsigned int stateGameStart;
         static unsigned int stateGamePlayHost;
         static unsigned int stateGamePlayClient;
+        static unsigned int stateGameError;
 
         bit::FrameTimer fps;
+        std::string errorMessage;
 
 		virtual void update(sf::Time &gameTime);
 

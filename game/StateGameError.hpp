@@ -1,6 +1,6 @@
 #pragma once
-#ifndef RZ_STATEGAMESTART_H
-#define RZ_STATEGAMESTART_H
+#ifndef RZ_STATEGAMEERROR_H
+#define RZ_STATEGAMEERROR_H
 
 #include "SFML/Graphics.hpp"
 #include "../bitengine/Game.hpp"
@@ -8,24 +8,23 @@
 #include "../bitengine/Gui.hpp"
 
 class RogueZombieGame;
-class StartMainMenu;
 
-class StateGameStart : public bit::State
+class StateGameError : public bit::State
 {
 public:
 
-    StateGameStart(bit::StateStack &stack, RogueZombieGame* game);
+    StateGameError(bit::StateStack &stack, RogueZombieGame* game);
 
-    virtual ~StateGameStart();
+    virtual ~StateGameError();
 
     RogueZombieGame* rogueZombieGame;
 
 	sf::Font menuFont;
     int menuFontSize;
     sf::Texture titleTexture;
-
-    // Main Menu
-    StartMainMenu* mainMenu;
+    bit::Container* errorGui;
+    bit::Label* errorMessageLabel;
+    bit::Label* okLabel;
 
     virtual bool update(sf::Time &gameTime);
 

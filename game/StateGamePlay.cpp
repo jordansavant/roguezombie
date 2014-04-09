@@ -229,8 +229,9 @@ void StateGamePlay::handlePacket_Shutdown(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle server shutdown");
     
-    // Exit
-    requestStackPop();
+    // Error
+    rogueZombieGame->errorMessage = "Server has been shut down.";
+    requestStateClearTo(RogueZombieGame::stateGameError);
 }
 
 void StateGamePlay::handle_DisconnectTimeout()

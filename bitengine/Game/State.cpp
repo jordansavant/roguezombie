@@ -79,6 +79,12 @@ void bit::State::requestStateClear()
     stateStack->clearStates();
 }
 
+void bit::State::requestStateClearTo(unsigned int stateId)
+{
+    stateStack->clearStates();
+    stateStack->pushState(stateId);
+}
+
 bit::Camera* bit::State::createCamera(bit::VideoGame* videoGame, float x, float y, float width, float height)
 {
     Camera* camera = new Camera(*videoGame->renderWindow, x, y, width, height, bit::VideoGame::targetResolution.x, bit::VideoGame::targetResolution.y);

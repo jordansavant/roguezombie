@@ -38,6 +38,10 @@ bool StateGameStart::update(sf::Time &gameTime)
     {
         requestStackPush(RogueZombieGame::stateGamePlayHost);
     }
+    else if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Tilde))
+    {
+        requestStackPush(RogueZombieGame::stateGameError);
+    }
 
     mainMenu->update(*rogueZombieGame->renderWindow, gameTime);
 
@@ -50,8 +54,3 @@ void StateGameStart::draw(sf::RenderWindow &window, sf::Time &gameTime)
 
     mainMenu->draw(window, gameTime);
 }
-
-void StateGameStart::drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera)
-{
-}
-

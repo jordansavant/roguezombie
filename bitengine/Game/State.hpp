@@ -39,6 +39,8 @@ namespace bit
 
         void requestStateClear();
 
+        void requestStateClearTo(unsigned int stateId);
+
         virtual void handleWindowChange(sf::RenderWindow &window);
 
     private:
