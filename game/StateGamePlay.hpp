@@ -60,6 +60,8 @@ protected:
 
     virtual void handlePacket_Shutdown(bit::ServerPacket &packet);
 
+    virtual void handle_DisconnectTimeout();
+
     // Packet Sending
 
     virtual void preparePacket_ClientInformation(bit::ClientPacket &packet);

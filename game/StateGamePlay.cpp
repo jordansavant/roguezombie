@@ -220,7 +220,7 @@ void StateGamePlay::handlePacket_ServerUpdate(bit::ServerPacket &packet)
 void StateGamePlay::handlePacket_DisconnectAcknowledge(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle client disconnected acknowledged");
-
+    
     // Exit
     requestStackPop();
 }
@@ -228,6 +228,14 @@ void StateGamePlay::handlePacket_DisconnectAcknowledge(bit::ServerPacket &packet
 void StateGamePlay::handlePacket_Shutdown(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle server shutdown");
+}
+
+void StateGamePlay::handle_DisconnectTimeout()
+{
+    bit::Output::Debug("Client handle client disconnected ack timeout");
+
+    // Exit
+    requestStackPop();
 }
 
 /**

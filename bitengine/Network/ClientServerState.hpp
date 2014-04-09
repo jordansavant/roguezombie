@@ -30,8 +30,6 @@ namespace bit
 
         virtual bool update(sf::Time &gameTime);
 
-        virtual void disconnect();
-
     protected:
 
         bool isClient;
@@ -49,6 +47,8 @@ namespace bit
         sf::Time tickRate;
         sf::Clock tickClock;
 	    sf::Clock clock;
+        bool awaitingDisconnect;
+        GameTimer disconnectTimer;
 
         virtual Server* newServer() = 0;
 
@@ -59,6 +59,8 @@ namespace bit
 		sf::Time now();
 
         void handlePacket(sf::Int32 packetType, ServerPacket &packet);
+
+        virtual void disconnect();
 
         // Packet handling
 
@@ -74,9 +76,11 @@ namespace bit
 
         virtual void handlePacket_ServerUpdate(bit::ServerPacket &packet) = 0;
 
-        virtual void handlePacket_DisconnectAcknowledge(bit::ServerPacket &packet) = 0;
+        virtual void handlePacket_DisconnectAcknowledge(bit::ServerPacket &packet) = 0; // not required
 
         virtual void handlePacket_Shutdown(bit::ServerPacket &packet) = 0;
+
+        virtual void handle_DisconnectTimeout() = 0;
 
         // Packet sending
 

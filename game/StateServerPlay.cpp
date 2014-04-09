@@ -76,6 +76,10 @@ void StateServerPlay::handlePacket_Shutdown(bit::ServerPacket &packet)
 {
 }
 
+void StateServerPlay::handle_DisconnectTimeout()
+{
+}
+
 /**
  * Packet sending
  */

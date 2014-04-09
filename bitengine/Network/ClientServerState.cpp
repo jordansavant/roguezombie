@@ -20,8 +20,10 @@ bit::ClientServerState::ClientServerState(StateStack &stack, Game* game, bool is
       isConnected(false),
       isConfirmed(false),
       timeSinceLastPacket(sf::seconds(0.0f)),
-      clientTimeout(sf::seconds(2.0f)),
-      tickTimer(1.0f / BIT_SERVER_TICK_FPS)
+      clientTimeout(sf::seconds(2)),
+      tickTimer(1.0f / BIT_SERVER_TICK_FPS),
+      awaitingDisconnect(false),
+      disconnectTimer(1)
 {
 }
 
@@ -115,6 +117,12 @@ bool bit::ClientServerState::update(sf::Time &gameTime)
 
             // Update packet duration via gameTime
             timeSinceLastPacket += gameTime;
+
+            // Check for pending disconnect acknowledgement
+            if(awaitingDisconnect && disconnectTimer.update(gameTime))
+            {
+                handle_DisconnectTimeout();
+            }
         }
         else if(failedConnectionClock.getElapsedTime() >= sf::seconds(5.0f))
         {
@@ -133,6 +141,7 @@ void bit::ClientServerState::disconnect()
 {
     if(isClient && isConnected)
     {
+        awaitingDisconnect = true;
         bit::ClientPacket packet;
         packet << static_cast<sf::Int32>(Server::ClientPacketType::Quit);
         preparePacket_ClientDisconnect(packet);
