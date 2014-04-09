@@ -201,3 +201,8 @@ void GameplayServer::preparePacket_DisconnectAcknowledge(bit::ServerPacket &pack
 {
     bit::Output::Debug("Server prepare server disconnect acknowledge");
 }
+
+void GameplayServer::preparePacket_Shutdown(bit::ServerPacket &packet)
+{
+    bit::Output::Debug("Server prepare server shutdown");
+}

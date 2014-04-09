@@ -41,6 +41,12 @@ void bit::Server::start()
 
 void bit::Server::stop()
 {
+    // Send server shutdown packet
+    ServerPacket packet;
+    packet << static_cast<sf::Int32>(Server::ServerPacketType::Shutdown);
+    preparePacket_Shutdown(packet);
+    sendToAllClients(packet);
+
     waitingThreadEnd = true;
     thread.wait();
 }

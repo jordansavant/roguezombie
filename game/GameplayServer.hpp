@@ -61,6 +61,8 @@ private:
     virtual void preparePacket_ServerUpdate(bit::ServerPacket &packet, bit::RemoteClient &client);
 
     virtual void preparePacket_DisconnectAcknowledge(bit::ServerPacket &packet, bit::RemoteClient &client);
+
+    virtual void preparePacket_Shutdown(bit::ServerPacket &packet);
 };
 
 #endif

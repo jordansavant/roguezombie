@@ -113,6 +113,8 @@ namespace bit
 
         virtual void preparePacket_DisconnectAcknowledge(ServerPacket &packet, RemoteClient &client) = 0;
 
+        virtual void preparePacket_Shutdown(ServerPacket &packet) = 0;
+
     };
 }
 
