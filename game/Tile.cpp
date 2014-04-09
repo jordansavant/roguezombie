@@ -55,10 +55,10 @@ void Tile::setOccupyingBody(Body* _body)
 {
     if(!_body && body)
     {
+        runOnBodyLeave(body);
+
         body = NULL;
         deltaState.bodyId = 0;
-
-        runOnBodyLeave();
     }
     else if(_body)
     {
@@ -91,11 +91,11 @@ void Tile::runOnBodyEnter(Body* body)
     }
 }
 
-void Tile::runOnBodyLeave()
+void Tile::runOnBodyLeave(Body* body)
 {
     for(unsigned int i=0; i < onBodyLeave.size(); i++)
     {
-        onBodyLeave[i](this);
+        onBodyLeave[i](this, body);
     }
 }
 

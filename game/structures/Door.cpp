@@ -94,11 +94,14 @@ void Door::registerTileTriggers(Tile* tile)
                 d->attemptOpen();
             }
         });
-        tile->onBodyLeave.push_back([d] (Tile* t) {
-            d->openerCount--;
-            if(d->openerCount == 0)
+        tile->onBodyLeave.push_back([d] (Tile* t, Body* b) {
+            if(b->Body::fixedState.type == Body::Type::Character)
             {
-                d->attemptClose();
+                d->openerCount--;
+                if(d->openerCount == 0)
+                {
+                    d->attemptClose();
+                }
             }
         });
     }

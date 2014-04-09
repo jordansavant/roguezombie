@@ -175,8 +175,8 @@ void Level::update(sf::Time &gameTime)
 void Level::createPlayer(Player* player)
 {
     // Spawn character
-    Zombie* zombie = new Zombie();
-    zombie->load(this, zombies.size(), 0, 0);
+    Ogre* zombie = new Ogre();
+    zombie->load(this, server->getNextBodyId(), 0, 0);
 
     // Assign Characer
     player->setCharacter(zombie);
