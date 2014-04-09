@@ -228,6 +228,9 @@ void StateGamePlay::handlePacket_DisconnectAcknowledge(bit::ServerPacket &packet
 void StateGamePlay::handlePacket_Shutdown(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle server shutdown");
+    
+    // Exit
+    requestStackPop();
 }
 
 void StateGamePlay::handle_DisconnectTimeout()
