@@ -84,6 +84,10 @@ void StateServerPlay::handlePacket_Kick(bit::ServerPacket &packet)
 {
 }
 
+void StateServerPlay::handle_ServerTimeout()
+{
+}
+
 /**
  * Packet sending
  */

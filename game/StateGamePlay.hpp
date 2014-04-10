@@ -64,6 +64,8 @@ protected:
 
     virtual void handlePacket_Kick(bit::ServerPacket &packet);
 
+    virtual void handle_ServerTimeout();
+
     // Packet Sending
 
     virtual void preparePacket_ClientInformation(bit::ClientPacket &packet);

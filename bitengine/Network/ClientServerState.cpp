@@ -127,10 +127,7 @@ bool bit::ClientServerState::update(sf::Time &gameTime)
         else if(failedConnectionClock.getElapsedTime() >= sf::seconds(5.0f))
         {
             bit::Output::Debug("SERVER SOCKET CANNOT BE ESTABLISHED AFTER 5 SECONDS OF TRYING");
-            // TODO
-            // Connection was not established, pop to previous state?
-            // Override this in game code?
-            requestStackPop();
+            handle_ServerTimeout();
         }
     }
 

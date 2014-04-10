@@ -262,6 +262,12 @@ void StateGamePlay::handlePacket_Kick(bit::ServerPacket &packet)
     requestStateClearTo(RogueZombieGame::stateGameError);
 }
 
+void StateGamePlay::handle_ServerTimeout()
+{
+    rogueZombieGame->errorMessage = "Connection to server has timed out.";
+    requestStateClearTo(RogueZombieGame::stateGameError);
+}
+
 /**
  * Packet sending
  */
