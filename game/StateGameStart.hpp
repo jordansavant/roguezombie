@@ -20,10 +20,6 @@ public:
 
     RogueZombieGame* rogueZombieGame;
 
-	sf::Font menuFont;
-    int menuFontSize;
-    sf::Texture titleTexture;
-
     // Main Menu
     StartMainMenu* mainMenu;
 

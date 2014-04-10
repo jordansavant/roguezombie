@@ -6,26 +6,23 @@
 #include "../../bitengine/Game.hpp"
 #include "../../bitengine/Graphics.hpp"
 #include "../../bitengine/Gui.hpp"
+#include "StateMenu.hpp"
 
 class RogueZombieGame;
 class StateGameStart;
 
-class StartMainMenu : public bit::Container
+class StartMainMenu : public StateMenu
 {
 public:
+
     StartMainMenu(RogueZombieGame* rogueZombieGame, StateGameStart* state);
 
-    RogueZombieGame* rzGame;
     StateGameStart* state;
-    
     bit::Picture* titlePicture;
     bit::Label* singleplayerLabel;
     bit::Label* multiplayerLabel;
     bit::Label* settingsLabel;
     bit::Label* exitLabel;
-
-    sf::Color rzRed;
-    
 
     void load();
 
@@ -33,16 +30,7 @@ public:
 
     void hideMainMenu(int additionalDelay = 0);
 
-
-    void configureLabel(bit::Label* label, std::string text);
-
-    void inflowLabel(bit::Element* element, float startingX, float startingY, float delay, float endX, float endY);
-
-    void outflowLabel(bit::Element* element, float delay);
-
-
     bool onActivate_Settings(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime);
-
 
 };
 

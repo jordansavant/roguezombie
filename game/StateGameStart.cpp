@@ -11,14 +11,6 @@ StateGameStart::StateGameStart(bit::StateStack &stack, RogueZombieGame* _game)
 {
     createCamera(rogueZombieGame, 0, 0, 1, 1);
 
-    std::string titleImagePath(resourcePath() + "minititle.png");
-    titleTexture.loadFromFile(titleImagePath);
-    titleTexture.setSmooth(true);
-
-    std::string fontPath(resourcePath() + "homespun.ttf");
-    menuFont.loadFromFile(fontPath);
-    menuFontSize = 48;
-
     mainMenu = new StartMainMenu(rogueZombieGame, this);
     mainMenu->load();
 }
@@ -40,6 +32,7 @@ bool StateGameStart::update(sf::Time &gameTime)
     }
     else if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Tilde))
     {
+        rogueZombieGame->errorMessage = "Testing error message.";
         requestStackPush(RogueZombieGame::stateGameError);
     }
 

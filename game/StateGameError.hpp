@@ -8,6 +8,7 @@
 #include "../bitengine/Gui.hpp"
 
 class RogueZombieGame;
+class ErrorMenu;
 
 class StateGameError : public bit::State
 {
@@ -18,13 +19,7 @@ public:
     virtual ~StateGameError();
 
     RogueZombieGame* rogueZombieGame;
-
-	sf::Font menuFont;
-    int menuFontSize;
-    sf::Texture titleTexture;
-    bit::Container* errorGui;
-    bit::Label* errorMessageLabel;
-    bit::Label* okLabel;
+    ErrorMenu* errorMenu;
 
     virtual bool update(sf::Time &gameTime);
 
