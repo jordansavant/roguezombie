@@ -343,6 +343,7 @@ void bit::Server::kickClient(bit::RemoteClient &client, unsigned int kickCode)
     bit::Output::Debug("Server prepare server kick client");
 
     bit::ServerPacket packet;
+    packet << static_cast<sf::Int32>(Server::ServerPacketType::Kick);
     packet << sf::Uint32(kickCode);
     client.socket.send(packet);
 
