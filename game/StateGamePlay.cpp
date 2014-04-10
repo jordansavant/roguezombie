@@ -249,7 +249,7 @@ void StateGamePlay::handlePacket_Kick(bit::ServerPacket &packet)
     unsigned int kickCode;
     packet >> kickCode;
 
-    switch(static_cast<GameplayServer::KickReason>(kickCode))
+    switch(static_cast<GameplayServer::KickReason>(kickCode)) 
     {
         case GameplayServer::KickReason::NoSpawn:
             rogueZombieGame->errorMessage = "No room for spawn.";

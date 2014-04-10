@@ -180,20 +180,18 @@ void Level::update(sf::Time &gameTime)
 
 bool Level::createPlayer(Player* player)
 {
-    // Spawn character
+    // Create character
     Ogre* zombie = new Ogre();
     zombie->load(this, server->getNextBodyId(), 0, 0);
 
-    // Assign Characer
+    // Assign Character
     player->setCharacter(zombie);
     zombie->setControllingPlayer(player);
 
-    // Spawn light source for character's vision
+    // Create light source for character's vision
     Light* light = new Light();
     light->load(this, zombie->Body::deltaState.x, zombie->Body::deltaState.y, 12, sf::Color(220, 255, 175), .4);
     zombie->lights.push_back(light);
-
-    // Spawn closer orb light
     Light* orbLight = new Light();
     orbLight->load(this, zombie->Body::deltaState.x, zombie->Body::deltaState.y, 4, sf::Color::White, .6);
     zombie->lights.push_back(orbLight);
@@ -211,12 +209,6 @@ bool Level::createPlayer(Player* player)
 
 bool Level::addPlayer(Player* player)
 {
-    // Player already added
-    if(players.find(player->clientId) != players.end())
-    {
-        return true;
-    }
-
     // Connect to Level
     player->setLevel(this);
     players[player->clientId] = player;
@@ -294,16 +286,16 @@ void Level::deletePlayer(Player* player)
     // Remove player
     removePlayer(player);
 
-    // Despawn light source for character's vision
+    // Delete light source for character's vision
     for(unsigned int i=0; i < player->character->lights.size(); i++)
     {
         delete player->character->lights[i];
     }
 
-    // Despawn character
+    // Delete character
     delete player->character;
 
-    // Despawn player
+    // Delete player
     delete player;
 }
 

@@ -6,3 +6,8 @@ bit::RemoteClient::RemoteClient()
 {
     socket.setBlocking(false);
 }
+
+bool bit::RemoteClient::badConnection()
+{
+    return hasTimedOut || hasDisconnected || hasBeenKicked;
+}

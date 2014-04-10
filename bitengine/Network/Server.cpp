@@ -217,11 +217,14 @@ void bit::Server::handlePacket(ClientPacket &packet, RemoteClient &client)
 
             handlePacket_ClientInformation(packet, client);
 
-            // Send them the full world
-            bit::ServerPacket worldPacket;
-            worldPacket << static_cast<sf::Int32>(Server::ServerPacketType::InitializeWorld);
-            preparePacket_InitializeWorld(worldPacket, client);
-            client.socket.send(worldPacket);
+            if(!client.badConnection())
+            {
+                // Send them the full world
+                bit::ServerPacket worldPacket;
+                worldPacket << static_cast<sf::Int32>(Server::ServerPacketType::InitializeWorld);
+                preparePacket_InitializeWorld(worldPacket, client);
+                client.socket.send(worldPacket);
+            }
 
             break;
         }

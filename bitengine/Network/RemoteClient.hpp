@@ -20,6 +20,8 @@ namespace bit
         bool hasDisconnected;
         bool hasBeenKicked;
         sf::Uint32 lastAcknowledgedSnapshotId;
+
+        bool badConnection();
     };
 }
 

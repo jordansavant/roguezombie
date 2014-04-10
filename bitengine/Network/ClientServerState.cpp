@@ -189,6 +189,12 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, bit::ServerPacke
 
                 break;
 		    }
+            case Server::ServerPacketType::Kick:
+		    {
+                handlePacket_Kick(packet);
+
+                break;
+		    }
             case Server::ServerPacketType::PeerClientConnected:
             {
                 handlePacket_PeerClientConnected(packet);
