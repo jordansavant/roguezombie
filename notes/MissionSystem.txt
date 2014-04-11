@@ -1,14 +1,14 @@
 MISSION RULES:
 - A mission contains child missions making it a Mission Tree.
 - A mission can be completed.
-- A mission must be adaptive, if you are supposed to kill an enemy and another enemy kills him, it needs to adapt
-    and make the mission requirement fulfill when the body is located or news of his death is heard
 - If a mission contains child missions, the mission is only completed when it's children are completed.
-- A mission has a set of requirements that must be met before it can be completed.
+    - The child missions need to support an AND/OR relationship for optional completion methods
+- A mission can also have a set of requirements that must be met before it can be completed.
+    - The requirements need to support an AND/OR relationship for optional completion methods
 - Requirements are only found on child missions and are measurable, e.g. inventory.contains(item).
 - Requirements are lambda operations that take a character and inspect them for completion
 - A mission can be predefined using scripted definitions made by game designers
-- A mission also needs to be randomly generated to fill out worldwide content
+- A mission also needs to be able to be randomly generated to fill out worldwide content
     - Standard quests can be generated and plugged into Mission Trees, or added as their own assigned root:
         - Assassination Quests: "Kill X", "Capture X Alive"
         - Searching Quests: "Find X", "Get to X", "Gather X of Y"
@@ -46,27 +46,50 @@ MISSION RULES:
         
 MISSION COMPLETION CHECKING:
 - When an event occurs or on an update interval missions are checked for completetion.
+- Mission completion needs to account for if it is a sequence or selector type completion.
 - Mission completion is checked by each character:
+
     Foreach Assigned Mission as Mission:
         IF AttemptCompleteMission(Mission) == true
+            missionStateChanged = true
             
     Routine: AttemptCompleteMission(Mission)
-        Foreach Mission.ChildMissions as Child          // Children must be complete before parent is inspected
-            IF AttemptCompleteMission(Child) == false
+        IF hasChildren
+            IF logicalType == Sequence
+                Foreach Mission.ChildMissions as Child          
+                    IF AttemptCompleteMission(Child) == false   // All children must be complete before parent is considered
+                        Mission.isComplete = false
+                        return false
+                Mission.isComplete = true
+                return true
+            ELSE IF logicalType == Selector
+                Foreach Mission.ChildMissions as Child          
+                    IF AttemptCompleteMission(Child) == true    // Any child must be completed before parent is considered
+                        Mission.isComplete = true
+                        return true
+                Mission.isComplete = false
                 return false
-        IF Mission.isCompleted                          // If it is already completed return with true
+                
+        IF Mission.isCompleted                              // If it is already completed return with true
             return true
-        IF Mission.RequirementsMet()                    // Check to see if the requirements are filled
-            Mission.Succeed()                           // Succeed, giving EXP etc
+        IF Mission.RequirementsMet()                        // Check to see if the requirements are filled
+            Mission.Succeed()                               // Succeed, giving EXP etc
+            Mission.isComplete = true                       // Once a mission requirement is fulfilled it is complete
             return true
         return false
     
     Routine: RequirementsMet()
-        Foreach Requirements as Requirement
-            IF Requirement.Fulfilled(Character) == false
-                return false
-        return true
-    
+        IF logicalType == Sequence
+            Foreach Requirements as Requirement
+                IF Requirement.Fulfilled(Character) == false
+                    return false
+            return true
+        ELSE IF logicalType == Selector
+            Foreach Requirements as Requirement
+                IF Requirement.Fulfilled(Character) == true
+                    return true
+            return false
+            
     Routine: Fulfilled(Character)
         isFullfilled = lambda(Character)
         return isFullfilled
@@ -128,8 +151,8 @@ NETWORKING:
     
     Routine: Mission << Packing
         packet << isComplete
-        packet << type;
-        packet << JournalEntry;
+        packet << type
+        packet << JournalEntry
         packet << ChildMissions.size()
         Foreach ChildMission
             packet << ChildMission
@@ -155,24 +178,24 @@ NETWORKING:
     
     Routine: Requirement << Packing
         packet << isFulfilled
-        packet << type;
+        packet << journalType;
         packet << JournalEntry;
     
     Routine: RequirementClientSide >> Unpacking
         packet >> isFulfilled
-        packet >> type
+        packet >> journalType
         packet >> JournalEntryClientSide
 
     Routine: JournalEntry << Packing
-        packet << type
-        IF type == Standard
+        packet << journalType
+        IF journalType == Standard
             packet << journalId
         ELSE
             packet << phoeneticVerb << phoeneticNount
     
     Routine: JournalEntryClientSide >> Unpacking
-        packet >> type
-        IF type == Standard
+        packet >> journalType
+        IF journalType == Standard
             packet >> journalId
         ELSE
             packet >> phoeneticVerb >> phoeneticNount
@@ -207,14 +230,14 @@ ENVIRONMENTAL PUZZLE/REQUISITE ENGINE:
 - Items are locked by a list of Access Requirements (see Mission Requirements)
 - Being locked, it can generate another locale entity within the same level set to allow access to it
 - This can be recursively chained for reasonable depth, e.g.
-    Routine BuildEntity()
+    Routine: BuildEntity()
         Entity = generateEntity()
         WHILE %randomChance%
             RequiredChildren.add( BuildEntity() )                   // Child items that need to be unlocked
         WHILE %randomChance%
             Requirements.add( new LambdaRequirement(Character) )    //  Same as Mission Requirements
             
-    Routine CheckAccess()
+    Routine: CheckAccess()
         Foreach RequiredChildren as Child
             IF Child.CheckAccess() == false
                 return false
@@ -222,7 +245,7 @@ ENVIRONMENTAL PUZZLE/REQUISITE ENGINE:
             return true
         IF RequirementsMet()                                        // Same as mission
             Unlocked = true
-            return true
+            return true 
         return false
         
     - Could end up building:
@@ -240,48 +263,113 @@ ENVIRONMENTAL PUZZLE/REQUISITE ENGINE:
 
     
 EXAMPLE MISSION TREES:
-    <--> == ROOT
-    -->> == LEAF
+    -sequence   = All children must be completed
+    -selector   = Any child must be completed
+    -->>        = LEAF child Requirements
 
-    Kill Valentine <-->
-        Determine the Source
-            Find the Author
-                Take Journal to Hawthorne -->> Dialog + Has Journal?
-                Help Hawthorne
-                    Kill crony -->> Crony.Health <= 0 ?
-                    Get information from Hawthorne -->> Dialog
-                Travel to Subway -->> At Location?
-                Explore the Tunnels
-                    Find Tunnel Rat Gang -->> At Location?
-                Join the Tunnel Rat gang
-                    Talk to Joe -->> Dialog
-                    Steal car battery from rail car -->> Has battery?
-                    Return to Joe -->> Dialog + Has battery?
-                Locate Author within Cells -->> Dialog
-                Help Author Escape
-                    Get Key From Joe -->> Has Joe's Key?
-            Explore the Factory
-                Find Factory
-                    Find Desert -->> At Location?
-                    Find Entrance -->> At Location?
-                Find Map -->> Has Map?
-                Escape -->> At Location?
-        Track Valentines Lair
-            Travel to Desparia -->> At Location?
-            Access the Grotto -->> At Location + Has Grotto Key?
-        Defeat Valentine
-            Find throne room -->> At Location?
-            Slay Valentine
-                Knock Down Valentine -->> Valentine.health < 10 ?
-                Speak over Valentine -->> Dialog
+    Kill Valentine-sequence ROOT
+        Determine the Source-sequence
+            Find the Author-sequence
+                Take Journal to Hawthorne
+                    -->> Dialog + Has Journal?
+                AND-THEN
+                Help Hawthorne-sequence
+                    Help Hawthorne-selector
+                        Kill crony
+                            -->> Crony.Health <= 0 ?
+                        OR
+                        Rob crony
+                            -->> Has Crony Necklace ?
+                    Get information from Hawthorne
+                        -->> Dialog + ( Crony.Health <= 0?  OR  Has Crony Necklace? )
+                Travel to Subway
+                    -->> At Location?
+                AND-THEN
+                Explore the Tunnels-sequence
+                    Find Tunnel Rat Gang
+                        -->> At Location?
+                AND-THEN
+                Join the Tunnel Rat gang-sequence
+                    Talk to Joe
+                        -->> Dialog
+                    AND-THEN
+                    Steal car battery from rail car-selector
+                        Steal car battery
+                            -->> Has battery?
+                        OR
+                        Buy car battery
+                            -->> Has battery?
+                    AND-THEN
+                    Return to Joe
+                        -->> Dialog + Has battery?
+                Locate Author within Cells
+                    -->> Dialog
+                AND-THEN
+                Help Author Escape-sequence
+                    Get Key From Joe
+                        -->> Has Joe's Key?
+            AND-THEN
+            Explore the Factory-sequence
+                Find Factory-sequence
+                    Find Desert
+                        -->> At Location?
+                    AND-THEN
+                    Find Entrance
+                        -->> At Location?
+                Find Map
+                    -->> Has Map?
+                AND-THEN
+                Escape
+                    -->> At Location?
+        AND-THEN
+        Track Valentines Lair-sequence
+            Travel to Desparia
+                -->> At Location?
+            AND-THEN
+            Access the Grotto
+                -->> At Location + Has Grotto Key?
+        AND-THEN
+        Defeat Valentine-sequence
+            Find throne room
+                -->> At Location?
+            AND-THEN
+            Slay Valentine-sequence
+                Down Valentine-selector
+                    Badly Hurt Valentine
+                        -->> Valentine.health < 10 ?
+                    OR
+                    Activate Valentine Trap
+                        -->> Has Valentine Trap ?
+                AND-THEN
+                Bite Valentine
+                    -->> Dialog
+                
+    Joe Give Key-sequence ROOT
+        Talk to Joe
+            -->> Dialog
+        AND-THEN
+        Find Potion
+            -->> Has Potion?
 
-    Joe Give Key <-->
-        Talk to Joe -->> Dialog
-        Find Potion -->> Has Potion?
 
-
+MISSION CREATION/ASSIGNMENT
+- A character is assigned many missions
+- A mission is composed of sequential or selector child missions
+- A mission is composed of sequential or selector requirements
+- Scripted Mission Trees can be generated using a scripting language, parsed and attached to game events to assign to characters
+    - Merlin from 2D example for parsing the language
+- Generated Mission Trees can be generated by a logical, randomized engine and attached to game events to assign to characters
+- Game events can assign new mission tree roots to characters
+- The mission engine will produce linked mission trees, be them dynamically generated or loaded through human scripts
+- Example of assigning the root mission for a character
+    IF the character is new
+        Mission = MissionEngine::get(enum KillValentine)
+        Character.assignMission(Mission)
+        
+            
+            
     
-PSEUDOCODE:
+IMPLEMENTATION:
 
 Requirement
 {
@@ -303,6 +391,7 @@ RequirementClientSide
 Player
 {
     vector<Mission> missions;
+    bool missionStateChanged;
     
     CheckMissionCompletion();
     CheckMission(Mission m);
@@ -311,6 +400,7 @@ Player
 
 Mission
 {
+    enum logicalType { Sequence, Selector }
     Character parentCharacter;
     Mission parentMission;
     vector<Mission> childMissions;
@@ -340,14 +430,14 @@ AccessDrivenEntity
 
 JournalEntry
 {
-    enum type{ Scripted, Generated }
+    enum journalType{ Scripted, Generated }
     int phoeneticVerb; // if Generated
     int phoeneticNoun; // if Generated
     int journalId;     // if Scripted
 }
 JournalEntryClientSide
 {
-    enum type{ Scripted, Generated }
+    enum journalType{ Scripted, Generated }
     int phoeneticVerb; // if Generated
     int phoeneticNoun; // if Generated
     int journalId;     // if Scripted
