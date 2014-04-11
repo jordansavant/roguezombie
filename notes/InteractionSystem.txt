@@ -79,9 +79,10 @@ UnlockableKeyable : Lockable
         : Lockable()
     {
         tree[InteractionType::Root].tree[InteractionType::Lockable].tree[InteractionType::UnlockableKeyable] = this;
-        onSelect = std::bind(&UnlockableKeyable::UnlockWithKey, this, std::placeholders::__1);
+        onSelect = std::bind(&UnlockableKeyable::UnlockWithKey, this, std::placeholders::__1, std::placeholders::__2);
     }
 
+    
     UnlockWithKey(Character c)
     {
         Key k = c.inventory.find(ItemType::Key);
@@ -89,6 +90,29 @@ UnlockableKeyable : Lockable
         {
             locked = false;
         }
+    }
+    
+    // CLIENT SIDE
+    PrepareClientSideUnlockWithKey(LevelClient l, Character c)
+    {
+        Command cmd;
+        cmd.type = Command::Type::UnlockWithKey;
+        cmd.pack = [t] (sf::Packet &packet) {
+            // Switch around to work with Tiles if need be
+            packet << sf::Uint32(c->fixedState.id);
+            packet << sf::Uint32(this->fixedState.id);
+        };
+		l->state->commandQueue.push_back(cmd);
+    }
+    
+    HandleUnlockWithKey(packet)
+    {
+        // Unpack data
+        // Locate target
+        // Locate character
+        // Check if legal action
+        // Call defined operation
+        target.UnlockWithKey(Character);
     }
 }
 
@@ -98,7 +122,7 @@ UnlockableBashable : Lockable
         : Lockable()
     {
         tree[InteractionType::Root].tree[InteractionType::Lockable].tree[InteractionType::UnlockableBashable] = this;
-        onSelect = std::bind(&UnlockableBashable::UnlockWithBash, this, std::placeholders::__1);
+        onSelect = std::bind(&PrepareClientSideUnlockWithBash::UnlockWithBash, this, std::placeholders::__1, std::placeholders::__2);
     }
 
     UnlockWithBash(Character c)
@@ -107,6 +131,29 @@ UnlockableBashable : Lockable
         {
             locked = false;
         }
+    }
+    
+    // CLIENT SIDE
+    PrepareClientSideUnlockWithBash(LevelClient l, Character c)
+    {
+        Command cmd;
+        cmd.type = Command::Type::UnlockWithBash;
+        cmd.pack = [t] (sf::Packet &packet) {
+            // Switch around to work with Tiles if need be
+            packet << sf::Uint32(c->fixedState.id);
+            packet << sf::Uint32(this->fixedState.id);
+        };
+		l->state->commandQueue.push_back(cmd);
+    }
+    
+    HandleUnlockWithBash(packet)
+    {
+        // Unpack data
+        // Locate target
+        // Locate character
+        // Check if legal action
+        // Call defined operation
+        target.UnlockWithKey(Character);
     }
 }
 
