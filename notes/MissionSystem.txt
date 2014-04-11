@@ -1,0 +1,359 @@
+MISSION RULES:
+- A mission contains child missions making it a Mission Tree.
+- A mission can be completed.
+- A mission must be adaptive, if you are supposed to kill an enemy and another enemy kills him, it needs to adapt
+    and make the mission requirement fulfill when the body is located or news of his death is heard
+- If a mission contains child missions, the mission is only completed when it's children are completed.
+- A mission has a set of requirements that must be met before it can be completed.
+- Requirements are only found on child missions and are measurable, e.g. inventory.contains(item).
+- Requirements are lambda operations that take a character and inspect them for completion
+- A mission can be predefined using scripted definitions made by game designers
+- A mission also needs to be randomly generated to fill out worldwide content
+    - Standard quests can be generated and plugged into Mission Trees, or added as their own assigned root:
+        - Assassination Quests: "Kill X", "Capture X Alive"
+        - Searching Quests: "Find X", "Get to X", "Gather X of Y"
+        - Story Quests: "Talk to X"
+        - Competition Quests: Any of the above but before an adversary or event occurs
+    - A recursive quest building routine could generate Mission Trees of those standards, to a sane depth and reasonable locale, e.g.
+        Story Quest
+            Speak to Buster -->> Dialog
+            Search Quest
+                Go to Farm -->> At Location?
+                Retrieve Rake -->> Has Rake?
+            Story Quest
+                Give Rake to Buster -->> Dialog + Has Rake?
+        - Within the same region, completing reasonable objectives, without massive depth
+
+- A character can have a list of assigned missions.
+- Each assigned mission is the root mission for a mission tree.
+- Child missions are never added to character missions list to avoid duplicates.
+- The same mission can exist across multiple characters, completing them are independent.
+    - e.g. Finding Joe's Key can be completed by two different players
+    - For parties of players, a routine can synchronize their completion
+- Opposite of this, some missions can change the world and break the mission of other characters.
+    - e.g. Kill Samwise, once killed by players sharing the same world, he is gone.
+    - The requirement still exists, but its fullfillment must re-adapt to either completing or changing to find the body etc.
+- Characters should only be aware of their latests quests,
+    e.g. all leaf nodes completed and the first leaf nodes not completed
+- Characters can check the completion of their own quests as described IN COMPLETION CHECKING by:
+    - Via Update
+        - At repeating intervals
+    - Via Event
+        - On new items received (perhaps limited to quest items, but this is more restrictive given that now we need quest items)
+        - On dialog changes
+        - On Level Loading
+        
+        
+MISSION COMPLETION CHECKING:
+- When an event occurs or on an update interval missions are checked for completetion.
+- Mission completion is checked by each character:
+    Foreach Assigned Mission as Mission:
+        IF AttemptCompleteMission(Mission) == true
+            
+    Routine: AttemptCompleteMission(Mission)
+        Foreach Mission.ChildMissions as Child          // Children must be complete before parent is inspected
+            IF AttemptCompleteMission(Child) == false
+                return false
+        IF Mission.isCompleted                          // If it is already completed return with true
+            return true
+        IF Mission.RequirementsMet()                    // Check to see if the requirements are filled
+            Mission.Succeed()                           // Succeed, giving EXP etc
+            return true
+        return false
+    
+    Routine: RequirementsMet()
+        Foreach Requirements as Requirement
+            IF Requirement.Fulfilled(Character) == false
+                return false
+        return true
+    
+    Routine: Fulfilled(Character)
+        isFullfilled = lambda(Character)
+        return isFullfilled
+    
+
+NETWORKING:
+- Characters are assigned missions, but clients need to portray missions to the player
+- Clients need to not be aware of missions in the mission tree that are not active or completed
+- Clients need to only know when missions are changed.
+- Missions are assigned at the character level, but we only need to send missions for the player character
+- When the world is initialized for player we can send all assigned missions of the character
+- When a snapshot is sent we do not need to send their missions at all since they are very rarely changed
+- When a missions is completed (state changed) we need to update the mission tree for the player
+- Combination Approach
+    - The game works off of sending snapshots continually, dropped packet problems are avoided
+    - If we say we want to send only changes to the client, we get in a confirmation system which is awkward
+    - Do we need to facilitate packet guarantee system? Please NO!
+    - What if we combine the two types?
+        - We send incomplete mission trees (up to active leaves) on a much less periodic basis (once per second or 2 seconds etc)
+        - We send mission trees on mission status changed
+    - When a mission is fullfilled we set a boolean on the character indicating that a mission state has changed
+    - During snapshot send, if the interval is ready for a mission tree send OR if the player character has a mission state change
+        - Send the mission tree
+        - Update the boolean back to false for the player character
+        
+    Routine: PrepareSnapshot
+        IF Character
+            IF Character->Player == Sending Player
+                IF Character->missionChanged OR Interval
+                    packet << "missions=true"
+                    Character.prepareMissionTreeSnapshot(packet)
+                    Character.prepareSnapshot(packet)
+                ELSE
+                    packet << "missions=false"
+                    Character.prepareSnapshot(packet)
+                    
+    Routine: HandleSnapshot
+        IF Character
+            IF Character->Player == This Player
+                packet >> hasMissions
+                IF hasMissions
+                    Character.handleMissionTreeSnapshot(packet)
+                    Character.handleSnapshot(packet)
+                ELSE
+                    Character.handleSnapshot(packet)
+                    
+    Routine: PrepareMissionTreeSnapshot
+        packet << AssignedMissions.size()
+        Foreach AssignedMissions as Mission
+            packet << Mission
+            
+    Routine: HandleMissionTreeSnapshot
+        AssignedMissions.clear()
+        packet >> assignedMissionSize
+        For assignedMissionSize
+            new Mission
+            packet >> Mission
+            AssignedMissions.add(Mission)
+    
+    Routine: Mission << Packing
+        packet << isComplete
+        packet << type;
+        packet << JournalEntry;
+        packet << ChildMissions.size()
+        Foreach ChildMission
+            packet << ChildMission
+        packet << Requirements.size()
+        Foreach Requirement
+            packet << Requirement
+    
+    Routine: MissionClientSide >> Handling
+        ChildMissions.clear()
+        packet >> isComplete
+        packet >> type
+        packet >> JournalEntryClientSide
+        packet >> childMissionSize
+        For childMissionSize
+            new MissionClientSide
+            packet >> MissionClientSide
+            ChildMissions.add(MissionClientSide)
+        packet >> requirementSize
+        For requirementSize
+            new RequirementClientSide
+            packet >> RequirementClientSide
+            Requirements.add(RequirementClientSide)
+    
+    Routine: Requirement << Packing
+        packet << isFulfilled
+        packet << type;
+        packet << JournalEntry;
+    
+    Routine: RequirementClientSide >> Unpacking
+        packet >> isFulfilled
+        packet >> type
+        packet >> JournalEntryClientSide
+
+    Routine: JournalEntry << Packing
+        packet << type
+        IF type == Standard
+            packet << journalId
+        ELSE
+            packet << phoeneticVerb << phoeneticNount
+    
+    Routine: JournalEntryClientSide >> Unpacking
+        packet >> type
+        IF type == Standard
+            packet >> journalId
+        ELSE
+            packet >> phoeneticVerb >> phoeneticNount
+        
+NETWORKING JOURNAL ENTRY CHALLENGES:
+- A Mission or Requirement have to be described to a player
+- Sending a title String and description String in the network packet is very bloated
+- Sending an ID for a Journal Entry object is more ideal, then the title and descriptions are also client side
+- A lookup for ID to Journal Entry can be done to express the mission descriptions
+- This is also going to be useful if all in game descriptions were looked up by and ID to be multilingual
+- But for dynamically built missions on the server side, how are they described?
+    - A quest is dynamically built using the standard formats such as Search, Assassinate etc
+    - As a result the server will have to build human understandable descriptions dynamically too, which is a challenge in its own right
+    - More likely, a randomly generated quest will follow a standard like described and can be reduced to a Phoenetic representation:
+        - e.g. "Kill X", is a actually => Assassinate EntityType=Wookie
+        - Assassinate can be an enum/ID, EntityType the same
+        - Client side can form the sentence by lingual lookup: PhoenticLookup(Verb, Noun)
+    Routine: PhoenticLookup(Verb, Noun)
+        String action = VerbLookup(Verb)
+        String subject = NounLookup(Noun)
+        return action + subject
+- So given missions being dynamic or scripted, we can support Title and Description with Phoenetic Lookup or Journal Lookup
+
+
+    
+ENVIRONMENTAL PUZZLE/REQUISITE ENGINE:
+- Levels can contain items and containers and NPCs etc
+- Some entities can be barred or locked etc.
+- These entities can have requisites for them to be accessible, e.g. chest needs key, terminal needs power, NPC needs wake up medicie
+- When a building (series of levels) or level is generated items will be generated as well
+- When an item container or NPC is generated their is a chance that it is locked
+- Items are locked by a list of Access Requirements (see Mission Requirements)
+- Being locked, it can generate another locale entity within the same level set to allow access to it
+- This can be recursively chained for reasonable depth, e.g.
+    Routine BuildEntity()
+        Entity = generateEntity()
+        WHILE %randomChance%
+            RequiredChildren.add( BuildEntity() )                   // Child items that need to be unlocked
+        WHILE %randomChance%
+            Requirements.add( new LambdaRequirement(Character) )    //  Same as Mission Requirements
+            
+    Routine CheckAccess()
+        Foreach RequiredChildren as Child
+            IF Child.CheckAccess() == false
+                return false
+        IF Unlocked == true
+            return true
+        IF RequirementsMet()                                        // Same as mission
+            Unlocked = true
+            return true
+        return false
+        
+    - Could end up building:
+        - Terminal, locked by: PowerNode, Password
+        - PowerNode, locked by: Access Gate
+        - Access Gate, locked by: Gate Key
+        - Gate Key, in desk a
+        - Password, in desk b
+- Can this work with the lambda Mission Requirement?
+    - Get Terminal Information -->> Has Power + Has Password?
+    - Activate PowerNode -->> Dialog
+    - Enter Access Gate -->> Has Gate Key?
+- Environmental requisites don't need to be networked to clients because they are puzzle based gameplay
+
+
+    
+EXAMPLE MISSION TREES:
+    <--> == ROOT
+    -->> == LEAF
+
+    Kill Valentine <-->
+        Determine the Source
+            Find the Author
+                Take Journal to Hawthorne -->> Dialog + Has Journal?
+                Help Hawthorne
+                    Kill crony -->> Crony.Health <= 0 ?
+                    Get information from Hawthorne -->> Dialog
+                Travel to Subway -->> At Location?
+                Explore the Tunnels
+                    Find Tunnel Rat Gang -->> At Location?
+                Join the Tunnel Rat gang
+                    Talk to Joe -->> Dialog
+                    Steal car battery from rail car -->> Has battery?
+                    Return to Joe -->> Dialog + Has battery?
+                Locate Author within Cells -->> Dialog
+                Help Author Escape
+                    Get Key From Joe -->> Has Joe's Key?
+            Explore the Factory
+                Find Factory
+                    Find Desert -->> At Location?
+                    Find Entrance -->> At Location?
+                Find Map -->> Has Map?
+                Escape -->> At Location?
+        Track Valentines Lair
+            Travel to Desparia -->> At Location?
+            Access the Grotto -->> At Location + Has Grotto Key?
+        Defeat Valentine
+            Find throne room -->> At Location?
+            Slay Valentine
+                Knock Down Valentine -->> Valentine.health < 10 ?
+                Speak over Valentine -->> Dialog
+
+    Joe Give Key <-->
+        Talk to Joe -->> Dialog
+        Find Potion -->> Has Potion?
+
+
+    
+PSEUDOCODE:
+
+Requirement
+{
+    <function( Character ) -> bool> lambda;
+    bool isFullfilled;
+    enum type{ Scripted, Generated }
+    enum phoeneticVerb; // if Generated
+    enum phoeneticNoun; // if Generated
+    int journalId;      // if Scripted
+    
+    bool Fulfilled();
+}
+RequirementClientSide
+{
+    bool isFulfilled;
+    JournalEntryClientSide entry;
+}
+
+Player
+{
+    vector<Mission> missions;
+    
+    CheckMissionCompletion();
+    CheckMission(Mission m);
+    AssignNewMission(Mission m);
+}
+
+Mission
+{
+    Character parentCharacter;
+    Mission parentMission;
+    vector<Mission> childMissions;
+    int experience;
+    vector<Requirement> requirements;
+    bool isComplete;
+    enum type{ Scripted, Generated }
+    JournalEntry journalEntry;
+    
+    RequirementsMet();
+    Succeed(); // Update journals etc, effect the world, give character experience
+}
+MissionClientSide
+{
+    bool isComplete;
+    JournalEntryClientSide journalEntry;
+}
+
+
+AccessDrivenEntity
+{
+    vector<AccessDrivenEntity> requiredChildren;
+    vector<Requirement> requirements;
+    
+    bool CheckAccess();
+}
+
+JournalEntry
+{
+    enum type{ Scripted, Generated }
+    int phoeneticVerb; // if Generated
+    int phoeneticNoun; // if Generated
+    int journalId;     // if Scripted
+}
+JournalEntryClientSide
+{
+    enum type{ Scripted, Generated }
+    int phoeneticVerb; // if Generated
+    int phoeneticNoun; // if Generated
+    int journalId;     // if Scripted
+    
+    GetTitle();
+    GetDescription();
+}
+
+
