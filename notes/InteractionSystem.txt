@@ -1,0 +1,167 @@
+DIALOG TREE:
+- Dialog occurs between two character or perhaps even two bodies
+- A Dialog can be represented by a dialog tree (directed graph)
+
+
+
+INTERACTION TREE:
+- When interacting with objects, they need to produce a serious of interaction choices
+- Each interaction choice may have subchoices or may produce an action
+- Example of opening a locked container:
+    - Click on Locked Container
+        - Unlock
+            - Unlock with Key (if has key)
+            - Attempt unlock with Lockpick (if has lockpick)
+            - Attempt to Bash
+        - Destroy
+            - Shoot (if has gun)
+            - Burn (if has fire)
+        - Leave
+    - Click on Unlocked Container
+        - Open
+        - Lock
+            - Lock with Key (if has key)
+            - Attempt Lock with Lockpick (id has lockpick)
+        - Destroy
+            - Shoot (if has gun)
+            - Burn (if has fire)
+        - Leave
+- The example shows that varying types of interacteable object may have the same choices
+- The example also shows that certain interactions have Requirements to be able to interact (see mission system)
+- An action opens the Interaction Tree
+- An action is produced from the Interaction Tree
+- Each leaf node of the interaction tree must run a lambda function from the interactor and interactee
+    Routine: onActivate(Character interactor, Body interactee)
+
+
+IMPLEMENTATION:
+Interactable
+{
+    Interactable()
+    {
+        type = InteractionType::Root;
+        parent = null;
+        tree[InteractionType::Root] = this;
+    }
+
+    Interactable parent;
+    map<InteractionType, Interactable> tree
+    InteractionType type;
+    function<(Character)> onSelect;
+    
+    enum InteractionType
+    {
+        Root,
+        Lockable,
+        UnlockableKeyable,
+        UnlockableBashable,
+    }
+    
+    virtual void activate(Character c)
+    {
+    }
+}
+
+Lockable : Interactable
+{
+    Lockable()
+        : Interactable()
+    {
+        tree[InteractionType::Root].tree[InteractionType::Lockable] = this;
+    }
+
+    locked = true;
+}
+
+UnlockableKeyable : Lockable
+{
+    UnlockableKeyable()
+        : Lockable()
+    {
+        tree[InteractionType::Root].tree[InteractionType::Lockable].tree[InteractionType::UnlockableKeyable] = this;
+        onSelect = std::bind(&UnlockableKeyable::UnlockWithKey, this, std::placeholders::__1);
+    }
+
+    UnlockWithKey(Character c)
+    {
+        Key k = c.inventory.find(ItemType::Key);
+        if(k)
+        {
+            locked = false;
+        }
+    }
+}
+
+UnlockableBashable : Lockable
+{
+    UnlockableBashable()
+        : Lockable()
+    {
+        tree[InteractionType::Root].tree[InteractionType::Lockable].tree[InteractionType::UnlockableBashable] = this;
+        onSelect = std::bind(&UnlockableBashable::UnlockWithBash, this, std::placeholders::__1);
+    }
+
+    UnlockWithBash(Character c)
+    {
+        if(c.bash(this))
+        {
+            locked = false;
+        }
+    }
+}
+
+Chest : UnlockableKeyable, UnlockableBashable
+{
+    Chest()
+        : UnlockableKeyable, UnlockableBashable
+    {
+    }
+}
+
+
+----------------------------
+
+LevelClient.onClick(Character clicker, Tile clickedTile)
+{
+    Interactable i = clickedTile.getInteractable()
+    if(i)
+    {
+        state.InteractionMenu.showInteractionOptions(clicker, clickedTile, i, 0);
+    }
+}
+
+InteractionMenu.showInteractionOptions(Character c, Tile t, Interactable i, int depth)
+{
+    // Render the interaction type
+    Render(i.Type, depth);
+    InteractionY++;
+    
+    // Display nested list of options down to leafs
+    if(i.tree.size() > 0)
+    {
+        foreach i.tree as key => value
+        {
+            if(value.tree.size() > 0)
+            {
+                showInteractionOptions(c, t, value, depth + 1);
+            }
+        }
+    }
+    else
+    {
+        // If this is is a leaf, register its selection function
+        Render(i.Type, depth, [c, i] (Character c) {
+            i.onSelect(c);
+        });
+    }
+}
+
+
+
+
+
+
+
+
+
+
