@@ -5,6 +5,24 @@ Mission::Mission()
 {
 }
 
+Mission::~Mission()
+{
+    for(unsigned int i=0; i < requirements.size(); i++)
+    {
+        delete requirements[i];
+    }
+}
+
+void Mission::assignCharacter(Character* character)
+{
+    parentCharacter = character;
+}
+
+void Mission::assignRequirement(Requirement* requirement)
+{
+    requirements.push_back(requirement);
+}
+
 bool Mission::attemptCompleteMission()
 {
     if(childMissions.size() > 0)

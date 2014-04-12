@@ -3,7 +3,11 @@
 #include "../bitengine/System.hpp"
 #include "Command.hpp"
 #include "Player.hpp"
+#include "Character.hpp"
+#include "Tile.hpp"
 #include "levels/Interior.hpp"
+#include "mission/Mission.hpp"
+#include "mission/Requirement.hpp"
 
 GameplayServer::GameplayServer()
     : bit::Server(), tileIdCounter(0), bodyIdCounter(0)
@@ -91,6 +95,15 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
             players.erase(client.id);
             kickClient(client, KickReason::NoSpawn);
         }
+
+        Mission* mission = new Mission();
+        Requirement* requirement = new Requirement();
+        requirement->check = [] (Character* c) -> bool {
+            Tile* t = c->level->getTileAtPosition(c->Body::deltaState.x, c->Body::deltaState.y);
+            return (t->fixedState.x / t->level->tileWidth == 43);
+        };
+        mission->assignRequirement(requirement);
+        p->character->assignMission(mission);
     }
 }
 

@@ -14,6 +14,8 @@ public:
 
     Mission();
 
+    ~Mission();
+
     enum GenerationType
     {
         Scripted,
@@ -32,6 +34,10 @@ public:
     LogicalType logicalType;
     // int experience;
     // JournalEntry* journalEntry;
+
+    void assignCharacter(Character* character);
+
+    void assignRequirement(Requirement* requirement);
 
     bool attemptCompleteMission();
 

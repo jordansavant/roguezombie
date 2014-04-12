@@ -8,10 +8,19 @@
 #include "Tile.hpp"
 #include "Light.hpp"
 #include "Player.hpp"
+#include "mission/Mission.hpp"
 
 Character::Character()
-    : Body(), moveTimer(.75f), fixedState(), deltaState()
+    : Body(), missionStateChanged(false), moveTimer(.75f), fixedState(), deltaState()
 {
+}
+
+Character::~Character()
+{
+    for(unsigned int i=0; i < missions.size(); i++)
+    {
+        delete missions[i];
+    }
 }
 
 void Character::load(Level* _level, unsigned int _id, Type _type, float _x, float _y, float _width, float _height)
@@ -55,6 +64,9 @@ void Character::update(sf::Time &gameTime)
             lights[i]->y = Body::deltaState.y;
         }
     }
+
+    // See if any missions are complete // TODO: distribute into a less updated manner
+    checkMissions();
 }
 
 void Character::setControllingPlayer(Player* player)
@@ -164,20 +176,53 @@ bool Character::isTileBlockedForPathfinding(Tile* tile)
     return false;
 }
 
+void Character::assignMission(Mission* mission)
+{
+    missions.push_back(mission);
+    missionStateChanged = true;
+}
+
+void Character::checkMissions()
+{
+    for(unsigned int i=0; i < missions.size(); i++)
+    {
+        if(missions[i]->attemptCompleteMission())
+        {
+            missionStateChanged = true;
+        }
+    }
+}
+
 void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
+    // Body
     Body::prepareSnapshot(packet, full);
 
+    // Character
     if(full)
         packet << fixedState;
     packet << deltaState;
+
+    // Missions
+    if(missionStateChanged)
+    {
+        // pack count and missions
+    }
+    else
+    {
+        // pack count = 0
+    }
 }
 
 void Character::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
+    // Body
     Body::handleSnapshot(packet, full);
 
+    // Character
     if(full)
         packet >> fixedState;
     packet >> deltaState;
+
+    // Missions
 }

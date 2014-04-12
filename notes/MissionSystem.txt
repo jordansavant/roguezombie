@@ -393,7 +393,7 @@ RequirementClientSide
     JournalEntryClientSide entry;
 }
 
-Player
+Character
 {
     vector<Mission> missions;
     bool missionStateChanged;

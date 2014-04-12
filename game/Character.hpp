@@ -12,12 +12,15 @@ class Level;
 class Player;
 class Light;
 class Tile;
+class Mission;
 
 class Character : public Body
 {
 public:
 
     Character();
+
+    virtual ~Character();
 
     enum Type
     {
@@ -28,6 +31,8 @@ public:
     std::vector<Tile*> path;
     bit::GameTimer moveTimer;
     std::vector<Light*> lights;
+    std::vector<Mission*> missions;
+    bool missionStateChanged;
 
 	struct FixedState
 	{
@@ -90,11 +95,15 @@ public:
 
     virtual bool moveToPosition(float x, float y);
 
+    void assignMission(Mission* mission);
+
 protected:
 
     virtual bool isTileBlocked(Tile* tile);
 
     virtual bool isTileBlockedForPathfinding(Tile* tile);
+
+    void checkMissions();
 };
 
 #endif
