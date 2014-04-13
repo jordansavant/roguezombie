@@ -8,6 +8,8 @@
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
 
+#include "mission/MissionClient.hpp"
+
 class Level;
 class Player;
 class Light;
@@ -32,6 +34,7 @@ public:
     bit::GameTimer moveTimer;
     std::vector<Light*> lights;
     std::vector<Mission*> missions;
+    std::vector<MissionClient> missionClients;
     bool missionStateChanged;
 
 	struct FixedState
@@ -87,15 +90,15 @@ public:
 
     virtual void pathToPosition(float x, float y);
 
-    virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
-
-    virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
-
     virtual bool moveToTile(Tile* tile);
 
     virtual bool moveToPosition(float x, float y);
 
     void assignMission(Mission* mission);
+
+    virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
+
+    virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 
 protected:
 

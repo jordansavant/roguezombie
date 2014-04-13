@@ -9,6 +9,7 @@
 #include "Light.hpp"
 #include "Player.hpp"
 #include "mission/Mission.hpp"
+#include "mission/MissionClient.hpp"
 
 Character::Character()
     : Body(), missionStateChanged(false), moveTimer(.75f), fixedState(), deltaState()
@@ -207,11 +208,17 @@ void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
     // Missions
     if(missionStateChanged)
     {
-        // pack count and missions
+        // If we need to update missions
+        packet << sf::Uint32(missions.size());
+        for(unsigned int i=0; i < missions.size(); i++)
+        {
+            missions[i]->prepareSnapshot(packet);
+        }
     }
     else
     {
-        // pack count = 0
+        // If we do not need to update missions
+        packet << sf::Uint32(0);
     }
 }
 
@@ -225,5 +232,15 @@ void Character::handleSnapshot(bit::ServerPacket &packet, bool full)
         packet >> fixedState;
     packet >> deltaState;
 
-    // Missions
+    // Mission Clientside
+    unsigned int missionClientSize;
+    packet >> missionClientSize;
+    if(missionClientSize > 0)
+    {
+        missionClients.resize(missionClientSize, MissionClient());
+        for(unsigned int i=0; i < missionClients.size(); i++)
+        {
+            missionClients[i].handleSnapshot(packet);
+        }
+    }
 }

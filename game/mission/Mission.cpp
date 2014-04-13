@@ -1,5 +1,6 @@
 #include "Mission.hpp"
 #include "Requirement.hpp"
+#include "../../bitengine/Network.hpp"
 
 Mission::Mission()
     : parentCharacter(NULL), isComplete(false), generationType(GenerationType::Scripted), logicalType(LogicalType::Sequence)
@@ -109,4 +110,22 @@ bool Mission::areRequirementsMet()
 void Mission::succeed()
 {
     // Character.addExperience(experience);
+}
+
+void Mission::prepareSnapshot(bit::ServerPacket &packet)
+{
+    packet << isComplete;
+    packet << sf::Uint32(logicalType);
+    
+    packet << sf::Uint32(childMissions.size());
+    for(unsigned int i=0; i < childMissions.size(); i++)
+    {
+        childMissions[i]->prepareSnapshot(packet);
+    }
+
+    packet << sf::Uint32(requirements.size());
+    for(unsigned int i=0; i < requirements.size(); i++)
+    {
+        requirements[i]->prepareSnapshot(packet);
+    }
 }

@@ -3,6 +3,8 @@
 #define RZ_REQUIREMENT_H
 
 #include <functional>
+#include "../../bitengine/Network.hpp"
+#include "LogicalType.hpp"
 
 class Character;
 
@@ -26,6 +28,8 @@ public:
     // unsigned int journalId;       // if Scripted
 
     bool checkFullfilled(Character* c);
+
+    virtual void prepareSnapshot(bit::ServerPacket &packet);
 };
 
 #endif

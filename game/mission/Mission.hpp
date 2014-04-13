@@ -4,6 +4,8 @@
 
 #include <vector>
 #include <functional>
+#include "../../bitengine/Network.hpp"
+#include "LogicalType.hpp"
 
 class Character;
 class Requirement;
@@ -21,12 +23,6 @@ public:
         Scripted,
         Generated
     };
-    
-    enum LogicalType
-    {
-        Sequence,
-        Selector
-    };
 
     Character* parentCharacter;
     bool isComplete;
@@ -42,6 +38,8 @@ public:
     bool attemptCompleteMission();
 
     void succeed();
+
+    virtual void prepareSnapshot(bit::ServerPacket &packet);
 
 private:
 
