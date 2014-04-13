@@ -48,6 +48,7 @@ void GameplayServer::update(sf::Time &gameTime)
     // Serve requests
     for(unsigned int i=0; i < pendingMoves.size(); i++)
     {
+        pendingMoves[i].player->requestFullSnapshot = true;
         levels[pendingMoves[i].fromLevelId].removePlayer(pendingMoves[i].player);
         levels[pendingMoves[i].toLevelId].addPlayer(pendingMoves[i].player);
     }
@@ -218,8 +219,14 @@ void GameplayServer::preparePacket_ServerUpdate(bit::ServerPacket &packet, bit::
     //bit::Output::Debug("Server prepare server update");
 
     Player* player = players[client.id];
+
     packet << sf::Uint32(player->level->id);
-    player->level->prepareSnapshot(packet, client, true);
+    packet << player->requestFullSnapshot;
+    if(player->requestFullSnapshot) bit::Output::Debug("sending full");
+    player->level->prepareSnapshot(packet, client, player->requestFullSnapshot);
+    
+    if(player->requestFullSnapshot)
+        player->requestFullSnapshot = false;
 }
 
 void GameplayServer::preparePacket_DisconnectAcknowledge(bit::ServerPacket &packet, bit::RemoteClient &client)

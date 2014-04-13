@@ -17,6 +17,7 @@ public:
     Level* level;
 	Character* character;
     unsigned int clientId;
+    bool requestFullSnapshot;
 
     void load(unsigned int clientId);
 

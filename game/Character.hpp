@@ -35,7 +35,6 @@ public:
     std::vector<Light*> lights;
     std::vector<Mission*> missions;
     std::vector<MissionClient> missionClients;
-    bit::GameTimer missionPacketTimer;
     bool missionStateChanged;
 
 	struct FixedState

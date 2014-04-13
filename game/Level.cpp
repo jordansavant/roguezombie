@@ -343,15 +343,15 @@ void Level::getTilesWithinRectangle(float left, float top, float width, float he
     int recTileHeight = (int)height / tileHeight;
     int totalTiles = recTileWidth * recTileHeight;
 
-    fill.resize(fill.size() + totalTiles, NULL);
-
-    int i=0;
     for(int x = left; x < left + width; x += tileWidth)
     {
         for(int y = top; y < top + height; y += tileHeight)
         {
-            fill[i] = getTileAtPosition(x, y);
-            i++;
+            Tile* t = getTileAtPosition(x, y);
+            if(t)
+            {
+                fill.push_back(t);
+            }
         }
     }
 }

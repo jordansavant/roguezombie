@@ -34,8 +34,7 @@ void Structure::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
     Body::prepareSnapshot(packet, full);
 
-    if(full)
-        packet << fixedState;
+    packet << fixedState;
     packet << deltaState;
 }
 
@@ -43,7 +42,6 @@ void Structure::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
     Body::handleSnapshot(packet, full);
 
-    if(full)
-        packet >> fixedState;
+    packet >> fixedState;
     packet >> deltaState;
 }

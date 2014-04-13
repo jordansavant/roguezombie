@@ -28,14 +28,12 @@ void Body::update(sf::Time &gameTime)
 
 void Body::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
-    if(full)
-        packet << fixedState;
+    packet << fixedState;
     packet << deltaState;
 }
 
 void Body::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
-    if(full)
-        packet >> fixedState;
+    packet >> fixedState;
     packet >> deltaState;
 }

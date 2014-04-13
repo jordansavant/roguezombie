@@ -12,7 +12,7 @@
 #include "mission/MissionClient.hpp"
 
 Character::Character()
-    : Body(), missionPacketTimer(1), missionStateChanged(false), moveTimer(.75f), fixedState(), deltaState()
+    : Body(), missionStateChanged(false), moveTimer(.75f), fixedState(), deltaState()
 {
 }
 
@@ -68,10 +68,6 @@ void Character::update(sf::Time &gameTime)
 
     // See if any missions are complete // TODO: distribute into a less updated manner
     checkMissions();
-    if(missionPacketTimer.update(gameTime))
-    {
-        missionStateChanged = true;
-    }
 }
 
 void Character::setControllingPlayer(Player* player)
@@ -192,9 +188,7 @@ void Character::checkMissions()
 {
     for(unsigned int i=0; i < missions.size(); i++)
     {
-        if(missions[i]->attemptCompleteMission())
-        {
-        }
+        missions[i]->attemptCompleteMission();
     }
 }
 
@@ -204,11 +198,11 @@ void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
     Body::prepareSnapshot(packet, full);
 
     // Character
-    if(full)
-        packet << fixedState;
+    packet << fixedState;
     packet << deltaState;
 
     // Missions
+    missionStateChanged = (missionStateChanged || full);
     packet << missionStateChanged;
     if(missionStateChanged)
     {
@@ -228,8 +222,7 @@ void Character::handleSnapshot(bit::ServerPacket &packet, bool full)
     Body::handleSnapshot(packet, full);
 
     // Character
-    if(full)
-        packet >> fixedState;
+    packet >> fixedState;
     packet >> deltaState;
 
     // Mission Clientside

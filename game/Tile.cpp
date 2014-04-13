@@ -101,18 +101,12 @@ void Tile::runOnBodyLeave(Body* body)
 
 void Tile::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
-    if(full)
-    {
-        packet << fixedState;
-    }
+    packet << fixedState;
     packet << deltaState;
 }
 
 void Tile::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
-    if(full)
-    {
-        packet >> fixedState;
-    }
+    packet >> fixedState;
     packet >> deltaState;
 }

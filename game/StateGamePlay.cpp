@@ -235,17 +235,21 @@ void StateGamePlay::handlePacket_ServerUpdate(bit::ServerPacket &packet)
     //bit::Output::Debug("Client handle server update");
 
     sf::Uint32 levelId;
+    bool isFullSnapshot;
     packet >> levelId;
+    packet >> isFullSnapshot;
+
     if(levelClient->levelId != levelId)
     {
-        bit::Output::Debug(levelId);
         delete levelClient;
         levelClient = new LevelClient();
         levelClient->levelId = levelId;
         levelClient->load(this);
     }
 
-    levelClient->handleSnapshot(packet, true);
+    if(isFullSnapshot) bit::Output::Debug("received full");
+
+    levelClient->handleSnapshot(packet, isFullSnapshot);
 }
 
 void StateGamePlay::handlePacket_DisconnectAcknowledge(bit::ServerPacket &packet)
