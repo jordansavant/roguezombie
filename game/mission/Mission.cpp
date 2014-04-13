@@ -1,6 +1,7 @@
 #include "Mission.hpp"
 #include "Requirement.hpp"
 #include "../../bitengine/Network.hpp"
+#include "../Character.hpp"
 
 Mission::Mission()
     : parentCharacter(NULL), isComplete(false), generationType(GenerationType::Scripted), logicalType(LogicalType::Sequence)
@@ -70,6 +71,7 @@ bool Mission::attemptCompleteMission()
     {
         succeed();
         isComplete = true;
+        parentCharacter->missionStateChanged = true;
         return true;
     }
 

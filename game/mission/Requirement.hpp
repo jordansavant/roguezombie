@@ -5,6 +5,7 @@
 #include <functional>
 #include "../../bitengine/Network.hpp"
 #include "LogicalType.hpp"
+#include "JournalEntry.hpp"
 
 class Character;
 
@@ -25,7 +26,7 @@ public:
     GenerationType generationType;
     // unsigned int phoeneticVerbId; // if Generated
     // unsigned int phoeneticNounId; // if Generated
-    // unsigned int journalId;       // if Scripted
+    JournalEntry::Entry journalEntry;
 
     bool checkFullfilled(Character* c);
 

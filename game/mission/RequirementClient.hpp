@@ -3,6 +3,7 @@
 #define RZ_REQUIREMENTCLIENT_H
 
 #include "../../bitengine/Network.hpp"
+#include "JournalEntry.hpp"
 
 class RequirementClient
 {
@@ -11,6 +12,7 @@ public:
     RequirementClient();
     
     bool isFullfilled;
+    JournalEntry journalEntry;
 
     virtual void handleSnapshot(bit::ServerPacket &packet);
 };

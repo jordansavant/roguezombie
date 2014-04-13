@@ -190,7 +190,6 @@ void Character::checkMissions()
     {
         if(missions[i]->attemptCompleteMission())
         {
-            missionStateChanged = true;
         }
     }
 }
@@ -214,6 +213,7 @@ void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
         {
             missions[i]->prepareSnapshot(packet);
         }
+        missionStateChanged = false;
     }
     else
     {

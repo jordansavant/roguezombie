@@ -100,6 +100,7 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
         // Mission number 1
         Mission* mission = new Mission();
         Requirement* requirement = new Requirement();
+        requirement->journalEntry = JournalEntry::Entry::FindLevelTwo;
         requirement->check = [] (Character* c) -> bool {
             if (c->level == &c->level->server->levels[1])
             {
