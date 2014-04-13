@@ -5,6 +5,7 @@
 #include <functional>
 #include "Effect.hpp"
 #include "../Game/VideoGame.hpp"
+#include "../Math/Math.hpp"
 
 bit::Element::Element()
     : sf::FloatRect(), parentElement(NULL), relativePosition(), anchorType(), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL)
@@ -41,9 +42,9 @@ void bit::Element::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
 void bit::Element::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
     /*debugRect.setPosition(left, top);
-    debugRect.setFillColor(sf::Color(0, 255, 195, MathHelper::clamp(255 * opacity, 0, 255)));
+    debugRect.setFillColor(sf::Color(0, 255, 195, bit::Math::clamp(255 * opacity, 0, 255)));
     debugRect.setSize(sf::Vector2f(width, height));
-    debugRect.setOutlineColor(sf::Color(255, 255, 255, MathHelper::clamp(255 * opacity, 0, 255)));
+    debugRect.setOutlineColor(sf::Color(255, 255, 255, bit::Math::clamp(255 * opacity, 0, 255)));
 
     if(isInfocus)
     {

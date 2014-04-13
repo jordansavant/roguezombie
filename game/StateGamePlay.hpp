@@ -5,6 +5,7 @@
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Graphics.hpp"
+#include "../bitengine/Gui.hpp"
 #include "Command.hpp"
 
 class LevelClient;
@@ -23,6 +24,11 @@ public:
 	std::vector<Command> commandQueue;
     sf::Vector2f mousePositionInLevel;
     bit::FrameTimer fps;
+
+    // Test Gui
+    sf::Font journalFont;
+    bit::Container* journal;
+    bit::Label* journalEntries;
 
     virtual void load();
 

@@ -63,9 +63,9 @@ void StateMenu::load()
 void StateMenu::configureLabel(bit::Label* label, std::string text)
 {
     label->canHaveFocus = true;
-    label->setFont(menuFont);
-    label->setCharacterSize(menuFontSize);
-	label->setString(text);
+    label->setSfFont(menuFont);
+    label->setSfFontSize(menuFontSize);
+	label->setSfFontString(text);
 	label->normalColor = sf::Color::White;
     label->focusedColor = rzRed;
     label->paddingTop = 0;

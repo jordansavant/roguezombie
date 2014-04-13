@@ -8,7 +8,7 @@
 
 namespace bit
 {
-    class Label : public Element, public sf::Text
+    class Label : public Element, protected sf::Text
     {
     public:
 
@@ -18,6 +18,7 @@ namespace bit
 
         Label(float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput);
 
+        unsigned int fontSize;
         sf::Color normalColor;
         sf::Color focusedColor;
         int paddingTop;
@@ -28,6 +29,12 @@ namespace bit
         virtual void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
 
         virtual void updateReals(sf::RenderWindow &window, sf::Time &gameTime);
+
+        void setSfFont(sf::Font &font);
+
+        void setSfFontSize(unsigned int fontSize);
+
+        void setSfFontString(std::string &string);
 
         void colorByFocus(bool focus);
 

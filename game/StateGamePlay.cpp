@@ -21,10 +21,20 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     createCamera(rogueZombieGame, 0, 0, 1, 1);
     cameras[0]->panSpeed = 3;
     levelClient = new LevelClient();
+
+    // Test Gui
+    journalFont.loadFromFile(resourcePath() + "Agency.ttf");
+    journal = new bit::Container(0, 0, 500, 500, bit::Element::AnchorType::BottomRight);
+    journalEntries = new bit::Label(10, 10, 480, 480, bit::Element::AnchorType::TopLeft);
+    journalEntries->setSfFontSize(34);
+    journalEntries->setSfFont(journalFont);
+    journalEntries->normalColor = sf::Color::White;
+    journal->addChild(journalEntries);
 }
 
 StateGamePlay::~StateGamePlay()
 {
+    delete journal;
     delete levelClient;
 }
 
@@ -40,6 +50,25 @@ bool StateGamePlay::update(sf::Time &gameTime)
     bit::ClientServerState::update(gameTime);
 
     fps.update(gameTime);
+
+    // Test journal
+    if(levelClient->playerCharacter)
+    {
+        std::string entry("Missions:\n");
+        for(unsigned int i=0; i < levelClient->playerCharacter->missionClients.size(); i++)
+        {
+            for(unsigned int j=0; j < levelClient->playerCharacter->missionClients[i].requirements.size(); j++)
+            {
+                RequirementClient* rc = &levelClient->playerCharacter->missionClients[i].requirements[j];
+                if(rc->isFullfilled)
+                    entry += "  " + rc->journalEntry.title + " - complete\n";
+                else
+                    entry += "  " + rc->journalEntry.title + "\n";
+            }
+        }
+        journalEntries->setSfFontString(entry);
+        journal->update(*rogueZombieGame->renderWindow, gameTime);
+    }
 
     if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Up))
         cameras[0]->direction.y = -1;
@@ -140,6 +169,8 @@ void StateGamePlay::draw(sf::RenderWindow &window, sf::Time &gameTime)
     bit::ClientServerState::draw(window, gameTime);
     
     window.draw(levelClient->minimap);
+
+    journal->draw(window, gameTime);
 
     fps.draw(window, gameTime);
 }

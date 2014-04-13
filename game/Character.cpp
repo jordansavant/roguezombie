@@ -12,7 +12,7 @@
 #include "mission/MissionClient.hpp"
 
 Character::Character()
-    : Body(), missionStateChanged(false), moveTimer(.75f), fixedState(), deltaState()
+    : Body(), missionPacketTimer(1), missionStateChanged(false), moveTimer(.75f), fixedState(), deltaState()
 {
 }
 
@@ -68,6 +68,10 @@ void Character::update(sf::Time &gameTime)
 
     // See if any missions are complete // TODO: distribute into a less updated manner
     checkMissions();
+    if(missionPacketTimer.update(gameTime))
+    {
+        missionStateChanged = true;
+    }
 }
 
 void Character::setControllingPlayer(Player* player)
@@ -205,6 +209,7 @@ void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
     packet << deltaState;
 
     // Missions
+    packet << missionStateChanged;
     if(missionStateChanged)
     {
         // If we need to update missions
@@ -214,11 +219,6 @@ void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
             missions[i]->prepareSnapshot(packet);
         }
         missionStateChanged = false;
-    }
-    else
-    {
-        // If we do not need to update missions
-        packet << sf::Uint32(0);
     }
 }
 
@@ -233,14 +233,19 @@ void Character::handleSnapshot(bit::ServerPacket &packet, bool full)
     packet >> deltaState;
 
     // Mission Clientside
-    unsigned int missionClientSize;
-    packet >> missionClientSize;
-    if(missionClientSize > 0)
+    bool hasMissionUpdate;
+    packet >> hasMissionUpdate;
+    if(hasMissionUpdate)
     {
-        missionClients.resize(missionClientSize, MissionClient());
-        for(unsigned int i=0; i < missionClients.size(); i++)
+        unsigned int missionClientSize;
+        packet >> missionClientSize;
+        if(missionClientSize > 0)
         {
-            missionClients[i].handleSnapshot(packet);
+            missionClients.resize(missionClientSize, MissionClient());
+            for(unsigned int i=0; i < missionClients.size(); i++)
+            {
+                missionClients[i].handleSnapshot(packet);
+            }
         }
     }
 }
