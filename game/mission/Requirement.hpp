@@ -11,14 +11,15 @@ class Requirement
 public:
 
     Requirement();
-
-    std::function<bool(Character*)> check;
-    bool isFullfilled;
+    
     enum GenerationType
     {
         Scripted,
         Generated
     };
+
+    std::function<bool(Character*)> check;
+    bool isFullfilled;
     GenerationType generationType;
     // unsigned int phoeneticVerbId; // if Generated
     // unsigned int phoeneticNounId; // if Generated

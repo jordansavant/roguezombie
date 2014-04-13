@@ -2,6 +2,7 @@
 #include "../Character.hpp"
 
 Requirement::Requirement()
+    : check(NULL), isFullfilled(false), generationType(GenerationType::Scripted)
 {
 }
 

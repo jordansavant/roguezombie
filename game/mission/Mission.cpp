@@ -2,6 +2,7 @@
 #include "Requirement.hpp"
 
 Mission::Mission()
+    : parentCharacter(NULL), isComplete(false), generationType(GenerationType::Scripted), logicalType(LogicalType::Sequence)
 {
 }
 

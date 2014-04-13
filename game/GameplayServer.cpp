@@ -85,6 +85,7 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
 
 	if(players.find(client.id) == players.end())
     {
+        // Player creation
         Player* p = new Player();
         p->load(client.id);
         players[client.id] = p;
@@ -96,11 +97,15 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
             kickClient(client, KickReason::NoSpawn);
         }
 
+        // Mission number 1
         Mission* mission = new Mission();
         Requirement* requirement = new Requirement();
         requirement->check = [] (Character* c) -> bool {
-            Tile* t = c->level->getTileAtPosition(c->Body::deltaState.x, c->Body::deltaState.y);
-            return (t->fixedState.x / t->level->tileWidth == 43);
+            if (c->level == &c->level->server->levels[1])
+            {
+                return true;
+            }
+            return false;
         };
         mission->assignRequirement(requirement);
         p->character->assignMission(mission);

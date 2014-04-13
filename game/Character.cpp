@@ -180,6 +180,7 @@ void Character::assignMission(Mission* mission)
 {
     missions.push_back(mission);
     missionStateChanged = true;
+    mission->parentCharacter = this;
 }
 
 void Character::checkMissions()
