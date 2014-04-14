@@ -1,18 +1,17 @@
 #include "Minimap.hpp"
-#include "LevelClient.hpp"
-#include "StateGamePlay.hpp"
-#include "RogueZombieGame.hpp"
+#include "Hud.hpp"
+#include "../StateGamePlay.hpp"
+#include "../RogueZombieGame.hpp"
 
 Minimap::Minimap()
 {
 }
 
-void Minimap::load(LevelClient* _level, sf::Texture &_texture)
+void Minimap::load(Hud* _hud)
 {
-    level = _level;
-    texture = &_texture;
-    vertexMap.load(texture, sf::PrimitiveType::Quads);
-    sprite = level->state->rogueZombieGame->spriteLoader->getSprite("Tickmark");
+    hud = _hud;
+    sprite = hud->state->rogueZombieGame->spriteLoader->getSprite("minimap_mark");
+    vertexMap.load(&hud->interfaceTexture, sf::PrimitiveType::Quads);
 }
 
 void Minimap::addPoint(unsigned int tileId, int x, int y)
@@ -33,16 +32,16 @@ void Minimap::addPoint(unsigned int tileId, int x, int y)
 
 void Minimap::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    bit::VideoGame::depthTestBegin();
+    //bit::VideoGame::depthTestBegin();
 
-    // apply the transform
-    states.transform *= getTransform();
+    //// apply the transform
+    //states.transform *= getTransform();
 
-    // apply the tileset texture
-    states.texture = vertexMap.texture;
+    //// apply the tileset texture
+    //states.texture = vertexMap.texture;
 
-    // draw the vertex arrays z-sorted
-    target.draw(vertexMap.vertexArray, states);
+    //// draw the vertex arrays z-sorted
+    //target.draw(vertexMap.vertexArray, states);
 
-    bit::VideoGame::depthTestEnd();
+    //bit::VideoGame::depthTestEnd();
 }

@@ -8,7 +8,6 @@
 #include "../bitengine/Graphics.hpp"
 #include "../bitengine/Structures.hpp"
 #include "StateGamePlay.hpp"
-#include "Minimap.hpp"
 #include <map>
 
 class BaseLevelClientRunner;
@@ -42,7 +41,6 @@ public:
     bit::Pool<DoorClient> doorPool;
     TileClient* hoveredTile;
     Character* playerCharacter;
-    Minimap minimap;
 
     // Spritesheet 01;
     sf::Texture texture_spritesheet_01_unsmooth;
@@ -86,7 +84,6 @@ public:
 private:
 
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-    
 };
 
 #endif

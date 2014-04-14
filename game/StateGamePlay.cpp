@@ -11,7 +11,7 @@
 #include "TileClient.hpp"
 #include "Command.hpp"
 #include "characters/ZombieClient.hpp"
-#include "hud/OptionsBar.hpp"
+#include "hud/Hud.hpp"
 #include <sstream>
 
 StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, bool isClient, bool isHost)
@@ -32,17 +32,13 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     journalEntries->normalColor = sf::Color::White;
     journal->addChild(journalEntries);
 
-    rogueZombieGame->spriteLoader->loadSprites(resourcePath() + "interface_01.csv");
-    interfaceTexture.loadFromFile(resourcePath() + "interface_01.png");
-    interfaceVertexMap.load(&interfaceTexture, sf::PrimitiveType::Quads);
-
-    optionsBar = new OptionsBar(this);
+    hud = new Hud(this);
 }
 
 StateGamePlay::~StateGamePlay()
 {
     delete journal;
-    delete optionsBar;
+    delete hud;
     delete levelClient;
 }
 
@@ -78,7 +74,7 @@ bool StateGamePlay::update(sf::Time &gameTime)
         journal->update(*rogueZombieGame->renderWindow, gameTime);
     }
 
-    optionsBar->update(*rogueZombieGame->renderWindow, gameTime);
+    hud->update(*rogueZombieGame->renderWindow, gameTime);
 
     if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Up))
         cameras[0]->direction.y = -1;
@@ -157,9 +153,6 @@ bool StateGamePlay::update(sf::Time &gameTime)
 
     levelClient->update(gameTime);
 
-    levelClient->minimap.setPosition(150 * rogueZombieGame->currentResolutionRatioX, 100 * rogueZombieGame->currentResolutionRatioY);
-    levelClient->minimap.setScale(rogueZombieGame->currentResolutionRatio, rogueZombieGame->currentResolutionRatio);
-
     // Camera
     if(levelClient->playerCharacter)
     {
@@ -178,10 +171,8 @@ void StateGamePlay::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::ClientServerState::draw(window, gameTime);
 
-    window.draw(levelClient->minimap);
-
     journal->draw(window, gameTime);
-    optionsBar->draw(window, gameTime);
+    hud->draw(window, gameTime);
 
     fps.draw(window, gameTime);
 }

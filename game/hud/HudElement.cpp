@@ -1,4 +1,5 @@
 #include "HudElement.hpp"
+#include "Hud.hpp"
 #include "../../bitengine/Gui.hpp"
 #include "../../bitengine/Graphics.hpp"
 #include "../StateGamePlay.hpp"
@@ -16,13 +17,13 @@ HudElement::HudElement(float relativeX, float relativeY, float width, float heig
     scaleStyle = ScaleStyle::PowerOfTwo;
 }
 
-void HudElement::load(StateGamePlay* _state, std::string &spritename)
+void HudElement::load(Hud* _hud, std::string &spritename)
 {
-    state = _state;
+    hud = _hud;
 
-    quadIndex = state->interfaceVertexMap.requestVertexIndex();
-    sprite = state->rogueZombieGame->spriteLoader->getSprite(spritename);
-    sprite->applyToQuad(&state->interfaceVertexMap.vertexArray[quadIndex]);
+    quadIndex = hud->interfaceVertexMap.requestVertexIndex();
+    sprite = hud->state->rogueZombieGame->spriteLoader->getSprite(spritename);
+    sprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[quadIndex]);
 }
 
 void HudElement::updateTargets(sf::RenderWindow &window, sf::Time &gameTime)
@@ -41,8 +42,8 @@ void HudElement::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     Element::updateReals(window, gameTime);
 
     // Set Sprites details
-    sprite->applyToQuad(&state->interfaceVertexMap.vertexArray[quadIndex]);
-    bit::VertexHelper::positionQuad(&state->interfaceVertexMap.vertexArray[quadIndex], left, top, 1, width, height);
+    sprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[quadIndex]);
+    bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[quadIndex], left, top, 1, width, height);
 }
 
 void HudElement::draw(sf::RenderWindow &window, sf::Time &gameTime)

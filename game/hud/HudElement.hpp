@@ -6,7 +6,7 @@
 #include "../../bitengine/Gui.hpp"
 #include "../../bitengine/Graphics.hpp"
 
-class StateGamePlay;
+class Hud;
 
 class HudElement : public bit::Element
 {
@@ -18,10 +18,10 @@ public:
     bool isActive;
 
     unsigned int quadIndex;
-    StateGamePlay* state;
+    Hud* hud;
     bit::Sprite* sprite;
 
-    void load(StateGamePlay* state, std::string &spritename);
+    void load(Hud* hud, std::string &spritename);
 
     void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
 

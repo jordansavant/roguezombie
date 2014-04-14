@@ -7,6 +7,8 @@
 #include "characters/OgreClient.hpp"
 #include "structures/WallClient.hpp"
 #include "structures/DoorClient.hpp"
+#include "hud/Hud.hpp"
+#include "hud/Minimap.hpp"
 #include "../bitengine/Math.hpp"
 #include "../bitengine/Network.hpp"
 #include "../ResourcePath.h"
@@ -36,9 +38,6 @@ void LevelClient::load(StateGamePlay* _state)
     texture_spritesheet_01_smooth.loadFromFile(resourcePath() + "spritesheet_01.png");
     texture_spritesheet_01_smooth.setSmooth(true);
     vertexMap_01.load(&texture_spritesheet_01_unsmooth, sf::PrimitiveType::Quads);
-
-    // Minimap
-    minimap.load(this, texture_spritesheet_01_smooth);
 
     // Load game runners
     runners.push_back(new LevelClientRunner<TileClient>(this, &tiles, &tilePool, 2000));
@@ -146,7 +145,7 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 
         if(addMini)
         {
-            minimap.addPoint(t->fixedState.id, t->fixedState.x, t->fixedState.y);
+            state->hud->minimap.addPoint(t->fixedState.id, t->fixedState.x, t->fixedState.y);
         }
     }
 

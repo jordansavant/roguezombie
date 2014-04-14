@@ -7,23 +7,20 @@
 #include "../../bitengine/Graphics.hpp"
 
 class HudElement;
-class StateGamePlay;
+class Hud;
 
 class OptionsBar : public bit::Container
 {
 public:
 
-    OptionsBar(StateGamePlay* state);
+    OptionsBar(Hud* hud);
 
-    StateGamePlay* state;
+    Hud* hud;
     HudElement* options;
     HudElement* journal;
     HudElement* character;
     HudElement* inventory;
     HudElement* map;
-    sf::RenderStates states;
-
-    void draw(sf::RenderWindow &window, sf::Time &gameTime);
 };
 
 #endif

@@ -4,13 +4,12 @@
 
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
-#include "../bitengine/Game.hpp"
-#include "../bitengine/Graphics.hpp"
-#include "../bitengine/Network.hpp"
-#include "Tile.hpp"
+#include "../../bitengine/Game.hpp"
+#include "../../bitengine/Graphics.hpp"
+#include "../Tile.hpp"
 #include <map>
 
-class LevelClient;
+class Hud;
 
 class Minimap : public sf::Drawable, public sf::Transformable
 {
@@ -18,13 +17,12 @@ public:
 
     Minimap();
 
-    LevelClient* level;
-    sf::Texture* texture;
+    Hud* hud;
     bit::Sprite* sprite;
     bit::VertexMap vertexMap;
     std::map<unsigned int, sf::Vector2i> points;
 
-    void load(LevelClient* level, sf::Texture &texture);
+    void load(Hud* hud);
 
     void addPoint(unsigned int tileId, int x, int y);
 
