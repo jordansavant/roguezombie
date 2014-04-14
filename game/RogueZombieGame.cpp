@@ -9,11 +9,8 @@
 #include <sstream>
 
 RogueZombieGame::RogueZombieGame()
-	: VideoGame("Rogue Zombie", 1280, 720, false), fps(), errorMessage("")
+	: VideoGame("Rogue Zombie", 1280, 720, false), errorMessage(""), mouse(resourcePath() + "mouse.png")
 {
-    std::string fpsFontPath(resourcePath() + "Agency.ttf");
-    fps.load(fpsFontPath, 10, 10);
-
     Game::stateStack->pushState(stateGameStart);
 }
 
@@ -46,14 +43,13 @@ void RogueZombieGame::update(sf::Time &gameTime)
     if(inputManager->isButtonPressed(sf::Keyboard::Comma))
         this->setVerticalSync(!this->verticalSync);
 
-    fps.update(gameTime);
 }
 
 void RogueZombieGame::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
 	VideoGame::draw(window, gameTime);
 
-    fps.draw(window, gameTime);
+    mouse.draw(window, gameTime);
 }
 
 void RogueZombieGame::registerStates()

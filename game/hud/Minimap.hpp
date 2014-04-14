@@ -11,7 +11,7 @@
 
 class Hud;
 
-class Minimap : public sf::Drawable, public sf::Transformable
+class Minimap : public sf::Transformable
 {
 public:
 
@@ -25,10 +25,6 @@ public:
     void load(Hud* hud);
 
     void addPoint(unsigned int tileId, int x, int y);
-
-private:
-
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 
 #endif

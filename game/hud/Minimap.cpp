@@ -29,19 +29,3 @@ void Minimap::addPoint(unsigned int tileId, int x, int y)
         points.insert(std::pair<unsigned int, sf::Vector2i>(tileId, sf::Vector2i(x, y)));
     }
 }
-
-void Minimap::draw(sf::RenderTarget& target, sf::RenderStates states) const
-{
-    //bit::VideoGame::depthTestBegin();
-
-    //// apply the transform
-    //states.transform *= getTransform();
-
-    //// apply the tileset texture
-    //states.texture = vertexMap.texture;
-
-    //// draw the vertex arrays z-sorted
-    //target.draw(vertexMap.vertexArray, states);
-
-    //bit::VideoGame::depthTestEnd();
-}

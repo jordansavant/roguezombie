@@ -26,7 +26,7 @@ void Hud::update(sf::RenderWindow &window, sf::Time &gameTime)
 
     // Minimap
     float scale = bit::Math::roundPowerOf2(state->rogueZombieGame->currentResolutionRatio);
-    minimap.setPosition(150 * state->rogueZombieGame->currentResolutionRatioX, 100 * state->rogueZombieGame->currentResolutionRatioY);
+    minimap.setPosition(175 * state->rogueZombieGame->currentResolutionRatioX, 125 * state->rogueZombieGame->currentResolutionRatioY);
     minimap.setScale(scale, scale);
 }
 

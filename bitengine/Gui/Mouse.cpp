@@ -13,11 +13,16 @@ bit::Mouse::Mouse(std::string textureName)
 
 void bit::Mouse::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
-    float scale = std::min((float)VideoGame::currentResolution.x / (float)VideoGame::targetResolution.x, (float)VideoGame::currentResolution.y / (float)VideoGame::targetResolution.y);
-    window.setMouseCursorVisible(false);
     sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
-    sprite.setPosition(pixelPos.x, pixelPos.y);
-    sprite.setScale(scale, scale);
-    sprite.setColor(color);
-    window.draw(sprite);
+    if(pixelPos.x < 0 || pixelPos.y < 0 || pixelPos.x > window.getSize().x || pixelPos.y > window.getSize().y)
+    {
+        window.setMouseCursorVisible(true);
+    }
+    else
+    {
+        window.setMouseCursorVisible(false);
+        sprite.setPosition(pixelPos.x, pixelPos.y);
+        sprite.setColor(color);
+        window.draw(sprite);
+    }
 }
