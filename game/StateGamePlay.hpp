@@ -10,6 +10,7 @@
 
 class LevelClient;
 class RogueZombieGame;
+class OptionsBar;
 
 class StateGamePlay : public bit::ClientServerState
 {
@@ -29,6 +30,10 @@ public:
     sf::Font journalFont;
     bit::Container* journal;
     bit::Label* journalEntries;
+
+    OptionsBar* optionsBar;
+    sf::Texture interfaceTexture;
+    bit::VertexMap interfaceVertexMap;
 
     virtual void load();
 

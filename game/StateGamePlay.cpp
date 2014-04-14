@@ -11,6 +11,7 @@
 #include "TileClient.hpp"
 #include "Command.hpp"
 #include "characters/ZombieClient.hpp"
+#include "hud/OptionsBar.hpp"
 #include <sstream>
 
 StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, bool isClient, bool isHost)
@@ -23,18 +24,25 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     levelClient = new LevelClient();
 
     // Test Gui
-    journalFont.loadFromFile(resourcePath() + "Agency.ttf");
-    journal = new bit::Container(0, 0, 500, 500, bit::Element::AnchorType::BottomRight);
-    journalEntries = new bit::Label(10, 10, 480, 480, bit::Element::AnchorType::TopLeft);
-    journalEntries->setSfFontSize(34);
+    journalFont.loadFromFile(resourcePath() + "homespun.ttf");
+    journal = new bit::Container(0, 50, 300, 200, bit::Element::AnchorType::TopRight);
+    journalEntries = new bit::Label(0, 0, 0, 0, bit::Element::AnchorType::TopLeft);
+    journalEntries->setSfFontSize(24);
     journalEntries->setSfFont(journalFont);
     journalEntries->normalColor = sf::Color::White;
     journal->addChild(journalEntries);
+
+    rogueZombieGame->spriteLoader->loadSprites(resourcePath() + "interface_01.csv");
+    interfaceTexture.loadFromFile(resourcePath() + "interface_01.png");
+    interfaceVertexMap.load(&interfaceTexture, sf::PrimitiveType::Quads);
+
+    optionsBar = new OptionsBar(this);
 }
 
 StateGamePlay::~StateGamePlay()
 {
     delete journal;
+    delete optionsBar;
     delete levelClient;
 }
 
@@ -54,21 +62,24 @@ bool StateGamePlay::update(sf::Time &gameTime)
     // Test journal
     if(levelClient->playerCharacter)
     {
-        std::string entry("Missions:\n");
+        std::string entry("Missions\n");
         for(unsigned int i=0; i < levelClient->playerCharacter->missionClients.size(); i++)
         {
             for(unsigned int j=0; j < levelClient->playerCharacter->missionClients[i].requirements.size(); j++)
             {
                 RequirementClient* rc = &levelClient->playerCharacter->missionClients[i].requirements[j];
                 if(rc->isFullfilled)
-                    entry += "  " + rc->journalEntry.title + " - complete\n";
+                    entry += "- " + rc->journalEntry.title + " - Success\n";
                 else
-                    entry += "  " + rc->journalEntry.title + "\n";
+                    entry += "- " + rc->journalEntry.title + "\n";
             }
         }
         journalEntries->setSfFontString(entry);
         journal->update(*rogueZombieGame->renderWindow, gameTime);
     }
+
+    optionsBar->update(*rogueZombieGame->renderWindow, gameTime);
+
 
     if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Up))
         cameras[0]->direction.y = -1;
@@ -146,8 +157,8 @@ bool StateGamePlay::update(sf::Time &gameTime)
     }
 
     levelClient->update(gameTime);
-    
-    levelClient->minimap.setPosition(150 * rogueZombieGame->currentResolutionRatioX, 50 * rogueZombieGame->currentResolutionRatioY);
+
+    levelClient->minimap.setPosition(150 * rogueZombieGame->currentResolutionRatioX, 100 * rogueZombieGame->currentResolutionRatioY);
     levelClient->minimap.setScale(rogueZombieGame->currentResolutionRatio, rogueZombieGame->currentResolutionRatio);
 
     // Camera
@@ -167,10 +178,11 @@ bool StateGamePlay::update(sf::Time &gameTime)
 void StateGamePlay::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::ClientServerState::draw(window, gameTime);
-    
+
     window.draw(levelClient->minimap);
 
     journal->draw(window, gameTime);
+    optionsBar->draw(window, gameTime);
 
     fps.draw(window, gameTime);
 }
@@ -255,7 +267,7 @@ void StateGamePlay::handlePacket_ServerUpdate(bit::ServerPacket &packet)
 void StateGamePlay::handlePacket_DisconnectAcknowledge(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle client disconnected acknowledged");
-    
+
     // Exit
     requestStackPop();
 }
@@ -263,7 +275,7 @@ void StateGamePlay::handlePacket_DisconnectAcknowledge(bit::ServerPacket &packet
 void StateGamePlay::handlePacket_Shutdown(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle server shutdown");
-    
+
     // Error
     rogueZombieGame->errorMessage = "Server has been shut down.";
     requestStateClearTo(RogueZombieGame::stateGameError);
@@ -284,7 +296,7 @@ void StateGamePlay::handlePacket_Kick(bit::ServerPacket &packet)
     unsigned int kickCode;
     packet >> kickCode;
 
-    switch(static_cast<GameplayServer::KickReason>(kickCode)) 
+    switch(static_cast<GameplayServer::KickReason>(kickCode))
     {
         case GameplayServer::KickReason::NoSpawn:
             rogueZombieGame->errorMessage = "No room for spawn.";

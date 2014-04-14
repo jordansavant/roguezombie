@@ -13,7 +13,7 @@ StateMenu::StateMenu(RogueZombieGame* rogueZombieGame)
 {
     // Colors
     rzRed = sf::Color(216, 30, 30);
-    
+
     // Assets
     std::string titleImagePath(resourcePath() + "minititle.png");
     titleTexture.loadFromFile(titleImagePath);
@@ -54,11 +54,9 @@ StateMenu::StateMenu(RogueZombieGame* rogueZombieGame)
     isInfocus = true;
 }
 
-
 void StateMenu::load()
 {
 }
-
 
 void StateMenu::configureLabel(bit::Label* label, std::string text)
 {

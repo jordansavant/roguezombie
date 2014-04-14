@@ -1,0 +1,6 @@
+trimmed_name,frame_x,frame_y,frame_width,frame_height,sprite_x,sprite_y,sprite_width,sprite_height,rotated
+optionbar_character,134,2,64,64,0,0,64,64,false
+optionbar_inventory,68,2,64,64,0,0,64,64,false
+optionbar_journal,2,134,64,64,0,0,64,64,false
+optionbar_map,2,68,64,64,0,0,64,64,false
+optionbar_options,2,2,64,64,0,0,64,64,false

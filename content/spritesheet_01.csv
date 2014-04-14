@@ -1,7 +1,8 @@
 trimmed_name,frame_x,frame_y,frame_width,frame_height,sprite_x,sprite_y,sprite_width,sprite_height,rotated
 Door,154,2,64,64,0,0,64,64,false
 Ogre,2,2,84,116,0,0,84,116,false
-Tickmark,88,102,16,8,0,0,16,8,false
+Tickmark,88,114,16,8,0,0,16,8,false
 Wall,88,2,64,64,0,0,64,64,false
-Water,88,68,64,32,0,0,64,32,false
+Water,130,68,64,32,0,0,64,32,false
 Zombie,220,2,21,29,0,0,21,29,false
+box,88,68,40,44,0,0,40,44,false
