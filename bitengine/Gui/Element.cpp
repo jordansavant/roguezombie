@@ -8,19 +8,19 @@
 #include "../Math/Math.hpp"
 
 bit::Element::Element()
-    : sf::FloatRect(), parentElement(NULL), relativePosition(), anchorType(), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL)
+    : sf::FloatRect(), parentElement(NULL), relativePosition(), anchorType(AnchorType::Center), scaleStyle(ScaleStyle::Smooth), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL)
 {
 }
 
 bit::Element::Element(float relativeX, float relativeY, float width, float height, AnchorType anchorType)
-    : sf::FloatRect(0, 0, width, height), parentElement(NULL), relativePosition(relativeX, relativeY), anchorType(anchorType), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL)
+    : sf::FloatRect(0, 0, width, height), parentElement(NULL), relativePosition(relativeX, relativeY), anchorType(anchorType), scaleStyle(ScaleStyle::Smooth), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL)
 {
     targetWidth = width;
     targetHeight = height;
 }
 
 bit::Element::Element(float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput)
-    : sf::FloatRect(0, 0, width, height), parentElement(NULL), relativePosition(relativeX, relativeY), anchorType(anchorType), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(true), lambdaListenToInput(lambdaListenToInput)
+    : sf::FloatRect(0, 0, width, height), parentElement(NULL), relativePosition(relativeX, relativeY), anchorType(anchorType), scaleStyle(ScaleStyle::Smooth), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(true), lambdaListenToInput(lambdaListenToInput)
 {
     targetWidth = width;
     targetHeight = height;
@@ -141,7 +141,15 @@ bool bit::Element::listenForInput(sf::RenderWindow &window, sf::Time &gameTime)
 
 float bit::Element::calculateViewRatio()
 {
-    return std::min((float)VideoGame::currentResolution.x / (float)VideoGame::targetResolution.x, (float)VideoGame::currentResolution.y / (float)VideoGame::targetResolution.y);
+    switch(scaleStyle)
+    {
+        default:
+        case ScaleStyle::Smooth:
+            return std::min((float)VideoGame::currentResolution.x / (float)VideoGame::targetResolution.x, (float)VideoGame::currentResolution.y / (float)VideoGame::targetResolution.y);
+        case ScaleStyle::PowerOfTwo:
+            float smooth = std::min((float)VideoGame::currentResolution.x / (float)VideoGame::targetResolution.x, (float)VideoGame::currentResolution.y / (float)VideoGame::targetResolution.y);
+            return bit::Math::roundPowerOf2(smooth);
+    }
 }
 
 void bit::Element::updateEffects(sf::RenderWindow &window, sf::Time &gameTime)

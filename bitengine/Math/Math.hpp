@@ -28,6 +28,12 @@ namespace bit
         static float calculateDrawDepth(float y, bool invert = false);
 
         static float calculateDrawDepth(float y, int layer, int layerCount, bool invert = false);
+
+        static float floorPowerOf2(float value);
+
+        static float ceilPowerOf2(float value);
+
+        static float roundPowerOf2(float value);
     };
 }
 

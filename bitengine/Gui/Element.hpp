@@ -32,6 +32,12 @@ namespace bit
             Center
         };
 
+        enum ScaleStyle
+        {
+            Smooth,
+            PowerOfTwo,
+        };
+
         Element();
 
         Element(float relativeX, float relativeY, float width, float height, AnchorType anchorType);
@@ -43,6 +49,7 @@ namespace bit
         Element* parentElement;
         sf::Vector2f relativePosition;
         AnchorType anchorType;
+        ScaleStyle scaleStyle;
         float targetWidth, targetHeight;
         float opacity;
         float elementScale;

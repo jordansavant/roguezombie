@@ -57,7 +57,6 @@ OptionsBar::OptionsBar(StateGamePlay* _state)
     options->load(state, std::string("optionbar_options"));
     addChild(options);
 
-    
     journal = new HudElement(64, 0, 0, 0, Element::AnchorType::TopLeft,
         [_state] (Element* element, sf::RenderWindow* window, sf::Time* gameTime) -> bool
         {
@@ -77,7 +76,6 @@ OptionsBar::OptionsBar(StateGamePlay* _state)
     journal->load(state, std::string("optionbar_journal"));
     addChild(journal);
 
-    
     character = new HudElement(128, 0, 0, 0, Element::AnchorType::TopLeft,
         [_state] (Element* element, sf::RenderWindow* window, sf::Time* gameTime) -> bool
         {
@@ -97,7 +95,6 @@ OptionsBar::OptionsBar(StateGamePlay* _state)
     character->load(state, std::string("optionbar_character"));
     addChild(character);
 
-    
     inventory = new HudElement(192, 0, 0, 0, Element::AnchorType::TopLeft,
         [_state] (Element* element, sf::RenderWindow* window, sf::Time* gameTime) -> bool
         {
@@ -117,7 +114,6 @@ OptionsBar::OptionsBar(StateGamePlay* _state)
     inventory->load(state, std::string("optionbar_inventory"));
     addChild(inventory);
 
-    
     map = new HudElement(256, 0, 0, 0, Element::AnchorType::TopLeft,
         [_state] (Element* element, sf::RenderWindow* window, sf::Time* gameTime) -> bool
         {

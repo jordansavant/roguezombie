@@ -80,7 +80,6 @@ bool StateGamePlay::update(sf::Time &gameTime)
 
     optionsBar->update(*rogueZombieGame->renderWindow, gameTime);
 
-
     if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Up))
         cameras[0]->direction.y = -1;
     if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Down))

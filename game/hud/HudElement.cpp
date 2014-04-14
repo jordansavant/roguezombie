@@ -7,11 +7,13 @@
 HudElement::HudElement(float relativeX, float relativeY, float width, float height, AnchorType anchorType)
     : Element(relativeX, relativeY, width, height, anchorType), isActive(false)
 {
+    scaleStyle = ScaleStyle::PowerOfTwo;
 }
 
 HudElement::HudElement(float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput)
     : Element(relativeX, relativeY, width, height, anchorType, lambdaListenToInput), isActive(false)
 {
+    scaleStyle = ScaleStyle::PowerOfTwo;
 }
 
 void HudElement::load(StateGamePlay* _state, std::string &spritename)

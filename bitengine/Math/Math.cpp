@@ -85,3 +85,73 @@ float bit::Math::calculateDrawDepth(float y, int layer, int layerCount, bool inv
 
     return drawDepth;
 }
+
+float bit::Math::floorPowerOf2(float value)
+{
+    if(value > 1) // 32 bit twiddling
+    {
+        int v = (int)value;
+        v |= v >> 1;
+        v |= v >> 2;
+        v |= v >> 4;
+        v |= v >> 8;
+        v |= v >> 16;
+        return v - (v >> 1);
+    }
+    else
+    {
+        // domains: 0, .125, .25, .5, 1
+        if(value == 0)
+            return 0;
+        if(value > 0 && value < .125)
+            return 0;
+        if(value >= .125 && value < .25)
+            return .125;
+        if(value >= .25 && value < .5)
+            return .25;
+        if(value >= .5 && value < 1)
+            return .5;
+        else
+            return 1;
+    }
+}
+
+float bit::Math::ceilPowerOf2(float value)
+{
+    if(value > 1) // 32 bit twiddling
+    {
+        int v = (int)value;
+        v--;
+        v |= v >> 1;
+        v |= v >> 2;
+        v |= v >> 4;
+        v |= v >> 8;
+        v |= v >> 16;
+        v++;
+        return v;
+    }
+    else
+    {
+        // domains: 0, .125, .25, .5, 1
+        if(value == 0)
+            return 0;
+        if(value > 0 && value <= .125)
+            return .125;
+        if(value > .125 && value <= .25)
+            return .25;
+        if(value > .25 && value <= .5)
+            return .5;
+        else
+            return 1;
+    }
+}
+
+float bit::Math::roundPowerOf2(float value)
+{
+    float ceil = ceilPowerOf2(value);
+    float floor = floorPowerOf2(value);
+    if(std::abs(ceil - value) < std::abs(value - floor))
+        return ceil;
+    else
+        return floor;
+}
