@@ -1,0 +1,145 @@
+Rules
+----------------
+- Each character has an inventory of items
+- Items can be categorized and subcategorized to a variety of depths
+    - Armor => Head => Helmet or Consumable => Potion => Health
+- Items can carry other items
+    - a backpack can carry a subset of items
+    - a radio can carry 2 batteries
+- Some items are incomplete without their part items
+    - a radio and its 2 batteries
+- Items have a weight
+- Characters can only carry a certain amount of items depending on weight strength vs weight
+
+
+Commerce System
+---------------
+- Bartering system can dynamically create deals
+    - Human and AI take turns attempting bartering
+    - Example
+        - Turn 1: Human picks his battery vs Other pistol
+        - Rejected
+        - Turn 2: AI picks pistol vs Human 12 batteries and rifle
+        - Declined
+        - Turn 3: Human picks 12 batterys and Chandolier vs Zombie pistol
+        - Accepted
+- Can initiate trade with any zombie
+- Once an offer is refused by the AI it is recorded and will be refused continuall
+
+    
+Equipment Slots
+---------------
+Armor
+    Head
+    Chest
+    Shoulder
+    Hands
+    Waist
+    Legs
+    Shoes
+Weapon
+Totem*
+
+
+Human                      Zombie
+--------------------------------------------------------------
+Armor                       
+    Armor, Shielding        Pot for Helmet, Sewer Drain shield
+Weapon
+    Weapons, Gun            Makeshift clubs, stabbing etc
+Buffs
+    Potions, Stimpak        Organs
+Passives
+    Charms, Implant         Anything
+Actives
+    Spell, Grenade          Human items that you find a use for
+Parts
+    Arrow, Bullets          Human parts that you find a use for
+----------------------------
+
+ItemCategory* bag = new ItemCategory("Bag");
+ItemCategory* armor = new ItemCategory("Armor");
+ItemCategory* armor_helmet = new ItemCategory("Helmet", armor);
+ItemCategory* weapon = new ItemCategory("Weapon");
+ItemCategory* weapon_melee = new ItemCategory("Melee");
+
+Item* backpack = new Item("Backpack", bag, true, 1000);
+Item* hardHat = new Item("Hard Hat", armor_helmet);
+Item* sabre = new Item("Sabre", weapon_melee);
+backpack.addItem(hardHat);
+backpack.addItem(sabre);
+
+enum ItemType
+{
+    HardHat,
+    HardHatOfDoom,
+    Sabre,
+}
+
+class ItemCategory
+{
+    ItemCategory* parentCategory;
+    string title;
+    
+    bool isOfCategory(ItemCategory* category)
+    {
+        if(this == category)
+        {
+            return true;
+        }
+        
+        if(parentCategory)
+        {
+            return parentCategory.isOfType(category);
+        }
+    }
+}
+
+class Item
+{
+    Item* parentItem;
+    ItemCategory* category;
+    bool canHaveInternalItems;
+    vector<Item*> internalItems;
+    unsigned int internalItemCapacity;
+    
+    void load(ItemType type, ItemCategory* category, bool canHaveInternalItems, unsigned int internalItemCapacity);
+
+    void clear()
+    {
+        for(unsigned int i=0; i < internalItems.size(); i++)
+        {
+            internalItems[i].clear();
+        }
+        internalItems.clear();
+    }
+    
+    bool addItem(Item* item)
+    {
+        if(internalItems.size() + 1 <= internalItemCapacity)
+        {
+            iternalItems.add(item);
+            return true;
+        }
+        return false;
+    }
+
+    void getItemsByCategory(ItemCategory &category, vector<Item*> &fill)
+    {
+        for(unsigned int i=0; i < internalItems.size(); i++)
+        {
+            if(internalItems[i].isOfCategory(category))
+            {
+                fill.pushBack(internalItems[i]);
+            }
+            
+            internalItems[i].getItemsByCategory(category, fill);
+        }
+    }
+}
+
+class Armor : public Item
+{
+}
+
+

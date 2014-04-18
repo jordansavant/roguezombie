@@ -68,6 +68,10 @@ void StateServerPlay::handlePacket_ServerUpdate(bit::ServerPacket &packet)
 {
 }
 
+void StateServerPlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
+{
+}
+
 void StateServerPlay::handlePacket_DisconnectAcknowledge(bit::ServerPacket &packet)
 {
 }

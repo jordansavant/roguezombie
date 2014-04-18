@@ -79,6 +79,8 @@ namespace bit
 
         virtual void handlePacket_ServerUpdate(bit::ServerPacket &packet) = 0;
 
+        virtual void handlePacket_ServerEvent(bit::ServerPacket &packet) = 0;
+
         virtual void handlePacket_DisconnectAcknowledge(bit::ServerPacket &packet) = 0; // not required
 
         virtual void handlePacket_Shutdown(bit::ServerPacket &packet) = 0;

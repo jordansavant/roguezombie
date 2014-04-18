@@ -180,6 +180,12 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, bit::ServerPacke
 
                 break;
 		    }
+            case Server::ServerPacketType::Event:
+		    {
+                handlePacket_ServerEvent(packet);
+
+                break;
+		    }
             case Server::ServerPacketType::DisconnectAcknowledged:
 		    {
                 handlePacket_DisconnectAcknowledge(packet);

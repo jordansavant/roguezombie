@@ -42,6 +42,8 @@ protected:
 
     virtual void handlePacket_ServerUpdate(bit::ServerPacket &packet);
 
+    virtual void handlePacket_ServerEvent(bit::ServerPacket &packet);
+
     virtual void handlePacket_DisconnectAcknowledge(bit::ServerPacket &packet);
 
     virtual void handlePacket_Shutdown(bit::ServerPacket &packet);

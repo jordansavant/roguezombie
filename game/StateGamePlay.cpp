@@ -19,6 +19,7 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
 {
     std::string fpsFontPath(resourcePath() + "Agency.ttf");
     fps.load(fpsFontPath, 10, 10);
+    fps.fpsText.setColor(sf::Color(50, 50, 50));
     createCamera(rogueZombieGame, 0, 0, 1, 1);
     cameras[0]->panSpeed = 3;
     levelClient = new LevelClient();
@@ -252,6 +253,11 @@ void StateGamePlay::handlePacket_ServerUpdate(bit::ServerPacket &packet)
     if(isFullSnapshot) bit::Output::Debug("received full");
 
     levelClient->handleSnapshot(packet, isFullSnapshot);
+}
+
+void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
+{
+    bit::Output::Debug("Client handle server event");
 }
 
 void StateGamePlay::handlePacket_DisconnectAcknowledge(bit::ServerPacket &packet)

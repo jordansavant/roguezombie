@@ -282,6 +282,7 @@ EXAMPLE MISSION TREES:
                             -->> Has Crony Necklace ?
                     Get information from Hawthorne
                         -->> Dialog + ( Crony.Health <= 0?  OR  Has Crony Necklace? )
+                AND-THEN
                 Travel to Subway
                     -->> At Location?
                 AND-THEN
@@ -302,6 +303,7 @@ EXAMPLE MISSION TREES:
                     AND-THEN
                     Return to Joe
                         -->> Dialog + Has battery?
+                AND-THEN
                 Locate Author within Cells
                     -->> Dialog
                 AND-THEN

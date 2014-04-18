@@ -7,6 +7,7 @@
 #define BIT_SERVER_UPDATE_FPS 60.0f
 
 #include "SFML/Network.hpp"
+#include <functional>
 
 namespace bit
 {
@@ -28,6 +29,7 @@ namespace bit
             Broadcast,                  // string broadcast
             InitializeSelf,             // tell client we have acknowledged their connection
             InitializeWorld,            // tell client of the full world
+            Event,                      // tell client of game event
             DisconnectAcknowledged,     // tell client we have acknowledge their disconnection
             Kick,                       // tell client we have kicked them
             PeerClientConnected,        // tell connected clients about a new client
@@ -74,6 +76,8 @@ namespace bit
 
         sf::Time now();
 
+        virtual unsigned short getServerPort();
+
         void handleIncomingPackets();
 
         void handlePacket(ClientPacket &packet, RemoteClient &receivingClient);
@@ -84,13 +88,15 @@ namespace bit
 
         void broadcastMessage(std::string &message);
 
-        void kickClient(bit::RemoteClient &client, unsigned int kickCode);
-
         void sendToAllClients(ServerPacket &packet);
 
         void handleNewClient(RemoteClient &client);
 
-        virtual unsigned short getServerPort();
+        void kickClient(bit::RemoteClient &client, unsigned int kickCode);
+
+        void sendEventToClient(bit::RemoteClient &client, std::function<void(ServerPacket&)> prepare);
+
+        void sendEventToAllClients(std::function<void(ServerPacket&)> prepare);
 
         // Packet handling
 
