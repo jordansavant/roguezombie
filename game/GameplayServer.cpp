@@ -10,7 +10,7 @@
 #include "mission/Requirement.hpp"
 
 GameplayServer::GameplayServer()
-    : bit::Server(), tileIdCounter(0), bodyIdCounter(0)
+    : bit::Server(), bodyIdCounter(0), missionIdCounter(0), requirementIdCounter(0)
 {
 }
 
@@ -65,6 +65,16 @@ unsigned int GameplayServer::getNextBodyId()
     return ++bodyIdCounter;
 }
 
+unsigned int GameplayServer::getNextMissionId()
+{
+    return ++missionIdCounter;
+}
+
+unsigned int GameplayServer::getNextRequirementId()
+{
+    return ++requirementIdCounter;
+}
+
 void GameplayServer::movePlayerToLevel(Player* player, unsigned int fromLevelId, unsigned int toLevelId)
 {
     PendingMovePlayer m;
@@ -88,7 +98,7 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
     {
         // Player creation
         Player* p = new Player();
-        p->load(client.id);
+        p->load(&client);
         players[client.id] = p;
 
         if(!levels[0].createPlayer(p))
@@ -100,7 +110,10 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
 
         // Mission number 1
         Mission* mission = new Mission();
+        mission->id = getNextMissionId();
+
         Requirement* requirement = new Requirement();
+        requirement->id = getNextRequirementId();
         requirement->journalEntry = JournalEntry::Entry::FindLevelTwo;
         requirement->check = [] (Character* c) -> bool {
             if (c->level == &c->level->server->levels[1])

@@ -3,7 +3,7 @@
 #include "../../bitengine/Network.hpp"
 
 Requirement::Requirement()
-    : check(NULL), isFullfilled(false), generationType(GenerationType::Scripted), journalEntry(JournalEntry::Entry::None)
+    : id(0), check(NULL), isFullfilled(false), generationType(GenerationType::Scripted), journalEntry(JournalEntry::Entry::None)
 {
 }
 

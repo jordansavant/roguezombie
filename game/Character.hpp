@@ -7,6 +7,7 @@
 #include "SFML/Network.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
+#include <map>
 
 #include "mission/MissionClient.hpp"
 
@@ -34,7 +35,7 @@ public:
     bit::GameTimer moveTimer;
     std::vector<Light*> lights;
     std::vector<Mission*> missions;
-    std::vector<MissionClient> missionClients;
+    std::map<unsigned int, MissionClient> missionClients;
     bool missionStateChanged;
 
 	struct FixedState
@@ -42,6 +43,7 @@ public:
 		int maxHealth;
         bool isPlayerCharacter;
         unsigned int clientId;
+        Player* player;
         Type type;
 
         friend sf::Packet& operator <<(sf::Packet& packet, const Character::FixedState &state)

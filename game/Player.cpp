@@ -3,13 +3,14 @@
 #include "Character.hpp"
 
 Player::Player()
-    : level(NULL), character(NULL), clientId(0), requestFullSnapshot(true)
+    : level(NULL), character(NULL), clientId(0), client(NULL), requestFullSnapshot(true)
 {
 }
 
-void Player::load(unsigned int _clientId)
+void Player::load(bit::RemoteClient* _client)
 {
-    clientId = _clientId;
+    client = _client;
+    clientId = _client->id;
 }
 
 void Player::setLevel(Level* level)

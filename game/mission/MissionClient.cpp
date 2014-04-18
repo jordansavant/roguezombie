@@ -3,7 +3,7 @@
 #include "../../bitengine/Network.hpp"
 
 MissionClient::MissionClient()
-    : isComplete(false), logicalType(LogicalType::Sequence)
+    : id(0), isComplete(false), logicalType(LogicalType::Sequence)
 {
 }
 
@@ -17,17 +17,23 @@ void MissionClient::handleSnapshot(bit::ServerPacket &packet)
     
     unsigned int childMissionSize;
     packet >> childMissionSize;
-    childMissions.resize(childMissionSize);
-    for(unsigned int i=0; i < childMissions.size(); i++)
+    childMissions.clear();
+    for(unsigned int i=0; i < childMissionSize; i++)
     {
-        childMissions[i].handleSnapshot(packet);
+        unsigned int missionId;
+        packet >> missionId;
+        childMissions[missionId] = MissionClient();
+        childMissions[missionId].handleSnapshot(packet);
     }
 
     unsigned int requirementsSize;
     packet >> requirementsSize;
-    requirements.resize(requirementsSize);
-    for(unsigned int i=0; i < requirements.size(); i++)
+    requirements.clear();
+    for(unsigned int i=0; i < requirementsSize; i++)
     {
-        requirements[i].handleSnapshot(packet);
+        unsigned int requirementId;
+        packet >> requirementId;
+        requirements[requirementId] = RequirementClient();
+        requirements[requirementId].handleSnapshot(packet);
     }
 }

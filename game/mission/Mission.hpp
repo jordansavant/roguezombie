@@ -24,6 +24,7 @@ public:
         Generated
     };
 
+    unsigned int id;
     Character* parentCharacter;
     bool isComplete;
     GenerationType generationType;

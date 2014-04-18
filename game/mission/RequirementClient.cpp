@@ -2,7 +2,7 @@
 #include "../../bitengine/System/Output.hpp"
 
 RequirementClient::RequirementClient()
-    : isFullfilled(false), journalEntry("", "")
+    : id(0), isFullfilled(false), journalEntry("", "")
 {
 }
 

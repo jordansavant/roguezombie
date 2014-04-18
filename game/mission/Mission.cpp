@@ -4,7 +4,7 @@
 #include "../Character.hpp"
 
 Mission::Mission()
-    : parentCharacter(NULL), isComplete(false), generationType(GenerationType::Scripted), logicalType(LogicalType::Sequence)
+    : id(0), parentCharacter(NULL), isComplete(false), generationType(GenerationType::Scripted), logicalType(LogicalType::Sequence)
 {
 }
 
@@ -122,12 +122,14 @@ void Mission::prepareSnapshot(bit::ServerPacket &packet)
     packet << sf::Uint32(childMissions.size());
     for(unsigned int i=0; i < childMissions.size(); i++)
     {
+        packet << sf::Uint32(childMissions[i]->id);
         childMissions[i]->prepareSnapshot(packet);
     }
 
     packet << sf::Uint32(requirements.size());
     for(unsigned int i=0; i < requirements.size(); i++)
     {
+        packet << sf::Uint32(requirements[i]->id);
         requirements[i]->prepareSnapshot(packet);
     }
 }

@@ -49,6 +49,10 @@ namespace bit
 
 		void stop();
 
+        void sendEventToClient(bit::RemoteClient &client, std::function<void(ServerPacket&)> prepare);
+
+        void sendEventToAllClients(std::function<void(ServerPacket&)> prepare);
+
     protected:
 
         sf::Uint32 snapshotId;
@@ -93,10 +97,6 @@ namespace bit
         void handleNewClient(RemoteClient &client);
 
         void kickClient(bit::RemoteClient &client, unsigned int kickCode);
-
-        void sendEventToClient(bit::RemoteClient &client, std::function<void(ServerPacket&)> prepare);
-
-        void sendEventToAllClients(std::function<void(ServerPacket&)> prepare);
 
         // Packet handling
 

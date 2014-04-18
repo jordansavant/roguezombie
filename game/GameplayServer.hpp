@@ -22,6 +22,10 @@ public:
 
     virtual unsigned int getNextBodyId();
 
+    virtual unsigned int getNextMissionId();
+
+    virtual unsigned int getNextRequirementId();
+
     virtual void movePlayerToLevel(Player* player, unsigned int fromLevelId, unsigned int toLevelId);
 
 private:
@@ -37,8 +41,9 @@ private:
     Level level;
     std::vector<Level> levels;
 	std::map<unsigned int, Player*> players;
-    unsigned int tileIdCounter;
     unsigned int bodyIdCounter;
+    unsigned int missionIdCounter;
+    unsigned int requirementIdCounter;
 
     virtual void load();
 

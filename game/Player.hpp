@@ -4,6 +4,7 @@
 
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
+#include "../bitengine/Network.hpp"
 
 class Level;
 class Character;
@@ -17,9 +18,10 @@ public:
     Level* level;
 	Character* character;
     unsigned int clientId;
+    bit::RemoteClient* client;
     bool requestFullSnapshot;
 
-    void load(unsigned int clientId);
+    void load(bit::RemoteClient* client);
 
     void setLevel(Level* level);
 

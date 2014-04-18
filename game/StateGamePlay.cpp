@@ -60,11 +60,11 @@ bool StateGamePlay::update(sf::Time &gameTime)
     if(levelClient->playerCharacter)
     {
         std::string entry("Missions\n");
-        for(unsigned int i=0; i < levelClient->playerCharacter->missionClients.size(); i++)
+        for(auto iterator = levelClient->playerCharacter->missionClients.begin(); iterator != levelClient->playerCharacter->missionClients.end(); iterator++)
         {
-            for(unsigned int j=0; j < levelClient->playerCharacter->missionClients[i].requirements.size(); j++)
+            for(auto iterator2 = iterator->second.requirements.begin(); iterator2 != iterator->second.requirements.end(); iterator2++)
             {
-                RequirementClient* rc = &levelClient->playerCharacter->missionClients[i].requirements[j];
+                RequirementClient* rc = &iterator2->second;
                 if(rc->isFullfilled)
                     entry += "- " + rc->journalEntry.title + " - Success\n";
                 else

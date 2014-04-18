@@ -3,6 +3,8 @@
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Math.hpp"
+#include "GameEvent.hpp"
+#include "GameplayServer.hpp"
 #include "Level.hpp"
 #include "Body.hpp"
 #include "Tile.hpp"
@@ -74,6 +76,7 @@ void Character::setControllingPlayer(Player* player)
 {
     fixedState.isPlayerCharacter = true;
     fixedState.clientId = player->clientId;
+    fixedState.player = player;
 }
 
 bool Character::moveUp()
@@ -182,6 +185,14 @@ void Character::assignMission(Mission* mission)
     missions.push_back(mission);
     missionStateChanged = true;
     mission->parentCharacter = this;
+
+    if(fixedState.isPlayerCharacter)
+    {
+        Character* c = this;
+        level->server->sendEventToClient(*fixedState.player->client, [mission] (bit::ServerPacket &packet) {
+            packet << sf::Uint32(GameEvent::MissionAssigned);
+        });
+    }
 }
 
 void Character::checkMissions()
@@ -210,6 +221,7 @@ void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
         packet << sf::Uint32(missions.size());
         for(unsigned int i=0; i < missions.size(); i++)
         {
+            packet << sf::Uint32(missions[i]->id);
             missions[i]->prepareSnapshot(packet);
         }
         missionStateChanged = false;
@@ -234,10 +246,13 @@ void Character::handleSnapshot(bit::ServerPacket &packet, bool full)
         packet >> missionClientSize;
         if(missionClientSize > 0)
         {
-            missionClients.resize(missionClientSize, MissionClient());
-            for(unsigned int i=0; i < missionClients.size(); i++)
+            missionClients.clear();
+            for(unsigned int i=0; i < missionClientSize; i++)
             {
-                missionClients[i].handleSnapshot(packet);
+                unsigned int missionId;
+                packet >> missionId;
+                missionClients[missionId] = MissionClient();
+                missionClients[missionId].handleSnapshot(packet);
             }
         }
     }

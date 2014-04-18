@@ -11,6 +11,7 @@ public:
 
     RequirementClient();
     
+    unsigned int id;
     bool isFullfilled;
     JournalEntry journalEntry;
 

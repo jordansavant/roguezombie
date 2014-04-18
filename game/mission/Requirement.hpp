@@ -21,6 +21,7 @@ public:
         Generated
     };
 
+    unsigned int id;
     std::function<bool(Character*)> check;
     bool isFullfilled;
     GenerationType generationType;
