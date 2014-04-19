@@ -188,10 +188,10 @@ void Character::assignMission(Mission* mission)
 
     if(fixedState.isPlayerCharacter)
     {
-        Character* c = this;
+        Character* c = this;/*
         level->server->sendEventToClient(*fixedState.player->client, [mission] (bit::ServerPacket &packet) {
             packet << sf::Uint32(GameEvent::MissionAssigned);
-        });
+        });*/
     }
 }
 
@@ -203,6 +203,42 @@ void Character::checkMissions()
     }
 }
 
+
+void Character::handleMissionCompleteGameEvent(bit::ServerPacket &packet)
+{
+    unsigned int missionId;
+    packet >> missionId;
+
+    unsigned int parentSize;
+    packet >> parentSize;
+
+    MissionClient* mc = NULL;
+    for(unsigned int i=0; i < parentSize; i++)
+    {
+        unsigned int parentId;
+        packet >> parentId;
+
+        if(!mc)
+        {
+            mc = &missionClients[parentId];
+        }
+        else
+        {
+            mc = &mc->childMissions[parentId];
+        }
+    }
+
+    if(mc)
+    {
+        mc->childMissions[missionId].isComplete = true;
+    }
+    else
+    {
+        missionClients[missionId].isComplete = true;
+    }
+}
+
+
 void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
     // Body
@@ -213,9 +249,8 @@ void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
     packet << deltaState;
 
     // Missions
-    missionStateChanged = (missionStateChanged || full);
-    packet << missionStateChanged;
-    if(missionStateChanged)
+    packet << full;
+    if(full)
     {
         // If we need to update missions
         packet << sf::Uint32(missions.size());
@@ -224,7 +259,6 @@ void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
             packet << sf::Uint32(missions[i]->id);
             missions[i]->prepareSnapshot(packet);
         }
-        missionStateChanged = false;
     }
 }
 

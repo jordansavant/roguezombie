@@ -7,6 +7,14 @@ Requirement::Requirement()
 {
 }
 
+void Requirement::load(unsigned int _id, GenerationType _generationType, JournalEntry::Entry _journalEntry, std::function<bool(Character*)> _check)
+{
+    id = _id;
+    generationType = _generationType;
+    check = _check;
+    journalEntry = _journalEntry;
+}
+
 bool Requirement::checkFullfilled(Character* c)
 {
     isFullfilled = check(c);

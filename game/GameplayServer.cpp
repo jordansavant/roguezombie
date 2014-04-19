@@ -110,19 +110,20 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
 
         // Mission number 1
         Mission* mission = new Mission();
-        mission->id = getNextMissionId();
+        mission->load(getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted);
 
         Requirement* requirement = new Requirement();
-        requirement->id = getNextRequirementId();
-        requirement->journalEntry = JournalEntry::Entry::FindLevelTwo;
-        requirement->check = [] (Character* c) -> bool {
-            if (c->level == &c->level->server->levels[1])
-            {
-                return true;
-            }
-            return false;
-        };
+        requirement->load(getNextRequirementId(), Requirement::GenerationType::Scripted, JournalEntry::Entry::FindLevelTwo, [] (Character* c) -> bool {
+            return (c->level == &c->level->server->levels[1]);
+        });
         mission->assignRequirement(requirement);
+
+        requirement = new Requirement();
+        requirement->load(getNextRequirementId(), Requirement::GenerationType::Scripted, JournalEntry::Entry::GetDoubleHealth, [] (Character* c) -> bool {
+            return (c->deltaState.health >= 200);
+        });
+        mission->assignRequirement(requirement);
+
         p->character->assignMission(mission);
     }
 }

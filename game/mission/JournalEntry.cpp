@@ -23,5 +23,7 @@ JournalEntry JournalEntry::get(Entry e)
             return JournalEntry("None", "None.");
         case Entry::FindLevelTwo:
             return JournalEntry("Find Level Two", "Find your way to level two and see what lurks within.");
+        case Entry::GetDoubleHealth:
+            return JournalEntry("Get Double Health", "Activate a secret power to become twice as strong.");
     }
 }

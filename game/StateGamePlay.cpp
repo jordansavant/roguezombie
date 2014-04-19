@@ -7,6 +7,7 @@
 #include "../ResourcePath.h"
 #include "RogueZombieGame.hpp"
 #include "GameplayServer.hpp"
+#include "GameEvent.hpp"
 #include "LevelClient.hpp"
 #include "TileClient.hpp"
 #include "Command.hpp"
@@ -258,6 +259,17 @@ void StateGamePlay::handlePacket_ServerUpdate(bit::ServerPacket &packet)
 void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle server event");
+
+    unsigned int eventTypeInt;
+    packet >> eventTypeInt;
+    GameEvent eventType = static_cast<GameEvent>(eventTypeInt);
+
+    switch(eventType)
+    {
+        case GameEvent::MissionCompleted:
+            levelClient->playerCharacter->handleMissionCompleteGameEvent(packet);
+            break;
+    }
 }
 
 void StateGamePlay::handlePacket_DisconnectAcknowledge(bit::ServerPacket &packet)

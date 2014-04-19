@@ -3,7 +3,7 @@
 #include "Character.hpp"
 
 Player::Player()
-    : level(NULL), character(NULL), clientId(0), client(NULL), requestFullSnapshot(true)
+    : level(NULL), character(NULL), clientId(0), client(NULL), requestFullSnapshot(false)
 {
 }
 

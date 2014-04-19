@@ -102,6 +102,8 @@ public:
 
     virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 
+    void handleMissionCompleteGameEvent(bit::ServerPacket &packet);
+
 protected:
 
     virtual bool isTileBlocked(Tile* tile);

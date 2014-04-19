@@ -11,7 +11,8 @@ public:
     enum Entry
     {
         None,
-        FindLevelTwo
+        FindLevelTwo,
+        GetDoubleHealth,
     };
 
     JournalEntry(std::string title, std::string description);

@@ -29,6 +29,8 @@ public:
     // unsigned int phoeneticNounId; // if Generated
     JournalEntry::Entry journalEntry;
 
+    void load(unsigned int id, GenerationType generationType, JournalEntry::Entry journalEntry, std::function<bool(Character*)> check);
+
     bool checkFullfilled(Character* c);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet);

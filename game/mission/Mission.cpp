@@ -1,10 +1,15 @@
 #include "Mission.hpp"
 #include "Requirement.hpp"
 #include "../../bitengine/Network.hpp"
+#include "../GameEvent.hpp"
 #include "../Character.hpp"
+#include "../Player.hpp"
+#include "../Level.hpp"
+#include "../GameplayServer.hpp"
+
 
 Mission::Mission()
-    : id(0), parentCharacter(NULL), isComplete(false), generationType(GenerationType::Scripted), logicalType(LogicalType::Sequence)
+    : id(0), parentCharacter(NULL), parentMission(NULL), isComplete(false), generationType(GenerationType::Scripted), logicalType(LogicalType::Sequence)
 {
 }
 
@@ -14,6 +19,13 @@ Mission::~Mission()
     {
         delete requirements[i];
     }
+}
+
+void Mission::load(unsigned int _id, LogicalType _logicalType, GenerationType _generationType)
+{
+    id = _id;
+    logicalType = _logicalType;
+    generationType = _generationType;
 }
 
 void Mission::assignCharacter(Character* character)
@@ -43,6 +55,7 @@ bool Mission::attemptCompleteMission()
                         return false;
                     }
                 }
+                sendMissionCompletePacket();
                 isComplete = true;
                 return true;
             }
@@ -52,6 +65,7 @@ bool Mission::attemptCompleteMission()
                 {
                     if(!childMissions[i]->attemptCompleteMission())
                     {
+                        sendMissionCompletePacket();
                         isComplete = true;
                         return true;
                     }
@@ -72,6 +86,7 @@ bool Mission::attemptCompleteMission()
         succeed();
         isComplete = true;
         parentCharacter->missionStateChanged = true;
+        sendMissionCompletePacket();
         return true;
     }
 
@@ -112,6 +127,49 @@ bool Mission::areRequirementsMet()
 void Mission::succeed()
 {
     // Character.addExperience(experience);
+}
+
+// First elements are highest parents
+void Mission::fillParentList(std::vector<unsigned int> &fill)
+{
+    if(parentMission)
+    {
+        parentMission->fillParentList(fill);
+    }
+    // If I am a parent add my id
+    if(childMissions.size() > 0)
+    {
+        fill.push_back(id);
+    }
+}
+
+void Mission::packParentHierarchy(bit::ServerPacket &packet)
+{
+    std::vector<unsigned int> parents;
+    fillParentList(parents);
+
+    packet << sf::Uint32(parents.size());
+    for(unsigned int i=0; i < parents.size(); i++)
+    {
+        packet << sf::Uint32(parents[i]);
+    }
+}
+
+void Mission::sendMissionCompletePacket()
+{
+    if(parentCharacter->fixedState.isPlayerCharacter)
+    {
+        // Mission Completed Event
+        Character* c = parentCharacter;
+        Mission* m = this;
+        c->level->server->sendEventToClient(*parentCharacter->fixedState.player->client, [m] (bit::ServerPacket &packet) {
+
+            packet << sf::Uint32(GameEvent::MissionCompleted);
+            packet << sf::Uint32(m->id);
+            m->packParentHierarchy(packet);
+
+        });
+    }
 }
 
 void Mission::prepareSnapshot(bit::ServerPacket &packet)

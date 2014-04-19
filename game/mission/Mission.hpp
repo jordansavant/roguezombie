@@ -32,6 +32,8 @@ public:
     // int experience;
     // JournalEntry* journalEntry;
 
+    void load(unsigned int id, LogicalType logicalType, GenerationType generationType);
+
     void assignCharacter(Character* character);
 
     void assignRequirement(Requirement* requirement);
@@ -39,6 +41,12 @@ public:
     bool attemptCompleteMission();
 
     void succeed();
+
+    void fillParentList(std::vector<unsigned int> &fill);
+
+    virtual void packParentHierarchy(bit::ServerPacket &packet);
+
+    virtual void sendMissionCompletePacket();
 
     virtual void prepareSnapshot(bit::ServerPacket &packet);
 
