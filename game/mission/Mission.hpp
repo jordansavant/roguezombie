@@ -46,9 +46,9 @@ public:
 
     Character* getParentCharacter();
 
-    void fillParentList(std::vector<unsigned int> &fill);
+    void fillIdHierarchy(std::vector<unsigned int> &fill);
 
-    virtual void packParentHierarchy(bit::ServerPacket &packet);
+    virtual void packIdHierarchy(bit::ServerPacket &packet);
 
     virtual void sendMissionCompletePacket();
 

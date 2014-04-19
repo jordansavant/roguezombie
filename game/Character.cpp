@@ -206,35 +206,24 @@ void Character::checkMissions()
 
 void Character::handleMissionCompleteGameEvent(bit::ServerPacket &packet)
 {
-    unsigned int missionId;
-    packet >> missionId;
-
-    unsigned int parentSize;
-    packet >> parentSize;
+    unsigned int depth;
+    packet >> depth;
 
     MissionClient* mc = NULL;
-    for(unsigned int i=0; i < parentSize; i++)
+    for(unsigned int i=0; i < depth; i++)
     {
-        unsigned int parentId;
-        packet >> parentId;
+        unsigned int missionId;
+        packet >> missionId;
 
         if(!mc)
-        {
-            mc = &missionClients[parentId];
-        }
+            mc = &missionClients[missionId];
         else
-        {
-            mc = &mc->childMissions[parentId];
-        }
+            mc = &mc->childMissions[missionId];
     }
 
     if(mc)
     {
-        mc->childMissions[missionId].isComplete = true;
-    }
-    else
-    {
-        missionClients[missionId].isComplete = true;
+        mc->isComplete = true;
     }
 }
 

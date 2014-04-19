@@ -124,23 +124,19 @@ Character* Mission::getParentCharacter()
 }
 
 // First elements are highest parents
-void Mission::fillParentList(std::vector<unsigned int> &fill)
+void Mission::fillIdHierarchy(std::vector<unsigned int> &fill)
 {
     if(parentMission)
     {
-        parentMission->fillParentList(fill);
+        parentMission->fillIdHierarchy(fill);
     }
-    // If I am a parent add my id
-    if(childMissions.size() > 0)
-    {
-        fill.push_back(id);
-    }
+    fill.push_back(id);
 }
 
-void Mission::packParentHierarchy(bit::ServerPacket &packet)
+void Mission::packIdHierarchy(bit::ServerPacket &packet)
 {
     std::vector<unsigned int> parents;
-    fillParentList(parents);
+    fillIdHierarchy(parents);
 
     packet << sf::Uint32(parents.size());
     for(unsigned int i=0; i < parents.size(); i++)
@@ -159,8 +155,7 @@ void Mission::sendMissionCompletePacket()
         c->level->server->sendEventToClient(*c->fixedState.player->client, [m] (bit::ServerPacket &packet) {
 
             packet << sf::Uint32(GameEvent::MissionCompleted);
-            packet << sf::Uint32(m->id);
-            m->packParentHierarchy(packet);
+            m->packIdHierarchy(packet);
 
         });
     }

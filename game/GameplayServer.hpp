@@ -24,8 +24,6 @@ public:
 
     virtual unsigned int getNextMissionId();
 
-    virtual unsigned int getNextRequirementId();
-
     virtual void movePlayerToLevel(Player* player, unsigned int fromLevelId, unsigned int toLevelId);
 
 private:

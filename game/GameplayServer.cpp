@@ -7,7 +7,6 @@
 #include "Tile.hpp"
 #include "levels/Interior.hpp"
 #include "mission/Mission.hpp"
-#include "mission/Requirement.hpp"
 
 GameplayServer::GameplayServer()
     : bit::Server(), bodyIdCounter(0), missionIdCounter(0), requirementIdCounter(0)
@@ -70,11 +69,6 @@ unsigned int GameplayServer::getNextMissionId()
     return ++missionIdCounter;
 }
 
-unsigned int GameplayServer::getNextRequirementId()
-{
-    return ++requirementIdCounter;
-}
-
 void GameplayServer::movePlayerToLevel(Player* player, unsigned int fromLevelId, unsigned int toLevelId)
 {
     PendingMovePlayer m;
@@ -113,7 +107,7 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
         root->load(getNextMissionId(), LogicalType::Sequence, Mission::GenerationType::Scripted, JournalEntry::Entry::TestMissionRoot);
 
         Mission* healthMission = new Mission();
-        healthMission->load(getNextRequirementId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::GetDoubleHealth);
+        healthMission->load(getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::GetDoubleHealth);
         healthMission->assignRequirement([] (Character* c) -> bool {
             if (c->deltaState.health >= 200)
             {
@@ -124,7 +118,7 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
         root->assignChildMission(healthMission);
 
         Mission* levelMission = new Mission();
-        levelMission->load(getNextRequirementId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::FindLevelTwo);
+        levelMission->load(getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::FindLevelTwo);
         levelMission->assignRequirement([] (Character* c) -> bool {
             return (c->level == &c->level->server->levels[1]);
         });
