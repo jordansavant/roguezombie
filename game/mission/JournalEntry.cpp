@@ -1,31 +1,34 @@
 #include "JournalEntry.hpp"
 #include <string>
 
-JournalEntry::JournalEntry(std::string _title, std::string _description)
-    : title(_title), description(_description)
-{
-}
-
-
-JournalEntry::JournalEntry(Entry e)
-{
-    JournalEntry j = get(e);
-    title = j.title;
-    description = j.description;
-}
-
-JournalEntry JournalEntry::get(Entry e)
+std::string JournalEntry::getTitle(Entry e)
 {
     switch(e)
     {
         default:
         case Entry::None:
-            return JournalEntry("None", "None.");
+            return "None";
         case Entry::TestMissionRoot:
-            return JournalEntry("Mission Root Test", "Complete your objectives.");
+            return "Mission Root Test";
         case Entry::FindLevelTwo:
-            return JournalEntry("Find Level Two", "Find your way to level two and see what lurks within.");
+            return "Find Level Two";
         case Entry::GetDoubleHealth:
-            return JournalEntry("Get Double Health", "Activate a secret power to become twice as strong.");
+            return "Get Double Health";
+    }
+}
+
+std::string JournalEntry::getDescription(Entry e)
+{
+    switch(e)
+    {
+        default:
+        case Entry::None:
+            return "None.";
+        case Entry::TestMissionRoot:
+            return "Mission Root Test";
+        case Entry::FindLevelTwo:
+            return "Find Level Two";
+        case Entry::GetDoubleHealth:
+            return "Get Double Health";
     }
 }

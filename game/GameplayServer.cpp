@@ -104,16 +104,12 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
 
         // Mission number 1
         Mission* root = new Mission();
-        root->load(getNextMissionId(), LogicalType::Sequence, Mission::GenerationType::Scripted, JournalEntry::Entry::TestMissionRoot);
+        root->load(getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::TestMissionRoot);
 
         Mission* healthMission = new Mission();
         healthMission->load(getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::GetDoubleHealth);
         healthMission->assignRequirement([] (Character* c) -> bool {
-            if (c->deltaState.health >= 200)
-            {
-                return true;
-            }
-            return false;
+            return (c->deltaState.health >= 200);
         });
         root->assignChildMission(healthMission);
 

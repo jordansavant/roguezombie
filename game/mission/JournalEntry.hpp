@@ -16,14 +16,9 @@ public:
         GetDoubleHealth,
     };
 
-    JournalEntry(std::string title, std::string description);
+    static std::string getTitle(Entry e);
 
-    JournalEntry(Entry e);
-
-    std::string title;
-    std::string description;
-
-    static JournalEntry get(Entry e);
+    static std::string getDescription(Entry e);
 
 };
 

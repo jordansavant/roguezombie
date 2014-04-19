@@ -66,18 +66,18 @@ bool StateGamePlay::update(sf::Time &gameTime)
             // Level 1
             MissionClient* m = &iterator->second;
             if(m->isComplete)
-                entry += "- " + JournalEntry::get(m->journalEntry).title + " - Complete\n";
+                entry += "- " + JournalEntry::getTitle(m->journalEntry) + " - Complete\n";
             else
-                entry += "- " + JournalEntry::get(m->journalEntry).title + "\n";
+                entry += "- " + JournalEntry::getTitle(m->journalEntry) + "\n";
 
             // Level 2
             for(auto iterator2 = iterator->second.childMissions.begin(); iterator2 != iterator->second.childMissions.end(); iterator2++)
             {
                 MissionClient* mc = &iterator2->second;
                 if(mc->isComplete)
-                    entry += "  - " + JournalEntry::get(mc->journalEntry).title + " - Complete\n";
+                    entry += "  - " + JournalEntry::getTitle(mc->journalEntry) + " - Complete\n";
                 else
-                    entry += "  - " + JournalEntry::get(mc->journalEntry).title + "\n";
+                    entry += "  - " + JournalEntry::getTitle(mc->journalEntry) + "\n";
             }
         }
         journalEntries->setSfFontString(entry);
