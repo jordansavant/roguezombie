@@ -1,5 +1,4 @@
 #include "Mission.hpp"
-#include "Requirement.hpp"
 #include "../../bitengine/Network.hpp"
 #include "../GameEvent.hpp"
 #include "../Character.hpp"
@@ -9,23 +8,24 @@
 
 
 Mission::Mission()
-    : id(0), parentCharacter(NULL), parentMission(NULL), isComplete(false), generationType(GenerationType::Scripted), logicalType(LogicalType::Sequence)
+    : id(0), parentCharacter(NULL), parentMission(NULL), isComplete(false), generationType(GenerationType::Scripted), logicalType(LogicalType::Sequence), journalEntry(JournalEntry::Entry::None), requirement(NULL)
 {
 }
 
 Mission::~Mission()
 {
-    for(unsigned int i=0; i < requirements.size(); i++)
+    for(unsigned int i=0; i < childMissions.size(); i++)
     {
-        delete requirements[i];
+        delete childMissions[i];
     }
 }
 
-void Mission::load(unsigned int _id, LogicalType _logicalType, GenerationType _generationType)
+void Mission::load(unsigned int _id, LogicalType _logicalType, GenerationType _generationType, JournalEntry::Entry _journalEntry)
 {
     id = _id;
     logicalType = _logicalType;
     generationType = _generationType;
+    journalEntry = _journalEntry;
 }
 
 void Mission::assignCharacter(Character* character)
@@ -33,13 +33,24 @@ void Mission::assignCharacter(Character* character)
     parentCharacter = character;
 }
 
-void Mission::assignRequirement(Requirement* requirement)
+void Mission::assignChildMission(Mission* mission)
 {
-    requirements.push_back(requirement);
+    childMissions.push_back(mission);
+    mission->parentMission = this;
+}
+
+void Mission::assignRequirement(std::function<bool(Character*)> _requirement)
+{
+    requirement = _requirement;
 }
 
 bool Mission::attemptCompleteMission()
 {
+    if(isComplete)
+    {
+        return true;
+    }
+
     if(childMissions.size() > 0)
     {
         switch(logicalType)
@@ -47,6 +58,7 @@ bool Mission::attemptCompleteMission()
             default:
             case LogicalType::Sequence:
             {
+                // All children must be completed in order for me to be completed
                 for(unsigned int i=0; i < childMissions.size(); i++)
                 {
                     if(!childMissions[i]->attemptCompleteMission())
@@ -61,9 +73,10 @@ bool Mission::attemptCompleteMission()
             }
             case LogicalType::Selector:
             {
+                // Any child must be completed in order for me to be completed
                 for(unsigned int i=0; i < childMissions.size(); i++)
                 {
-                    if(!childMissions[i]->attemptCompleteMission())
+                    if(childMissions[i]->attemptCompleteMission())
                     {
                         sendMissionCompletePacket();
                         isComplete = true;
@@ -76,16 +89,12 @@ bool Mission::attemptCompleteMission()
         }
     }
 
-    if(isComplete)
-    {
-        return true;
-    }
-
-    if(areRequirementsMet())
+    // If I am a leaf mission, check my requirements
+    if(isRequirementFulfilled())
     {
         succeed();
         isComplete = true;
-        parentCharacter->missionStateChanged = true;
+        getParentCharacter()->missionStateChanged = true;
         sendMissionCompletePacket();
         return true;
     }
@@ -94,39 +103,24 @@ bool Mission::attemptCompleteMission()
     return false;
 }
 
-bool Mission::areRequirementsMet()
+bool Mission::isRequirementFulfilled()
 {
-    switch(logicalType)
-    {
-        default:
-        case LogicalType::Sequence:
-        {
-            for(unsigned int i=0; i < requirements.size(); i++)
-            {
-                if(!requirements[i]->checkFullfilled(parentCharacter))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-        case LogicalType::Selector:
-        {
-            for(unsigned int i=0; i < requirements.size(); i++)
-            {
-                if(requirements[i]->checkFullfilled(parentCharacter))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
+    return requirement(getParentCharacter());
 }
 
 void Mission::succeed()
 {
     // Character.addExperience(experience);
+}
+
+Character* Mission::getParentCharacter()
+{
+    if(parentMission)
+    {
+        return parentMission->getParentCharacter();
+    }
+
+    return parentCharacter;
 }
 
 // First elements are highest parents
@@ -157,12 +151,12 @@ void Mission::packParentHierarchy(bit::ServerPacket &packet)
 
 void Mission::sendMissionCompletePacket()
 {
-    if(parentCharacter->fixedState.isPlayerCharacter)
+    Character* c = getParentCharacter();
+    if(c->fixedState.isPlayerCharacter)
     {
         // Mission Completed Event
-        Character* c = parentCharacter;
         Mission* m = this;
-        c->level->server->sendEventToClient(*parentCharacter->fixedState.player->client, [m] (bit::ServerPacket &packet) {
+        c->level->server->sendEventToClient(*c->fixedState.player->client, [m] (bit::ServerPacket &packet) {
 
             packet << sf::Uint32(GameEvent::MissionCompleted);
             packet << sf::Uint32(m->id);
@@ -176,18 +170,12 @@ void Mission::prepareSnapshot(bit::ServerPacket &packet)
 {
     packet << isComplete;
     packet << sf::Uint32(logicalType);
+    packet << sf::Uint32(journalEntry);
     
     packet << sf::Uint32(childMissions.size());
     for(unsigned int i=0; i < childMissions.size(); i++)
     {
         packet << sf::Uint32(childMissions[i]->id);
         childMissions[i]->prepareSnapshot(packet);
-    }
-
-    packet << sf::Uint32(requirements.size());
-    for(unsigned int i=0; i < requirements.size(); i++)
-    {
-        packet << sf::Uint32(requirements[i]->id);
-        requirements[i]->prepareSnapshot(packet);
     }
 }

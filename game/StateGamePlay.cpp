@@ -27,7 +27,7 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
 
     // Test Gui
     journalFont.loadFromFile(resourcePath() + "homespun.ttf");
-    journal = new bit::Container(0, 50, 300, 200, bit::Element::AnchorType::TopRight);
+    journal = new bit::Container(0, 50, 500, 200, bit::Element::AnchorType::TopRight);
     journalEntries = new bit::Label(0, 0, 0, 0, bit::Element::AnchorType::TopLeft);
     journalEntries->setSfFontSize(24);
     journalEntries->setSfFont(journalFont);
@@ -60,16 +60,24 @@ bool StateGamePlay::update(sf::Time &gameTime)
     // Test journal
     if(levelClient->playerCharacter)
     {
-        std::string entry("Missions\n");
+        std::string entry("Journal\n");
         for(auto iterator = levelClient->playerCharacter->missionClients.begin(); iterator != levelClient->playerCharacter->missionClients.end(); iterator++)
         {
-            for(auto iterator2 = iterator->second.requirements.begin(); iterator2 != iterator->second.requirements.end(); iterator2++)
+            // Level 1
+            MissionClient* m = &iterator->second;
+            if(m->isComplete)
+                entry += "- " + JournalEntry::get(m->journalEntry).title + " - Complete\n";
+            else
+                entry += "- " + JournalEntry::get(m->journalEntry).title + "\n";
+
+            // Level 2
+            for(auto iterator2 = iterator->second.childMissions.begin(); iterator2 != iterator->second.childMissions.end(); iterator2++)
             {
-                RequirementClient* rc = &iterator2->second;
-                if(rc->isFullfilled)
-                    entry += "- " + rc->journalEntry.title + " - Success\n";
+                MissionClient* mc = &iterator2->second;
+                if(mc->isComplete)
+                    entry += "  - " + JournalEntry::get(mc->journalEntry).title + " - Complete\n";
                 else
-                    entry += "- " + rc->journalEntry.title + "\n";
+                    entry += "  - " + JournalEntry::get(mc->journalEntry).title + "\n";
             }
         }
         journalEntries->setSfFontString(entry);

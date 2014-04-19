@@ -5,8 +5,8 @@
 #include <vector>
 #include <map>
 #include "../../bitengine/Network.hpp"
-#include "RequirementClient.hpp"
 #include "LogicalType.hpp"
+#include "JournalEntry.hpp"
 
 class MissionClient
 {
@@ -18,7 +18,7 @@ public:
     bool isComplete;
     LogicalType logicalType;
     std::map<unsigned int, MissionClient> childMissions;
-    std::map<unsigned int, RequirementClient> requirements;
+    JournalEntry::Entry journalEntry;
 
     void handleSnapshot(bit::ServerPacket &packet);
 

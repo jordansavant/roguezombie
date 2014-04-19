@@ -6,9 +6,9 @@
 #include <functional>
 #include "../../bitengine/Network.hpp"
 #include "LogicalType.hpp"
+#include "JournalEntry.hpp"
 
 class Character;
-class Requirement;
 
 class Mission
 {
@@ -30,17 +30,21 @@ public:
     GenerationType generationType;
     LogicalType logicalType;
     // int experience;
-    // JournalEntry* journalEntry;
+    JournalEntry::Entry journalEntry;
 
-    void load(unsigned int id, LogicalType logicalType, GenerationType generationType);
+    void load(unsigned int id, LogicalType logicalType, GenerationType generationType, JournalEntry::Entry journalEntry);
 
     void assignCharacter(Character* character);
 
-    void assignRequirement(Requirement* requirement);
+    void assignChildMission(Mission* mission);
+
+    void assignRequirement(std::function<bool(Character*)> _requirement);
 
     bool attemptCompleteMission();
 
     void succeed();
+
+    Character* getParentCharacter();
 
     void fillParentList(std::vector<unsigned int> &fill);
 
@@ -54,11 +58,11 @@ private:
 
     Mission* parentMission;
     std::vector<Mission*> childMissions;
-    std::vector<Requirement*> requirements;
+    std::function<bool(Character*)> requirement;
 
     bool attemptCompleteMission(Mission* mission);
 
-    bool areRequirementsMet();
+    bool isRequirementFulfilled();
 };
 
 #endif

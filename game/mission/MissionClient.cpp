@@ -1,9 +1,8 @@
 #include "MissionClient.hpp"
-#include "RequirementClient.hpp"
 #include "../../bitengine/Network.hpp"
 
 MissionClient::MissionClient()
-    : id(0), isComplete(false), logicalType(LogicalType::Sequence)
+    : id(0), isComplete(false), logicalType(LogicalType::Sequence), journalEntry(JournalEntry::Entry::None)
 {
 }
 
@@ -15,6 +14,10 @@ void MissionClient::handleSnapshot(bit::ServerPacket &packet)
     packet >> logical_type_int;
     logicalType = static_cast<LogicalType>(logical_type_int);
     
+    unsigned int journal_entry_int;
+    packet >> journal_entry_int;
+    journalEntry = static_cast<JournalEntry::Entry>(journal_entry_int);
+    
     unsigned int childMissionSize;
     packet >> childMissionSize;
     childMissions.clear();
@@ -24,16 +27,5 @@ void MissionClient::handleSnapshot(bit::ServerPacket &packet)
         packet >> missionId;
         childMissions[missionId] = MissionClient();
         childMissions[missionId].handleSnapshot(packet);
-    }
-
-    unsigned int requirementsSize;
-    packet >> requirementsSize;
-    requirements.clear();
-    for(unsigned int i=0; i < requirementsSize; i++)
-    {
-        unsigned int requirementId;
-        packet >> requirementId;
-        requirements[requirementId] = RequirementClient();
-        requirements[requirementId].handleSnapshot(packet);
     }
 }

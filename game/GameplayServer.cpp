@@ -109,22 +109,28 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
         }
 
         // Mission number 1
-        Mission* mission = new Mission();
-        mission->load(getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted);
+        Mission* root = new Mission();
+        root->load(getNextMissionId(), LogicalType::Sequence, Mission::GenerationType::Scripted, JournalEntry::Entry::TestMissionRoot);
 
-        Requirement* requirement = new Requirement();
-        requirement->load(getNextRequirementId(), Requirement::GenerationType::Scripted, JournalEntry::Entry::FindLevelTwo, [] (Character* c) -> bool {
+        Mission* healthMission = new Mission();
+        healthMission->load(getNextRequirementId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::GetDoubleHealth);
+        healthMission->assignRequirement([] (Character* c) -> bool {
+            if (c->deltaState.health >= 200)
+            {
+                return true;
+            }
+            return false;
+        });
+        root->assignChildMission(healthMission);
+
+        Mission* levelMission = new Mission();
+        levelMission->load(getNextRequirementId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::FindLevelTwo);
+        levelMission->assignRequirement([] (Character* c) -> bool {
             return (c->level == &c->level->server->levels[1]);
         });
-        mission->assignRequirement(requirement);
+        root->assignChildMission(levelMission);
 
-        requirement = new Requirement();
-        requirement->load(getNextRequirementId(), Requirement::GenerationType::Scripted, JournalEntry::Entry::GetDoubleHealth, [] (Character* c) -> bool {
-            return (c->deltaState.health >= 200);
-        });
-        mission->assignRequirement(requirement);
-
-        p->character->assignMission(mission);
+        p->character->assignMission(root);
     }
 }
 
@@ -155,15 +161,7 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
                 player->level->handlePlayerCommand(packet, client, static_cast<Command::Type>(commandType));
 				break;
             case Command::Type::PlayerSwitchLevel:
-                switch(player->level->id)
-                {
-                    case 0:
-                        movePlayerToLevel(player, 0, 1);
-                        break;
-                    case 1:
-                        movePlayerToLevel(player, 1, 0);
-                        break;
-                }
+                player->character->deltaState.health = 200;
                 break;
 		}
 	}

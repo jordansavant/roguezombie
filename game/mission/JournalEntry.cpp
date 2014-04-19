@@ -21,6 +21,8 @@ JournalEntry JournalEntry::get(Entry e)
         default:
         case Entry::None:
             return JournalEntry("None", "None.");
+        case Entry::TestMissionRoot:
+            return JournalEntry("Mission Root Test", "Complete your objectives.");
         case Entry::FindLevelTwo:
             return JournalEntry("Find Level Two", "Find your way to level two and see what lurks within.");
         case Entry::GetDoubleHealth:

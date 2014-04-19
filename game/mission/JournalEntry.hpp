@@ -11,6 +11,7 @@ public:
     enum Entry
     {
         None,
+        TestMissionRoot,
         FindLevelTwo,
         GetDoubleHealth,
     };
