@@ -13,6 +13,7 @@
 #include "Command.hpp"
 #include "characters/ZombieClient.hpp"
 #include "hud/Hud.hpp"
+#include "items/ItemClient.hpp"
 #include <sstream>
 
 StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, bool isClient, bool isHost)
@@ -80,6 +81,15 @@ bool StateGamePlay::update(sf::Time &gameTime)
                     entry += "  - " + JournalEntry::getTitle(mc->journalEntry) + "\n";
             }
         }
+
+        entry += "\n\nItems\n";
+        for(auto iterator = levelClient->playerCharacter->backpackClient.itemClients.begin(); iterator != levelClient->playerCharacter->backpackClient.itemClients.end(); iterator++)
+        {
+            // Level 1
+            ItemClient* i = &iterator->second;
+            entry += "- " + Item::getTitle(i->type) + "\n";
+        }
+
         journalEntries->setSfFontString(entry);
         journal->update(*rogueZombieGame->renderWindow, gameTime);
     }

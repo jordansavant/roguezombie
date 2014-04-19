@@ -24,6 +24,8 @@ public:
 
     virtual unsigned int getNextMissionId();
 
+    virtual unsigned int getNextItemId();
+
     virtual void movePlayerToLevel(Player* player, unsigned int fromLevelId, unsigned int toLevelId);
 
 private:
@@ -41,7 +43,7 @@ private:
 	std::map<unsigned int, Player*> players;
     unsigned int bodyIdCounter;
     unsigned int missionIdCounter;
-    unsigned int requirementIdCounter;
+    unsigned int itemIdCounter;
 
     virtual void load();
 

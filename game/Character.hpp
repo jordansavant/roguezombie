@@ -10,12 +10,14 @@
 #include <map>
 
 #include "mission/MissionClient.hpp"
+#include "items/ItemClient.hpp"
 
 class Level;
 class Player;
 class Light;
 class Tile;
 class Mission;
+class Item;
 
 class Character : public Body
 {
@@ -37,6 +39,8 @@ public:
     std::vector<Mission*> missions;
     std::map<unsigned int, MissionClient> missionClients;
     bool missionStateChanged;
+    Item* backpack;
+    ItemClient backpackClient;
 
 	struct FixedState
 	{

@@ -7,9 +7,10 @@
 #include "Tile.hpp"
 #include "levels/Interior.hpp"
 #include "mission/Mission.hpp"
+#include "items/Item.hpp"
 
 GameplayServer::GameplayServer()
-    : bit::Server(), bodyIdCounter(0), missionIdCounter(0), requirementIdCounter(0)
+    : bit::Server(), bodyIdCounter(0), missionIdCounter(0), itemIdCounter(0)
 {
 }
 
@@ -69,6 +70,11 @@ unsigned int GameplayServer::getNextMissionId()
     return ++missionIdCounter;
 }
 
+unsigned int GameplayServer::getNextItemId()
+{
+    return ++itemIdCounter;
+}
+
 void GameplayServer::movePlayerToLevel(Player* player, unsigned int fromLevelId, unsigned int toLevelId)
 {
     PendingMovePlayer m;
@@ -121,6 +127,11 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
         root->assignChildMission(levelMission);
 
         p->character->assignMission(root);
+
+        // Items
+        Item* magnum = Item::create(Item::Type::Magnum357);
+        magnum->id = getNextItemId();
+        p->character->backpack->addItem(magnum);
     }
 }
 

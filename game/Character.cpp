@@ -12,9 +12,10 @@
 #include "Player.hpp"
 #include "mission/Mission.hpp"
 #include "mission/MissionClient.hpp"
+#include "items/Item.hpp"
 
 Character::Character()
-    : Body(), missionStateChanged(false), moveTimer(.75f), fixedState(), deltaState()
+    : Body(), missionStateChanged(false), moveTimer(.75f), fixedState(), deltaState(), backpack(NULL), backpackClient()
 {
 }
 
@@ -24,6 +25,8 @@ Character::~Character()
     {
         delete missions[i];
     }
+
+    delete backpack;
 }
 
 void Character::load(Level* _level, unsigned int _id, Type _type, float _x, float _y, float _width, float _height)
@@ -32,6 +35,9 @@ void Character::load(Level* _level, unsigned int _id, Type _type, float _x, floa
     fixedState.type = _type;
     fixedState.maxHealth = 100;
 	deltaState.health = 100;
+
+    backpack = Item::create(Item::Type::Backpack);
+    backpack->id = level->server->getNextItemId();
 
     moveToPosition(_x, _y);
 }
@@ -249,6 +255,13 @@ void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
             missions[i]->prepareSnapshot(packet);
         }
     }
+
+    // Items
+    packet << full;
+    if(full)
+    {
+        backpack->prepareSnapshot(packet);
+    }
 }
 
 void Character::handleSnapshot(bit::ServerPacket &packet, bool full)
@@ -278,5 +291,13 @@ void Character::handleSnapshot(bit::ServerPacket &packet, bool full)
                 missionClients[missionId].handleSnapshot(packet);
             }
         }
+    }
+
+    // Item Clientside
+    bool hasBackpack;
+    packet >> hasBackpack;
+    if(hasBackpack)
+    {
+        backpackClient.handleSnapshot(packet);
     }
 }
