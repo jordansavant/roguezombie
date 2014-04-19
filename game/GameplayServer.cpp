@@ -131,7 +131,7 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
         // Items
         Item* magnum = Item::create(Item::Type::Magnum357);
         magnum->id = getNextItemId();
-        p->character->backpack->addItem(magnum);
+        p->character->addItemToInventory(magnum);
     }
 }
 
@@ -163,6 +163,11 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
 				break;
             case Command::Type::PlayerSwitchLevel:
                 player->character->deltaState.health = 200;
+
+                Item* hardhat = Item::create(Item::Type::HardHat);
+                hardhat->id = getNextItemId();
+                player->character->addItemToInventory(hardhat);
+
                 break;
 		}
 	}

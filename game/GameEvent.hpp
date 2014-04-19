@@ -6,6 +6,7 @@ enum GameEvent
 {
     MissionAssigned,
     MissionCompleted,
+    ItemAdded,
 };
 
 #endif

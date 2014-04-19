@@ -282,11 +282,17 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
     packet >> eventTypeInt;
     GameEvent eventType = static_cast<GameEvent>(eventTypeInt);
 
-    switch(eventType)
+    if(levelClient->playerCharacter)
     {
-        case GameEvent::MissionCompleted:
-            levelClient->playerCharacter->handleMissionCompleteGameEvent(packet);
-            break;
+        switch(eventType)
+        {
+            case GameEvent::MissionCompleted:
+                levelClient->playerCharacter->handleMissionCompleteGameEvent(packet);
+                break;
+            case GameEvent::ItemAdded:
+                levelClient->playerCharacter->handleItemAddGameEvent(packet);
+                break;
+        }
     }
 }
 

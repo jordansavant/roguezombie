@@ -102,11 +102,15 @@ public:
 
     void assignMission(Mission* mission);
 
+    void addItemToInventory(Item* item);
+
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 
     virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 
     void handleMissionCompleteGameEvent(bit::ServerPacket &packet);
+
+    void handleItemAddGameEvent(bit::ServerPacket &packet);
 
 protected:
 

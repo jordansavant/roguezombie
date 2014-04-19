@@ -6,6 +6,8 @@
 #include <vector>
 #include "../../bitengine/Network.hpp"
 
+class Character;
+
 class Item
 {
 public:
@@ -30,6 +32,8 @@ public:
 
     unsigned int id;
     Type type;
+    Item* parentItem;
+    Character* parentCharacter;
     float weight;
     bool canContainItems;
     unsigned int itemLimit;
@@ -40,6 +44,14 @@ public:
     bool hasAll(unsigned int currentValue, unsigned int filter);
 
     void addItem(Item* item);
+
+    Character* getParentCharacter();
+
+    void fillIdHierarchy(std::vector<unsigned int> &fill);
+
+    virtual void packIdHierarchy(bit::ServerPacket &packet);
+
+    void sendAddItemPacket();
 
     void prepareSnapshot(bit::ServerPacket &packet);
 

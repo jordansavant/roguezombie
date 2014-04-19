@@ -2,10 +2,15 @@
 #include "ItemCategory.hpp"
 #include "../../bitengine/Math.hpp"
 #include "../../bitengine/Network.hpp"
+#include "../GameEvent.hpp"
+#include "../Character.hpp"
+#include "../Player.hpp"
+#include "../Level.hpp"
+#include "../GameplayServer.hpp"
 
 Item::Item()
     : CategoryBase(0), CategoryArmor(0), CategoryWeapon(0), CategoryJewelry(0), CategoryContainer(0),
-      id(0), type(Type::None), weight(0), canContainItems(false), itemLimit(0)
+      id(0), parentItem(NULL), parentCharacter(NULL), type(Type::None), weight(0), canContainItems(false), itemLimit(0)
 {
 }
 
@@ -32,6 +37,55 @@ void Item::addItem(Item* item)
     if(canContainItems && items.size() + 1 <= itemLimit)
     {
         items.push_back(item);
+        item->parentItem = this;
+        item->sendAddItemPacket();
+    }
+}
+
+Character* Item::getParentCharacter()
+{
+    if(parentItem)
+    {
+        return parentItem->getParentCharacter();
+    }
+
+    return parentCharacter;
+}
+
+// First elements are highest parents
+void Item::fillIdHierarchy(std::vector<unsigned int> &fill)
+{
+    if(parentItem)
+    {
+        parentItem->fillIdHierarchy(fill);
+    }
+    fill.push_back(id);
+}
+
+void Item::packIdHierarchy(bit::ServerPacket &packet)
+{
+    std::vector<unsigned int> parents;
+    fillIdHierarchy(parents);
+
+    packet << sf::Uint32(parents.size());
+    for(unsigned int i=0; i < parents.size(); i++)
+    {
+        packet << sf::Uint32(parents[i]);
+    }
+}
+
+void Item::sendAddItemPacket()
+{
+    Character* c = getParentCharacter();
+    if(c->fixedState.isPlayerCharacter)
+    {
+        Item* i = this;
+        c->level->server->sendEventToClient(*c->fixedState.player->client, [i] (bit::ServerPacket &packet) {
+
+            packet << sf::Uint32(GameEvent::ItemAdded);
+            i->packIdHierarchy(packet);
+            i->prepareSnapshot(packet);
+        });
     }
 }
 
@@ -44,7 +98,7 @@ void Item::prepareSnapshot(bit::ServerPacket &packet)
     packet << sf::Uint32(CategoryContainer);
 
     packet << sf::Uint32(type);
-    packet << sf::Uint32(weight);
+    packet << weight;
 
     packet << sf::Uint32(items.size());
     for(unsigned int i=0; i < items.size(); i++)

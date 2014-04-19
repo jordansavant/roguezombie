@@ -37,6 +37,7 @@ void Character::load(Level* _level, unsigned int _id, Type _type, float _x, floa
 	deltaState.health = 100;
 
     backpack = Item::create(Item::Type::Backpack);
+    backpack->parentCharacter = this;
     backpack->id = level->server->getNextItemId();
 
     moveToPosition(_x, _y);
@@ -209,6 +210,11 @@ void Character::checkMissions()
     }
 }
 
+void Character::addItemToInventory(Item* item)
+{
+    backpack->addItem(item);
+}
+
 
 void Character::handleMissionCompleteGameEvent(bit::ServerPacket &packet)
 {
@@ -230,6 +236,36 @@ void Character::handleMissionCompleteGameEvent(bit::ServerPacket &packet)
     if(mc)
     {
         mc->isComplete = true;
+    }
+}
+
+
+void Character::handleItemAddGameEvent(bit::ServerPacket &packet)
+{
+    // depth includes all parents and the new item id
+    unsigned int depth;
+    packet >> depth;
+
+    unsigned int backpack_id;
+    packet >> backpack_id;
+    ItemClient* ic = &backpackClient;
+    // Adding an item to the inventory normally
+    // skip the first and last ID as that is our backpack then new item
+    for(unsigned int i=1; i < depth - 1; i++)
+    {
+        unsigned int itemId;
+        packet >> itemId;
+        ic = &backpackClient.itemClients[itemId];
+    }
+
+    if(ic)
+    {
+        unsigned int itemId;
+        packet >> itemId;
+
+        // unpack the item into it
+        backpackClient.itemClients[itemId] = ItemClient();
+        backpackClient.itemClients[itemId].handleSnapshot(packet);
     }
 }
 
