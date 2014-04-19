@@ -14,6 +14,7 @@ public:
     {
         Backpack,
         HardHat,
+        Magnum357,
     };
 
     unsigned int CategoryBase;
@@ -22,9 +23,11 @@ public:
     unsigned int CategoryJewelry;
     unsigned int CategoryContainer;
 
-    bool isOf(unsigned int currentValue, unsigned int filter);
+    float weight;
 
-    bool isExactly(unsigned int currentValue, unsigned int filter);
+    bool hasAny(unsigned int currentValue, unsigned int filter);
+
+    bool hasAll(unsigned int currentValue, unsigned int filter);
 
     static Item* create(Type type);
 };

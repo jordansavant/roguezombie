@@ -13,9 +13,9 @@ public:
         BaseWeapon = 4,
         BaseJewelry = 8,
         BaseContainer = 16,
-        //Consumable = 8,
-        //Part = 16,
-        //Junk = 32,
+        //BaseConsumable = 8,
+        //BasePart = 16,
+        //BaseJunk = 32,
     };
 
     enum Armor
@@ -46,7 +46,7 @@ public:
     enum Container
     {
         ContainerNone = 0,
-        ContainerBackpack = 0,
+        ContainerBackpack = 2,
     };
 };
 

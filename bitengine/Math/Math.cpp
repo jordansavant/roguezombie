@@ -155,3 +155,13 @@ float bit::Math::roundPowerOf2(float value)
     else
         return floor;
 }
+
+bool bit::Math::bitwiseHasAny(unsigned int value, unsigned int filter)
+{
+    return (value & filter) > 0;
+}
+
+bool bit::Math::bitwiseHasAll(unsigned int value, unsigned int filter)
+{
+    return (value & filter) == filter;
+}

@@ -34,6 +34,11 @@ namespace bit
         static float ceilPowerOf2(float value);
 
         static float roundPowerOf2(float value);
+
+        static bool bitwiseHasAny(unsigned int value, unsigned int filter);
+
+        static bool bitwiseHasAll(unsigned int value, unsigned int filter);
+
     };
 }
 

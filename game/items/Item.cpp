@@ -1,19 +1,20 @@
 #include "Item.hpp"
 #include "ItemCategory.hpp"
+#include "../../bitengine/Math.hpp"
 
 Item::Item()
-    : CategoryBase(0), CategoryArmor(0), CategoryWeapon(0), CategoryJewelry(0), CategoryContainer(0)
+    : CategoryBase(0), CategoryArmor(0), CategoryWeapon(0), CategoryJewelry(0), CategoryContainer(0), weight(0)
 {
 }
 
-bool Item::isExactly(unsigned int attribute, unsigned int filter)
+bool Item::hasAny(unsigned int attribute, unsigned int filter)
 {
-    return (attribute & filter) == filter;
+    return bit::Math::bitwiseHasAny(attribute, filter);
 }
 
-bool Item::isOf(unsigned int attribute, unsigned int filter)
+bool Item::hasAll(unsigned int attribute, unsigned int filter)
 {
-    return (attribute & filter) > 0;
+    return bit::Math::bitwiseHasAll(attribute, filter);
 }
 
 Item* Item::create(Type type)
@@ -27,6 +28,7 @@ Item* Item::create(Type type)
             i = new Item();
             i->CategoryBase = ItemCategory::Base::BaseContainer;
             i->CategoryContainer = ItemCategory::Container::ContainerBackpack;
+            i->weight = 0;
 
             break;
         
@@ -34,7 +36,17 @@ Item* Item::create(Type type)
 
             i = new Item();
             i->CategoryBase = ItemCategory::Base::BaseArmor;
-            i->CategoryArmor = ItemCategory::Armor::ArmorHead | ItemCategory::Armor::ArmorHand;
+            i->CategoryArmor = ItemCategory::Armor::ArmorHead;
+            i->weight = 1.5;
+
+            break;
+                
+        case Type::Magnum357:
+
+            i = new Item();
+            i->CategoryBase = ItemCategory::Base::BaseWeapon;
+            i->CategoryArmor = ItemCategory::Weapon::WeaponRanged;
+            i->weight = 2;
 
             break;
     }
