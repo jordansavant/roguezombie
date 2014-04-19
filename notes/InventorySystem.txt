@@ -38,7 +38,7 @@ Armor
     Legs
     Shoes
 Weapon
-Totem*
+Totem
 
 
 Human                      Zombie
@@ -102,6 +102,7 @@ class Item
     bool canHaveInternalItems;
     vector<Item*> internalItems;
     unsigned int internalItemCapacity;
+    function<bool> isComplete;
     
     void load(ItemType type, ItemCategory* category, bool canHaveInternalItems, unsigned int internalItemCapacity);
 
