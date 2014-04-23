@@ -37,10 +37,10 @@ public:
     bit::GameTimer moveTimer;
     std::vector<Light*> lights;
     std::vector<Mission*> missions;
-    std::map<unsigned int, MissionClient> missionClients;
-    bool missionStateChanged;
     Item* backpack;
-    ItemClient backpackClient;
+
+    std::map<unsigned int, MissionClient> missionClients; // TODO: Remove clientside aspect from serverside class
+    ItemClient backpackClient; // TODO: Remove clientside aspect from serverside class
 
 	struct FixedState
 	{
@@ -52,14 +52,18 @@ public:
 
         friend sf::Packet& operator <<(sf::Packet& packet, const Character::FixedState &state)
         {
-            packet << sf::Uint32(state.maxHealth) << state.isPlayerCharacter << sf::Uint32(state.clientId) << sf::Uint32(state.type);
+            packet << sf::Uint32(state.maxHealth);
+            packet << state.isPlayerCharacter;
+            packet << sf::Uint32(state.clientId);
+            packet << sf::Uint32(state.type);
             return packet;
         }
         friend sf::Packet& operator >>(sf::Packet& packet, Character::FixedState &state)
         {
-            sf::Uint32 type;
-            packet >> state.maxHealth >> state.isPlayerCharacter >> state.clientId >> type;
-            state.type = static_cast<Character::Type>(type);
+            packet >> state.maxHealth;
+            packet >> state.isPlayerCharacter;
+            packet >> state.clientId;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Character::Type>(packet, state.type);
             return packet;
         }
 	};

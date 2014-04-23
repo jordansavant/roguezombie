@@ -94,7 +94,6 @@ bool Mission::attemptCompleteMission()
     {
         succeed();
         isComplete = true;
-        getParentCharacter()->missionStateChanged = true;
         sendMissionCompletePacket();
         return true;
     }

@@ -1,0 +1,207 @@
+Scenario 1
+
+Player sees chest
+Player moves to adjacent tile of chest
+-
+Player clicks to interact with chest
+Player is given interaction options for chest
+Player chooses unlock
+Player is given unlock interaction options for chest
+Player chooses to use a key
+Chest is unlocked with the key 
+-
+Player clicks to interact with chest
+Player is given interaction options for chest
+Player chooses loot
+-
+Player is shown loot inventory of chest
+Player chooses items to loot and moves them to his inventory
+Player closes the loot inventory
+
+
+How it works 1
+
+Player sight and movement are taken care of already through client InputCommands packets and ServerSnapshot packets
+-
+Option A - Server Driven Interaction options
+    All client/server bodies carry interaction flags like item categories
+    All tiles can be clicked on the client side
+    When a tile with a chest is clicked a REQUEST is made to the server to get the interaction options for that tile
+        REQUEST.requestID = 1
+        REQUEST.type = GetInteractionOptions
+        REQUEST.tileID = 777
+    The server RESPONDS with an interaction tree for that object
+        RESPONSE.requestID = 1
+        RESPONSE.result = Success
+        RESPONSE.InteractionTree = ...
+    When the response is received the interaction popup appears above the tile with options that can be clicked
+    Options lead to more options (as it is a tree) and the leaf options correspond to actions
+    When an action is selected such as "UnlockWithKey" it is sent to the server in the form of another REQUEST
+        REQUEST.requestID = 2
+        REQUEST.type = UnlockWithKey
+        REQUEST.tileID = 777
+    The server takes the tile id and checks to see if an unlockable keyable object sits on that tile
+    It then checks to see if that object is Occupied by another player
+    It will then send the RESPONSE that contains the inventory information for that object
+    The server will also designate that object is in a transaction with the player to block other players from accessing it
+        RESPONSE.requestID = 2
+        RESPONSE.result = Success
+        RESPONSE.LootInventoryTree = ...
+        or
+        RESPONSE.requestID = 2
+        RESPONSE.result = Fail
+        RESPONSE.reason = LootInventoryIsOccupied
+    The client will then be shown the inventory of the chest.
+    While the inventory is open the player can interact with that as well.
+    If a player drags an item from the loot window to his inventory window it will make a REQUEST to transfer inventory
+        REQUEST.requestID = 3
+        REQUEST.type = TransferItem
+        REQUEST.fromBodyId = Chest.ID
+        REQUEST.itemId = Item.ID
+        REQUEST.toBodyId = playerCharacter.ID
+    The server will process the request, it will move the item to the player character's inventory
+    The server will send a GameEvent for new item to the player inventory
+    The server will check the object id to see if it is in transaction with the player, and if so resend the InventoryTree for that object
+        RESPONSE.requestID = 3
+        RESPONSE.result = Success
+        RESPONSE.LootInventoryTree = ...
+        -
+        GAMEEVENT.type = NewItem
+        GAMEEVENT.ItemTree = ...
+    The client inventory is syncronized with the GameEvent packet and the Loot Inventory is updated with the RESPONSE packet
+    The player then closes the window which will sends a responseless Request to the server indicating the transaction is complete
+        REQUEST.requestID = 4
+        REQUEST.type = CloseLootInventory
+    The server receives the request and nullifies the transaction between the chest object and the player
+    No response is necessary
+
+Design Notes
+    
+    Request/Response Storage
+        
+        The client stores a vector of Request structs, the indices being the request ID.
+        Request
+        {
+            bool isAbandoned;
+            Function(bit::ServerPacket, ResponseType) onComplete;
+        }
+        These structs have an enum type such as UnlockWithKey as well as a function pointer to be run on response.
+        When a request is made a new entry is created in the vector and the request packet is sent
+        If a response packet is received it will contain the same request ID that was sent before
+        The client can find the response and using either the enum type or the function pointer run specific client side response handling (not sure which is more flexible)
+        It will also remove the request from the vector, freeing it up to be reused.
+        
+        When the server receives a request it honors it immediately and sends a response.
+        
+        // EG
+        state.clearRequests()
+        state.ServerRequest(
+            function(bit::ClientPacket &packet)
+            {
+                packet << GameRequest::GetInteractionOptions,
+                packet << state.currentTileId;
+            },
+            function(bit::ServerPacket &packet, ResponseType)
+            {
+                switch(ResponseType)
+                {
+                    case Success:
+                        state.lootInventory.loot.handleSnapshot(packet);
+                        state.lootInventory.display();
+                    case Fail:
+                        packet >> code;
+                        switch(code)
+                        {
+                            case OccupiedByPlayer:
+                                state.banner.queue("Inventory is currently occupied.");
+                                break;
+                            case UnknownInteractable:
+                                state.banner.queue("Object no longer exists to interact with.");
+                                break;
+                        }
+                }
+            }
+        );
+        
+        ClientServerState
+        {
+            ClientServerState::ServerRequest(function<void(bit::ClientPacket)> prepare, function<void(bit::ServerPacket)> onComplete)
+            {
+                clientPacket << ClientPacket::ServerRequest;
+                clientPacket << requests.size();
+                prepare(clientPacket);
+                requests.add(ClientRequest(onComplete));
+                socket.send(clientPacket);
+            }
+            
+            ClientServerState::ServerResponse(bit::ServerPacket packet)
+            {
+                packet >> requestId;
+                packet >> result;
+                if(!requests[requestId].isAbandonded)
+                {
+                    requests[requestId].onComplete(packet, result);
+                }
+                requests.erase(requestId);
+            }
+            
+            ClientServerState::ClearRequests()
+            {
+                foreach request
+                {
+                    request.isAbandoned = true;
+                }
+            }
+        }
+        
+        Server
+        {
+            ...
+            case ClientPacket::ServerRequest:
+            {
+                packet >> requestId;
+                
+                bit::ServerPacket response;
+                response << bit::Server::ServerResponse;
+                response << requestId;
+                
+                handlePacket_clientServerRequest(packet, client, response);
+                client.socket.send(response);
+            }
+        }
+        
+        GameplayServer
+        {
+            handlePacket_clientServerRequest(bit::ClientPacket request, RemoteClient client, bit::ServerPacket::Response response)
+            {
+                request >> gameRequest;
+                switch(gameRequest)
+                {
+                    case GetInteractionOptions:
+                    {
+                        request >> tileId;
+                        if(t = player.level.tiles[tileId] && t->body and t->body.isInteractable)
+                        {
+                            if(t->body->interactionTransactioningPlayer != player)
+                            {
+                                response << Fail
+                                response << OccupiedByPlayer
+                            }
+                            else
+                            {
+                                t->body->interactionTransactioningPlayer = player;
+                                response << Success
+                                t->body->prepareInteractionOptions(response);
+                            }
+                        }
+                        else
+                        {
+                            response << Fail
+                            response << UnknownInteractable
+                        }
+                    }
+                }
+            }
+        }
+        
+        

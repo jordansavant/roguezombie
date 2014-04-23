@@ -36,10 +36,10 @@ void DoorClient::clientUpdate(sf::Time &gameTime)
     float xFootOffset = 0;
     float yFootOffset = 16;
 
-    float levelX = Body::deltaState.x;
-    float levelY = Body::deltaState.y;
-    float levelCenterX = levelX + Body::deltaState.width / 2;
-    float levelCenterY = levelY + Body::deltaState.height / 2;
+    float levelX = Body::schema.x;
+    float levelY = Body::schema.y;
+    float levelCenterX = levelX + Body::schema.width / 2;
+    float levelCenterY = levelY + Body::schema.height / 2;
 
     sf::Vector2f renderPosition = bit::VectorMath::normalToIsometric(levelCenterX, levelCenterY);
     float renderX = renderPosition.x - spriteWidth / 2 + xFootOffset / 2;
@@ -50,7 +50,7 @@ void DoorClient::clientUpdate(sf::Time &gameTime)
     bit::VertexHelper::positionQuad(quad, renderX, renderY, z, spriteWidth, spriteHeight);
 
     // Color and luminence
-    sf::Color color(255 * Body::deltaState.illumination, 255 * Body::deltaState.illumination, 255 * Body::deltaState.illumination);
+    sf::Color color(255 * Body::schema.illumination, 255 * Body::schema.illumination, 255 * Body::schema.illumination);
     bit::VertexHelper::colorQuad(quad, color);
 
     if(deltaState.isOpen)

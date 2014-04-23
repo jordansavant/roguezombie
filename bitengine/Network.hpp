@@ -3,6 +3,7 @@
 
 #include "Network/ClientPacket.hpp"
 #include "Network/ClientServerState.hpp"
+#include "Network/NetworkHelper.hpp"
 #include "Network/RemoteClient.hpp"
 #include "Network/Server.hpp"
 #include "Network/ServerPacket.hpp"

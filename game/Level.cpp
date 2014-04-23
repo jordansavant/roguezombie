@@ -130,7 +130,7 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
                 {
                     Level* l = this;
                     t->onBodyEnter.push_back([l] (Tile* t, Body* b){
-                        if(b->fixedState.type == Body::Type::Character)
+                        if(b->schema.type == Body::Type::Character)
                         {
                             Character* c = static_cast<Character*>(b);
                             if(c->fixedState.isPlayerCharacter)
@@ -146,7 +146,7 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
                 {
                     Level* l = this;
                     t->onBodyEnter.push_back([l] (Tile* t, Body* b){
-                        if(b->fixedState.type == Body::Type::Character)
+                        if(b->schema.type == Body::Type::Character)
                         {
                             Character* c = static_cast<Character*>(b);
                             if(c->fixedState.isPlayerCharacter)
@@ -190,10 +190,10 @@ bool Level::createPlayer(Player* player)
 
     // Create light source for character's vision
     Light* light = new Light();
-    light->load(this, zombie->Body::deltaState.x, zombie->Body::deltaState.y, 12, sf::Color(220, 255, 175), .4);
+    light->load(this, zombie->Body::schema.x, zombie->Body::schema.y, 12, sf::Color(220, 255, 175), .4);
     zombie->lights.push_back(light);
     Light* orbLight = new Light();
-    orbLight->load(this, zombie->Body::deltaState.x, zombie->Body::deltaState.y, 4, sf::Color::White, .6);
+    orbLight->load(this, zombie->Body::schema.x, zombie->Body::schema.y, 4, sf::Color::White, .6);
     zombie->lights.push_back(orbLight);
 
     // Add player to this level's management
@@ -253,7 +253,7 @@ void Level::removePlayer(Player* player)
 
         // Remove body from tiles
         std::vector<Tile*> tiles;
-        getTilesWithinRectangle(player->character->Body::deltaState.x, player->character->Body::deltaState.y, player->character->Body::deltaState.width, player->character->Body::deltaState.height, tiles);
+        getTilesWithinRectangle(player->character->Body::schema.x, player->character->Body::schema.y, player->character->Body::schema.width, player->character->Body::schema.height, tiles);
         for(unsigned int i=0; i < tiles.size(); i++)
         {
             if(tiles[i]->body && tiles[i]->body == player->character)
@@ -472,7 +472,7 @@ void Level::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &cl
             Player* p = players[client.id];
             if(t)
             {
-                raycastTiles(t->fixedState.x, t->fixedState.y,  p->character->Body::deltaState.x, p->character->Body::deltaState.y, [] (Tile* t) -> bool {
+                raycastTiles(t->fixedState.x, t->fixedState.y,  p->character->Body::schema.x, p->character->Body::schema.y, [] (Tile* t) -> bool {
                     t->deltaState.illumination = 1.0f;
                     return false;
                 });
@@ -489,7 +489,7 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
     // Get a subset of visible tiles for the player within a radius of tiles
     std::vector<Tile*> visibles;
     Level* w = this;
-    bit::Shadowcaster::computeFoV(p->character->Body::deltaState.x / tileWidth, p->character->Body::deltaState.y / tileHeight, tileColumns, tileRows, 30,
+    bit::Shadowcaster::computeFoV(p->character->Body::schema.x / tileWidth, p->character->Body::schema.y / tileHeight, tileColumns, tileRows, 30,
         [&visibles, w] (int x, int y, float radius)
         {
             Tile* t = w->getTileAtIndices(x, y);
@@ -502,7 +502,7 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
         [&visibles, w] (int x, int y) -> bool
         {
             Tile* t = w->getTileAtPosition(x * w->tileWidth, y * w->tileHeight);
-            return (t && t->body && t->body->fixedState.type == Body::Type::Structure);
+            return (t && t->body && t->body->schema.type == Body::Type::Structure);
         }
     );
 
@@ -537,7 +537,7 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
         }
 
         // break open body
-        switch(b->fixedState.type)
+        switch(b->schema.type)
         {
             case Body::Type::Character:
             {
@@ -545,10 +545,10 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
                 switch(c->fixedState.type)
                 {
                     case Character::Type::Zombie:
-                        packNetworkBody<Zombie, Character>(packet, full, c, b->fixedState.type, c->fixedState.type);
+                        packNetworkBody<Zombie, Character>(packet, full, c, b->schema.type, c->fixedState.type);
                         break;
                     case Character::Type::Ogre:
-                        packNetworkBody<Ogre, Character>(packet, full, c, b->fixedState.type, c->fixedState.type);
+                        packNetworkBody<Ogre, Character>(packet, full, c, b->schema.type, c->fixedState.type);
                         break;
                 }
                 break;
@@ -560,10 +560,10 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
                 switch(s->fixedState.type)
                 {
                     case Structure::Type::Wall:
-                        packNetworkBody<Wall, Structure>(packet, full, s, b->fixedState.type, s->fixedState.type);
+                        packNetworkBody<Wall, Structure>(packet, full, s, b->schema.type, s->fixedState.type);
                         break;
                     case Structure::Type::Door:
-                        packNetworkBody<Door, Structure>(packet, full, s, b->fixedState.type, s->fixedState.type);
+                        packNetworkBody<Door, Structure>(packet, full, s, b->schema.type, s->fixedState.type);
                         break;
                 }
                 break;

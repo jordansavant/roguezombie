@@ -44,7 +44,7 @@ void Light::setVisible(int x, int y, float distance)
 
         if(t->body)
         {
-            t->body->deltaState.illumination = newLight;
+            t->body->schema.illumination = newLight;
         }
 
         // Calculate color shades based on brightness dominance and lighting
@@ -102,5 +102,5 @@ bool Light::isBlocked(int x, int y)
 {
     Tile* t = level->getTileAtIndices(x, y);
 
-    return (t && t->body && t->body->fixedState.type == Body::Type::Structure);
+    return (t && t->body && t->body->schema.type == Body::Type::Structure);
 }

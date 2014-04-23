@@ -24,44 +24,34 @@ public:
 
     Level* level;
 
-	struct FixedState
+	struct Schema
 	{
+        Schema()
+            : id(0), type(Type::None), x(0), y(0), width(0), height(0), illumination(0)
+        {
+        }
+
         unsigned int id;
         Type type;
-
-        friend sf::Packet& operator <<(sf::Packet& packet, const Body::FixedState &state)
-        {
-            packet << sf::Uint32(state.id);
-            packet << sf::Uint32(state.type);
-            return packet;
-        }
-        friend sf::Packet& operator >>(sf::Packet& packet, Body::FixedState &state)
-        {
-            sf::Uint32 type;
-            packet >> state.id;
-            packet >> type;
-            state.type = static_cast<Body::Type>(type);
-            return packet;
-        }
-	};
-	FixedState fixedState;
-
-	struct DeltaState
-	{
 		float x, y;
         float width, height;
         float illumination;
 
-        friend sf::Packet& operator <<(sf::Packet& packet, const Body::DeltaState &state)
+        friend sf::Packet& operator <<(sf::Packet& packet, const Schema &state)
         {
+            packet << sf::Uint32(state.id);
+            packet << sf::Uint32(state.type);
             return packet << state.x << state.y << state.width << state.height << state.illumination;
         }
-        friend sf::Packet& operator >>(sf::Packet& packet, Body::DeltaState &state)
+
+        friend sf::Packet& operator >>(sf::Packet& packet, Schema &state)
         {
+            packet >> state.id;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Body::Type>(packet, state.type);
             return packet >> state.x >> state.y >> state.width >> state.height >> state.illumination;
         }
 	};
-	DeltaState deltaState;
+	Schema schema;
 
     virtual void load(Level* level, unsigned int id, Type type, float x, float y, float width, float height);
 

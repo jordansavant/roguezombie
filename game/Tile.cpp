@@ -46,9 +46,9 @@ void Tile::update(sf::Time &gameTime)
 
     // Reset body's illuminance
     if(body)
-        body->deltaState.illumination = 0;
+        body->schema.illumination = 0;
     if(door)
-        door->deltaState.illumination = 0;
+        door->schema.illumination = 0;
 }
 
 void Tile::setOccupyingBody(Body* _body)
@@ -63,7 +63,7 @@ void Tile::setOccupyingBody(Body* _body)
     else if(_body)
     {
         body = _body;
-        deltaState.bodyId = body->fixedState.id;
+        deltaState.bodyId = body->schema.id;
 
         runOnBodyEnter(body);
     }
@@ -79,7 +79,7 @@ void Tile::setOccupyingDoor(Body* _door)
     else
     {
         door = _door;
-        deltaState.doorId = body->fixedState.id;
+        deltaState.doorId = body->schema.id;
     }
 }
 

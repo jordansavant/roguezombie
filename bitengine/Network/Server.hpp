@@ -26,22 +26,22 @@ namespace bit
 
         enum ServerPacketType
         {
-            Broadcast,                  // string broadcast
+            Broadcast,                  // tell all clients a string broadcast
             InitializeSelf,             // tell client we have acknowledged their connection
             InitializeWorld,            // tell client of the full world
             Event,                      // tell client of game event
             DisconnectAcknowledged,     // tell client we have acknowledge their disconnection
             Kick,                       // tell client we have kicked them
-            PeerClientConnected,        // tell connected clients about a new client
-            PeerClientDisconnected,     // tell connected clients about a lost client
-            ServerUpdate,               // tick update for world snapshot 1/20th a second
-            Shutdown,                   // tell connected clients that the server is shutting down
+            PeerClientConnected,        // tell all clients about a new client
+            PeerClientDisconnected,     // tell all clients about a lost client
+            ServerUpdate,               // tell client about a world snapshot 1/20th a second
+            Shutdown,                   // tell all clients that the server is shutting down
         };
 
         enum ClientPacketType
         {
-            ClientInformation,          // tell server about game specific client information
-            ClientUpdate,               // tell server about client update 1/20th a second
+            ClientInformation,          // tell server about game specific client connection information
+            ClientUpdate,               // tell server about client input update 1/20th a second
             Quit,                       // tell server that client is quitting
         };
 
@@ -123,7 +123,6 @@ namespace bit
         virtual void preparePacket_DisconnectAcknowledge(ServerPacket &packet, RemoteClient &client) = 0;
 
         virtual void preparePacket_Shutdown(ServerPacket &packet) = 0;
-
     };
 }
 

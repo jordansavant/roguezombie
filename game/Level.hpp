@@ -92,7 +92,7 @@ public:
         packet << sf::Uint32(bodyType);
         packet << sf::Uint32(subType);
         T* entity = static_cast<T*>(c);
-        sf::Uint32 id = entity->Body::fixedState.id;
+        sf::Uint32 id = entity->Body::schema.id;
         packet << id;
         entity->prepareSnapshot(packet, full);
     }

@@ -18,7 +18,7 @@ void Structure::load(Level* _level, unsigned int _id, Type _type, float _x, floa
     fixedState.type = _type;
 
     std::vector<Tile*> currentTiles;
-    level->getTilesWithinRectangle(Body::deltaState.x, Body::deltaState.y, Body::deltaState.width, Body::deltaState.height, currentTiles);
+    level->getTilesWithinRectangle(Body::schema.x, Body::schema.y, Body::schema.width, Body::schema.height, currentTiles);
     for(unsigned int i=0; i < currentTiles.size(); i++)
     {
         currentTiles[i]->setOccupyingBody(this);

@@ -15,7 +15,7 @@
 #include "items/Item.hpp"
 
 Character::Character()
-    : Body(), missionStateChanged(false), moveTimer(.75f), fixedState(), deltaState(), backpack(NULL), backpackClient()
+    : Body(), moveTimer(.75f), fixedState(), deltaState(), backpack(NULL), backpackClient()
 {
 }
 
@@ -52,7 +52,7 @@ void Character::update(sf::Time &gameTime)
     {
         Tile* nextTile = path.back();
 
-        if(nextTile->fixedState.x != Body::deltaState.x || nextTile->fixedState.y != Body::deltaState.y)
+        if(nextTile->fixedState.x != Body::schema.x || nextTile->fixedState.y != Body::schema.y)
         {
             if(moveToTile(nextTile))
             {
@@ -70,8 +70,8 @@ void Character::update(sf::Time &gameTime)
     {
         for(unsigned int i=0; i < lights.size(); i++)
         {
-            lights[i]->x = Body::deltaState.x;
-            lights[i]->y = Body::deltaState.y;
+            lights[i]->x = Body::schema.x;
+            lights[i]->y = Body::schema.y;
         }
     }
 
@@ -88,22 +88,22 @@ void Character::setControllingPlayer(Player* player)
 
 bool Character::moveUp()
 {
-    return moveToPosition(Body::deltaState.x, Body::deltaState.y - level->tileHeight);
+    return moveToPosition(Body::schema.x, Body::schema.y - level->tileHeight);
 }
 
 bool Character::moveDown()
 {
-    return moveToPosition(Body::deltaState.x, Body::deltaState.y + level->tileHeight);
+    return moveToPosition(Body::schema.x, Body::schema.y + level->tileHeight);
 }
 
 bool Character::moveLeft()
 {
-    return moveToPosition(Body::deltaState.x - level->tileWidth, Body::deltaState.y);
+    return moveToPosition(Body::schema.x - level->tileWidth, Body::schema.y);
 }
 
 bool Character::moveRight()
 {
-    return moveToPosition(Body::deltaState.x + level->tileWidth, Body::deltaState.y);
+    return moveToPosition(Body::schema.x + level->tileWidth, Body::schema.y);
 }
 
 bool Character::moveToTile(Tile* t)
@@ -114,9 +114,9 @@ bool Character::moveToTile(Tile* t)
 bool Character::moveToPosition(float x, float y)
 {
     std::vector<Tile*> newTiles;
-    level->getTilesWithinRectangle(x, y, Body::deltaState.width, Body::deltaState.height, newTiles);
+    level->getTilesWithinRectangle(x, y, Body::schema.width, Body::schema.height, newTiles);
     std::vector<Tile*> currentTiles;
-    level->getTilesWithinRectangle(Body::deltaState.x, Body::deltaState.y, Body::deltaState.width, Body::deltaState.height, currentTiles);
+    level->getTilesWithinRectangle(Body::schema.x, Body::schema.y, Body::schema.width, Body::schema.height, currentTiles);
 
     // Check if I can move
     bool canMove = true;
@@ -139,8 +139,8 @@ bool Character::moveToPosition(float x, float y)
             newTiles[i]->setOccupyingBody(this);
         }
 
-        Body::deltaState.x = x;
-        Body::deltaState.y = y;
+        Body::schema.x = x;
+        Body::schema.y = y;
     }
 
     return canMove;
@@ -150,8 +150,8 @@ void Character::pathToPosition(float x, float y)
 {
     path.clear();
     level->getShortestPath(
-        Body::deltaState.x,
-        Body::deltaState.y,
+        Body::schema.x,
+        Body::schema.y,
         x,
         y,
         std::bind(
@@ -175,7 +175,7 @@ bool Character::isTileBlockedForPathfinding(Tile* tile)
 {
     // Look at all tiles within my width and height
     std::vector<Tile*> tiles;
-    level->getTilesWithinRectangle(tile->fixedState.x, tile->fixedState.y, Body::deltaState.width, Body::deltaState.height, tiles);
+    level->getTilesWithinRectangle(tile->fixedState.x, tile->fixedState.y, Body::schema.width, Body::schema.height, tiles);
     for(unsigned int i=0; i < tiles.size(); i++)
     {
         if(isTileBlocked(tiles[i]))
@@ -190,7 +190,6 @@ bool Character::isTileBlockedForPathfinding(Tile* tile)
 void Character::assignMission(Mission* mission)
 {
     missions.push_back(mission);
-    missionStateChanged = true;
     mission->parentCharacter = this;
 
     if(fixedState.isPlayerCharacter)
@@ -215,7 +214,6 @@ void Character::addItemToInventory(Item* item)
     backpack->addItem(item);
 }
 
-
 void Character::handleMissionCompleteGameEvent(bit::ServerPacket &packet)
 {
     unsigned int depth;
@@ -238,7 +236,6 @@ void Character::handleMissionCompleteGameEvent(bit::ServerPacket &packet)
         mc->isComplete = true;
     }
 }
-
 
 void Character::handleItemAddGameEvent(bit::ServerPacket &packet)
 {
@@ -268,7 +265,6 @@ void Character::handleItemAddGameEvent(bit::ServerPacket &packet)
         backpackClient.itemClients[itemId].handleSnapshot(packet);
     }
 }
-
 
 void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {

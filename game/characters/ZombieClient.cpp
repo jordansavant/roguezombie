@@ -31,14 +31,14 @@ void ZombieClient::clientUpdate(sf::Time &gameTime)
     sprite->applyToQuad(&level->vertexMap_01.vertexArray[quadIndex]);
 
     // Position
-    bit::VectorMath::incrementTowards(renderX, renderY, Body::deltaState.x, Body::deltaState.y, 4, 4);
+    bit::VectorMath::incrementTowards(renderX, renderY, Body::schema.x, Body::schema.y, 4, 4);
 
     float spriteWidth = 21;
     float spriteHeight = 29;
     float xFootOffset = 8;
     float yFootOffset = 5;
-    float levelCenterX = renderX + Body::deltaState.width / 2;
-    float levelCenterY = renderY + Body::deltaState.height / 2;
+    float levelCenterX = renderX + Body::schema.width / 2;
+    float levelCenterY = renderY + Body::schema.height / 2;
 
     sf::Vector2f r = bit::VectorMath::normalToIsometric(levelCenterX, levelCenterY);
     r.x = r.x - spriteWidth / 2 + xFootOffset / 2;
@@ -49,7 +49,7 @@ void ZombieClient::clientUpdate(sf::Time &gameTime)
     bit::VertexHelper::positionQuad(quad, r.x, r.y, z, spriteWidth, spriteHeight);
 
     // Color and luminence
-    sf::Color color((int)(255.0f * Body::deltaState.illumination), (int)(255.0f * Body::deltaState.illumination), (int)(255.0f * Body::deltaState.illumination));
+    sf::Color color((int)(255.0f * Body::schema.illumination), (int)(255.0f * Body::schema.illumination), (int)(255.0f * Body::schema.illumination));
     bit::VertexHelper::colorQuad(quad, color);
 }
 
@@ -59,8 +59,8 @@ void ZombieClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 
     if(renderX == 0 && renderY == 0)
     {
-        renderX = Body::deltaState.x;
-        renderY = Body::deltaState.y;
+        renderX = Body::schema.x;
+        renderY = Body::schema.y;
     }
 }
 

@@ -16,7 +16,7 @@ void Door::load(Level* _level, unsigned int _id, float _x, float _y)
     Structure::load(_level, _id, Structure::Type::Door, _x, _y, _level->tileWidth, _level->tileHeight);
 
     std::vector<Tile*> currentTiles;
-    level->getTilesWithinRectangle(Body::deltaState.x, Body::deltaState.y, Body::deltaState.width, Body::deltaState.height, currentTiles);
+    level->getTilesWithinRectangle(Body::schema.x, Body::schema.y, Body::schema.width, Body::schema.height, currentTiles);
     for(unsigned int i=0; i < currentTiles.size(); i++)
     {
         currentTiles[i]->setOccupyingDoor(this);
@@ -42,7 +42,7 @@ void Door::attemptOpen()
 {
     // Unset any tiles I am on as a body
     std::vector<Tile*> currentTiles;
-    level->getTilesWithinRectangle(Body::deltaState.x, Body::deltaState.y, Body::deltaState.width, Body::deltaState.height, currentTiles);
+    level->getTilesWithinRectangle(Body::schema.x, Body::schema.y, Body::schema.width, Body::schema.height, currentTiles);
     for(unsigned int i=0; i < currentTiles.size(); i++)
     {
         if(currentTiles[i]->body && currentTiles[i]->body == this)
@@ -58,7 +58,7 @@ void Door::attemptClose()
 {
     bool canClose = true;
     std::vector<Tile*> currentTiles;
-    level->getTilesWithinRectangle(Body::deltaState.x, Body::deltaState.y, Body::deltaState.width, Body::deltaState.height, currentTiles);
+    level->getTilesWithinRectangle(Body::schema.x, Body::schema.y, Body::schema.width, Body::schema.height, currentTiles);
     for(unsigned int i=0; i < currentTiles.size(); i++)
     {
         if(currentTiles[i]->body)
@@ -88,14 +88,14 @@ void Door::registerTileTriggers(Tile* tile)
     if(tile)
     {
         tile->onBodyEnter.push_back([d] (Tile* t, Body* b) {
-            if(b->Body::fixedState.type == Body::Type::Character)
+            if(b->Body::schema.type == Body::Type::Character)
             {
                 d->openerCount++;
                 d->attemptOpen();
             }
         });
         tile->onBodyLeave.push_back([d] (Tile* t, Body* b) {
-            if(b->Body::fixedState.type == Body::Type::Character)
+            if(b->Body::schema.type == Body::Type::Character)
             {
                 d->openerCount--;
                 if(d->openerCount == 0)

@@ -7,19 +7,19 @@
 #include "Tile.hpp"
 
 Body::Body()
-    : level(NULL), fixedState(), deltaState()
+    : level(NULL), schema()
 {
 }
 
 void Body::load(Level* _level, unsigned int _id, Type _type, float _x, float _y, float _width, float _height)
 {
     level = _level;
-    fixedState.id = _id;
-    fixedState.type = _type;
-    deltaState.x = _x;
-    deltaState.y = _y;
-    deltaState.width = _width;
-    deltaState.height = _height;
+    schema.id = _id;
+    schema.type = _type;
+    schema.x = _x;
+    schema.y = _y;
+    schema.width = _width;
+    schema.height = _height;
 }
 
 void Body::update(sf::Time &gameTime)
@@ -28,12 +28,10 @@ void Body::update(sf::Time &gameTime)
 
 void Body::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
-    packet << fixedState;
-    packet << deltaState;
+    packet << schema;
 }
 
 void Body::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
-    packet >> fixedState;
-    packet >> deltaState;
+    packet >> schema;
 }
