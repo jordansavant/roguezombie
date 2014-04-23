@@ -77,10 +77,10 @@ void Item::packIdHierarchy(bit::ServerPacket &packet)
 void Item::sendAddItemPacket()
 {
     Character* c = getParentCharacter();
-    if(c->fixedState.isPlayerCharacter)
+    if(c->schema.isPlayerCharacter)
     {
         Item* i = this;
-        c->level->server->sendEventToClient(*c->fixedState.player->client, [i] (bit::ServerPacket &packet) {
+        c->level->server->sendEventToClient(*c->schema.player->client, [i] (bit::ServerPacket &packet) {
 
             packet << sf::Uint32(GameEvent::ItemAdded);
             i->packIdHierarchy(packet);

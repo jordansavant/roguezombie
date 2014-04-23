@@ -115,7 +115,7 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
         Mission* healthMission = new Mission();
         healthMission->load(getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::GetDoubleHealth);
         healthMission->assignRequirement([] (Character* c) -> bool {
-            return (c->deltaState.health >= 200);
+            return (c->schema.health >= 200);
         });
         root->assignChildMission(healthMission);
 
@@ -162,7 +162,7 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
                 player->level->handlePlayerCommand(packet, client, static_cast<Command::Type>(commandType));
 				break;
             case Command::Type::PlayerSwitchLevel:
-                player->character->deltaState.health = 200;
+                player->character->schema.health = 200;
 
                 Item* hardhat = Item::create(Item::Type::HardHat);
                 hardhat->id = getNextItemId();

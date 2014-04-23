@@ -147,11 +147,11 @@ void Mission::packIdHierarchy(bit::ServerPacket &packet)
 void Mission::sendMissionCompletePacket()
 {
     Character* c = getParentCharacter();
-    if(c->fixedState.isPlayerCharacter)
+    if(c->schema.isPlayerCharacter)
     {
         // Mission Completed Event
         Mission* m = this;
-        c->level->server->sendEventToClient(*c->fixedState.player->client, [m] (bit::ServerPacket &packet) {
+        c->level->server->sendEventToClient(*c->schema.player->client, [m] (bit::ServerPacket &packet) {
 
             packet << sf::Uint32(GameEvent::MissionCompleted);
             m->packIdHierarchy(packet);

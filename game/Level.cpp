@@ -133,9 +133,9 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
                         if(b->schema.type == Body::Type::Character)
                         {
                             Character* c = static_cast<Character*>(b);
-                            if(c->fixedState.isPlayerCharacter)
+                            if(c->schema.isPlayerCharacter)
                             {
-                                Player* p = l->players[c->fixedState.clientId];
+                                Player* p = l->players[c->schema.clientId];
                                 l->server->movePlayerToLevel(p, l->id, 1);
                             }
                         }
@@ -149,9 +149,9 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
                         if(b->schema.type == Body::Type::Character)
                         {
                             Character* c = static_cast<Character*>(b);
-                            if(c->fixedState.isPlayerCharacter)
+                            if(c->schema.isPlayerCharacter)
                             {
-                                Player* p = l->players[c->fixedState.clientId];
+                                Player* p = l->players[c->schema.clientId];
                                 l->server->movePlayerToLevel(p, l->id, 0);
                             }
                         }
@@ -215,7 +215,7 @@ bool Level::addPlayer(Player* player)
 
     // Push character into management list
     player->character->level = this;
-    switch(player->character->fixedState.type)
+    switch(player->character->schema.type)
     {
         case Character::Type::Zombie:
             zombies.push_back(static_cast<Zombie*>(player->character));
@@ -269,7 +269,7 @@ void Level::removePlayer(Player* player)
         }
 
         // Remove character from management list
-        switch(player->character->fixedState.type)
+        switch(player->character->schema.type)
         {
             case Character::Type::Zombie:
                 zombies.erase(std::remove(zombies.begin(), zombies.end(), static_cast<Zombie*>(player->character)), zombies.end());
@@ -542,13 +542,13 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
             case Body::Type::Character:
             {
                 Character* c = static_cast<Character*>(b);
-                switch(c->fixedState.type)
+                switch(c->schema.type)
                 {
                     case Character::Type::Zombie:
-                        packNetworkBody<Zombie, Character>(packet, full, c, b->schema.type, c->fixedState.type);
+                        packNetworkBody<Zombie, Character>(packet, full, c, b->schema.type, c->schema.type);
                         break;
                     case Character::Type::Ogre:
-                        packNetworkBody<Ogre, Character>(packet, full, c, b->schema.type, c->fixedState.type);
+                        packNetworkBody<Ogre, Character>(packet, full, c, b->schema.type, c->schema.type);
                         break;
                 }
                 break;

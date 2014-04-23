@@ -15,7 +15,7 @@
 #include "items/Item.hpp"
 
 Character::Character()
-    : Body(), moveTimer(.75f), fixedState(), deltaState(), backpack(NULL), backpackClient()
+    : Body(), moveTimer(.75f), schema(), backpack(NULL), backpackClient()
 {
 }
 
@@ -32,9 +32,9 @@ Character::~Character()
 void Character::load(Level* _level, unsigned int _id, Type _type, float _x, float _y, float _width, float _height)
 {
     Body::load(_level, _id, Body::Type::Character, _x, _y, _width, _height);
-    fixedState.type = _type;
-    fixedState.maxHealth = 100;
-	deltaState.health = 100;
+    schema.type = _type;
+    schema.maxHealth = 100;
+	schema.health = 100;
 
     backpack = Item::create(Item::Type::Backpack);
     backpack->parentCharacter = this;
@@ -66,7 +66,7 @@ void Character::update(sf::Time &gameTime)
     }
 
     // If I am a player character and I have a light, update it
-    if(fixedState.isPlayerCharacter)
+    if(schema.isPlayerCharacter)
     {
         for(unsigned int i=0; i < lights.size(); i++)
         {
@@ -81,9 +81,9 @@ void Character::update(sf::Time &gameTime)
 
 void Character::setControllingPlayer(Player* player)
 {
-    fixedState.isPlayerCharacter = true;
-    fixedState.clientId = player->clientId;
-    fixedState.player = player;
+    schema.isPlayerCharacter = true;
+    schema.clientId = player->clientId;
+    schema.player = player;
 }
 
 bool Character::moveUp()
@@ -192,7 +192,7 @@ void Character::assignMission(Mission* mission)
     missions.push_back(mission);
     mission->parentCharacter = this;
 
-    if(fixedState.isPlayerCharacter)
+    if(schema.isPlayerCharacter)
     {
         Character* c = this;/*
         level->server->sendEventToClient(*fixedState.player->client, [mission] (bit::ServerPacket &packet) {
@@ -272,8 +272,7 @@ void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
     Body::prepareSnapshot(packet, full);
 
     // Character
-    packet << fixedState;
-    packet << deltaState;
+    packet << schema;
 
     // Missions
     packet << full;
@@ -302,8 +301,7 @@ void Character::handleSnapshot(bit::ServerPacket &packet, bool full)
     Body::handleSnapshot(packet, full);
 
     // Character
-    packet >> fixedState;
-    packet >> deltaState;
+    packet >> schema;
 
     // Mission Clientside
     bool hasMissionUpdate;

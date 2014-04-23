@@ -42,47 +42,35 @@ public:
     std::map<unsigned int, MissionClient> missionClients; // TODO: Remove clientside aspect from serverside class
     ItemClient backpackClient; // TODO: Remove clientside aspect from serverside class
 
-	struct FixedState
+	struct Schema
 	{
 		int maxHealth;
         bool isPlayerCharacter;
         unsigned int clientId;
         Player* player;
         Type type;
+        int health;
 
-        friend sf::Packet& operator <<(sf::Packet& packet, const Character::FixedState &state)
+        friend sf::Packet& operator <<(sf::Packet& packet, const Schema &state)
         {
             packet << sf::Uint32(state.maxHealth);
             packet << state.isPlayerCharacter;
             packet << sf::Uint32(state.clientId);
             packet << sf::Uint32(state.type);
+            packet << sf::Int32(state.health);
             return packet;
         }
-        friend sf::Packet& operator >>(sf::Packet& packet, Character::FixedState &state)
+        friend sf::Packet& operator >>(sf::Packet& packet, Schema &state)
         {
             packet >> state.maxHealth;
             packet >> state.isPlayerCharacter;
             packet >> state.clientId;
             bit::NetworkHelper::unpackEnum<sf::Uint32, Character::Type>(packet, state.type);
+            packet >> state.health;
             return packet;
         }
 	};
-	FixedState fixedState;
-
-	struct DeltaState
-	{
-        int health;
-
-        friend sf::Packet& operator <<(sf::Packet& packet, const Character::DeltaState &state)
-        {
-            return packet << sf::Int32(state.health);
-        }
-        friend sf::Packet& operator >>(sf::Packet& packet, Character::DeltaState &state)
-        {
-            return packet >> state.health;
-        }
-	};
-	DeltaState deltaState;
+	Schema schema;
 
     virtual void load(Level* level, unsigned int id, Type type, float x, float y, float width, float height);
 

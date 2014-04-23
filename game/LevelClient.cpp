@@ -115,7 +115,7 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
                 }
 
                 // Player character
-                if(c->fixedState.clientId == state->clientId)
+                if(c->schema.clientId == state->clientId)
                 {
                     playerCharacter = c;
                 }

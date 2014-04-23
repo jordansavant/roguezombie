@@ -21,7 +21,7 @@ void Ogre::update(sf::Time &gameTime)
 {
     Character::update(gameTime);
 
-	if(!fixedState.isPlayerCharacter)
+	if(!schema.isPlayerCharacter)
 	{
 		if(walkTimer.update(gameTime))
 		{
