@@ -36,15 +36,15 @@ void TileClient::clientUpdate(sf::Time &gameTime)
     sprite->applyToQuad(&level->vertexMap_01.vertexArray[quadIndex]);
 
     // Position
-    sf::Vector2f isoPosition = bit::VectorMath::normalToIsometric(fixedState.x, fixedState.y);
+    sf::Vector2f isoPosition = bit::VectorMath::normalToIsometric(schema.x, schema.y);
     bit::Vertex3* quad = &level->vertexMap_01.vertexArray[quadIndex];
-    bit::VertexHelper::positionQuad(quad, isoPosition.x - fixedState.width, isoPosition.y, 0, 64, 32);
+    bit::VertexHelper::positionQuad(quad, isoPosition.x - schema.width, isoPosition.y, 0, 64, 32);
 
     // Test Mouse translation
-    float mx = std::floor((float)level->mousePositionInWorld.x / (float)fixedState.width);
-    float my = std::floor((float)level->mousePositionInWorld.y / (float)fixedState.height);
-    float tx = std::floor((float)fixedState.x / (float)fixedState.width);
-    float ty = std::floor((float)fixedState.y / (float)fixedState.height);
+    float mx = std::floor((float)level->mousePositionInWorld.x / (float)schema.width);
+    float my = std::floor((float)level->mousePositionInWorld.y / (float)schema.height);
+    float tx = std::floor((float)schema.x / (float)schema.width);
+    float ty = std::floor((float)schema.y / (float)schema.height);
 
     if(tx == mx && ty == my)
     {
@@ -56,9 +56,9 @@ void TileClient::clientUpdate(sf::Time &gameTime)
     }
     else
     {
-        int r = deltaState.rshade * deltaState.illumination;
-        int g = deltaState.gshade * deltaState.illumination;
-        int b = deltaState.bshade * deltaState.illumination;
+        int r = schema.rshade * schema.illumination;
+        int g = schema.gshade * schema.illumination;
+        int b = schema.bshade * schema.illumination;
         sf::Color c(r, g, b);
         bit::VertexHelper::colorQuad(quad, c);
 

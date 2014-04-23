@@ -53,7 +53,7 @@ void DoorClient::clientUpdate(sf::Time &gameTime)
     sf::Color color(255 * Body::schema.illumination, 255 * Body::schema.illumination, 255 * Body::schema.illumination);
     bit::VertexHelper::colorQuad(quad, color);
 
-    if(deltaState.isOpen)
+    if(schema.isOpen)
     {
         sf::Color dc(color.r, color.g, color.b, 0);
         bit::VertexHelper::colorQuad(quad, dc);

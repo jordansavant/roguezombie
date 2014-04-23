@@ -52,7 +52,7 @@ void Character::update(sf::Time &gameTime)
     {
         Tile* nextTile = path.back();
 
-        if(nextTile->fixedState.x != Body::schema.x || nextTile->fixedState.y != Body::schema.y)
+        if(nextTile->schema.x != Body::schema.x || nextTile->schema.y != Body::schema.y)
         {
             if(moveToTile(nextTile))
             {
@@ -108,7 +108,7 @@ bool Character::moveRight()
 
 bool Character::moveToTile(Tile* t)
 {
-    return moveToPosition(t->fixedState.x, t->fixedState.y);
+    return moveToPosition(t->schema.x, t->schema.y);
 }
 
 bool Character::moveToPosition(float x, float y)
@@ -175,7 +175,7 @@ bool Character::isTileBlockedForPathfinding(Tile* tile)
 {
     // Look at all tiles within my width and height
     std::vector<Tile*> tiles;
-    level->getTilesWithinRectangle(tile->fixedState.x, tile->fixedState.y, Body::schema.width, Body::schema.height, tiles);
+    level->getTilesWithinRectangle(tile->schema.x, tile->schema.y, Body::schema.width, Body::schema.height, tiles);
     for(unsigned int i=0; i < tiles.size(); i++)
     {
         if(isTileBlocked(tiles[i]))

@@ -4,7 +4,7 @@
 #include "../bitengine/Math.hpp"
 
 Tile::Tile()
-    : bit::NodeContainer(), level(NULL), body(NULL), door(NULL), metadata_shadowcastId(0), fixedState(), deltaState()
+    : bit::NodeContainer(), level(NULL), body(NULL), door(NULL), metadata_shadowcastId(0), schema()
 {
 }
 
@@ -19,17 +19,17 @@ Tile::~Tile()
 void Tile::load(Level* _level, unsigned int _id, Type _type, int _x, int _y, int _width, int _height)
 {
     level = _level;
-    fixedState.id = _id;
-    fixedState.x = _x;
-    fixedState.y = _y;
-    fixedState.width = _width;
-    fixedState.height = _height;
-    fixedState.centerX = _x + _width / 2;
-    fixedState.centerY = _y + _height / 2;
-    deltaState.illumination = 0.0f;
-    deltaState.rshade = 0;
-    deltaState.gshade = 0;
-    deltaState.bshade = 0;
+    schema.id = _id;
+    schema.x = _x;
+    schema.y = _y;
+    schema.width = _width;
+    schema.height = _height;
+    schema.centerX = _x + _width / 2;
+    schema.centerY = _y + _height / 2;
+    schema.illumination = 0.0f;
+    schema.rshade = 0;
+    schema.gshade = 0;
+    schema.bshade = 0;
 
     this->node = new bit::Node(_x, _y, this);
 }
@@ -37,12 +37,12 @@ void Tile::load(Level* _level, unsigned int _id, Type _type, int _x, int _y, int
 void Tile::update(sf::Time &gameTime)
 {
     // Reset brightness to none
-    deltaState.illumination = 0.0f;
+    schema.illumination = 0.0f;
 
     // Reset color to black
-    deltaState.rshade = 0;
-    deltaState.gshade = 0;
-    deltaState.bshade = 0;
+    schema.rshade = 0;
+    schema.gshade = 0;
+    schema.bshade = 0;
 
     // Reset body's illuminance
     if(body)
@@ -58,12 +58,12 @@ void Tile::setOccupyingBody(Body* _body)
         runOnBodyLeave(body);
 
         body = NULL;
-        deltaState.bodyId = 0;
+        schema.bodyId = 0;
     }
     else if(_body)
     {
         body = _body;
-        deltaState.bodyId = body->schema.id;
+        schema.bodyId = body->schema.id;
 
         runOnBodyEnter(body);
     }
@@ -74,12 +74,12 @@ void Tile::setOccupyingDoor(Body* _door)
     if(!_door)
     {
         door = NULL;
-        deltaState.doorId = 0;
+        schema.doorId = 0;
     }
     else
     {
         door = _door;
-        deltaState.doorId = body->schema.id;
+        schema.doorId = body->schema.id;
     }
 }
 
@@ -101,12 +101,10 @@ void Tile::runOnBodyLeave(Body* body)
 
 void Tile::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
-    packet << fixedState;
-    packet << deltaState;
+    packet << schema;
 }
 
 void Tile::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
-    packet >> fixedState;
-    packet >> deltaState;
+    packet >> schema;
 }

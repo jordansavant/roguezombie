@@ -36,11 +36,11 @@ void Light::setVisible(int x, int y, float distance)
         t->metadata_shadowcastId = bit::Shadowcaster::shadowcastId;
 
         // Calculate brightness
-        float currentLight = t->deltaState.illumination;
+        float currentLight = t->schema.illumination;
         float addition = (1 - distance) * brightness;
         float combinedLight = currentLight + addition;
         float newLight = bit::Math::clamp(combinedLight, currentLight, 1.0f);
-        t->deltaState.illumination = newLight;
+        t->schema.illumination = newLight;
 
         if(t->body)
         {
@@ -89,12 +89,12 @@ void Light::setVisible(int x, int y, float distance)
             eF = 1 - aF + 1;
         }
 
-        unsigned char r = bit::Math::clamp(((float)color.r * aF + (float)t->deltaState.rshade * eF) / (t->deltaState.rshade > 0 && color.r > 0 ? 2 : 1), 0,255);
-        unsigned char g = bit::Math::clamp(((float)color.g * aF + (float)t->deltaState.gshade * eF) / (t->deltaState.gshade > 0 && color.g > 0 ? 2 : 1), 0, 255);
-        unsigned char b = bit::Math::clamp(((float)color.b * aF + (float)t->deltaState.bshade * eF) / (t->deltaState.bshade > 0 && color.b > 0 ? 2 : 1), 0, 255);
-        t->deltaState.rshade = r;
-        t->deltaState.gshade = g;
-        t->deltaState.bshade = b;
+        unsigned char r = bit::Math::clamp(((float)color.r * aF + (float)t->schema.rshade * eF) / (t->schema.rshade > 0 && color.r > 0 ? 2 : 1), 0,255);
+        unsigned char g = bit::Math::clamp(((float)color.g * aF + (float)t->schema.gshade * eF) / (t->schema.gshade > 0 && color.g > 0 ? 2 : 1), 0, 255);
+        unsigned char b = bit::Math::clamp(((float)color.b * aF + (float)t->schema.bshade * eF) / (t->schema.bshade > 0 && color.b > 0 ? 2 : 1), 0, 255);
+        t->schema.rshade = r;
+        t->schema.gshade = g;
+        t->schema.bshade = b;
     }
 }
 

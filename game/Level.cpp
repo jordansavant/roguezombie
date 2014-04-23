@@ -93,21 +93,21 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
                 case 1:
                 {
                     Wall* w = new Wall();
-                    w->load(this, server->getNextBodyId(), t->fixedState.x, t->fixedState.y);
+                    w->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
                     walls.push_back(w);
                     break;
                 }
                 case 2:
                 {
                     Zombie* z = new Zombie();
-                    z->load(this, server->getNextBodyId(), t->fixedState.x, t->fixedState.y);
+                    z->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
                     zombies.push_back(z);
                     break;
                 }
                 case 3:
                 {
                     Ogre* o = new Ogre();
-                    o->load(this, server->getNextBodyId(), t->fixedState.x, t->fixedState.y);
+                    o->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
                     ogres.push_back(o);
                     break;
                 }
@@ -115,14 +115,14 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
                 {
                     sf::Color c = sf::Color::Red;
                     Light* l = new Light();
-                    l->load(this, t->fixedState.x, t->fixedState.y, 4, c, .66);
+                    l->load(this, t->schema.x, t->schema.y, 4, c, .66);
                     lights.push_back(l);
                     break;
                 }
                 case 5:
                 {
                     Door* d = new Door();
-                    d->load(this, server->getNextBodyId(), t->fixedState.x, t->fixedState.y);
+                    d->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
                     doors.push_back(d);
                     break;
                 }
@@ -233,7 +233,7 @@ bool Level::addPlayer(Player* player)
     }
 
     // Add body to tiles
-    if(!player->character->moveToPosition(tiles[44]->fixedState.x, tiles[44]->fixedState.y))
+    if(!player->character->moveToPosition(tiles[44]->schema.x, tiles[44]->schema.y))
     {
         removePlayer(player);
 
@@ -376,10 +376,10 @@ void Level::getCardinalTiles(Tile* tile, std::vector<Tile*> &fill)
 
 void Level::getCardinalTilesNullsafe(Tile* tile, std::vector<Tile*> &fill, bool nullsafe)
 {
-    Tile* top = getTileAtPosition(tile->fixedState.x, tile->fixedState.y - tile->fixedState.height);
-    Tile* bottom = getTileAtPosition(tile->fixedState.x, tile->fixedState.y + tile->fixedState.height);
-    Tile* left = getTileAtPosition(tile->fixedState.x - tile->fixedState.width, tile->fixedState.y);
-    Tile* right = getTileAtPosition(tile->fixedState.x + tile->fixedState.width, tile->fixedState.y);
+    Tile* top = getTileAtPosition(tile->schema.x, tile->schema.y - tile->schema.height);
+    Tile* bottom = getTileAtPosition(tile->schema.x, tile->schema.y + tile->schema.height);
+    Tile* left = getTileAtPosition(tile->schema.x - tile->schema.width, tile->schema.y);
+    Tile* right = getTileAtPosition(tile->schema.x + tile->schema.width, tile->schema.y);
 
     if(top)
         fill.push_back(top);
@@ -460,7 +460,7 @@ void Level::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &cl
             Tile* t = tiles[tileId];
             if(t)
             {
-                player->character->pathToPosition(t->fixedState.x, t->fixedState.y);
+                player->character->pathToPosition(t->schema.x, t->schema.y);
             }
             break;
         }
@@ -472,8 +472,8 @@ void Level::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &cl
             Player* p = players[client.id];
             if(t)
             {
-                raycastTiles(t->fixedState.x, t->fixedState.y,  p->character->Body::schema.x, p->character->Body::schema.y, [] (Tile* t) -> bool {
-                    t->deltaState.illumination = 1.0f;
+                raycastTiles(t->schema.x, t->schema.y,  p->character->Body::schema.x, p->character->Body::schema.y, [] (Tile* t) -> bool {
+                    t->schema.illumination = 1.0f;
                     return false;
                 });
             }
@@ -514,7 +514,7 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
         Tile* t = visibles[i];
 
         // shove a tile type and tile info on there
-        sf::Uint32 tileId = t->fixedState.id;
+        sf::Uint32 tileId = t->schema.id;
         packet << tileId;
         t->prepareSnapshot(packet, full);
 

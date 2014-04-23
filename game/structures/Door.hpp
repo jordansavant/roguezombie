@@ -16,21 +16,21 @@ public:
 
     unsigned int openerCount;
 
-    struct DeltaState
+    struct Schema
     {
         bool isOpen;
         bool isLocked;
 
-        friend sf::Packet& operator <<(sf::Packet& packet, const DeltaState &state)
+        friend sf::Packet& operator <<(sf::Packet& packet, const Schema &state)
         {
             return packet << state.isOpen << state.isLocked;
         }
-        friend sf::Packet& operator >>(sf::Packet& packet, DeltaState &state)
+        friend sf::Packet& operator >>(sf::Packet& packet, Schema &state)
         {
             return packet >> state.isOpen >> state.isLocked;
         }
     };
-    DeltaState deltaState;
+    Schema schema;
 
     virtual void load(Level* level, unsigned int id, float x, float y);
 

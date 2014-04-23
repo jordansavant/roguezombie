@@ -29,8 +29,8 @@ void Door::load(Level* _level, unsigned int _id, float _x, float _y)
         registerTileTriggers(cardinalTiles[i]);
     }
 
-    deltaState.isOpen = false;
-    deltaState.isLocked = false;
+    schema.isOpen = false;
+    schema.isLocked = false;
 }
 
 void Door::update(sf::Time &gameTime)
@@ -51,7 +51,7 @@ void Door::attemptOpen()
         }
     }
 
-    deltaState.isOpen = true;
+    schema.isOpen = true;
 }
 
 void Door::attemptClose()
@@ -77,7 +77,7 @@ void Door::attemptClose()
             currentTiles[i]->setOccupyingBody(this);
         }
 
-        deltaState.isOpen = false;
+        schema.isOpen = false;
     }
 }
 
@@ -111,12 +111,12 @@ void Door::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
     Body::prepareSnapshot(packet, full);
 
-    packet << deltaState;
+    packet << schema;
 }
 
 void Door::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
     Body::handleSnapshot(packet, full);
 
-    packet >> deltaState;
+    packet >> schema;
 }

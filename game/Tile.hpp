@@ -31,15 +31,19 @@ public:
     std::vector<std::function<void(Tile* t, Body* body)>> onBodyEnter;
     std::vector<std::function<void(Tile* t, Body* body)>> onBodyLeave;
 
-    struct FixedState
+    struct Schema
     {
         unsigned int id;
         float x, y;
         float centerX, centerY;
         unsigned int width, height;
         Type type;
+        unsigned int bodyId;
+        unsigned int doorId;
+        float illumination; // how illuminated this tile is
+        unsigned char rshade, gshade, bshade; // color of light
 
-        friend sf::Packet& operator <<(sf::Packet& packet, const FixedState &state)
+        friend sf::Packet& operator <<(sf::Packet& packet, const Schema &state)
         {
             packet <<
             sf::Uint32(state.id) <<
@@ -50,9 +54,10 @@ public:
             sf::Uint32(state.width) <<
             sf::Uint32(state.height) <<
             sf::Uint32(state.type);
+            return packet << sf::Uint32(state.bodyId) << sf::Uint32(state.doorId) << state.illumination << state.rshade << state.gshade << state.bshade;
             return packet;
         }
-        friend sf::Packet& operator >>(sf::Packet& packet, FixedState &state)
+        friend sf::Packet& operator >>(sf::Packet& packet, Schema &state)
         {
             sf::Uint32 type;
             packet >>
@@ -65,28 +70,11 @@ public:
             state.height >>
             type;
             state.type = static_cast<Tile::Type>(type);
+            return packet >> state.bodyId >> state.doorId >> state.illumination >> state.rshade >> state.gshade >> state.bshade;
             return packet;
         }
     };
-    FixedState fixedState;
-
-    struct DeltaState
-    {
-        unsigned int bodyId;
-        unsigned int doorId;
-        float illumination; // how illuminated this tile is
-        unsigned char rshade, gshade, bshade; // color of light
-
-        friend sf::Packet& operator <<(sf::Packet& packet, const DeltaState &state)
-        {
-            return packet << sf::Uint32(state.bodyId) << sf::Uint32(state.doorId) << state.illumination << state.rshade << state.gshade << state.bshade;
-        }
-        friend sf::Packet& operator >>(sf::Packet& packet, DeltaState &state)
-        {
-            return packet >> state.bodyId >> state.doorId >> state.illumination >> state.rshade >> state.gshade >> state.bshade;
-        }
-    };
-    DeltaState deltaState;
+    Schema schema;
 
     virtual void load(Level* level, unsigned int id, Type type, int x, int y, int width, int height);
 

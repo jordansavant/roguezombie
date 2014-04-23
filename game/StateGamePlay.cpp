@@ -145,7 +145,7 @@ bool StateGamePlay::update(sf::Time &gameTime)
             Command cmd;
             cmd.type = Command::Type::PlayerClickTile;
             cmd.pack = [t] (sf::Packet &packet) {
-                packet << sf::Uint32(t->fixedState.id);
+                packet << sf::Uint32(t->schema.id);
             };
 		    commandQueue.push_back(cmd);
         }
@@ -159,7 +159,7 @@ bool StateGamePlay::update(sf::Time &gameTime)
             Command cmd;
             cmd.type = Command::Type::PlayerRightClickTile;
             cmd.pack = [t] (sf::Packet &packet) {
-                packet << sf::Uint32(t->fixedState.id);
+                packet << sf::Uint32(t->schema.id);
             };
 		    commandQueue.push_back(cmd);
         }
