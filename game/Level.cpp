@@ -557,13 +557,13 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
             case Body::Type::Structure:
             {
                 Structure* s = static_cast<Structure*>(b);
-                switch(s->fixedState.type)
+                switch(s->schema.type)
                 {
                     case Structure::Type::Wall:
-                        packNetworkBody<Wall, Structure>(packet, full, s, b->schema.type, s->fixedState.type);
+                        packNetworkBody<Wall, Structure>(packet, full, s, b->schema.type, s->schema.type);
                         break;
                     case Structure::Type::Door:
-                        packNetworkBody<Door, Structure>(packet, full, s, b->schema.type, s->fixedState.type);
+                        packNetworkBody<Door, Structure>(packet, full, s, b->schema.type, s->schema.type);
                         break;
                 }
                 break;

@@ -8,14 +8,14 @@
 #include "Tile.hpp"
 
 Structure::Structure()
-    : Body(), fixedState(), deltaState()
+    : Body(), schema()
 {
 }
 
 void Structure::load(Level* _level, unsigned int _id, Type _type, float _x, float _y, float _width, float _height)
 {
     Body::load(_level, _id, Body::Type::Structure, _x, _y, _width, _height);
-    fixedState.type = _type;
+    schema.type = _type;
 
     std::vector<Tile*> currentTiles;
     level->getTilesWithinRectangle(Body::schema.x, Body::schema.y, Body::schema.width, Body::schema.height, currentTiles);
@@ -34,14 +34,12 @@ void Structure::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
     Body::prepareSnapshot(packet, full);
 
-    packet << fixedState;
-    packet << deltaState;
+    packet << schema;
 }
 
 void Structure::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
     Body::handleSnapshot(packet, full);
 
-    packet >> fixedState;
-    packet >> deltaState;
+    packet >> schema;
 }

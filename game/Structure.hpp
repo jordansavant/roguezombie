@@ -24,16 +24,16 @@ public:
        Door,
     };
 
-	struct FixedState
+	struct Schema
 	{
         Type type;
 
-        friend sf::Packet& operator <<(sf::Packet& packet, const FixedState &state)
+        friend sf::Packet& operator <<(sf::Packet& packet, const Schema &state)
         {
             packet << sf::Uint32(state.type);
             return packet;
         }
-        friend sf::Packet& operator >>(sf::Packet& packet, FixedState &state)
+        friend sf::Packet& operator >>(sf::Packet& packet, Schema &state)
         {
             sf::Uint32 type;
             packet >> type;
@@ -41,20 +41,7 @@ public:
             return packet;
         }
 	};
-	FixedState fixedState;
-
-	struct DeltaState
-	{
-        friend sf::Packet& operator <<(sf::Packet& packet, const DeltaState &state)
-        {
-            return packet;
-        }
-        friend sf::Packet& operator >>(sf::Packet& packet, DeltaState &state)
-        {
-            return packet;
-        }
-	};
-	DeltaState deltaState;
+	Schema schema;
 
     virtual void load(Level* level, unsigned int id, Type type, float x, float y, float width, float height);
 
