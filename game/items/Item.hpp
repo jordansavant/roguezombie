@@ -77,15 +77,17 @@ public:
 
     void addItem(Item* item);
 
+    void onAddToNewParent();
+
     Character* getParentCharacter();
 
     void fillIdHierarchy(std::vector<unsigned int> &fill);
 
     virtual void packIdHierarchy(bit::ServerPacket &packet);
 
-    void sendAddItemPacket();
-
     void prepareSnapshot(bit::ServerPacket &packet);
+
+    void prepareGameEventPacket_itemAdded(bit::ServerPacket &packet);
 
     static std::string getTitle(Type type);
 

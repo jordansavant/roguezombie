@@ -382,7 +382,6 @@ void bit::Server::sendEventToClient(bit::RemoteClient &client, std::function<voi
 {
     ServerPacket packet;
     packet << static_cast<sf::Int32>(Server::ServerPacketType::Event);
-
     prepare(packet);
     client.socket.send(packet);
 }

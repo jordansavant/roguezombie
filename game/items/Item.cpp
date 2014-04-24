@@ -37,7 +37,7 @@ void Item::addItem(Item* item)
     {
         items.push_back(item);
         item->parentItem = this;
-        item->sendAddItemPacket();
+        item->onAddToNewParent();
     }
 }
 
@@ -73,17 +73,12 @@ void Item::packIdHierarchy(bit::ServerPacket &packet)
     }
 }
 
-void Item::sendAddItemPacket()
+void Item::onAddToNewParent()
 {
     Character* c = getParentCharacter();
     if(c->schema.isPlayerCharacter)
     {
-        Item* i = this;
-        c->level->server->sendEventToClient(*c->schema.player->client, [i] (bit::ServerPacket &packet) {
-            packet << sf::Uint32(GameEvent::ItemAdded);
-            i->packIdHierarchy(packet);
-            i->prepareSnapshot(packet);
-        });
+        c->level->server->sendEventToClient(*c->schema.player->client, std::bind(&Item::prepareGameEventPacket_itemAdded, this, std::placeholders::_1));
     }
 }
 
@@ -97,6 +92,13 @@ void Item::prepareSnapshot(bit::ServerPacket &packet)
         packet << sf::Uint32(items[i]->schema.id);
         items[i]->prepareSnapshot(packet);
     }
+}
+
+void Item::prepareGameEventPacket_itemAdded(bit::ServerPacket &packet)
+{
+    packet << sf::Uint32(GameEvent::ItemAdded);
+    packIdHierarchy(packet);
+    prepareSnapshot(packet);
 }
 
 std::string Item::getTitle(Type type)

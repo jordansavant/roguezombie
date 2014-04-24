@@ -66,8 +66,8 @@ bool Mission::attemptCompleteMission()
                         return false;
                     }
                 }
-                prepareGameEventPacket_missionComplete();
                 schema.isComplete = true;
+                onMissionComplete();
                 return true;
             }
             case LogicalType::Selector:
@@ -77,8 +77,8 @@ bool Mission::attemptCompleteMission()
                 {
                     if(childMissions[i]->attemptCompleteMission())
                     {
-                        prepareGameEventPacket_missionComplete();
                         schema.isComplete = true;
+                        onMissionComplete();
                         return true;
                     }
                 }
@@ -93,7 +93,7 @@ bool Mission::attemptCompleteMission()
     {
         succeed();
         schema.isComplete = true;
-        prepareGameEventPacket_missionComplete();
+        onMissionComplete();
         return true;
     }
 
@@ -119,6 +119,16 @@ Character* Mission::getParentCharacter()
     }
 
     return parentCharacter;
+}
+
+void Mission::onMissionComplete()
+{
+    // Mission Completed Event Packet
+    Character* c = getParentCharacter();
+    if(c->schema.isPlayerCharacter)
+    {
+        c->level->server->sendEventToClient(*c->schema.player->client, std::bind(&Mission::prepareGameEventPacket_missionComplete, this, std::placeholders::_1));
+    }
 }
 
 // First elements are highest parents
@@ -155,16 +165,8 @@ void Mission::prepareSnapshot(bit::ServerPacket &packet)
     }
 }
 
-void Mission::prepareGameEventPacket_missionComplete()
+void Mission::prepareGameEventPacket_missionComplete(bit::ServerPacket &packet)
 {
-    Character* c = getParentCharacter();
-    if(c->schema.isPlayerCharacter)
-    {
-        // Mission Completed Event
-        Mission* m = this;
-        c->level->server->sendEventToClient(*c->schema.player->client, [m] (bit::ServerPacket &packet) {
-            packet << sf::Uint32(GameEvent::MissionCompleted);
-            m->packIdHierarchy(packet);
-        });
-    }
+    packet << sf::Uint32(GameEvent::MissionCompleted);
+    packIdHierarchy(packet);
 }

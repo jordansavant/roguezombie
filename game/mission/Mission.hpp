@@ -71,13 +71,15 @@ public:
 
     Character* getParentCharacter();
 
+    void onMissionComplete();
+
     void fillIdHierarchy(std::vector<unsigned int> &fill);
 
     virtual void packIdHierarchy(bit::ServerPacket &packet);
-
+    
     virtual void prepareSnapshot(bit::ServerPacket &packet);
 
-    virtual void prepareGameEventPacket_missionComplete();
+    virtual void prepareGameEventPacket_missionComplete(bit::ServerPacket &packet);
 
 private:
 

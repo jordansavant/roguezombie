@@ -49,6 +49,9 @@ namespace bit
 
 		void stop();
 
+
+        // Server Event Packets
+
         void sendEventToClient(bit::RemoteClient &client, std::function<void(ServerPacket&)> prepare);
 
         void sendEventToAllClients(std::function<void(ServerPacket&)> prepare);
@@ -98,6 +101,7 @@ namespace bit
 
         void kickClient(bit::RemoteClient &client, unsigned int kickCode);
 
+
         // Packet handling
 
         virtual void handlePacket_ClientInformation(ClientPacket &packet, RemoteClient &client) = 0;
@@ -107,6 +111,7 @@ namespace bit
         virtual void handlePacket_ClientDisconnect(ClientPacket &packet, RemoteClient &client) = 0;
 
         virtual void handle_ClientTimeout(RemoteClient &client) = 0;
+
 
         // Packet sending
 
