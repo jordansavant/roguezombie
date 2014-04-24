@@ -50,22 +50,22 @@ public:
         Type type;
         int health;
 
-        friend sf::Packet& operator <<(sf::Packet& packet, const Schema &state)
+        friend sf::Packet& operator <<(sf::Packet& packet, const Schema &schema)
         {
-            packet << sf::Uint32(state.maxHealth);
-            packet << state.isPlayerCharacter;
-            packet << sf::Uint32(state.clientId);
-            packet << sf::Uint32(state.type);
-            packet << sf::Int32(state.health);
+            packet << sf::Uint32(schema.maxHealth);
+            packet << schema.isPlayerCharacter;
+            packet << sf::Uint32(schema.clientId);
+            packet << sf::Uint32(schema.type);
+            packet << sf::Int32(schema.health);
             return packet;
         }
-        friend sf::Packet& operator >>(sf::Packet& packet, Schema &state)
+        friend sf::Packet& operator >>(sf::Packet& packet, Schema &schema)
         {
-            packet >> state.maxHealth;
-            packet >> state.isPlayerCharacter;
-            packet >> state.clientId;
-            bit::NetworkHelper::unpackEnum<sf::Uint32, Character::Type>(packet, state.type);
-            packet >> state.health;
+            packet >> schema.maxHealth;
+            packet >> schema.isPlayerCharacter;
+            packet >> schema.clientId;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Character::Type>(packet, schema.type);
+            packet >> schema.health;
             return packet;
         }
 	};

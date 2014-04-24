@@ -12,7 +12,7 @@
 #include <sstream>
 
 TileClient::TileClient()
-    : Tile(), lastSnapshotId(0)
+    : schema(), level(NULL), sprite(NULL), quadIndex(0), lastSnapshotId(0)
 {
 }
 
@@ -73,4 +73,9 @@ void TileClient::clientUpdate(sf::Time &gameTime)
 void TileClient::reset()
 {
     bit::VertexHelper::resetQuad(&level->vertexMap_01.vertexArray[quadIndex]);
+}
+
+void TileClient::handleSnapshot(bit::ServerPacket &packet, bool full)
+{
+    packet >> schema;
 }

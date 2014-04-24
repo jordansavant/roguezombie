@@ -26,13 +26,13 @@ public:
         bool isOpen;
         bool isLocked;
 
-        friend sf::Packet& operator <<(sf::Packet& packet, const Schema &state)
+        friend sf::Packet& operator <<(sf::Packet& packet, const Schema &schema)
         {
-            return packet << state.isOpen << state.isLocked;
+            return packet << schema.isOpen << schema.isLocked;
         }
-        friend sf::Packet& operator >>(sf::Packet& packet, Schema &state)
+        friend sf::Packet& operator >>(sf::Packet& packet, Schema &schema)
         {
-            return packet >> state.isOpen >> state.isLocked;
+            return packet >> schema.isOpen >> schema.isLocked;
         }
     };
     Schema schema;

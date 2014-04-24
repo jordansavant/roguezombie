@@ -37,18 +37,18 @@ public:
         float width, height;
         float illumination;
 
-        friend sf::Packet& operator <<(sf::Packet& packet, const Schema &state)
+        friend sf::Packet& operator <<(sf::Packet& packet, const Schema &schema)
         {
-            packet << sf::Uint32(state.id);
-            packet << sf::Uint32(state.type);
-            return packet << state.x << state.y << state.width << state.height << state.illumination;
+            packet << sf::Uint32(schema.id);
+            packet << sf::Uint32(schema.type);
+            return packet << schema.x << schema.y << schema.width << schema.height << schema.illumination;
         }
 
-        friend sf::Packet& operator >>(sf::Packet& packet, Schema &state)
+        friend sf::Packet& operator >>(sf::Packet& packet, Schema &schema)
         {
-            packet >> state.id;
-            bit::NetworkHelper::unpackEnum<sf::Uint32, Body::Type>(packet, state.type);
-            return packet >> state.x >> state.y >> state.width >> state.height >> state.illumination;
+            packet >> schema.id;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Body::Type>(packet, schema.type);
+            return packet >> schema.x >> schema.y >> schema.width >> schema.height >> schema.illumination;
         }
 	};
 	Schema schema;

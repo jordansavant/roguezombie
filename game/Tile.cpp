@@ -103,8 +103,3 @@ void Tile::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
     packet << schema;
 }
-
-void Tile::handleSnapshot(bit::ServerPacket &packet, bool full)
-{
-    packet >> schema;
-}

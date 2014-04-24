@@ -43,34 +43,40 @@ public:
         float illumination; // how illuminated this tile is
         unsigned char rshade, gshade, bshade; // color of light
 
-        friend sf::Packet& operator <<(sf::Packet& packet, const Schema &state)
+        friend sf::Packet& operator <<(sf::Packet& packet, const Schema &schema)
         {
-            packet <<
-            sf::Uint32(state.id) <<
-            state.x <<
-            state.y <<
-            state.centerX <<
-            state.centerY <<
-            sf::Uint32(state.width) <<
-            sf::Uint32(state.height) <<
-            sf::Uint32(state.type);
-            return packet << sf::Uint32(state.bodyId) << sf::Uint32(state.doorId) << state.illumination << state.rshade << state.gshade << state.bshade;
+            packet << sf::Uint32(schema.id);
+            packet << schema.x;
+            packet << schema.y;
+            packet << schema.centerX;
+            packet << schema.centerY;
+            packet << sf::Uint32(schema.width);
+            packet << sf::Uint32(schema.height);
+            packet << sf::Uint32(schema.type);
+            packet << sf::Uint32(schema.bodyId);
+            packet << sf::Uint32(schema.doorId);
+            packet << schema.illumination;
+            packet << schema.rshade;
+            packet << schema.gshade;
+            packet << schema.bshade;
             return packet;
         }
-        friend sf::Packet& operator >>(sf::Packet& packet, Schema &state)
+        friend sf::Packet& operator >>(sf::Packet& packet, Schema &schema)
         {
-            sf::Uint32 type;
-            packet >>
-            state.id >>
-            state.x >>
-            state.y >>
-            state.centerX >>
-            state.centerY >>
-            state.width >>
-            state.height >>
-            type;
-            state.type = static_cast<Tile::Type>(type);
-            return packet >> state.bodyId >> state.doorId >> state.illumination >> state.rshade >> state.gshade >> state.bshade;
+            packet >> schema.id;
+            packet >> schema.x;
+            packet >> schema.y;
+            packet >> schema.centerX;
+            packet >> schema.centerY;
+            packet >> schema.width;
+            packet >> schema.height;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Tile::Type>(packet, schema.type);
+            packet >> schema.bodyId;
+            packet >> schema.doorId;
+            packet >> schema.illumination;
+            packet >> schema.rshade;
+            packet >> schema.gshade;
+            packet >> schema.bshade;
             return packet;
         }
     };
@@ -85,8 +91,6 @@ public:
     virtual void setOccupyingDoor(Body* body);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
-
-    virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 
 private:
 

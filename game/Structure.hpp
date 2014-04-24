@@ -34,14 +34,14 @@ public:
 
         Type type;
 
-        friend sf::Packet& operator <<(sf::Packet& packet, const Schema &state)
+        friend sf::Packet& operator <<(sf::Packet& packet, const Schema &schema)
         {
-            packet << sf::Uint32(state.type);
+            packet << sf::Uint32(schema.type);
             return packet;
         }
-        friend sf::Packet& operator >>(sf::Packet& packet, Schema &state)
+        friend sf::Packet& operator >>(sf::Packet& packet, Schema &schema)
         {
-            bit::NetworkHelper::unpackEnum<sf::Uint32, Structure::Type>(packet, state.type);
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Structure::Type>(packet, schema.type);
             return packet;
         }
 	};

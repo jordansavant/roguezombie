@@ -12,13 +12,15 @@
 
 class LevelClient;
 
-class TileClient : public Tile
+class TileClient
 {
 public:
 
     TileClient();
-    ~TileClient();
+    
+    virtual ~TileClient();
 
+    Tile::Schema schema;
     LevelClient* level;
     bit::Sprite* sprite;
     unsigned int quadIndex;
@@ -29,6 +31,8 @@ public:
     void clientUpdate(sf::Time &gameTime);
 
     void reset();
+
+    virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 };
 
 #endif
