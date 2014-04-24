@@ -24,13 +24,22 @@ public:
         Generated
     };
 
-    unsigned int id;
+    struct Schema
+    {
+        Schema()
+            : id(0), isComplete(false), generationType(GenerationType::Scripted), logicalType(LogicalType::Sequence), experience(0), journalEntry(JournalEntry::Entry::None)
+        {
+        }
+
+        unsigned int id;
+        bool isComplete;
+        GenerationType generationType;
+        LogicalType logicalType;
+        int experience;
+        JournalEntry::Entry journalEntry;
+    };
+    Schema schema;
     Character* parentCharacter;
-    bool isComplete;
-    GenerationType generationType;
-    LogicalType logicalType;
-    // int experience;
-    JournalEntry::Entry journalEntry;
 
     void load(unsigned int id, LogicalType logicalType, GenerationType generationType, JournalEntry::Entry journalEntry);
 

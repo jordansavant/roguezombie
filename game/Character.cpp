@@ -230,7 +230,7 @@ void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
         packet << sf::Uint32(missions.size());
         for(unsigned int i=0; i < missions.size(); i++)
         {
-            packet << sf::Uint32(missions[i]->id);
+            packet << sf::Uint32(missions[i]->schema.id);
             missions[i]->prepareSnapshot(packet);
         }
     }

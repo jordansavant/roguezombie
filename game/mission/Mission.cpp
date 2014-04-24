@@ -7,7 +7,7 @@
 #include "../GameplayServer.hpp"
 
 Mission::Mission()
-    : id(0), parentCharacter(NULL), parentMission(NULL), isComplete(false), generationType(GenerationType::Scripted), logicalType(LogicalType::Sequence), journalEntry(JournalEntry::Entry::None), requirement(NULL)
+    : schema(), parentCharacter(NULL), parentMission(NULL), requirement(NULL)
 {
 }
 
@@ -21,10 +21,10 @@ Mission::~Mission()
 
 void Mission::load(unsigned int _id, LogicalType _logicalType, GenerationType _generationType, JournalEntry::Entry _journalEntry)
 {
-    id = _id;
-    logicalType = _logicalType;
-    generationType = _generationType;
-    journalEntry = _journalEntry;
+    schema.id = _id;
+    schema.logicalType = _logicalType;
+    schema.generationType = _generationType;
+    schema.journalEntry = _journalEntry;
 }
 
 void Mission::assignCharacter(Character* character)
@@ -45,14 +45,14 @@ void Mission::assignRequirement(std::function<bool(Character*)> _requirement)
 
 bool Mission::attemptCompleteMission()
 {
-    if(isComplete)
+    if(schema.isComplete)
     {
         return true;
     }
 
     if(childMissions.size() > 0)
     {
-        switch(logicalType)
+        switch(schema.logicalType)
         {
             default:
             case LogicalType::Sequence:
@@ -62,12 +62,12 @@ bool Mission::attemptCompleteMission()
                 {
                     if(!childMissions[i]->attemptCompleteMission())
                     {
-                        isComplete = false;
+                        schema.isComplete = false;
                         return false;
                     }
                 }
                 sendMissionCompletePacket();
-                isComplete = true;
+                schema.isComplete = true;
                 return true;
             }
             case LogicalType::Selector:
@@ -78,11 +78,11 @@ bool Mission::attemptCompleteMission()
                     if(childMissions[i]->attemptCompleteMission())
                     {
                         sendMissionCompletePacket();
-                        isComplete = true;
+                        schema.isComplete = true;
                         return true;
                     }
                 }
-                isComplete = false;
+                schema.isComplete = false;
                 return false;
             }
         }
@@ -92,12 +92,12 @@ bool Mission::attemptCompleteMission()
     if(isRequirementFulfilled())
     {
         succeed();
-        isComplete = true;
+        schema.isComplete = true;
         sendMissionCompletePacket();
         return true;
     }
 
-    isComplete = false;
+    schema.isComplete = false;
     return false;
 }
 
@@ -128,7 +128,7 @@ void Mission::fillIdHierarchy(std::vector<unsigned int> &fill)
     {
         parentMission->fillIdHierarchy(fill);
     }
-    fill.push_back(id);
+    fill.push_back(schema.id);
 }
 
 void Mission::packIdHierarchy(bit::ServerPacket &packet)
@@ -159,14 +159,14 @@ void Mission::sendMissionCompletePacket()
 
 void Mission::prepareSnapshot(bit::ServerPacket &packet)
 {
-    packet << isComplete;
-    packet << sf::Uint32(logicalType);
-    packet << sf::Uint32(journalEntry);
+    packet << schema.isComplete;
+    packet << sf::Uint32(schema.logicalType);
+    packet << sf::Uint32(schema.journalEntry);
 
     packet << sf::Uint32(childMissions.size());
     for(unsigned int i=0; i < childMissions.size(); i++)
     {
-        packet << sf::Uint32(childMissions[i]->id);
+        packet << sf::Uint32(childMissions[i]->schema.id);
         childMissions[i]->prepareSnapshot(packet);
     }
 }

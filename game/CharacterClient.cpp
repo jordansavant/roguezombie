@@ -61,7 +61,7 @@ void CharacterClient::handleMissionCompleteGameEvent(bit::ServerPacket &packet)
 
     if(mc)
     {
-        mc->isComplete = true;
+        mc->schema.isComplete = true;
     }
 }
 

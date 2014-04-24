@@ -66,19 +66,19 @@ bool StateGamePlay::update(sf::Time &gameTime)
         {
             // Level 1
             MissionClient* m = &iterator->second;
-            if(m->isComplete)
-                entry += "- " + JournalEntry::getTitle(m->journalEntry) + " - Complete\n";
+            if(m->schema.isComplete)
+                entry += "- " + JournalEntry::getTitle(m->schema.journalEntry) + " - Complete\n";
             else
-                entry += "- " + JournalEntry::getTitle(m->journalEntry) + "\n";
+                entry += "- " + JournalEntry::getTitle(m->schema.journalEntry) + "\n";
 
             // Level 2
             for(auto iterator2 = iterator->second.childMissions.begin(); iterator2 != iterator->second.childMissions.end(); iterator2++)
             {
                 MissionClient* mc = &iterator2->second;
-                if(mc->isComplete)
-                    entry += "  - " + JournalEntry::getTitle(mc->journalEntry) + " - Complete\n";
+                if(mc->schema.isComplete)
+                    entry += "  - " + JournalEntry::getTitle(mc->schema.journalEntry) + " - Complete\n";
                 else
-                    entry += "  - " + JournalEntry::getTitle(mc->journalEntry) + "\n";
+                    entry += "  - " + JournalEntry::getTitle(mc->schema.journalEntry) + "\n";
             }
         }
 

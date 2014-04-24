@@ -2,6 +2,7 @@
 #ifndef RZ_MISSIONCLIENT_H
 #define RZ_MISSIONCLIENT_H
 
+#include "Mission.hpp"
 #include <vector>
 #include <map>
 #include "../../bitengine/Network.hpp"
@@ -14,11 +15,8 @@ public:
 
     MissionClient();
 
-    unsigned int id;
-    bool isComplete;
-    LogicalType logicalType;
+    Mission::Schema schema;
     std::map<unsigned int, MissionClient> childMissions;
-    JournalEntry::Entry journalEntry;
 
     void handleSnapshot(bit::ServerPacket &packet);
 };

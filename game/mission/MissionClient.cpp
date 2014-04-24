@@ -2,21 +2,15 @@
 #include "../../bitengine/Network.hpp"
 
 MissionClient::MissionClient()
-    : id(0), isComplete(false), logicalType(LogicalType::Sequence), journalEntry(JournalEntry::Entry::None)
+    : schema()
 {
 }
 
 void MissionClient::handleSnapshot(bit::ServerPacket &packet)
 {
-    packet >> isComplete;
-
-    unsigned int logical_type_int;
-    packet >> logical_type_int;
-    logicalType = static_cast<LogicalType>(logical_type_int);
-
-    unsigned int journal_entry_int;
-    packet >> journal_entry_int;
-    journalEntry = static_cast<JournalEntry::Entry>(journal_entry_int);
+    packet >> schema.isComplete;
+    bit::NetworkHelper::unpackEnum<sf::Uint32, LogicalType>(packet, schema.logicalType);
+    bit::NetworkHelper::unpackEnum<sf::Uint32, JournalEntry::Entry>(packet, schema.journalEntry);
 
     unsigned int childMissionSize;
     packet >> childMissionSize;
