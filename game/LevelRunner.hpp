@@ -15,9 +15,7 @@ public:
     virtual ~BaseLevelRunner() { }
 
     virtual void update(sf::Time &gameTime) = 0;
-
 };
-
 
 template <class T>
 class LevelRunner : public BaseLevelRunner
@@ -49,7 +47,6 @@ public:
             (*list)[i]->update(gameTime);
         }
     }
-
 };
 
 #endif

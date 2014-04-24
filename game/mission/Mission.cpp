@@ -6,7 +6,6 @@
 #include "../Level.hpp"
 #include "../GameplayServer.hpp"
 
-
 Mission::Mission()
     : id(0), parentCharacter(NULL), parentMission(NULL), isComplete(false), generationType(GenerationType::Scripted), logicalType(LogicalType::Sequence), journalEntry(JournalEntry::Entry::None), requirement(NULL)
 {
@@ -152,10 +151,8 @@ void Mission::sendMissionCompletePacket()
         // Mission Completed Event
         Mission* m = this;
         c->level->server->sendEventToClient(*c->schema.player->client, [m] (bit::ServerPacket &packet) {
-
             packet << sf::Uint32(GameEvent::MissionCompleted);
             m->packIdHierarchy(packet);
-
         });
     }
 }
@@ -165,7 +162,7 @@ void Mission::prepareSnapshot(bit::ServerPacket &packet)
     packet << isComplete;
     packet << sf::Uint32(logicalType);
     packet << sf::Uint32(journalEntry);
-    
+
     packet << sf::Uint32(childMissions.size());
     for(unsigned int i=0; i < childMissions.size(); i++)
     {

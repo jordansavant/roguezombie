@@ -42,7 +42,6 @@ void RogueZombieGame::update(sf::Time &gameTime)
         changeFullscreen(!isFullscreen);
     if(inputManager->isButtonPressed(sf::Keyboard::Comma))
         this->setVerticalSync(!this->verticalSync);
-
 }
 
 void RogueZombieGame::draw(sf::RenderWindow &window, sf::Time &gameTime)

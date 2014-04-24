@@ -19,7 +19,6 @@ public:
     static std::string getTitle(Entry e);
 
     static std::string getDescription(Entry e);
-
 };
 
 #endif

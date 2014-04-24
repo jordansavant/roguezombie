@@ -84,8 +84,6 @@ void GameplayServer::movePlayerToLevel(Player* player, unsigned int fromLevelId,
     pendingMoves.push_back(m);
 }
 
-
-
 /**
  * Handle Incoming Client Packets
  **/
@@ -187,7 +185,6 @@ void GameplayServer::handlePacket_ClientDisconnect(bit::ClientPacket &packet, bi
     }
 }
 
-
 void GameplayServer::handle_ClientTimeout(bit::RemoteClient &client)
 {
     bit::Output::Debug("Server handle client timeout");
@@ -201,8 +198,6 @@ void GameplayServer::handle_ClientTimeout(bit::RemoteClient &client)
         p->level->deletePlayer(p);
     }
 }
-
-
 
 /**
  * Prepare Outgoing Server Packets
@@ -242,7 +237,7 @@ void GameplayServer::preparePacket_ServerUpdate(bit::ServerPacket &packet, bit::
     packet << player->requestFullSnapshot;
     if(player->requestFullSnapshot) bit::Output::Debug("sending full");
     player->level->prepareSnapshot(packet, client, player->requestFullSnapshot);
-    
+
     if(player->requestFullSnapshot)
         player->requestFullSnapshot = false;
 }

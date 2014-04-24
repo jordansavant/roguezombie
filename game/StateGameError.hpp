@@ -24,7 +24,6 @@ public:
     virtual bool update(sf::Time &gameTime);
 
     virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
-
 };
 
 #endif

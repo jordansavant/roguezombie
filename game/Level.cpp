@@ -172,8 +172,6 @@ void Level::update(sf::Time &gameTime)
     }
 }
 
-
-
 /*
  * Player Management
  */
@@ -298,8 +296,6 @@ void Level::deletePlayer(Player* player)
     // Delete player
     delete player;
 }
-
-
 
 /*
  * Tile Positioning and Pathfinding
@@ -426,7 +422,6 @@ void Level::raycastTiles(float startX, float startY, float endX, float endY, std
         }
     }
 }
-
 
 /*
  * Networking

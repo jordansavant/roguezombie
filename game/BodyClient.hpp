@@ -10,7 +10,7 @@ class BodyClient
 public:
 
     BodyClient();
-    
+
     Body::Schema schema;
 
     virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);

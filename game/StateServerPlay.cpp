@@ -21,7 +21,7 @@ void StateServerPlay::load()
 bool StateServerPlay::update(sf::Time &gameTime)
 {
     bit::ClientServerState::update(gameTime);
-    
+
     return true;
 }
 

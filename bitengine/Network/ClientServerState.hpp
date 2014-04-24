@@ -62,7 +62,6 @@ namespace bit
 
         virtual void disconnect();
 
-
         // Packet handling
 
         virtual void handle_ServerTimeout() = 0;
@@ -89,7 +88,6 @@ namespace bit
 
         virtual void handlePacket_Kick(bit::ServerPacket &packet) = 0;
 
-
         // Packet sending
 
         virtual void preparePacket_ClientInformation(bit::ClientPacket &packet) = 0;
@@ -97,7 +95,6 @@ namespace bit
         virtual void preparePacket_ClientUpdate(bit::ClientPacket &packet) = 0;
 
         virtual void preparePacket_ClientDisconnect(bit::ClientPacket &packet) = 0;
-
     };
 }
 

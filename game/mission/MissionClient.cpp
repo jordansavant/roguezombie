@@ -9,15 +9,15 @@ MissionClient::MissionClient()
 void MissionClient::handleSnapshot(bit::ServerPacket &packet)
 {
     packet >> isComplete;
-    
+
     unsigned int logical_type_int;
     packet >> logical_type_int;
     logicalType = static_cast<LogicalType>(logical_type_int);
-    
+
     unsigned int journal_entry_int;
     packet >> journal_entry_int;
     journalEntry = static_cast<JournalEntry::Entry>(journal_entry_int);
-    
+
     unsigned int childMissionSize;
     packet >> childMissionSize;
     childMissions.clear();

@@ -19,14 +19,14 @@ float bit::Easing::runByType(Type easingType, float percentageComplete, float mi
             return outQuad(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
         case Type::InOutQuad:
             return inOutQuad(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
-            
+
         case Type::InCubic:
             return inCubic(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
         case Type::OutCubic:
             return outCubic(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
         case Type::InOutCubic:
             return inOutCubic(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
-            
+
         case Type::InQuart:
             return inQuart(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
         case Type::OutQuart:
@@ -40,55 +40,52 @@ float bit::Easing::runByType(Type easingType, float percentageComplete, float mi
             return outQuint(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
         case Type::InOutQuint:
             return inOutQuint(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
-            
+
         case Type::InSine:
             return inSine(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
         case Type::OutSine:
             return outSine(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
         case Type::InOutSine:
             return inOutSine(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
-            
+
         case Type::InExpo:
             return inExpo(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
         case Type::OutExpo:
             return outExpo(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
         case Type::InOutExpo:
             return inOutExpo(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
-            
+
         case Type::InCirc:
             return inCirc(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
         case Type::OutCirc:
             return outCirc(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
         case Type::InOutCirc:
             return inOutCirc(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
-            
+
         case Type::InElastic:
             return inElastic(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
         case Type::OutElastic:
             return outElastic(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
         case Type::InOutElastic:
             return inOutElastic(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
-            
+
         case Type::InBack:
             return inBack(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
         case Type::OutBack:
             return outBack(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
         case Type::InOutBack:
             return inOutBack(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
-            
+
         case Type::InBounce:
             return inBounce(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
         case Type::OutBounce:
             return outBounce(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
         case Type::InOutBounce:
             return inOutBounce(percentageComplete, millisecondsSince, startValue, endValue, totalDuration);
-
     }
 
     return 0;
 }
-
-
 
 float bit::Easing::instant(float percentageComplete, float millisecondsSince, float startValue, float endValue, float totalDuration)
 {
@@ -99,8 +96,6 @@ float bit::Easing::linear(float percentageComplete, float millisecondsSince, flo
 {
     return percentageComplete * endValue;
 }
-
-
 
 // easeInQuad: function (x, t, b, c, d) {
 //    return c*(t/=d)*t + b;
@@ -133,8 +128,6 @@ float bit::Easing::inOutQuad(float x, float t, float b, float c, float d)
     return -c / 2 * (t * (t-2) -1) + b;
 }
 
-
-
 // easeInCubic: function (x, t, b, c, d) {
 //    return c*(t/=d)*t*t + b;
 // }
@@ -165,8 +158,6 @@ float bit::Easing::inOutCubic(float x, float t, float b, float c, float d)
     t -= 2;
     return c / 2 * (t * t * t + 2) + b;
 }
-
-
 
 // easeInQuart: function (x, t, b, c, d) {
 //     return c*(t/=d)*t*t*t + b;
@@ -199,8 +190,6 @@ float bit::Easing::inOutQuart(float x, float t, float b, float c, float d)
     return -c / 2 * (t * t * t * t - 2) + b;
 }
 
-
-
 // easeInQuint: function (x, t, b, c, d) {
 //    return c*(t/=d)*t*t*t*t + b;
 // }
@@ -232,8 +221,6 @@ float bit::Easing::inOutQuint(float x, float t, float b, float c, float d)
     return c / 2 * (t * t * t * t * t + 2) + b;
 }
 
-
-
 // easeInSine: function (x, t, b, c, d) {
 //     return -c * Math.cos(t/d * (Math.PI/2)) + c + b;
 // }
@@ -257,8 +244,6 @@ float bit::Easing::inOutSine(float x, float t, float b, float c, float d)
 {
     return -c / 2 * (std::cos(bit::Math::Pi * t / d) - 1) + b;
 }
-
-
 
 // easeInExpo: function (x, t, b, c, d) {
 //     return (t==0) ? b : c * Math.pow(2, 10 * (t/d - 1)) + b;
@@ -294,8 +279,6 @@ float bit::Easing::inOutExpo(float x, float t, float b, float c, float d)
     return c / 2 * (-std::pow(2, -10 * --t) + 2) + b;
 }
 
-
-
 // easeInCirc: function (x, t, b, c, d) {
 //     return -c * (Math.sqrt(1 - (t/=d)*t) - 1) + b;
 // }
@@ -326,8 +309,6 @@ float bit::Easing::inOutCirc(float x, float t, float b, float c, float d)
     t -= 2;
     return c / 2 * (std::sqrt(1 - t * t) + 1) + b;
 }
-
-
 
 // easeInElastic: function (x, t, b, c, d) {
 //     var s=1.70158;var p=0;var a=c;
@@ -437,8 +418,6 @@ float bit::Easing::inOutElastic(float x, float t, float b, float c, float d)
     return a * std::pow(2, -10 * t) * std::sin((t * d - s) * (2 * bit::Math::Pi) / p) * .5 + c + b;
 }
 
-
-
 // easeInBack: function (x, t, b, c, d, s) {
 //     if (s == undefined) s = 1.70158;
 //     return c*(t/=d)*t*((s+1)*t - s) + b;
@@ -462,7 +441,7 @@ float bit::Easing::outBack(float x, float t, float b, float c, float d)
 }
 
 // easeInOutBack: function (x, t, b, c, d, s) {
-//     if (s == undefined) s = 1.70158; 
+//     if (s == undefined) s = 1.70158;
 //     if ((t/=d/2) < 1) return c/2*(t*t*(((s*=(1.525))+1)*t - s)) + b;
 //     return c/2*((t-=2)*t*(((s*=(1.525))+1)*t + s) + 2) + b;
 // }
@@ -479,8 +458,6 @@ float bit::Easing::inOutBack(float x, float t, float b, float c, float d)
     s *= 1.525;
     return c / 2 * (t * t * ((s + 1) * t + s) + 2) + b;
 }
-
-
 
 // easeInBounce: function (x, t, b, c, d) {
 //     return c - jQuery.easing.easeOutBounce (x, d-t, 0, c, d) + b;

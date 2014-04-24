@@ -93,7 +93,6 @@ private:
     void runOnBodyEnter(Body* body);
 
     void runOnBodyLeave(Body* body);
-
 };
 
 #endif

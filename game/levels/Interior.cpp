@@ -36,7 +36,6 @@ int Interior::level_01[] =
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 };
 
-
 int Interior::level_02_rows = 15;
 int Interior::level_02_cols = 30;
 int Interior::level_02[] =

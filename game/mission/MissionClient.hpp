@@ -21,7 +21,6 @@ public:
     JournalEntry::Entry journalEntry;
 
     void handleSnapshot(bit::ServerPacket &packet);
-
 };
 
 #endif

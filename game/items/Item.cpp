@@ -81,7 +81,6 @@ void Item::sendAddItemPacket()
     {
         Item* i = this;
         c->level->server->sendEventToClient(*c->schema.player->client, [i] (bit::ServerPacket &packet) {
-
             packet << sf::Uint32(GameEvent::ItemAdded);
             i->packIdHierarchy(packet);
             i->prepareSnapshot(packet);
@@ -121,7 +120,7 @@ std::string Item::getTitle(Type type)
 
         case Type::HardHat:
             return "Hardhat";
-                
+
         case Type::Magnum357:
             return ".357 Magnum";
     }
@@ -143,7 +142,7 @@ Item* Item::create(Type type)
             i->itemLimit = 1000;
 
             break;
-        
+
         case Type::HardHat:
 
             i = new Item();
@@ -152,7 +151,7 @@ Item* Item::create(Type type)
             i->weight = 1.5;
 
             break;
-                
+
         case Type::Magnum357:
 
             i = new Item();

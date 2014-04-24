@@ -20,7 +20,6 @@ public:
     StateGameError* state;
     bit::Label* errorMessageLabel;
     bit::Label* okLabel;
-
 };
 
 #endif

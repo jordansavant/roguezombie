@@ -58,7 +58,7 @@ private:
     virtual void handlePacket_ClientDisconnect(bit::ClientPacket &packet, bit::RemoteClient &client);
 
     virtual void handle_ClientTimeout(bit::RemoteClient &client);
-    
+
     // Packet sending
 
     virtual void preparePacket_InitializeSelf(bit::ServerPacket &packet, bit::RemoteClient &client);

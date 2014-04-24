@@ -49,7 +49,6 @@ public:
 
     void update(sf::Time &gameTime);
 
-
     // Player management
 
 	bool createPlayer(Player* player);
@@ -60,7 +59,6 @@ public:
 
 	void deletePlayer(Player* player);
 
-    
     // Tile Positioning and Pathfinding
 
     Tile* getTileAtIndices(int x, int y);
@@ -79,7 +77,6 @@ public:
 
     void raycastTiles(float startX, float startY, float endX, float endY, std::function<bool(Tile*)> inspect);
 
-    
     // Networking
 
     void handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type command);

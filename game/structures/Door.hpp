@@ -50,7 +50,6 @@ public:
 private:
 
     void registerTileTriggers(Tile* tile);
-
 };
 
 #endif

@@ -31,7 +31,6 @@ public:
     void hideMainMenu(int additionalDelay = 0);
 
     bool onActivate_Settings(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime);
-
 };
 
 #endif

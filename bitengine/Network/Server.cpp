@@ -140,7 +140,6 @@ void bit::Server::tick()
             client->socket.send(packet);
         }
     }
-    
 }
 
 sf::Time bit::Server::now()

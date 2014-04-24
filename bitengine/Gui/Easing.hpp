@@ -48,7 +48,7 @@ namespace bit
             InBack,
             OutBack,
             InOutBack,
-            
+
             InBounce,
             OutBounce,
             InOutBounce
@@ -74,15 +74,15 @@ namespace bit
         static float inQuint(float percentageComplete, float millisecondsSince, float startValue, float endValue, float totalDuration);
         static float outQuint(float percentageComplete, float millisecondsSince, float startValue, float endValue, float totalDuration);
         static float inOutQuint(float percentageComplete, float millisecondsSince, float startValue, float endValue, float totalDuration);
-        
+
         static float inSine(float percentageComplete, float millisecondsSince, float startValue, float endValue, float totalDuration);
         static float outSine(float percentageComplete, float millisecondsSince, float startValue, float endValue, float totalDuration);
         static float inOutSine(float percentageComplete, float millisecondsSince, float startValue, float endValue, float totalDuration);
-    
+
         static float inExpo(float percentageComplete, float millisecondsSince, float startValue, float endValue, float totalDuration);
         static float outExpo(float percentageComplete, float millisecondsSince, float startValue, float endValue, float totalDuration);
         static float inOutExpo(float percentageComplete, float millisecondsSince, float startValue, float endValue, float totalDuration);
-        
+
         static float inCirc(float percentageComplete, float millisecondsSince, float startValue, float endValue, float totalDuration);
         static float outCirc(float percentageComplete, float millisecondsSince, float startValue, float endValue, float totalDuration);
         static float inOutCirc(float percentageComplete, float millisecondsSince, float startValue, float endValue, float totalDuration);

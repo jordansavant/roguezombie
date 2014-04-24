@@ -30,8 +30,6 @@ public:
     void outflowLabel(bit::Element* element, float delay, float endX, float endY);
 
     bool onActivate_Settings(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime);
-
-
 };
 
 #endif

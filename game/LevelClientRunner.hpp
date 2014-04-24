@@ -22,7 +22,6 @@ public:
     virtual void diffNetwork() = 0;
 };
 
-
 template <class T>
 class LevelClientRunner : public BaseLevelClientRunner
 {

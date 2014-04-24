@@ -38,7 +38,6 @@ namespace bit
         static bool bitwiseHasAny(unsigned int value, unsigned int filter);
 
         static bool bitwiseHasAll(unsigned int value, unsigned int filter);
-
     };
 }
 
