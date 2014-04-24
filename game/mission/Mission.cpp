@@ -159,9 +159,7 @@ void Mission::sendMissionCompletePacket()
 
 void Mission::prepareSnapshot(bit::ServerPacket &packet)
 {
-    packet << schema.isComplete;
-    packet << sf::Uint32(schema.logicalType);
-    packet << sf::Uint32(schema.journalEntry);
+    packet << schema;
 
     packet << sf::Uint32(childMissions.size());
     for(unsigned int i=0; i < childMissions.size(); i++)

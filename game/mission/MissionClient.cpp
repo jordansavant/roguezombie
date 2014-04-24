@@ -8,9 +8,7 @@ MissionClient::MissionClient()
 
 void MissionClient::handleSnapshot(bit::ServerPacket &packet)
 {
-    packet >> schema.isComplete;
-    bit::NetworkHelper::unpackEnum<sf::Uint32, LogicalType>(packet, schema.logicalType);
-    bit::NetworkHelper::unpackEnum<sf::Uint32, JournalEntry::Entry>(packet, schema.journalEntry);
+    packet >> schema;
 
     unsigned int childMissionSize;
     packet >> childMissionSize;

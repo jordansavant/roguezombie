@@ -37,6 +37,22 @@ public:
         LogicalType logicalType;
         int experience;
         JournalEntry::Entry journalEntry;
+
+        friend sf::Packet& operator <<(sf::Packet& packet, const Schema &schema)
+        {
+            packet << schema.isComplete;
+            packet << sf::Uint32(schema.logicalType);
+            packet << sf::Uint32(schema.journalEntry);
+            return packet;
+        }
+
+        friend sf::Packet& operator >>(sf::Packet& packet, Schema &schema)
+        {
+            packet >> schema.isComplete;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, LogicalType>(packet, schema.logicalType);
+            bit::NetworkHelper::unpackEnum<sf::Uint32, JournalEntry::Entry>(packet, schema.journalEntry);
+            return packet;
+        }
     };
     Schema schema;
     Character* parentCharacter;
