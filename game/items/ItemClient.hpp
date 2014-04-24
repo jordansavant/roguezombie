@@ -6,13 +6,15 @@
 #include "../../bitengine/Network.hpp"
 #include <map>
 
-class ItemClient : public Item
+class ItemClient
 {
 public:
 
     ItemClient();
 
     virtual ~ItemClient();
+
+    Item::Schema schema;
     std::map<unsigned int, ItemClient> itemClients;
 
     void handleSnapshot(bit::ServerPacket &packet);

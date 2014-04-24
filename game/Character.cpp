@@ -38,7 +38,7 @@ void Character::load(Level* _level, unsigned int _id, Type _type, float _x, floa
 
     backpack = Item::create(Item::Type::Backpack);
     backpack->parentCharacter = this;
-    backpack->id = level->server->getNextItemId();
+    backpack->schema.id = level->server->getNextItemId();
 
     moveToPosition(_x, _y);
 }

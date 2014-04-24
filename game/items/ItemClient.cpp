@@ -2,7 +2,7 @@
 #include "../../bitengine/Network.hpp"
 
 ItemClient::ItemClient()
-    : Item()
+    : schema()
 {
 }
 
@@ -12,16 +12,7 @@ ItemClient::~ItemClient()
 
 void ItemClient::handleSnapshot(bit::ServerPacket& packet)
 {
-    packet >> CategoryBase;
-    packet >> CategoryArmor;
-    packet >> CategoryWeapon;
-    packet >> CategoryJewelry;
-    packet >> CategoryContainer;
-
-    unsigned int type_int;
-    packet >> type_int;
-    type = static_cast<Item::Type>(type_int);
-    packet >> weight;
+    packet >> schema;
 
     unsigned int itemSize;
     packet >> itemSize;

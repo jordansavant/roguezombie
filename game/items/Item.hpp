@@ -24,19 +24,51 @@ public:
         Magnum357,
     };
 
-    unsigned int CategoryBase;
-    unsigned int CategoryArmor;
-    unsigned int CategoryWeapon;
-    unsigned int CategoryJewelry;
-    unsigned int CategoryContainer;
+    struct Schema
+    {
+        Schema()
+            : id(0), CategoryBase(0), CategoryArmor(0), CategoryWeapon(0), CategoryJewelry(0), CategoryContainer(0), type(Type::None), weight(0), canContainItems(false), itemLimit(0)
+        {
+        }
 
-    unsigned int id;
-    Type type;
+        unsigned int id;
+        unsigned int CategoryBase;
+        unsigned int CategoryArmor;
+        unsigned int CategoryWeapon;
+        unsigned int CategoryJewelry;
+        unsigned int CategoryContainer;
+        Type type;
+        float weight;
+        bool canContainItems;
+        unsigned int itemLimit;
+
+        friend sf::Packet& operator <<(sf::Packet& packet, const Schema &schema)
+        {
+            packet << sf::Uint32(schema.CategoryBase);
+            packet << sf::Uint32(schema.CategoryArmor);
+            packet << sf::Uint32(schema.CategoryWeapon);
+            packet << sf::Uint32(schema.CategoryJewelry);
+            packet << sf::Uint32(schema.CategoryContainer);
+            packet << sf::Uint32(schema.type);
+            packet << schema.weight;
+            return packet;
+        }
+
+        friend sf::Packet& operator >>(sf::Packet& packet, Schema &schema)
+        {
+            packet >> schema.CategoryBase;
+            packet >> schema.CategoryArmor;
+            packet >> schema.CategoryWeapon;
+            packet >> schema.CategoryJewelry;
+            packet >> schema.CategoryContainer;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Item::Type>(packet, schema.type);
+            packet >> schema.weight;
+            return packet;
+        }
+    };
+    Schema schema;
     Item* parentItem;
     Character* parentCharacter;
-    float weight;
-    bool canContainItems;
-    unsigned int itemLimit;
     std::vector<Item*> items;
 
     bool hasAny(unsigned int currentValue, unsigned int filter);

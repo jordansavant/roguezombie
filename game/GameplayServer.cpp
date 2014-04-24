@@ -128,7 +128,7 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
 
         // Items
         Item* magnum = Item::create(Item::Type::Magnum357);
-        magnum->id = getNextItemId();
+        magnum->schema.id = getNextItemId();
         p->character->addItemToInventory(magnum);
     }
 }
@@ -163,7 +163,7 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
                 player->character->schema.health = 200;
 
                 Item* hardhat = Item::create(Item::Type::HardHat);
-                hardhat->id = getNextItemId();
+                hardhat->schema.id = getNextItemId();
                 player->character->addItemToInventory(hardhat);
 
                 break;

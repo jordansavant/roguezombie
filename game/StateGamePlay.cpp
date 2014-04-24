@@ -87,7 +87,7 @@ bool StateGamePlay::update(sf::Time &gameTime)
         {
             // Level 1
             ItemClient* i = &iterator->second;
-            entry += "- " + Item::getTitle(i->type) + "\n";
+            entry += "- " + Item::getTitle(i->schema.type) + "\n";
         }
 
         journalEntries->setSfFontString(entry);
