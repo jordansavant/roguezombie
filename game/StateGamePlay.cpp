@@ -287,10 +287,10 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
         switch(eventType)
         {
             case GameEvent::MissionCompleted:
-                levelClient->playerCharacter->handleMissionCompleteGameEvent(packet);
+                levelClient->playerCharacter->handleGameEventPacket_missionCompleted(packet);
                 break;
             case GameEvent::ItemAdded:
-                levelClient->playerCharacter->handleItemAddGameEvent(packet);
+                levelClient->playerCharacter->handleGameEventPacket_itemAdded(packet);
                 break;
         }
     }

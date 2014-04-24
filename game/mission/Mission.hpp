@@ -75,9 +75,9 @@ public:
 
     virtual void packIdHierarchy(bit::ServerPacket &packet);
 
-    virtual void sendMissionCompletePacket();
-
     virtual void prepareSnapshot(bit::ServerPacket &packet);
+
+    virtual void prepareGameEventPacket_missionComplete();
 
 private:
 

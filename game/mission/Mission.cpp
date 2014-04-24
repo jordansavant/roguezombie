@@ -66,7 +66,7 @@ bool Mission::attemptCompleteMission()
                         return false;
                     }
                 }
-                sendMissionCompletePacket();
+                prepareGameEventPacket_missionComplete();
                 schema.isComplete = true;
                 return true;
             }
@@ -77,7 +77,7 @@ bool Mission::attemptCompleteMission()
                 {
                     if(childMissions[i]->attemptCompleteMission())
                     {
-                        sendMissionCompletePacket();
+                        prepareGameEventPacket_missionComplete();
                         schema.isComplete = true;
                         return true;
                     }
@@ -93,7 +93,7 @@ bool Mission::attemptCompleteMission()
     {
         succeed();
         schema.isComplete = true;
-        sendMissionCompletePacket();
+        prepareGameEventPacket_missionComplete();
         return true;
     }
 
@@ -143,7 +143,19 @@ void Mission::packIdHierarchy(bit::ServerPacket &packet)
     }
 }
 
-void Mission::sendMissionCompletePacket()
+void Mission::prepareSnapshot(bit::ServerPacket &packet)
+{
+    packet << schema;
+
+    packet << sf::Uint32(childMissions.size());
+    for(unsigned int i=0; i < childMissions.size(); i++)
+    {
+        packet << sf::Uint32(childMissions[i]->schema.id);
+        childMissions[i]->prepareSnapshot(packet);
+    }
+}
+
+void Mission::prepareGameEventPacket_missionComplete()
 {
     Character* c = getParentCharacter();
     if(c->schema.isPlayerCharacter)
@@ -154,17 +166,5 @@ void Mission::sendMissionCompletePacket()
             packet << sf::Uint32(GameEvent::MissionCompleted);
             m->packIdHierarchy(packet);
         });
-    }
-}
-
-void Mission::prepareSnapshot(bit::ServerPacket &packet)
-{
-    packet << schema;
-
-    packet << sf::Uint32(childMissions.size());
-    for(unsigned int i=0; i < childMissions.size(); i++)
-    {
-        packet << sf::Uint32(childMissions[i]->schema.id);
-        childMissions[i]->prepareSnapshot(packet);
     }
 }
