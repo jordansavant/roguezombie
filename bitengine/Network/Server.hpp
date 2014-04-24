@@ -36,6 +36,7 @@ namespace bit
             PeerClientDisconnected,     // tell all clients about a lost client
             ServerUpdate,               // tell client about a world snapshot 1/20th a second
             Shutdown,                   // tell all clients that the server is shutting down
+            Response,                   // tell client a response to a particular request
         };
 
         enum ClientPacketType
@@ -43,12 +44,12 @@ namespace bit
             ClientInformation,          // tell server about game specific client connection information
             ClientUpdate,               // tell server about client input update 1/20th a second
             Quit,                       // tell server that client is quitting
+            Request,                    // tell server of a request that guarantees a response
         };
 
 		void start();
 
 		void stop();
-
 
         // Server Event Packets
 
@@ -111,6 +112,8 @@ namespace bit
         virtual void handlePacket_ClientDisconnect(ClientPacket &packet, RemoteClient &client) = 0;
 
         virtual void handle_ClientTimeout(RemoteClient &client) = 0;
+
+        virtual void handlePacket_ClientRequest(ClientPacket &packet, RemoteClient &client, ServerPacket &responsePacket) = 0;
 
 
         // Packet sending

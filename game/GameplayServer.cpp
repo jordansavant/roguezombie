@@ -199,6 +199,11 @@ void GameplayServer::handle_ClientTimeout(bit::RemoteClient &client)
     }
 }
 
+void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::RemoteClient &client, bit::ServerPacket &responsePacket)
+{
+    bit::Output::Debug("Server handle client request");
+}
+
 /**
  * Prepare Outgoing Server Packets
  **/

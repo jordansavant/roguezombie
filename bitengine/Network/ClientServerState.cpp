@@ -186,6 +186,21 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, bit::ServerPacke
 
                 break;
 		    }
+            case Server::ServerPacketType::Response:
+		    {
+                // Find our request
+                sf::Uint32 requestId;
+                packet >> requestId;
+
+                // Run its handling method if not abandoned
+                if(!requests[requestId].isAbandonded)
+                {
+                    requests[requestId].onComplete(packet);
+                }
+                requests.erase(requests.begin() + requestId);
+
+                break;
+		    }
             case Server::ServerPacketType::DisconnectAcknowledged:
 		    {
                 handlePacket_DisconnectAcknowledge(packet);
@@ -234,4 +249,18 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, bit::ServerPacke
             }
         }
     }
+}
+
+void bit::ClientServerState::serverRequest(std::function<void(ClientPacket&)> prepare, std::function<void(ServerPacket&)> onComplete)
+{
+    Request request;
+    request.id = requests.size();
+    request.onComplete = onComplete;
+    requests.push_back(request);
+
+    bit::ClientPacket packet;
+	packet << static_cast<sf::Uint32>(Server::ClientPacketType::Request);
+    packet << sf::Uint32(request.id);
+	prepare(packet);
+	socket.send(packet);
 }

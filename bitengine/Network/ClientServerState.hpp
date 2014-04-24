@@ -6,6 +6,7 @@
 #include "SFML/System.hpp"
 #include "../Game/State.hpp"
 #include "../Game/GameTimer.hpp"
+#include <functional>
 
 namespace bit
 {
@@ -30,7 +31,21 @@ namespace bit
 
         virtual bool update(sf::Time &gameTime);
 
+        void serverRequest(std::function<void(ClientPacket&)> prepare, std::function<void(ServerPacket&)> onComplete);
+
     protected:
+
+        struct Request
+        {
+            Request()
+                : id(0), isAbandonded(false), onComplete(NULL)
+            {
+            }
+
+            unsigned int id;
+            bool isAbandonded;
+            std::function<void(bit::ServerPacket &packet)> onComplete;
+        };
 
         bool isClient;
         bool isHost;
@@ -49,6 +64,7 @@ namespace bit
 	    sf::Clock clock;
         bool awaitingDisconnect;
         GameTimer disconnectTimer;
+        std::vector<Request> requests;
 
         virtual Server* newServer() = 0;
 

@@ -242,6 +242,25 @@ void bit::Server::handlePacket(ClientPacket &packet, RemoteClient &client)
 
             break;
         }
+        case Server::ClientPacketType::Request:
+        {
+            // Get the request ID
+            sf::Uint32 requestId;
+            packet >> requestId;
+
+            // Build a response packet
+            bit::ServerPacket responsePacket;
+            responsePacket << static_cast<sf::Int32>(Server::ServerPacketType::Response);
+            responsePacket << requestId;
+
+            // Allow the game to handle the request and form a response
+            handlePacket_ClientRequest(packet, client, responsePacket);
+
+            // Send the response
+            client.socket.send(responsePacket);
+
+            break;
+        }
     }
 }
 
