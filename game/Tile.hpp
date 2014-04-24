@@ -23,16 +23,13 @@ public:
         Ground,
     };
 
-    Level* level;
-    Body* body;
-    Body* door;
-    unsigned int metadata_shadowcastId;
-
-    std::vector<std::function<void(Tile* t, Body* body)>> onBodyEnter;
-    std::vector<std::function<void(Tile* t, Body* body)>> onBodyLeave;
-
     struct Schema
     {
+        Schema()
+            : id(0), x(0), y(0), centerX(0), centerY(0), width(0), height(0), type(Type::Ground), bodyId(0), doorId(0), illumination(0), gshade(0), bshade(0)
+        {
+        }
+
         unsigned int id;
         float x, y;
         float centerX, centerY;
@@ -80,7 +77,14 @@ public:
             return packet;
         }
     };
+
     Schema schema;
+    Level* level;
+    Body* body;
+    Body* door;
+    unsigned int metadata_shadowcastId;
+    std::vector<std::function<void(Tile* t, Body* body)>> onBodyEnter;
+    std::vector<std::function<void(Tile* t, Body* body)>> onBodyLeave;
 
     virtual void load(Level* level, unsigned int id, Type type, int x, int y, int width, int height);
 
