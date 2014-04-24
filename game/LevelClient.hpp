@@ -16,7 +16,7 @@ class OgreClient;
 class TileClient;
 class WallClient;
 class DoorClient;
-class Character;
+class CharacterClient;
 
 class LevelClient : public sf::Drawable, public sf::Transformable
 {
@@ -40,7 +40,7 @@ public:
     bit::Pool<WallClient> wallPool;
     bit::Pool<DoorClient> doorPool;
     TileClient* hoveredTile;
-    Character* playerCharacter;
+    CharacterClient* playerCharacter;
 
     // Spritesheet 01;
     sf::Texture texture_spritesheet_01_unsmooth;

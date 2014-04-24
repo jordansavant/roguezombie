@@ -20,12 +20,18 @@ public:
 
     enum Type
     {
-       Wall,
-       Door,
+        None,
+        Wall,
+        Door,
     };
 
 	struct Schema
 	{
+        Schema()
+            : type(Type::None)
+        {
+        }
+
         Type type;
 
         friend sf::Packet& operator <<(sf::Packet& packet, const Schema &state)
@@ -35,9 +41,7 @@ public:
         }
         friend sf::Packet& operator >>(sf::Packet& packet, Schema &state)
         {
-            sf::Uint32 type;
-            packet >> type;
-            state.type = static_cast<Structure::Type>(type);
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Structure::Type>(packet, state.type);
             return packet;
         }
 	};
@@ -48,8 +52,6 @@ public:
     virtual void update(sf::Time &gameTime);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
-
-    virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 };
 
 #endif

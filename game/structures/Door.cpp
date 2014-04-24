@@ -109,14 +109,7 @@ void Door::registerTileTriggers(Tile* tile)
 
 void Door::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
-    Body::prepareSnapshot(packet, full);
+    Structure::prepareSnapshot(packet, full);
 
     packet << schema;
-}
-
-void Door::handleSnapshot(bit::ServerPacket &packet, bool full)
-{
-    Body::handleSnapshot(packet, full);
-
-    packet >> schema;
 }

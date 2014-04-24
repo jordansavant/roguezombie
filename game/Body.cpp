@@ -30,8 +30,3 @@ void Body::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
     packet << schema;
 }
-
-void Body::handleSnapshot(bit::ServerPacket &packet, bool full)
-{
-    packet >> schema;
-}

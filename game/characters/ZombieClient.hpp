@@ -3,6 +3,7 @@
 #define RZ_ZOMBIECLIENT_H
 
 #include "Zombie.hpp"
+#include "../CharacterClient.hpp"
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
 #include "../../bitengine/Game.hpp"
@@ -12,7 +13,7 @@
 
 class LevelClient;
 
-class ZombieClient : public Zombie
+class ZombieClient : public CharacterClient
 {
 public:
 

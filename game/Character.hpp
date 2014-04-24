@@ -7,10 +7,6 @@
 #include "SFML/Network.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
-#include <map>
-
-#include "mission/MissionClient.hpp"
-#include "items/ItemClient.hpp"
 
 class Level;
 class Player;
@@ -29,8 +25,9 @@ public:
 
     enum Type
     {
-       Zombie,
-       Ogre
+        None,
+        Zombie,
+        Ogre
     };
 
     std::vector<Tile*> path;
@@ -39,11 +36,13 @@ public:
     std::vector<Mission*> missions;
     Item* backpack;
 
-    std::map<unsigned int, MissionClient> missionClients; // TODO: Remove clientside aspect from serverside class
-    ItemClient backpackClient; // TODO: Remove clientside aspect from serverside class
-
 	struct Schema
 	{
+        Schema()
+           : maxHealth(0), isPlayerCharacter(false), clientId(0), player(NULL), type(Type::None), health(0)
+        {
+        }
+
 		int maxHealth;
         bool isPlayerCharacter;
         unsigned int clientId;
@@ -97,12 +96,6 @@ public:
     void addItemToInventory(Item* item);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
-
-    virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
-
-    void handleMissionCompleteGameEvent(bit::ServerPacket &packet);
-
-    void handleItemAddGameEvent(bit::ServerPacket &packet);
 
 protected:
 

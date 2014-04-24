@@ -3,6 +3,7 @@
 #define RZ_OGRECLIENT_H
 
 #include "Ogre.hpp"
+#include "../CharacterClient.hpp"
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
 #include "../../bitengine/Game.hpp"
@@ -12,7 +13,7 @@
 
 class LevelClient;
 
-class OgreClient : public Ogre
+class OgreClient : public CharacterClient
 {
 public:
 

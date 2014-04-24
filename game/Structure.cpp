@@ -36,10 +36,3 @@ void Structure::prepareSnapshot(bit::ServerPacket &packet, bool full)
 
     packet << schema;
 }
-
-void Structure::handleSnapshot(bit::ServerPacket &packet, bool full)
-{
-    Body::handleSnapshot(packet, full);
-
-    packet >> schema;
-}

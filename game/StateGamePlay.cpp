@@ -179,7 +179,7 @@ bool StateGamePlay::update(sf::Time &gameTime)
         float toleranceX = 250 * rogueZombieGame->currentResolutionRatioX;
         float toleranceY = 150 * rogueZombieGame->currentResolutionRatioY;
 
-        sf::Vector2f position(levelClient->playerCharacter->Body::schema.x, levelClient->playerCharacter->Body::schema.y);
+        sf::Vector2f position(levelClient->playerCharacter->BodyClient::schema.x, levelClient->playerCharacter->BodyClient::schema.y);
         position = bit::VectorMath::normalToIsometric(position.x, position.y);
         cameras[0]->lock(position.x, position.y, toleranceX, toleranceY, 4.0, 100.0);
     }

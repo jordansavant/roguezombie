@@ -3,6 +3,7 @@
 #define RZ_WALLCLIENT_H
 
 #include "Wall.hpp"
+#include "../StructureClient.hpp"
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
 #include "../../bitengine/Game.hpp"
@@ -11,7 +12,7 @@
 
 class LevelClient;
 
-class WallClient : public Wall
+class WallClient : public StructureClient
 {
 public:
 

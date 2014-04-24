@@ -12,7 +12,7 @@
 #include "../../bitengine/System.hpp"
 
 WallClient::WallClient()
-    : Wall(), lastSnapshotId(0)
+    : StructureClient(), lastSnapshotId(0)
 {
 }
 
@@ -36,10 +36,10 @@ void WallClient::clientUpdate(sf::Time &gameTime)
     float xFootOffset = 0;
     float yFootOffset = 16;
 
-    float levelX = Body::schema.x;
-    float levelY = Body::schema.y;
-    float levelCenterX = levelX + Body::schema.width / 2;
-    float levelCenterY = levelY + Body::schema.height / 2;
+    float levelX = BodyClient::schema.x;
+    float levelY = BodyClient::schema.y;
+    float levelCenterX = levelX + BodyClient::schema.width / 2;
+    float levelCenterY = levelY + BodyClient::schema.height / 2;
 
     sf::Vector2f renderPosition = bit::VectorMath::normalToIsometric(levelCenterX, levelCenterY);
     float renderX = renderPosition.x - spriteWidth / 2 + xFootOffset / 2;
@@ -50,7 +50,7 @@ void WallClient::clientUpdate(sf::Time &gameTime)
     bit::VertexHelper::positionQuad(quad, renderX, renderY, z, spriteWidth, spriteHeight);
 
     // Color and luminence
-    sf::Color color(255 * Body::schema.illumination, 255 * Body::schema.illumination, 255 * Body::schema.illumination);
+    sf::Color color(255 * BodyClient::schema.illumination, 255 * BodyClient::schema.illumination, 255 * BodyClient::schema.illumination);
     bit::VertexHelper::colorQuad(quad, color);
 }
 

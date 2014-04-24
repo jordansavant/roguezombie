@@ -18,6 +18,11 @@ public:
 
     struct Schema
     {
+        Schema()
+            : isOpen(true), isLocked(false)
+        {
+        }
+
         bool isOpen;
         bool isLocked;
 
@@ -41,8 +46,6 @@ public:
     virtual void attemptClose();
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
-
-    virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 
 private:
 

@@ -100,7 +100,7 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
         {
             case Body::Type::Character:
             {
-                Character* c;
+                CharacterClient* c;
 
                 unsigned int characterType;
                 packet >> characterType;
