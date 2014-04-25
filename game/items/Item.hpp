@@ -87,7 +87,7 @@ public:
 
     void prepareSnapshot(bit::ServerPacket &packet);
 
-    void prepareGameEventPacket_itemAdded(bit::ServerPacket &packet);
+    void prepareServerEventPacket_itemAdded(bit::ServerPacket &packet);
 
     static std::string getTitle(Type type);
 

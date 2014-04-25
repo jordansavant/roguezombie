@@ -1,8 +1,8 @@
 #pragma once
-#ifndef RZ_GAMEEVENT_H
-#define RZ_GAMEEVENT_H
+#ifndef RZ_SERVEREVENT_H
+#define RZ_SERVEREVENT_H
 
-enum GameEvent
+enum ServerEvent
 {
     MissionAssigned,
     MissionCompleted,

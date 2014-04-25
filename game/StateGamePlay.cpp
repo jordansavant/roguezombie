@@ -7,7 +7,8 @@
 #include "../ResourcePath.h"
 #include "RogueZombieGame.hpp"
 #include "GameplayServer.hpp"
-#include "GameEvent.hpp"
+#include "ServerEvent.hpp"
+#include "ClientRequest.hpp"
 #include "LevelClient.hpp"
 #include "TileClient.hpp"
 #include "Command.hpp"
@@ -111,6 +112,28 @@ bool StateGamePlay::update(sf::Time &gameTime)
 		Command cmd;
         cmd.type = Command::Type::PlayerSwitchLevel;
 		commandQueue.push_back(cmd);
+	}
+    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Y))
+	{
+		serverRequest(
+            [] (bit::ClientPacket& packet)
+            {
+                packet << sf::Uint32(ClientRequest::AccessObjectInventory);
+            },
+            [] (bit::ServerPacket& packet)
+            {
+                bool accessAllowed;
+                packet >> accessAllowed;
+                if(accessAllowed)
+                {
+                    bit::Output::Debug("Client request access inventory allowed");
+                }
+                else
+                {
+                    bit::Output::Debug("Client request access inventory disallowed");
+                }
+            }
+        );
 	}
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::W))
 	{
@@ -280,17 +303,17 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
 
     unsigned int eventTypeInt;
     packet >> eventTypeInt;
-    GameEvent eventType = static_cast<GameEvent>(eventTypeInt);
+    ServerEvent eventType = static_cast<ServerEvent>(eventTypeInt);
 
     if(levelClient->playerCharacter)
     {
         switch(eventType)
         {
-            case GameEvent::MissionCompleted:
-                levelClient->playerCharacter->handleGameEventPacket_missionCompleted(packet);
+            case ServerEvent::MissionCompleted:
+                levelClient->playerCharacter->handleServerEventPacket_missionCompleted(packet);
                 break;
-            case GameEvent::ItemAdded:
-                levelClient->playerCharacter->handleGameEventPacket_itemAdded(packet);
+            case ServerEvent::ItemAdded:
+                levelClient->playerCharacter->handleServerEventPacket_itemAdded(packet);
                 break;
         }
     }

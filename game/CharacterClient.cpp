@@ -42,7 +42,7 @@ void CharacterClient::handleSnapshot(bit::ServerPacket &packet, bool full)
     }
 }
 
-void CharacterClient::handleGameEventPacket_missionCompleted(bit::ServerPacket &packet)
+void CharacterClient::handleServerEventPacket_missionCompleted(bit::ServerPacket &packet)
 {
     unsigned int depth;
     packet >> depth;
@@ -65,7 +65,7 @@ void CharacterClient::handleGameEventPacket_missionCompleted(bit::ServerPacket &
     }
 }
 
-void CharacterClient::handleGameEventPacket_itemAdded(bit::ServerPacket &packet)
+void CharacterClient::handleServerEventPacket_itemAdded(bit::ServerPacket &packet)
 {
     // depth includes all parents and the new item id
     unsigned int depth;

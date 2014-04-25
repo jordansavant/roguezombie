@@ -79,7 +79,7 @@ public:
     
     virtual void prepareSnapshot(bit::ServerPacket &packet);
 
-    virtual void prepareGameEventPacket_missionComplete(bit::ServerPacket &packet);
+    virtual void prepareServerEventPacket_missionComplete(bit::ServerPacket &packet);
 
 private:
 

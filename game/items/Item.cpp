@@ -2,7 +2,7 @@
 #include "ItemCategory.hpp"
 #include "../../bitengine/Math.hpp"
 #include "../../bitengine/Network.hpp"
-#include "../GameEvent.hpp"
+#include "../ServerEvent.hpp"
 #include "../Character.hpp"
 #include "../Player.hpp"
 #include "../Level.hpp"
@@ -78,7 +78,7 @@ void Item::onAddToNewParent()
     Character* c = getParentCharacter();
     if(c->schema.isPlayerCharacter)
     {
-        c->level->server->sendEventToClient(*c->schema.player->client, std::bind(&Item::prepareGameEventPacket_itemAdded, this, std::placeholders::_1));
+        c->level->server->sendEventToClient(*c->schema.player->client, std::bind(&Item::prepareServerEventPacket_itemAdded, this, std::placeholders::_1));
     }
 }
 
@@ -94,9 +94,9 @@ void Item::prepareSnapshot(bit::ServerPacket &packet)
     }
 }
 
-void Item::prepareGameEventPacket_itemAdded(bit::ServerPacket &packet)
+void Item::prepareServerEventPacket_itemAdded(bit::ServerPacket &packet)
 {
-    packet << sf::Uint32(GameEvent::ItemAdded);
+    packet << sf::Uint32(ServerEvent::ItemAdded);
     packIdHierarchy(packet);
     prepareSnapshot(packet);
 }

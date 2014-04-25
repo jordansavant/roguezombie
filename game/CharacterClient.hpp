@@ -24,9 +24,9 @@ public:
 
     virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 
-    void handleGameEventPacket_missionCompleted(bit::ServerPacket &packet);
+    void handleServerEventPacket_missionCompleted(bit::ServerPacket &packet);
 
-    void handleGameEventPacket_itemAdded(bit::ServerPacket &packet);
+    void handleServerEventPacket_itemAdded(bit::ServerPacket &packet);
 };
 
 #endif

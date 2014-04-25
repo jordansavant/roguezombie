@@ -1,6 +1,6 @@
 #include "Mission.hpp"
 #include "../../bitengine/Network.hpp"
-#include "../GameEvent.hpp"
+#include "../ServerEvent.hpp"
 #include "../Character.hpp"
 #include "../Player.hpp"
 #include "../Level.hpp"
@@ -127,7 +127,7 @@ void Mission::onMissionComplete()
     Character* c = getParentCharacter();
     if(c->schema.isPlayerCharacter)
     {
-        c->level->server->sendEventToClient(*c->schema.player->client, std::bind(&Mission::prepareGameEventPacket_missionComplete, this, std::placeholders::_1));
+        c->level->server->sendEventToClient(*c->schema.player->client, std::bind(&Mission::prepareServerEventPacket_missionComplete, this, std::placeholders::_1));
     }
 }
 
@@ -165,8 +165,8 @@ void Mission::prepareSnapshot(bit::ServerPacket &packet)
     }
 }
 
-void Mission::prepareGameEventPacket_missionComplete(bit::ServerPacket &packet)
+void Mission::prepareServerEventPacket_missionComplete(bit::ServerPacket &packet)
 {
-    packet << sf::Uint32(GameEvent::MissionCompleted);
+    packet << sf::Uint32(ServerEvent::MissionCompleted);
     packIdHierarchy(packet);
 }

@@ -3,7 +3,7 @@
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Math.hpp"
-#include "GameEvent.hpp"
+#include "ServerEvent.hpp"
 #include "GameplayServer.hpp"
 #include "Level.hpp"
 #include "Body.hpp"
@@ -196,7 +196,7 @@ void Character::assignMission(Mission* mission)
     {
         Character* c = this;/*
         level->server->sendEventToClient(*fixedState.player->client, [mission] (bit::ServerPacket &packet) {
-            packet << sf::Uint32(GameEvent::MissionAssigned);
+            packet << sf::Uint32(ServerEvent::MissionAssigned);
         });*/
     }
 }

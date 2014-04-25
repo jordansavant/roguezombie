@@ -1,6 +1,7 @@
 #include "GameplayServer.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/System.hpp"
+#include "ClientRequest.hpp"
 #include "Command.hpp"
 #include "Player.hpp"
 #include "Character.hpp"
@@ -202,6 +203,16 @@ void GameplayServer::handle_ClientTimeout(bit::RemoteClient &client)
 void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::RemoteClient &client, bit::ServerPacket &responsePacket)
 {
     bit::Output::Debug("Server handle client request");
+
+    ClientRequest request;
+    bit::NetworkHelper::unpackEnum<sf::Uint32, ClientRequest>(packet, request);
+    switch(request)
+    {
+        case ClientRequest::AccessObjectInventory:
+            bit::Output::Debug("Server detect request object inventory");
+            responsePacket << (bit::Math::randomFloat() < .5 ? true : false);
+            break;
+    }
 }
 
 /**
