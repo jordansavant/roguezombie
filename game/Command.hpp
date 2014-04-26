@@ -18,7 +18,7 @@ public:
 	    PlayerMoveDown,
 	    PlayerMoveLeft,
 	    PlayerMoveRight,
-        PlayerClickTile,
+        MoveToTile,
         PlayerRightClickTile,
         PlayerSwitchLevel,
     };

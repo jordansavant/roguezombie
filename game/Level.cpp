@@ -311,6 +311,13 @@ void Level::deletePlayer(Player* player)
  * Tile Positioning and Pathfinding
  */
 
+Tile* Level::getTileById(unsigned int id)
+{
+    if(id < tiles.size())
+        return tiles[id];
+    return NULL;
+}
+
 Tile* Level::getTileAtIndices(int x, int y)
 {
     unsigned int index = x + (tileColumns * y);
@@ -458,7 +465,7 @@ void Level::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &cl
 		case Command::Type::PlayerMoveRight:
             player->character->moveRight();
 			break;
-        case Command::Type::PlayerClickTile:
+        case Command::Type::MoveToTile:
         {
             unsigned int tileId;
             packet >> tileId;

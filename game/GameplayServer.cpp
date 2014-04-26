@@ -156,7 +156,7 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
 			case Command::Type::PlayerMoveDown:
 			case Command::Type::PlayerMoveLeft:
 			case Command::Type::PlayerMoveRight:
-            case Command::Type::PlayerClickTile:
+            case Command::Type::MoveToTile:
             case Command::Type::PlayerRightClickTile:
                 player->level->handlePlayerCommand(packet, client, static_cast<Command::Type>(commandType));
 				break;
@@ -203,6 +203,7 @@ void GameplayServer::handle_ClientTimeout(bit::RemoteClient &client)
 void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::RemoteClient &client, bit::ServerPacket &responsePacket)
 {
     bit::Output::Debug("Server handle client request");
+    Player* player = players[client.id];
 
     ClientRequest request;
     bit::NetworkHelper::unpackEnum<sf::Uint32, ClientRequest>(packet, request);
@@ -211,6 +212,22 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
         case ClientRequest::AccessObjectInventory:
             bit::Output::Debug("Server detect request object inventory");
             responsePacket << (bit::Math::randomFloat() < .5 ? true : false);
+            break;
+        case ClientRequest::GetInteractionOptions:
+            bit::Output::Debug("Server detect request interaction options");
+
+            unsigned int tileId;
+            packet >> tileId;
+            Tile* t = player->level->getTileById(tileId);
+            if(t && t->body && t->body->schema.type == Body::Type::Structure)
+            {
+                responsePacket << true;
+            }
+            else
+            {
+                responsePacket << false;
+            }
+
             break;
     }
 }

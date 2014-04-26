@@ -77,28 +77,6 @@ bool StateGamePlay::handleInput(sf::Time &gameTime)
             cmd.type = Command::Type::PlayerSwitchLevel;
 		    commandQueue.push_back(cmd);
 	    }
-        if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Y))
-	    {
-		    serverRequest(
-                [] (bit::ClientPacket& packet)
-                {
-                    packet << sf::Uint32(ClientRequest::AccessObjectInventory);
-                },
-                [] (bit::ServerPacket& packet)
-                {
-                    bool accessAllowed;
-                    packet >> accessAllowed;
-                    if(accessAllowed)
-                    {
-                        bit::Output::Debug("Client request access inventory allowed");
-                    }
-                    else
-                    {
-                        bit::Output::Debug("Client request access inventory disallowed");
-                    }
-                }
-            );
-	    }
         if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::W))
 	    {
             Command cmd;
@@ -129,12 +107,41 @@ bool StateGamePlay::handleInput(sf::Time &gameTime)
             if(levelClient->hoveredTile)
             {
                 TileClient* t = levelClient->hoveredTile;
-                Command cmd;
-                cmd.type = Command::Type::PlayerClickTile;
-                cmd.pack = [t] (sf::Packet &packet) {
-                    packet << sf::Uint32(t->schema.id);
-                };
-		        commandQueue.push_back(cmd);
+
+                // If the tile has a body run interactions
+                if(t->schema.bodyId > 0)
+                {
+                    serverRequest(
+                        [t] (bit::ClientPacket& packet) // prepare
+                        {
+                            packet << sf::Uint32(ClientRequest::GetInteractionOptions);
+                            packet << sf::Uint32(t->schema.id);
+                        },
+                        [] (bit::ServerPacket& packet) // onComplete
+                        {
+                            bool interactionsAvailable;
+                            packet >> interactionsAvailable;
+                            if(interactionsAvailable)
+                            {
+                                bit::Output::Debug("Client request interaction options allowed");
+                            }
+                            else
+                            {
+                                bit::Output::Debug("Client request interaction options disallowed");
+                            }
+                        }
+                    );
+                }
+                // Else issue command to move to tile
+                else
+                {
+                    Command cmd;
+                    cmd.type = Command::Type::MoveToTile;
+                    cmd.pack = [t] (sf::Packet &packet) {
+                        packet << sf::Uint32(t->schema.id);
+                    };
+		            commandQueue.push_back(cmd);
+                }
             }
         }
         if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Right))

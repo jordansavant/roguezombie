@@ -38,7 +38,6 @@ private:
     };
     std::vector<PendingMovePlayer> pendingMoves;
 
-    Level level;
     std::vector<Level> levels;
 	std::map<unsigned int, Player*> players;
     unsigned int bodyIdCounter;
