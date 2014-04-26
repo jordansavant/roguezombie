@@ -24,6 +24,13 @@ void bit::State::load()
 
 bool bit::State::handleInput(sf::Time &gameTime)
 {
+    if(cameras.size() > 0)
+    {
+        // Ensure primary camera has modified the view for game elements
+        Camera* camera = cameras[0];
+        camera->renderWindow->setView(camera->view);
+    }
+
     return true;
 }
 

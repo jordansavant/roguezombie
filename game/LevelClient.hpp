@@ -57,6 +57,8 @@ public:
 
     void load(StateGamePlay* state);
 
+    void captureInput(sf::Time &gameTime);
+
     void update(sf::Time &gameTime);
 
     void handleSnapshot(bit::ServerPacket &packet, bool full = false);

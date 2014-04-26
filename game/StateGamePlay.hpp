@@ -36,6 +36,8 @@ public:
 
 	void now();
 
+    virtual bool handleInput(sf::Time &gameTime);
+
     virtual bool update(sf::Time &gameTime);
 
     virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);

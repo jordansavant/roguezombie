@@ -53,6 +53,115 @@ void StateGamePlay::load()
     levelClient->load(this);
 }
 
+bool StateGamePlay::handleInput(sf::Time &gameTime)
+{
+    State::handleInput(gameTime);
+
+    if(rogueZombieGame->isInFocus)
+    {
+        levelClient->captureInput(gameTime);
+
+        if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Up))
+            cameras[0]->direction.y = -1;
+        if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Down))
+            cameras[0]->direction.y = 1;
+        if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Left))
+            cameras[0]->direction.x = -1;
+        if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Right))
+            cameras[0]->direction.x = 1;
+
+	    // Listen for Game Commands
+        if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::X))
+	    {
+		    Command cmd;
+            cmd.type = Command::Type::PlayerSwitchLevel;
+		    commandQueue.push_back(cmd);
+	    }
+        if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Y))
+	    {
+		    serverRequest(
+                [] (bit::ClientPacket& packet)
+                {
+                    packet << sf::Uint32(ClientRequest::AccessObjectInventory);
+                },
+                [] (bit::ServerPacket& packet)
+                {
+                    bool accessAllowed;
+                    packet >> accessAllowed;
+                    if(accessAllowed)
+                    {
+                        bit::Output::Debug("Client request access inventory allowed");
+                    }
+                    else
+                    {
+                        bit::Output::Debug("Client request access inventory disallowed");
+                    }
+                }
+            );
+	    }
+        if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::W))
+	    {
+            Command cmd;
+            cmd.type = Command::Type::PlayerMoveUp;
+		    commandQueue.push_back(cmd);
+	    }
+	    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::S))
+	    {
+		    Command cmd;
+            cmd.type = Command::Type::PlayerMoveDown;
+		    commandQueue.push_back(cmd);
+	    }
+	    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::A))
+	    {
+		    Command cmd;
+            cmd.type = Command::Type::PlayerMoveLeft;
+		    commandQueue.push_back(cmd);
+	    }
+	    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::D))
+	    {
+		    Command cmd;
+            cmd.type = Command::Type::PlayerMoveRight;
+		    commandQueue.push_back(cmd);
+	    }
+        if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
+        {
+            // See if a tile is being hovered over
+            if(levelClient->hoveredTile)
+            {
+                TileClient* t = levelClient->hoveredTile;
+                Command cmd;
+                cmd.type = Command::Type::PlayerClickTile;
+                cmd.pack = [t] (sf::Packet &packet) {
+                    packet << sf::Uint32(t->schema.id);
+                };
+		        commandQueue.push_back(cmd);
+            }
+        }
+        if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Right))
+        {
+            // See if a tile is being hovered over
+            if(levelClient->hoveredTile)
+            {
+                TileClient* t = levelClient->hoveredTile;
+                Command cmd;
+                cmd.type = Command::Type::PlayerRightClickTile;
+                cmd.pack = [t] (sf::Packet &packet) {
+                    packet << sf::Uint32(t->schema.id);
+                };
+		        commandQueue.push_back(cmd);
+            }
+        }
+
+	    // Exit
+        if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
+        {
+            disconnect();
+        }
+    }
+
+    return true;
+}
+
 bool StateGamePlay::update(sf::Time &gameTime)
 {
     bit::ClientServerState::update(gameTime);
@@ -96,103 +205,6 @@ bool StateGamePlay::update(sf::Time &gameTime)
     }
 
     hud->update(*rogueZombieGame->renderWindow, gameTime);
-
-    if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Up))
-        cameras[0]->direction.y = -1;
-    if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Down))
-        cameras[0]->direction.y = 1;
-    if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Left))
-        cameras[0]->direction.x = -1;
-    if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Right))
-        cameras[0]->direction.x = 1;
-
-	// Listen for Game Commands
-    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::X))
-	{
-		Command cmd;
-        cmd.type = Command::Type::PlayerSwitchLevel;
-		commandQueue.push_back(cmd);
-	}
-    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Y))
-	{
-		serverRequest(
-            [] (bit::ClientPacket& packet)
-            {
-                packet << sf::Uint32(ClientRequest::AccessObjectInventory);
-            },
-            [] (bit::ServerPacket& packet)
-            {
-                bool accessAllowed;
-                packet >> accessAllowed;
-                if(accessAllowed)
-                {
-                    bit::Output::Debug("Client request access inventory allowed");
-                }
-                else
-                {
-                    bit::Output::Debug("Client request access inventory disallowed");
-                }
-            }
-        );
-	}
-    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::W))
-	{
-        Command cmd;
-        cmd.type = Command::Type::PlayerMoveUp;
-		commandQueue.push_back(cmd);
-	}
-	if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::S))
-	{
-		Command cmd;
-        cmd.type = Command::Type::PlayerMoveDown;
-		commandQueue.push_back(cmd);
-	}
-	if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::A))
-	{
-		Command cmd;
-        cmd.type = Command::Type::PlayerMoveLeft;
-		commandQueue.push_back(cmd);
-	}
-	if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::D))
-	{
-		Command cmd;
-        cmd.type = Command::Type::PlayerMoveRight;
-		commandQueue.push_back(cmd);
-	}
-    if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
-    {
-        // See if a tile is being hovered over
-        if(levelClient->hoveredTile)
-        {
-            TileClient* t = levelClient->hoveredTile;
-            Command cmd;
-            cmd.type = Command::Type::PlayerClickTile;
-            cmd.pack = [t] (sf::Packet &packet) {
-                packet << sf::Uint32(t->schema.id);
-            };
-		    commandQueue.push_back(cmd);
-        }
-    }
-    if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Right))
-    {
-        // See if a tile is being hovered over
-        if(levelClient->hoveredTile)
-        {
-            TileClient* t = levelClient->hoveredTile;
-            Command cmd;
-            cmd.type = Command::Type::PlayerRightClickTile;
-            cmd.pack = [t] (sf::Packet &packet) {
-                packet << sf::Uint32(t->schema.id);
-            };
-		    commandQueue.push_back(cmd);
-        }
-    }
-
-	// Exit
-    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
-    {
-        disconnect();
-    }
 
     levelClient->update(gameTime);
 
