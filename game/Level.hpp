@@ -18,6 +18,7 @@ class Ogre;
 class Player;
 class Tile;
 class Door;
+class Chest;
 class Wall;
 class Light;
 
@@ -36,6 +37,7 @@ public:
     std::vector<Ogre*> ogres;
     std::vector<Wall*> walls;
     std::vector<Door*> doors;
+    std::vector<Chest*> chests;
     std::vector<Tile*> tiles;
     std::vector<Light*> lights;
 	std::map<unsigned int, Player*> players;

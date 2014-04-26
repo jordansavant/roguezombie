@@ -7,6 +7,8 @@
 #include "characters/Ogre.hpp"
 #include "structures/Wall.hpp"
 #include "structures/Door.hpp"
+#include "structures/Chest.hpp"
+#include "levels/Interior.hpp"
 #include "GameplayServer.hpp"
 #include "SFML/Network.hpp"
 #include "../bitengine/Network.hpp"
@@ -47,6 +49,7 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
     runners.push_back(new LevelRunner<Ogre>(this, &ogres));
     runners.push_back(new LevelRunner<Wall>(this, &walls));
     runners.push_back(new LevelRunner<Door>(this, &doors));
+    runners.push_back(new LevelRunner<Chest>(this, &chests));
     runners.push_back(new LevelRunner<Light>(this, &lights));
 
     // Map
@@ -90,28 +93,28 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
 
             switch(logic)
             {
-                case 1:
+                case Interior::Spawn::Wall:
                 {
                     Wall* w = new Wall();
                     w->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
                     walls.push_back(w);
                     break;
                 }
-                case 2:
+                case Interior::Spawn::Zombie:
                 {
                     Zombie* z = new Zombie();
                     z->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
                     zombies.push_back(z);
                     break;
                 }
-                case 3:
+                case Interior::Spawn::Ogre:
                 {
                     Ogre* o = new Ogre();
                     o->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
                     ogres.push_back(o);
                     break;
                 }
-                case 4:
+                case Interior::Spawn::Light:
                 {
                     sf::Color c = sf::Color::Red;
                     Light* l = new Light();
@@ -119,14 +122,21 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
                     lights.push_back(l);
                     break;
                 }
-                case 5:
+                case Interior::Spawn::Door:
                 {
                     Door* d = new Door();
                     d->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
                     doors.push_back(d);
                     break;
                 }
-                case 8:
+                case Interior::Spawn::Chest:
+                {
+                    Chest* d = new Chest();
+                    d->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                    chests.push_back(d);
+                    break;
+                }
+                case Interior::Spawn::PortalTo2:
                 {
                     Level* l = this;
                     t->onBodyEnter.push_back([l] (Tile* t, Body* b){
@@ -142,7 +152,7 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
                     });
                     break;
                 }
-                case 9:
+                case Interior::Spawn::PortalTo1:
                 {
                     Level* l = this;
                     t->onBodyEnter.push_back([l] (Tile* t, Body* b){
@@ -497,7 +507,7 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
         [&visibles, w] (int x, int y) -> bool
         {
             Tile* t = w->getTileAtPosition(x * w->tileWidth, y * w->tileHeight);
-            return (t && t->body && t->body->schema.type == Body::Type::Structure);
+            return (t && t->body && t->body->blockFoV);
         }
     );
 
@@ -559,6 +569,9 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
                         break;
                     case Structure::Type::Door:
                         packNetworkBody<Door, Structure>(packet, full, s, b->schema.type, s->schema.type);
+                        break;
+                    case Structure::Type::Chest:
+                        packNetworkBody<Chest, Structure>(packet, full, s, b->schema.type, s->schema.type);
                         break;
                 }
                 break;

@@ -7,7 +7,7 @@
 #include "Tile.hpp"
 
 Body::Body()
-    : level(NULL), schema()
+    : level(NULL), blockFoV(true), schema()
 {
 }
 

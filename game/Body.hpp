@@ -23,6 +23,7 @@ public:
     };
 
     Level* level;
+    bool blockFoV;
 
 	struct Schema
 	{

@@ -102,5 +102,5 @@ bool Light::isBlocked(int x, int y)
 {
     Tile* t = level->getTileAtIndices(x, y);
 
-    return (t && t->body && t->body->schema.type == Body::Type::Structure);
+    return (t && t->body && t->body->blockFoV);
 }

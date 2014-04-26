@@ -7,6 +7,7 @@
 #include "characters/OgreClient.hpp"
 #include "structures/WallClient.hpp"
 #include "structures/DoorClient.hpp"
+#include "structures/ChestClient.hpp"
 #include "hud/Hud.hpp"
 #include "hud/Minimap.hpp"
 #include "../bitengine/Math.hpp"
@@ -16,7 +17,7 @@
 #include <map>
 
 LevelClient::LevelClient()
-    : state(NULL), tilePool(), zombiePool(), ogrePool(), wallPool(), hoveredTile(NULL), playerCharacter(NULL)
+    : state(NULL), tilePool(), zombiePool(), ogrePool(), doorPool(), chestPool(), hoveredTile(NULL), playerCharacter(NULL)
 {
 }
 
@@ -45,6 +46,7 @@ void LevelClient::load(StateGamePlay* _state)
     runners.push_back(new LevelClientRunner<OgreClient>(this, &ogres, &ogrePool, 10));
     runners.push_back(new LevelClientRunner<WallClient>(this, &walls, &wallPool, 500));
     runners.push_back(new LevelClientRunner<DoorClient>(this, &doors, &doorPool, 20));
+    runners.push_back(new LevelClientRunner<ChestClient>(this, &chests, &chestPool, 10));
 
     // Fill pools
     for(unsigned int i=0; i < runners.size(); i++)
@@ -134,6 +136,9 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
                         break;
                     case Structure::Type::Door:
                         unpackNetworkEntity<DoorClient>(packet, full, doors, doorPool);
+                        break;
+                    case Structure::Type::Chest:
+                        unpackNetworkEntity<ChestClient>(packet, full, chests, chestPool);
                         break;
                 }
                 break;

@@ -32,6 +32,7 @@ Character::~Character()
 void Character::load(Level* _level, unsigned int _id, Type _type, float _x, float _y, float _width, float _height)
 {
     Body::load(_level, _id, Body::Type::Character, _x, _y, _width, _height);
+    blockFoV = false;
     schema.type = _type;
     schema.maxHealth = 100;
 	schema.health = 100;

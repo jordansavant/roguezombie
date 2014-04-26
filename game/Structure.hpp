@@ -23,6 +23,7 @@ public:
         None,
         Wall,
         Door,
+        Chest,
     };
 
 	struct Schema
