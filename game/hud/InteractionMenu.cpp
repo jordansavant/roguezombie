@@ -45,18 +45,18 @@ void InteractionMenu::handleInteractionTree(bit::ServerPacket &packet, unsigned 
             option->setSfFontString(Interaction::getTitle(it));
             option->canHaveFocus = true;
             option->onActivate = [it, m, tileId] (Element* e){
-                    InteractionMenu* mx = m;
-                    Interaction::Type itx(it);
-                    unsigned int tileIdx = tileId;
-                    m->hud->state->serverRequest(
-                        [itx, tileIdx, mx] (bit::ClientPacket &packet) {
-                            packet << sf::Uint32(ClientRequest::Interaction);
-                            packet << sf::Uint32(itx);
-                            packet << sf::Uint32(tileIdx);
-                        },
-                        [itx, tileIdx, mx] (bit::ServerPacket &packet) {
-                        }
-                    );
+                InteractionMenu* mx = m;
+                Interaction::Type itx(it);
+                unsigned int tileIdx = tileId;
+                m->hud->state->serverRequest(
+                    [itx, tileIdx, mx] (bit::ClientPacket &packet) {
+                        packet << sf::Uint32(ClientRequest::Interaction);
+                        packet << sf::Uint32(itx);
+                        packet << sf::Uint32(tileIdx);
+                    },
+                    [itx, tileIdx, mx] (bit::ServerPacket &packet) {
+                    }
+                );
             };
             addChild(option);
 

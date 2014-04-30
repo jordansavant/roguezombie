@@ -39,9 +39,7 @@ public:
 
     virtual void update(sf::Time &gameTime);
 
-    virtual void unlockWithKey(::Character* interactor);
-
-    virtual void lockWithKey(::Character* interactor);
+    virtual void handleInteraction(Interaction::Type interaction, Body* interactor);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 

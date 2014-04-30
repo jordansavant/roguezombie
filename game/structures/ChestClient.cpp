@@ -54,7 +54,7 @@ void ChestClient::clientUpdate(sf::Time &gameTime)
 
     if(schema.isLocked)
     {
-        sf::Color color(255 * BodyClient::schema.illumination, 0 * BodyClient::schema.illumination, 0 * BodyClient::schema.illumination);
+        color = sf::Color(255 * BodyClient::schema.illumination, 0 * BodyClient::schema.illumination, 0 * BodyClient::schema.illumination);
     }
 
     bit::VertexHelper::colorQuad(quad, color);

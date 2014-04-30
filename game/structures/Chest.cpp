@@ -26,14 +26,24 @@ void Chest::update(sf::Time &gameTime)
     Structure::update(gameTime);
 }
 
-void Chest::unlockWithKey(::Character* interactor)
+void Chest::handleInteraction(Interaction::Type interaction, Body* interactor)
 {
-    schema.isLocked = false;
-}
-
-void Chest::lockWithKey(::Character* interactor)
-{
-    schema.isLocked = true;
+    switch(interaction)
+    {
+        case Interaction::Type::UnlockableWithKey:
+        case Interaction::Type::UnlockableWithLockpick:
+        case Interaction::Type::UnlockableWithBash:
+        {
+            schema.isLocked = false;
+            break;
+        }
+        case Interaction::Type::LockableWithKey:
+        case Interaction::Type::LockableWithLockpick:
+        {
+            schema.isLocked = true;
+            break;
+        };
+    }
 }
 
 void Chest::prepareSnapshot(bit::ServerPacket &packet, bool full)

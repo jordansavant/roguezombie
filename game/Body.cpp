@@ -27,11 +27,7 @@ void Body::update(sf::Time &gameTime)
 {
 }
 
-void Body::unlockWithKey(::Character* interactor)
-{
-}
-
-void Body::lockWithKey(::Character* interactor)
+void Body::handleInteraction(Interaction::Type interaction, Body* interactor)
 {
 }
 

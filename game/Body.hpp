@@ -6,9 +6,9 @@
 #include "SFML/Network.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
+#include "Interaction.hpp"
 
 class Level;
-class Character;
 
 class Body
 {
@@ -69,9 +69,7 @@ public:
 
     virtual void update(sf::Time &gameTime);
 
-    virtual void unlockWithKey(::Character* interactor);
-
-    virtual void lockWithKey(::Character* interactor);
+    virtual void handleInteraction(Interaction::Type interaction, Body* interactor);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 
