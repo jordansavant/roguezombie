@@ -8,7 +8,7 @@
 #include "../mission/MissionClient.hpp"
 
 Journal::Journal(Hud* _hud)
-    : bit::Container(0, 50, 500, 200, bit::Element::AnchorType::TopRight), hud(_hud)
+    : bit::Container(-50, 50, 300, 500, bit::Element::AnchorType::TopRight), hud(_hud)
 {
     opacity = 1;
     journalEntries = new bit::Label(0, 0, 0, 0, bit::Element::AnchorType::TopLeft);

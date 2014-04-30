@@ -8,8 +8,9 @@
 #include "../RogueZombieGame.hpp"
 
 OptionsBar::OptionsBar(Hud* _hud)
-    : bit::Container(50, 50, _hud->state->rogueZombieGame->targetResolution.x, _hud->state->rogueZombieGame->targetResolution.y, bit::Element::AnchorType::TopLeft), hud(_hud)
+    : bit::Container(50, 50, 320, 64, bit::Element::AnchorType::TopLeft), hud(_hud)
 {
+    scaleStyle = ScaleStyle::PowerOfTwo;
     lambdaListenToInput = std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3);
     canHaveFocus = true;
 

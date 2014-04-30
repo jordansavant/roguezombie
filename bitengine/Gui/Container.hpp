@@ -32,7 +32,7 @@ namespace bit
 
 		virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
 
-        virtual Element* addChild(Element* child);
+        virtual unsigned int addChild(Element* child);
 
         virtual void clearFocusedChild();
 
@@ -41,6 +41,10 @@ namespace bit
         virtual void nextChild();
 
         virtual void previousChild();
+
+        virtual void clearChildren();
+
+        virtual void removeChild(unsigned int childIndex);
 
     private:
         Element* focusedChild;

@@ -2,6 +2,7 @@
 #include "SFML/Graphics.hpp"
 #include "Element.hpp"
 #include "../Game/Game.hpp"
+#include "../Math/Math.hpp"
 
 bit::Container::Container()
     : Element(), childElements(), focusedChild(NULL), focusedChildIndex(-1)
@@ -69,10 +70,10 @@ bool bit::Container::listenForInput(sf::RenderWindow &window, sf::Time &gameTime
 void bit::Container::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
     //Element::draw(window, gameTime, isGamePaused);
-    /*debugRect.setPosition(left, top);
-    debugRect.setFillColor(sf::Color(230, 0, 255, MathHelper::clamp(255 * opacity, 0, 255)));
+    debugRect.setPosition(left, top);
+    debugRect.setFillColor(sf::Color(230, 0, 255, bit::Math::clamp(255 * opacity, 0, 80)));
     debugRect.setSize(sf::Vector2f(targetWidth, targetHeight));
-    debugRect.setOutlineColor(sf::Color(255, 255, 255, MathHelper::clamp(255 * opacity, 0, 255)));
+    debugRect.setOutlineColor(sf::Color(255, 255, 255, bit::Math::clamp(255 * opacity, 0, 80)));
     debugRect.setScale(elementScale, elementScale);
 
     if(isInfocus)
@@ -84,7 +85,7 @@ void bit::Container::draw(sf::RenderWindow &window, sf::Time &gameTime)
         debugRect.setOutlineThickness(0);
     }
 
-    window.draw(debugRect);*/
+    window.draw(debugRect);
 
     for(unsigned int i = 0; i < childElements.size(); i++)
     {
@@ -92,12 +93,12 @@ void bit::Container::draw(sf::RenderWindow &window, sf::Time &gameTime)
     }
 }
 
-bit::Element* bit::Container::addChild(Element* child)
+unsigned int bit::Container::addChild(Element* child)
 {
     childElements.push_back(child);
     child->parentElement = this;
 
-    return child;
+    return childElements.size() - 1;
 }
 
 void bit::Container::clearFocusedChild()
@@ -167,4 +168,19 @@ void bit::Container::previousChild()
 
         changeFocusedChild(previous);
     }
+}
+
+void bit::Container::clearChildren()
+{
+    for(unsigned int i = 0; i < childElements.size(); i++)
+    {
+        delete childElements[i];
+    }
+    childElements.clear();
+}
+
+void bit::Container::removeChild(unsigned int index)
+{
+    delete childElements[index];
+    childElements.erase(childElements.begin() + index);
 }

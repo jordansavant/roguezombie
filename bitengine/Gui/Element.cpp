@@ -41,21 +41,21 @@ void bit::Element::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
 
 void bit::Element::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
-    //debugRect.setPosition(left, top);
-    //debugRect.setFillColor(sf::Color(0, 255, 195, bit::Math::clamp(255 * opacity, 0, 255)));
-    //debugRect.setSize(sf::Vector2f(width, height));
-    //debugRect.setOutlineColor(sf::Color(255, 255, 255, bit::Math::clamp(255 * opacity, 0, 255)));
-    //
-    //if(isInfocus)
-    //{
-    //    debugRect.setOutlineThickness(2);
-    //}
-    //else
-    //{
-    //    debugRect.setOutlineThickness(0);
-    //}
-    //
-    //window.draw(debugRect);
+    debugRect.setPosition(left, top);
+    debugRect.setFillColor(sf::Color(0, 255, 195, bit::Math::clamp(255 * opacity, 0, 255)));
+    debugRect.setSize(sf::Vector2f(width, height));
+    debugRect.setOutlineColor(sf::Color(255, 255, 255, bit::Math::clamp(255 * opacity, 0, 255)));
+    
+    if(isInfocus)
+    {
+        debugRect.setOutlineThickness(2);
+    }
+    else
+    {
+        debugRect.setOutlineThickness(0);
+    }
+    
+    window.draw(debugRect);
 }
 
 bit::Element* bit::Element::queueEffect(bit::Effect* effect)

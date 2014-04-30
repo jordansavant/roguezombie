@@ -16,7 +16,6 @@ public:
     InteractionMenu(Hud* hud);
 
     Hud* hud;
-    bit::Label* options;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
