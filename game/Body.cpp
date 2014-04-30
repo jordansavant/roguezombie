@@ -5,6 +5,7 @@
 #include "../bitengine/Math.hpp"
 #include "Level.hpp"
 #include "Tile.hpp"
+#include "Character.hpp"
 
 Body::Body()
     : level(NULL), blockFoV(true), schema()
@@ -23,6 +24,14 @@ void Body::load(Level* _level, unsigned int _id, Type _type, float _x, float _y,
 }
 
 void Body::update(sf::Time &gameTime)
+{
+}
+
+void Body::unlockWithKey(::Character* interactor)
+{
+}
+
+void Body::lockWithKey(::Character* interactor)
 {
 }
 

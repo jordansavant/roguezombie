@@ -4,6 +4,7 @@
 #include "ClientRequest.hpp"
 #include "Command.hpp"
 #include "Player.hpp"
+#include "Interaction.hpp"
 #include "Character.hpp"
 #include "Tile.hpp"
 #include "levels/Interior.hpp"
@@ -212,6 +213,41 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
         case ClientRequest::AccessObjectInventory:
             bit::Output::Debug("Server detect request object inventory");
             responsePacket << (bit::Math::randomFloat() < .5 ? true : false);
+            break;
+        case ClientRequest::Interaction:
+            bit::Output::Debug("Server detect request interaction");
+
+            Interaction::Type interaction;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Interaction::Type>(packet, interaction);
+            unsigned int tileID;
+            packet >> tileID;
+
+            switch(interaction)
+            {
+                case Interaction::Type::UnlockableWithKey:
+                case Interaction::Type::UnlockableWithLockpick:
+                case Interaction::Type::UnlockableWithBash:
+                {
+                    Tile* t = player->level->getTileById(tileID);
+                    if(t && t->body)
+                    {
+                        t->body->unlockWithKey(player->character);
+                    }
+
+                    break;
+                }
+                case Interaction::Type::LockableWithKey:
+                case Interaction::Type::LockableWithLockpick:
+                {
+                    Tile* t = player->level->getTileById(tileID);
+                    if(t && t->body)
+                    {
+                        t->body->lockWithKey(player->character);
+                    }
+                    break;
+                };
+            }
+
             break;
         case ClientRequest::GetInteractionOptions:
             bit::Output::Debug("Server detect request interaction options");

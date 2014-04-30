@@ -8,6 +8,7 @@
 #include "../bitengine/Network.hpp"
 
 class Level;
+class Character;
 
 class Body
 {
@@ -67,6 +68,10 @@ public:
     virtual void load(Level* level, unsigned int id, Type type, float x, float y, float width, float height);
 
     virtual void update(sf::Time &gameTime);
+
+    virtual void unlockWithKey(::Character* interactor);
+
+    virtual void lockWithKey(::Character* interactor);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 

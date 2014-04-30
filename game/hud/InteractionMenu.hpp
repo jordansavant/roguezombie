@@ -19,7 +19,7 @@ public:
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
-    void handleInteractionTree(bit::ServerPacket &packet);
+    void handleInteractionTree(bit::ServerPacket &packet, unsigned int tileId);
 };
 
 #endif

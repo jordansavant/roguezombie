@@ -3,6 +3,7 @@
 #include "SFML/System.hpp"
 #include "../Level.hpp"
 #include "../Tile.hpp"
+#include "../Character.hpp"
 #include "../Structure.hpp"
 #include "../Interaction.hpp"
 #include <functional>
@@ -25,6 +26,16 @@ void Chest::update(sf::Time &gameTime)
     Structure::update(gameTime);
 }
 
+void Chest::unlockWithKey(::Character* interactor)
+{
+    schema.isLocked = false;
+}
+
+void Chest::lockWithKey(::Character* interactor)
+{
+    schema.isLocked = true;
+}
+
 void Chest::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
     Structure::prepareSnapshot(packet, full);
@@ -34,6 +45,7 @@ void Chest::prepareSnapshot(bit::ServerPacket &packet, bool full)
 
 void Chest::prepareInteractionTree(bit::ServerPacket &packet)
 {
+    // Pack tile id
     if(schema.isLocked)
     {
         packet << sf::Uint32(3);

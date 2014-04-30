@@ -7,6 +7,7 @@
 #include "../Structure.hpp"
 
 class Level;
+class Character;
 
 class Chest : public Structure
 {
@@ -37,6 +38,10 @@ public:
     virtual void load(Level* level, unsigned int id, float x, float y);
 
     virtual void update(sf::Time &gameTime);
+
+    virtual void unlockWithKey(::Character* interactor);
+
+    virtual void lockWithKey(::Character* interactor);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 

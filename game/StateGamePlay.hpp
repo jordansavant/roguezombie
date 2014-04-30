@@ -41,6 +41,8 @@ public:
 
     virtual void drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera);
 
+    void requestInteractionsForTile(unsigned int tileId);
+
 protected:
 
     virtual bit::Server* newServer();

@@ -17,6 +17,7 @@ public:
     };
 
     static std::string getTitle(Type type);
+
 };
 
 #endif

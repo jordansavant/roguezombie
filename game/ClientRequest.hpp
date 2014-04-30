@@ -6,6 +6,7 @@ enum ClientRequest
 {
     GetInteractionOptions,
     AccessObjectInventory,
+    Interaction,
 };
 
 #endif

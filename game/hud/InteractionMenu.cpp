@@ -1,5 +1,6 @@
 #include "InteractionMenu.hpp"
 #include "Hud.hpp"
+#include "../ClientRequest.hpp"
 #include "../../bitengine/Input.hpp"
 #include "../../bitengine/Network.hpp"
 #include "../StateGamePlay.hpp"
@@ -22,7 +23,7 @@ void InteractionMenu::update(sf::RenderWindow &window, sf::Time &gameTime)
     bit::Container::update(window, gameTime);
 }
 
-void InteractionMenu::handleInteractionTree(bit::ServerPacket &packet)
+void InteractionMenu::handleInteractionTree(bit::ServerPacket &packet, unsigned int tileId)
 {
     unsigned int optionSize;
     packet >> optionSize;
@@ -33,6 +34,7 @@ void InteractionMenu::handleInteractionTree(bit::ServerPacket &packet)
         int y = 0;
         for(unsigned int i=0; i < optionSize; i++)
         {
+            InteractionMenu* m = this;
             Interaction::Type it;
             bit::NetworkHelper::unpackEnum<sf::Uint32, Interaction::Type>(packet, it);
         
@@ -42,8 +44,19 @@ void InteractionMenu::handleInteractionTree(bit::ServerPacket &packet)
             option->normalColor = sf::Color::White;
             option->setSfFontString(Interaction::getTitle(it));
             option->canHaveFocus = true;
-            option->onActivate = [it] (Element* e){
-                int test=10;
+            option->onActivate = [it, m, tileId] (Element* e){
+                    InteractionMenu* mx = m;
+                    Interaction::Type itx(it);
+                    unsigned int tileIdx = tileId;
+                    m->hud->state->serverRequest(
+                        [itx, tileIdx, mx] (bit::ClientPacket &packet) {
+                            packet << sf::Uint32(ClientRequest::Interaction);
+                            packet << sf::Uint32(itx);
+                            packet << sf::Uint32(tileIdx);
+                        },
+                        [itx, tileIdx, mx] (bit::ServerPacket &packet) {
+                        }
+                    );
             };
             addChild(option);
 

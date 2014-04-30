@@ -97,33 +97,12 @@ bool StateGamePlay::handleInput(sf::Time &gameTime)
             // See if a tile is being hovered over
             if(levelClient->hoveredTile)
             {
-                StateGamePlay* s = this;
                 TileClient* t = levelClient->hoveredTile;
 
                 // If the tile has a body run interactions
                 if(t->schema.bodyId > 0)
                 {
-                    serverRequest(
-                        [t] (bit::ClientPacket& packet) // prepare
-                        {
-                            packet << sf::Uint32(ClientRequest::GetInteractionOptions);
-                            packet << sf::Uint32(t->schema.id);
-                        },
-                        [s] (bit::ServerPacket& packet) // onComplete
-                        {
-                            bool interactionsAvailable;
-                            packet >> interactionsAvailable;
-                            if(interactionsAvailable)
-                            {
-                                bit::Output::Debug("Client request interaction options allowed");
-                            }
-                            else
-                            {
-                                bit::Output::Debug("Client request interaction options disallowed");
-                            }
-                            s->hud->interactionMenu->handleInteractionTree(packet);
-                        }
-                    );
+                    requestInteractionsForTile(t->schema.id);
                 }
                 // Else issue command to move to tile
                 else
@@ -216,6 +195,33 @@ std::string StateGamePlay::getServerIpAddress()
 unsigned short StateGamePlay::getServerPort()
 {
     return BIT_SERVER_PORT;
+}
+
+void StateGamePlay::requestInteractionsForTile(unsigned int tileId)
+{
+    StateGamePlay* s = this;
+    serverRequest(
+        [tileId] (bit::ClientPacket& packet) // prepare
+        {
+            packet << sf::Uint32(ClientRequest::GetInteractionOptions);
+            packet << sf::Uint32(tileId);
+        },
+        [tileId, s] (bit::ServerPacket& packet) // onComplete
+        {
+            bool interactionsAvailable;
+            packet >> interactionsAvailable;
+            if(interactionsAvailable)
+            {
+                bit::Output::Debug("Client request interaction options allowed");
+                s->hud->interactionMenu->handleInteractionTree(packet, tileId);
+            }
+            else
+            {
+                bit::Output::Debug("Client request interaction options disallowed");
+                s->hud->interactionMenu->clearChildren();
+            }
+        }
+    );
 }
 
 /**
