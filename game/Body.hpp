@@ -42,14 +42,24 @@ public:
         {
             packet << sf::Uint32(schema.id);
             packet << sf::Uint32(schema.type);
-            return packet << schema.x << schema.y << schema.width << schema.height << schema.illumination;
+            packet << schema.x;
+            packet << schema.y;
+            packet << schema.width;
+            packet << schema.height;
+            packet << schema.illumination;
+            return packet;
         }
 
         friend sf::Packet& operator >>(sf::Packet& packet, Schema &schema)
         {
             packet >> schema.id;
             bit::NetworkHelper::unpackEnum<sf::Uint32, Body::Type>(packet, schema.type);
-            return packet >> schema.x >> schema.y >> schema.width >> schema.height >> schema.illumination;
+            packet >> schema.x;
+            packet >> schema.y;
+            packet >> schema.width;
+            packet >> schema.height;
+            packet >> schema.illumination;
+            return packet;
         }
 	};
 	Schema schema;
@@ -59,6 +69,9 @@ public:
     virtual void update(sf::Time &gameTime);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
+
+    virtual void prepareInteractionTree(bit::ServerPacket &packet);
+    
 };
 
 #endif

@@ -1,8 +1,280 @@
-DIALOG TREE:
-- Dialog occurs between two character or perhaps even two bodies
-- A Dialog can be represented by a dialog tree (directed graph)
+
+// Add interaction categories to Body
+Body
+{
+    Interaction
+    {
+        None = 0,
+        Lockable = 2,
+        Damageable = 4
+    }
+    
+    InteractionLockable
+    {
+        UnlockableWithKey = 2,
+        UnlockableWithBash = 4,
+        ...
+    }
+    
+    // by defualt has no interaction options
+    prepareInteractionTree(packet)
+    {
+    }
+}
+
+// For a subclass that needs to use these
+Chest : Structure
+{
+    // Add types
+    void load(...)
+    {
+        // Add categories
+        interaction = Interaction::Lockable;
+        interactionLockable = UnlockableWithKey | UnlockableWithBash;
+    }
+    
+    // Has a few options
+    {
+        if(schema.isLocked)
+        {
+            // Emulate the hierarchy tree in the packet
+            packet << 1;
+            packet << Interaction::Lockable;
+            packet << 2;
+            packet << InteractionLockable::UnlockableWithKey;
+            packet << InteractionLockable::UnlockableWithBash;
+        }
+    }
+}
 
 
+// Client side the interaciton menu can recursively build the submenu from the packet
+InteractionMenu
+{
+    Labels;
+    InteractionMenu subMenus;
+    
+    buildFromInteractionOptions(Interaction option)
+    {
+        if(option.child.size() > 0)
+        {
+            // Build click label
+            Labels[] = new Label(option::getTitle(option.Type);
+            
+            // Build a submenu
+            foreach (option.child as childOption)
+            {
+                // Build Submenu
+                subMenus[] = new InteractionMenu();
+                subMenus.last().buildFromInteractionOptions(childOption);
+                
+                // When the label is clicked show the submenu of options
+                labels.last.onClick = (){ submenus.last.show(); }
+            }
+        }
+        else
+        {
+            // Leaf option so its on click fires the client side logic for interaction option
+            Labels[] = new Label(Interaction::getTitle(option.Type);
+            Labels.last.onClick = (){ option.onActivate(); };
+        }
+    }
+}
+
+// Add our static titles and client side packet stuff
+Something
+{
+    public static onInteractionChose(Interaction enum)
+    {
+        
+    }
+
+    public static getBaseTitle(Interaction enum)
+    {
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------- SIMPLE ------------------------------------
+
+
+// CLIENTSIDE USAGE IF INTERACTIONS
+InteractionMenu
+{
+    Labels;
+    InteractionMenu subMenus;
+    
+    buildFromInteractionOptions(Interaction option)
+    {
+        if(option.child.size() > 0)
+        {
+            // Build click label
+            Labels[] = new Label(option::getTitle(option.Type);
+            
+            // Build a submenu
+            foreach (option.child as childOption)
+            {
+                // Build Submenu
+                subMenus[] = new InteractionMenu();
+                subMenus.last().buildFromInteractionOptions(childOption);
+                
+                // When the label is clicked show the submenu of options
+                labels.last.onClick = (){ submenus.last.show(); }
+            }
+        }
+        else
+        {
+            // Leaf option so its on click fires the client side logic for interaction option
+            Labels[] = new Label(Interaction::getTitle(option.Type);
+            Labels.last.onClick = (){ option.onActivate(); };
+        }
+    }
+}
+
+
+
+// SERVERSIDE USAGE OF INTERACTIONS
+ObjectFactory
+{
+    create(ObjectType o)
+    {
+        switch(o)
+        {
+            // ...
+            case ObjectType::WoodenChest:
+            {
+                // return a new object that is UnlocakableWithKey, UnlockableWithPick, UnlockableWithBash
+                
+                i new InteractableObject();
+                i.interactableBase = Interaction::BaseType::Lockable;
+                i.interactableLockable = Interaction::Lockable::UnlockableWithKey | Interaction::Lockable::UnlockableWithBash;
+                applyInteractableLgic(i);
+                
+            }
+        }
+    }
+    
+    applyInteractbleLogic(InteractableObject i)
+    {
+        if(bit::contains( i.interactableLockable, Interaction::Lockable::UnlockableWithKey )
+            i.onActivates[Interaction::Type::UnlockableWithKey] = UnlockableWithKey::onActivate;
+            
+        if(bit::contains( i.interactableLockable, Interaction::Lockable::UnlockableWithBash )+
+            i.onActivates[Interaction::Type::UnlockableWithBash] = UnlockableWithBash::onActivate;
+    }
+}
+
+
+
+// SINGLE INTERACTION IMPLEMENTATION EXAMPLE
+
+// 1. Add Class for Server and Client logic
+class UnlockableWithBash : Lockable
+{
+    UnlockableWithBash()
+    {
+        onActivateClientSide = RequestUnlockWithBash();
+    }
+    
+    UnlockWithBash(InteractableObject interactor)
+    {
+        if(interactor->hasBashable())
+        {
+            if(interactor->bash(this))
+            {
+                locked = false
+            }
+        }
+    }
+    
+    RequestUnlockWithBash()
+    {
+        state->serverReqest(
+            function(clientPacket) prepare
+            {
+                clientPacket << this.bodyId;
+            },
+            function (serverPacket) onComplete
+            {
+                serverPacket >> unlocked;
+                if(unlocked)
+                {
+                    serverRequest( // ... getLootInventory );
+                }
+            }
+        );
+    }
+}
+
+// 2. Update Title
+InteractableObject
+{
+    
+
+    public static getTitle(InteractableEnum e)
+    {   
+        switch(e)
+        {
+            ...
+            case UnlockableWithBash:
+                return "Unlock with Bash";
+        }
+    }
+    
+}
+
+Interaction
+{
+    Interaction parent;
+    Vector<Interaction> children;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------- OLD -----------------------------------------------
 
 INTERACTION TREE:
 - When interacting with objects, they need to produce a serious of interaction choices
@@ -37,7 +309,7 @@ INTERACTION TREE:
 IMPLEMENTATION:
 Interactable
 {
-    Interactable()
+    Interactable(tree)
     {
         type = InteractionType::Root;
         parent = null;
@@ -64,8 +336,8 @@ Interactable
 
 Lockable : Interactable
 {
-    Lockable()
-        : Interactable()
+    Lockable(tree)
+        : Interactable(tree)
     {
         tree[InteractionType::Root].tree[InteractionType::Lockable] = this;
     }
@@ -75,8 +347,8 @@ Lockable : Interactable
 
 UnlockableKeyable : Lockable
 {
-    UnlockableKeyable()
-        : Lockable()
+    UnlockableKeyable(tree)
+        : Lockable(tree)
     {
         tree[InteractionType::Root].tree[InteractionType::Lockable].tree[InteractionType::UnlockableKeyable] = this;
         onSelect = std::bind(&UnlockableKeyable::UnlockWithKey, this, std::placeholders::__1, std::placeholders::__2);
@@ -116,34 +388,7 @@ UnlockableKeyable : Lockable
     }
 }
 
-UnlockableBashable : Lockable
-{
-    UnlockableBashable()
-        : Lockable()
-    {
-        tree[InteractionType::Root].tree[InteractionType::Lockable].tree[InteractionType::UnlockableBashable] = this;
-        onSelect = std::bind(&PrepareClientSideUnlockWithBash::UnlockWithBash, this, std::placeholders::__1, std::placeholders::__2);
-    }
-
-    UnlockWithBash(Character c)
-    {
-        if(c.bash(this))
-        {
-            locked = false;
-        }
-    }
-    
-    // CLIENT SIDE
-    PrepareClientSideUnlockWithBash(LevelClient l, Character c)
-    {
-        Command cmd;
-        cmd.type = Command::Type::UnlockWithBash;
-        cmd.pack = [t] (sf::Packet &packet) {
-            // Switch around to work with Tiles if need be
-            packet << sf::Uint32(c->fixedState.id);
-            packet << sf::Uint32(this->fixedState.id);
-        };
-		l->state->commandQueue.push_back(cmd);
+UnlockableBas _back(cmd);
     }
     
     HandleUnlockWithBash(packet)

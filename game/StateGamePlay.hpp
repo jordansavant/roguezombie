@@ -27,9 +27,6 @@ public:
     bit::FrameTimer fps;
 
     // Test Gui
-    sf::Font journalFont;
-    bit::Container* journal;
-    bit::Label* journalEntries;
     Hud* hud;
 
     virtual void load();

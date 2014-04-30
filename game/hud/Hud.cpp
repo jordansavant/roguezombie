@@ -1,6 +1,7 @@
 #include "Hud.hpp"
 #include "Minimap.hpp"
 #include "OptionsBar.hpp"
+#include "Journal.hpp"
 #include "../../ResourcePath.h"
 #include "../../bitengine/Input.hpp"
 #include "../StateGamePlay.hpp"
@@ -10,12 +11,17 @@
 Hud::Hud(StateGamePlay* _state)
     : bit::Container(0, 0, _state->rogueZombieGame->targetResolution.x, _state->rogueZombieGame->targetResolution.y, bit::Element::AnchorType::Top), state(_state)
 {
+    // Assets
     state->rogueZombieGame->spriteLoader->loadSprites(resourcePath() + "interface_01.csv");
     interfaceTexture.loadFromFile(resourcePath() + "interface_01.png");
     interfaceVertexMap.load(&interfaceTexture, sf::PrimitiveType::Quads);
+    journalFont.loadFromFile(resourcePath() + "homespun.ttf");
 
     optionsBar = new OptionsBar(this);
     addChild(optionsBar);
+
+    journal = new Journal(this);
+    addChild(journal);
 
     minimap.load(this);
 }
@@ -28,6 +34,9 @@ void Hud::update(sf::RenderWindow &window, sf::Time &gameTime)
     float scale = bit::Math::roundPowerOf2(state->rogueZombieGame->currentResolutionRatio);
     minimap.setPosition(175 * state->rogueZombieGame->currentResolutionRatioX, 125 * state->rogueZombieGame->currentResolutionRatioY);
     minimap.setScale(scale, scale);
+
+    // Journal
+    journal->updateJournal(window, gameTime);
 }
 
 void Hud::draw(sf::RenderWindow &window, sf::Time &gameTime)
@@ -44,6 +53,8 @@ void Hud::draw(sf::RenderWindow &window, sf::Time &gameTime)
     window.draw(minimap.vertexMap.vertexArray, states);
 
     state->rogueZombieGame->depthTestEnd();
+
+    bit::Container::draw(window, gameTime);
 }
 
 bool Hud::typicalContainerControl(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime)

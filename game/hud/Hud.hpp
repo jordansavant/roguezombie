@@ -9,6 +9,7 @@
 
 class StateGamePlay;
 class OptionsBar;
+class Journal;
 
 class Hud : public bit::Container
 {
@@ -18,9 +19,11 @@ public:
 
     StateGamePlay* state;
     OptionsBar* optionsBar;
+    Journal* journal;
     Minimap minimap;
     sf::Texture interfaceTexture;
     bit::VertexMap interfaceVertexMap;
+    sf::Font journalFont;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 

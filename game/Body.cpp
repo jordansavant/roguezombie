@@ -30,3 +30,7 @@ void Body::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
     packet << schema;
 }
+
+void Body::prepareInteractionTree(bit::ServerPacket &packet)
+{
+}

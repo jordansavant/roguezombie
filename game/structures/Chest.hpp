@@ -39,6 +39,8 @@ public:
     virtual void update(sf::Time &gameTime);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
+
+    virtual void prepareInteractionTree(bit::ServerPacket &packet);
 };
 
 #endif
