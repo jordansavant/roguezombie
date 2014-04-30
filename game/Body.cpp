@@ -33,4 +33,5 @@ void Body::prepareSnapshot(bit::ServerPacket &packet, bool full)
 
 void Body::prepareInteractionTree(bit::ServerPacket &packet)
 {
+    packet << sf::Uint32(0);
 }

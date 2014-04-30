@@ -10,6 +10,7 @@
 class StateGamePlay;
 class OptionsBar;
 class Journal;
+class InteractionMenu;
 
 class Hud : public bit::Container
 {
@@ -20,6 +21,7 @@ public:
     StateGamePlay* state;
     OptionsBar* optionsBar;
     Journal* journal;
+    InteractionMenu* interactionMenu;
     Minimap minimap;
     sf::Texture interfaceTexture;
     bit::VertexMap interfaceVertexMap;

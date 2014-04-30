@@ -17,7 +17,7 @@ public:
     Hud* hud;
     bit::Label* journalEntries;
 
-    void updateJournal(sf::RenderWindow &window, sf::Time &gameTime);
+    virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
 };
 

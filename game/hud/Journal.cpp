@@ -10,6 +10,7 @@
 Journal::Journal(Hud* _hud)
     : bit::Container(0, 50, 500, 200, bit::Element::AnchorType::TopRight), hud(_hud)
 {
+    opacity = 1;
     journalEntries = new bit::Label(0, 0, 0, 0, bit::Element::AnchorType::TopLeft);
     journalEntries->setSfFontSize(24);
     journalEntries->setSfFont(hud->journalFont);
@@ -17,7 +18,7 @@ Journal::Journal(Hud* _hud)
     addChild(journalEntries);
 }
 
-void Journal::updateJournal(sf::RenderWindow &window, sf::Time &gameTime)
+void Journal::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::Container::update(window, gameTime);
 
@@ -55,5 +56,6 @@ void Journal::updateJournal(sf::RenderWindow &window, sf::Time &gameTime)
         }
 
         journalEntries->setSfFontString(entry);
+        journalEntries->opacity = opacity;
     }
 }

@@ -2,6 +2,7 @@
 #include "Minimap.hpp"
 #include "OptionsBar.hpp"
 #include "Journal.hpp"
+#include "InteractionMenu.hpp"
 #include "../../ResourcePath.h"
 #include "../../bitengine/Input.hpp"
 #include "../StateGamePlay.hpp"
@@ -17,11 +18,18 @@ Hud::Hud(StateGamePlay* _state)
     interfaceVertexMap.load(&interfaceTexture, sf::PrimitiveType::Quads);
     journalFont.loadFromFile(resourcePath() + "homespun.ttf");
 
+    lambdaListenToInput = std::bind(&Hud::typicalContainerControl, this, std::placeholders::_1, std::placeholders::_2,  std::placeholders::_3);
+    canHaveFocus = true;
+    isInfocus = true;
+
     optionsBar = new OptionsBar(this);
     addChild(optionsBar);
 
     journal = new Journal(this);
     addChild(journal);
+
+    interactionMenu = new InteractionMenu(this);
+    addChild(interactionMenu);
 
     minimap.load(this);
 }
@@ -35,8 +43,9 @@ void Hud::update(sf::RenderWindow &window, sf::Time &gameTime)
     minimap.setPosition(175 * state->rogueZombieGame->currentResolutionRatioX, 125 * state->rogueZombieGame->currentResolutionRatioY);
     minimap.setScale(scale, scale);
 
-    // Journal
-    journal->updateJournal(window, gameTime);
+    journal->update(window, gameTime);
+    optionsBar->update(window, gameTime);
+    interactionMenu->update(window, gameTime);
 }
 
 void Hud::draw(sf::RenderWindow &window, sf::Time &gameTime)
@@ -60,29 +69,34 @@ void Hud::draw(sf::RenderWindow &window, sf::Time &gameTime)
 bool Hud::typicalContainerControl(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime)
 {
     bit::Container* container = static_cast<bit::Container*>(element);
-        sf::Vector2i pixelPos = sf::Mouse::getPosition(*window);
+    sf::Vector2i pixelPos = sf::Mouse::getPosition(*window);
 
-        bool in = false;
-        for(int i = 0; i < container->childElements.size(); i++)
+    if(!container || !this->state->rogueZombieGame->isInFocus)
+    {
+        return false;
+    }
+
+    bool in = false;
+    for(int i = 0; i < container->childElements.size(); i++)
+    {
+        if(container->childElements[i]->canHaveFocus)
         {
-            if(container->childElements[i]->canHaveFocus)
+            if(container->childElements[i]->contains(pixelPos.x, pixelPos.y))
             {
-                if(container->childElements[i]->contains(pixelPos.x, pixelPos.y))
-                {
-                    in = true;
-                    container->changeFocusedChild(i);
-                    break;
-                }
+                in = true;
+                container->changeFocusedChild(i);
+                break;
             }
         }
+    }
 
-        if(!in)
-        {
-            container->clearFocusedChild();
-        }
+    if(!in)
+    {
+        container->clearFocusedChild();
+    }
 
-        // Never block child input
-        return false;
+    // Never block child input
+    return false;
 }
 
 bool Hud::typicalElementControl(Element* element, sf::RenderWindow* window, sf::Time* gameTime)

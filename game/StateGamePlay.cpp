@@ -14,6 +14,7 @@
 #include "Command.hpp"
 #include "characters/ZombieClient.hpp"
 #include "hud/Hud.hpp"
+#include "hud/InteractionMenu.hpp"
 #include "items/ItemClient.hpp"
 #include <sstream>
 
@@ -96,6 +97,7 @@ bool StateGamePlay::handleInput(sf::Time &gameTime)
             // See if a tile is being hovered over
             if(levelClient->hoveredTile)
             {
+                StateGamePlay* s = this;
                 TileClient* t = levelClient->hoveredTile;
 
                 // If the tile has a body run interactions
@@ -107,7 +109,7 @@ bool StateGamePlay::handleInput(sf::Time &gameTime)
                             packet << sf::Uint32(ClientRequest::GetInteractionOptions);
                             packet << sf::Uint32(t->schema.id);
                         },
-                        [] (bit::ServerPacket& packet) // onComplete
+                        [s] (bit::ServerPacket& packet) // onComplete
                         {
                             bool interactionsAvailable;
                             packet >> interactionsAvailable;
@@ -119,6 +121,7 @@ bool StateGamePlay::handleInput(sf::Time &gameTime)
                             {
                                 bit::Output::Debug("Client request interaction options disallowed");
                             }
+                            s->hud->interactionMenu->handleInteractionTree(packet);
                         }
                     );
                 }

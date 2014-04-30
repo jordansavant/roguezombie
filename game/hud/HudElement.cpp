@@ -9,12 +9,14 @@ HudElement::HudElement(float relativeX, float relativeY, float width, float heig
     : Element(relativeX, relativeY, width, height, anchorType), isActive(false)
 {
     scaleStyle = ScaleStyle::PowerOfTwo;
+    canHaveFocus = true;
 }
 
 HudElement::HudElement(float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput)
     : Element(relativeX, relativeY, width, height, anchorType, lambdaListenToInput), isActive(false)
 {
     scaleStyle = ScaleStyle::PowerOfTwo;
+    canHaveFocus = true;
 }
 
 void HudElement::load(Hud* _hud, std::string &spritename)

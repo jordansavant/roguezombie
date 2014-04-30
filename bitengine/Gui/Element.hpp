@@ -56,6 +56,7 @@ namespace bit
         bool isInfocus;
         bool canHaveFocus;
         std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput;
+        std::function<void(Element*)> onActivate;
         std::deque<Effect*> effectQueue;
         std::list<Effect*> concurrentEffects;
         sf::RectangleShape debugRect; // debug

@@ -34,16 +34,16 @@ void Chest::prepareSnapshot(bit::ServerPacket &packet, bool full)
 
 void Chest::prepareInteractionTree(bit::ServerPacket &packet)
 {
-    Structure::prepareInteractionTree(packet);
-
     if(schema.isLocked)
     {
+        packet << sf::Uint32(3);
         packet << sf::Uint32(Interaction::Type::UnlockableWithKey);
         packet << sf::Uint32(Interaction::Type::UnlockableWithLockpick);
         packet << sf::Uint32(Interaction::Type::UnlockableWithBash);
     }
     else
     {
+        packet << sf::Uint32(2);
         packet << sf::Uint32(Interaction::Type::LockableWithKey);
         packet << sf::Uint32(Interaction::Type::LockableWithLockpick);
     }
