@@ -30,15 +30,17 @@ void HudMenu::update(sf::RenderWindow &window, sf::Time &gameTime)
 void HudMenu::hide()
 {
     canHaveFocus = false;
-    opacity = 0;
     isShown = false;
+    clearEffects();
+    immediateEffect(new bit::FadeEffect(100, 0));
 }
 
 void HudMenu::show()
 {
     canHaveFocus = true;
-    opacity = 1;
     isShown = true;
+    clearEffects();
+    immediateEffect(new bit::FadeEffect(100, 1));
 }
 
 void HudMenu::toggle()

@@ -37,7 +37,12 @@ Hud::Hud(StateGamePlay* _state)
     addChild(inventory);
     submenus.push_back(inventory);
 
-    hideAllMenus();
+    // Initialize all menus
+    for(unsigned int i=0; i < submenus.size(); i++)
+    {
+        submenus[i]->canHaveFocus = false;
+        submenus[i]->opacity = 0;
+    }
 }
 
 void Hud::update(sf::RenderWindow &window, sf::Time &gameTime)
