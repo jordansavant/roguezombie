@@ -23,7 +23,8 @@ bit::ClientServerState::ClientServerState(StateStack &stack, Game* game, bool is
       clientTimeout(sf::seconds(2)),
       tickTimer(1.0f / BIT_SERVER_TICK_FPS),
       awaitingDisconnect(false),
-      disconnectTimer(1)
+      disconnectTimer(1),
+      requestCounter(0)
 {
 }
 
@@ -197,7 +198,7 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, bit::ServerPacke
                 {
                     requests[requestId].onComplete(packet);
                 }
-                requests.erase(requests.begin() + requestId);
+                requests.erase(requestId);
 
                 break;
 		    }
@@ -254,9 +255,9 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, bit::ServerPacke
 void bit::ClientServerState::serverRequest(std::function<void(ClientPacket&)> prepare, std::function<void(ServerPacket&)> onComplete)
 {
     Request request;
-    request.id = requests.size();
+    request.id = ++requestCounter;
     request.onComplete = onComplete;
-    requests.push_back(request);
+    requests[request.id] = request;
 
     bit::ClientPacket packet;
 	packet << static_cast<sf::Uint32>(Server::ClientPacketType::Request);

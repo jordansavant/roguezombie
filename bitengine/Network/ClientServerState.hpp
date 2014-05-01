@@ -7,6 +7,7 @@
 #include "../Game/State.hpp"
 #include "../Game/GameTimer.hpp"
 #include <functional>
+#include <map>
 
 namespace bit
 {
@@ -64,7 +65,8 @@ namespace bit
 	    sf::Clock clock;
         bool awaitingDisconnect;
         GameTimer disconnectTimer;
-        std::vector<Request> requests;
+        std::map<unsigned int, Request> requests;
+        unsigned int requestCounter;
 
         virtual Server* newServer() = 0;
 
