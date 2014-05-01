@@ -8,9 +8,8 @@
 #include "../mission/MissionClient.hpp"
 
 Journal::Journal(Hud* _hud)
-    : bit::Container(-50, 50, 300, 500, bit::Element::AnchorType::TopRight), hud(_hud)
+    : HudMenu(_hud)
 {
-    opacity = 1;
     journalEntries = new bit::Label(0, 0, 0, 0, bit::Element::AnchorType::TopLeft);
     journalEntries->setSfFontSize(24);
     journalEntries->setSfFont(hud->journalFont);
@@ -20,10 +19,9 @@ Journal::Journal(Hud* _hud)
 
 void Journal::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
-    bit::Container::update(window, gameTime);
+    HudMenu::update(window, gameTime);
 
     LevelClient* levelClient = hud->state->levelClient;
-
     if(levelClient->playerCharacter)
     {
         std::string entry("Journal\n");
@@ -46,15 +44,6 @@ void Journal::update(sf::RenderWindow &window, sf::Time &gameTime)
                     entry += "  - " + JournalEntry::getTitle(mc->schema.journalEntry) + "\n";
             }
         }
-
-        entry += "\n\nItems\n";
-        for(auto iterator = levelClient->playerCharacter->backpackClient.itemClients.begin(); iterator != levelClient->playerCharacter->backpackClient.itemClients.end(); iterator++)
-        {
-            // Level 1
-            ItemClient* i = &iterator->second;
-            entry += "- " + Item::getTitle(i->schema.type) + "\n";
-        }
-
         journalEntries->setSfFontString(entry);
         journalEntries->opacity = opacity;
     }

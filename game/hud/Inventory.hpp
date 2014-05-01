@@ -1,6 +1,6 @@
 #pragma once
-#ifndef RZ_JOURNAL_H
-#define RZ_JOURNAL_H
+#ifndef RZ_INVENTORY_H
+#define RZ_INVENTORY_H
 
 #include "HudMenu.hpp"
 #include "SFML/Graphics.hpp"
@@ -9,13 +9,13 @@
 
 class Hud;
 
-class Journal : public HudMenu
+class Inventory : public HudMenu
 {
 public:
 
-    Journal(Hud* hud);
+    Inventory(Hud* hud);
 
-    bit::Label* journalEntries;
+    bit::Label* entries;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 

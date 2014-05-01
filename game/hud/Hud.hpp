@@ -8,8 +8,10 @@
 #include "Minimap.hpp"
 
 class StateGamePlay;
+class HudMenu;
 class OptionsBar;
 class Journal;
+class Inventory;
 class InteractionMenu;
 
 class Hud : public bit::Container
@@ -19,8 +21,10 @@ public:
     Hud(StateGamePlay* state);
 
     StateGamePlay* state;
+    std::vector<HudMenu*> submenus;
     OptionsBar* optionsBar;
     Journal* journal;
+    Inventory* inventory;
     InteractionMenu* interactionMenu;
     Minimap minimap;
     sf::Texture interfaceTexture;
@@ -30,6 +34,12 @@ public:
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
 	void draw(sf::RenderWindow &window, sf::Time &gameTime);
+
+    void hideAllMenus();
+
+    void activateJournal();
+
+    void activateInventory();
 
     bool typicalContainerControl(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime);
 

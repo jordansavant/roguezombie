@@ -41,7 +41,7 @@ void bit::Container::update(sf::RenderWindow &window, sf::Time &gameTime)
 
 void bit::Container::updateInput(sf::RenderWindow &window, sf::Time &gameTime)
 {
-    if(isInfocus || !parentElement)
+    if(opacity > 0 && isInfocus || !parentElement)
     {
         // If I have input, all children cannot listen
         // This prevents newly focused children from reacting immediately

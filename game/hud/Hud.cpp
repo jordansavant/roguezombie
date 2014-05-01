@@ -2,6 +2,7 @@
 #include "Minimap.hpp"
 #include "OptionsBar.hpp"
 #include "Journal.hpp"
+#include "Inventory.hpp"
 #include "InteractionMenu.hpp"
 #include "../../ResourcePath.h"
 #include "../../bitengine/Input.hpp"
@@ -18,16 +19,25 @@ Hud::Hud(StateGamePlay* _state)
     interfaceVertexMap.load(&interfaceTexture, sf::PrimitiveType::Quads);
     journalFont.loadFromFile(resourcePath() + "homespun.ttf");
 
+    // Special Menus
     optionsBar = new OptionsBar(this);
     addChild(optionsBar);
-
-    journal = new Journal(this);
-    addChild(journal);
 
     interactionMenu = new InteractionMenu(this);
     addChild(interactionMenu);
 
     minimap.load(this);
+
+    // Hud Menus
+    journal = new Journal(this);
+    addChild(journal);
+    submenus.push_back(journal);
+    
+    inventory = new Inventory(this);
+    addChild(inventory);
+    submenus.push_back(inventory);
+
+    hideAllMenus();
 }
 
 void Hud::update(sf::RenderWindow &window, sf::Time &gameTime)
@@ -57,6 +67,42 @@ void Hud::draw(sf::RenderWindow &window, sf::Time &gameTime)
 
     bit::Container::draw(window, gameTime);
 }
+
+
+void Hud::hideAllMenus()
+{
+    for(unsigned int i=0; i < submenus.size(); i++)
+    {
+        submenus[i]->hide();
+    }
+}
+
+void Hud::activateJournal()
+{
+    if(!journal->isShown)
+    {
+        hideAllMenus();
+        journal->show();
+    }
+    else
+    {
+        hideAllMenus();
+    }
+}
+
+void Hud::activateInventory()
+{
+    if(!inventory->isShown)
+    {
+        hideAllMenus();
+        inventory->show();
+    }
+    else
+    {
+        hideAllMenus();
+    }
+}
+
 
 bool Hud::typicalContainerControl(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime)
 {
