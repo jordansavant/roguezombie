@@ -10,17 +10,13 @@
 #include "../RogueZombieGame.hpp"
 
 Hud::Hud(StateGamePlay* _state)
-    : bit::Container(0, 0, _state->rogueZombieGame->targetResolution.x, _state->rogueZombieGame->targetResolution.y, bit::Element::AnchorType::Top), state(_state)
+    : bit::Container(0, 0, _state->rogueZombieGame->targetResolution.x, _state->rogueZombieGame->targetResolution.y, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, this, std::placeholders::_1, std::placeholders::_2,  std::placeholders::_3)), state(_state)
 {
     // Assets
     state->rogueZombieGame->spriteLoader->loadSprites(resourcePath() + "interface_01.csv");
     interfaceTexture.loadFromFile(resourcePath() + "interface_01.png");
     interfaceVertexMap.load(&interfaceTexture, sf::PrimitiveType::Quads);
     journalFont.loadFromFile(resourcePath() + "homespun.ttf");
-
-    lambdaListenToInput = std::bind(&Hud::typicalContainerControl, this, std::placeholders::_1, std::placeholders::_2,  std::placeholders::_3);
-    canHaveFocus = true;
-    isInfocus = true;
 
     optionsBar = new OptionsBar(this);
     addChild(optionsBar);
@@ -42,10 +38,6 @@ void Hud::update(sf::RenderWindow &window, sf::Time &gameTime)
     float scale = bit::Math::roundPowerOf2(state->rogueZombieGame->currentResolutionRatio);
     minimap.setPosition(175 * state->rogueZombieGame->currentResolutionRatioX, 125 * state->rogueZombieGame->currentResolutionRatioY);
     minimap.setScale(scale, scale);
-
-    journal->update(window, gameTime);
-    optionsBar->update(window, gameTime);
-    interactionMenu->update(window, gameTime);
 }
 
 void Hud::draw(sf::RenderWindow &window, sf::Time &gameTime)

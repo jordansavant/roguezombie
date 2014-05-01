@@ -24,8 +24,6 @@ namespace bit
 
         virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
-        virtual void updatePosition(sf::RenderWindow &window, sf::Time &gameTime);
-
         virtual void updateInput(sf::RenderWindow &window, sf::Time &gameTime);
 
         virtual bool listenForInput(sf::RenderWindow &window, sf::Time &gameTime);

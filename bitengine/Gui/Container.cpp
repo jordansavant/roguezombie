@@ -29,23 +29,19 @@ bit::Container::~Container()
 
 void bit::Container::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
-    updatePosition(window, gameTime);
-    updateInput(window, gameTime);
-}
-
-void bit::Container::updatePosition(sf::RenderWindow &window, sf::Time &gameTime)
-{
-    Element::updatePosition(window, gameTime);
+    Element::update(window, gameTime);
 
     for(unsigned int i = 0; i < childElements.size(); i++)
     {
-        childElements[i]->updatePosition(window, gameTime);
+        childElements[i]->update(window, gameTime);
     }
+
+    updateInput(window, gameTime);
 }
 
 void bit::Container::updateInput(sf::RenderWindow &window, sf::Time &gameTime)
 {
-    if(isInfocus)
+    if(isInfocus || !parentElement)
     {
         // If I have input, all children cannot listen
         // This prevents newly focused children from reacting immediately
@@ -70,22 +66,22 @@ bool bit::Container::listenForInput(sf::RenderWindow &window, sf::Time &gameTime
 void bit::Container::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
     //Element::draw(window, gameTime, isGamePaused);
-    //debugRect.setPosition(left, top);
-    //debugRect.setFillColor(sf::Color(230, 0, 255, bit::Math::clamp(255 * opacity, 0, 80)));
-    //debugRect.setSize(sf::Vector2f(targetWidth, targetHeight));
-    //debugRect.setOutlineColor(sf::Color(255, 255, 255, bit::Math::clamp(255 * opacity, 0, 80)));
-    //debugRect.setScale(elementScale, elementScale);
-    //
-    //if(isInfocus)
-    //{
-    //    debugRect.setOutlineThickness(2);
-    //}
-    //else
-    //{
-    //    debugRect.setOutlineThickness(0);
-    //}
-    //
-    //window.draw(debugRect);
+    debugRect.setPosition(left, top);
+    debugRect.setFillColor(sf::Color(230, 0, 255, bit::Math::clamp(255 * opacity, 0, 80)));
+    debugRect.setSize(sf::Vector2f(targetWidth, targetHeight));
+    debugRect.setOutlineColor(sf::Color(255, 255, 255, bit::Math::clamp(255 * opacity, 0, 80)));
+    debugRect.setScale(elementScale, elementScale);
+    
+    if(isInfocus)
+    {
+        debugRect.setOutlineThickness(2);
+    }
+    else
+    {
+        debugRect.setOutlineThickness(0);
+    }
+    
+    window.draw(debugRect);
 
     for(unsigned int i = 0; i < childElements.size(); i++)
     {

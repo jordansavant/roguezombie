@@ -91,7 +91,7 @@ bit::Element* bit::Element::clearEffects()
     return this;
 }
 
-void bit::Element::updatePosition(sf::RenderWindow &window, sf::Time &gameTime)
+void bit::Element::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     elementScale = calculateViewRatio();
 
