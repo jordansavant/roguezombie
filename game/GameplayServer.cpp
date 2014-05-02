@@ -237,15 +237,11 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
             unsigned int tileId;
             packet >> tileId;
             Tile* t = player->level->getTileById(tileId);
+
             if(t && t->body)
-            {
-                responsePacket << true;
                 t->body->prepareInteractionTree(responsePacket);
-            }
             else
-            {
-                responsePacket << false;
-            }
+                responsePacket << sf::Uint32(0);
 
             break;
         }

@@ -208,18 +208,8 @@ void StateGamePlay::requestInteractionsForTile(unsigned int tileId)
         },
         [tileId, s] (bit::ServerPacket& packet) // onComplete
         {
-            bool interactionsAvailable;
-            packet >> interactionsAvailable;
-            if(interactionsAvailable)
-            {
-                bit::Output::Debug("Client request interaction options allowed");
-                s->hud->interactionMenu->handleInteractionTree(packet, tileId);
-            }
-            else
-            {
-                bit::Output::Debug("Client request interaction options disallowed");
-                s->hud->interactionMenu->clearChildren();
-            }
+            bit::Output::Debug("Client request interaction options received");
+            s->hud->interactionMenu->handleInteractionTree(packet, tileId);
         }
     );
 }

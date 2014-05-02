@@ -21,10 +21,7 @@ bit::Container::Container(float relativeX, float relativeY, float width, float h
 
 bit::Container::~Container()
 {
-    for(unsigned int i = 0; i < childElements.size(); i++)
-    {
-        delete childElements[i];
-    }
+    clearChildren();
 }
 
 void bit::Container::update(sf::RenderWindow &window, sf::Time &gameTime)
@@ -168,6 +165,7 @@ void bit::Container::previousChild()
 
 void bit::Container::clearChildren()
 {
+    clearFocusedChild();
     for(unsigned int i = 0; i < childElements.size(); i++)
     {
         delete childElements[i];

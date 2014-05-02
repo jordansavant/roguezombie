@@ -12,7 +12,7 @@
 #include <sstream>
 
 TileClient::TileClient()
-    : schema(), level(NULL), sprite(NULL), quadIndex(0), lastSnapshotId(0)
+    : schema(), level(NULL), sprite(NULL), quadIndex(0), lastSnapshotId(0), renderX(0), renderY(0)
 {
 }
 
@@ -36,9 +36,11 @@ void TileClient::clientUpdate(sf::Time &gameTime)
     sprite->applyToQuad(&level->vertexMap_01.vertexArray[quadIndex]);
 
     // Position
-    sf::Vector2f isoPosition = bit::VectorMath::normalToIsometric(schema.x, schema.y);
     bit::Vertex3* quad = &level->vertexMap_01.vertexArray[quadIndex];
-    bit::VertexHelper::positionQuad(quad, isoPosition.x - schema.width, isoPosition.y, 0, 64, 32);
+    sf::Vector2f isoPosition = bit::VectorMath::normalToIsometric(schema.x, schema.y);
+    renderX = isoPosition.x - schema.width;
+    renderY = isoPosition.y;
+    bit::VertexHelper::positionQuad(quad, renderX, renderY, 0, 64, 32);
 
     // Test Mouse translation
     float mx = std::floor((float)level->mousePositionInWorld.x / (float)schema.width);

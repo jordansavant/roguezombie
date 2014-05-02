@@ -25,6 +25,7 @@ public:
     bit::Sprite* sprite;
     unsigned int quadIndex;
     unsigned int lastSnapshotId;
+    float renderX, renderY;
 
     void clientLoad(LevelClient* level);
 

@@ -16,6 +16,7 @@ public:
     InteractionMenu(Hud* hud);
 
     Hud* hud;
+    bool isActive;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
