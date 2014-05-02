@@ -28,20 +28,20 @@ Hud::Hud(StateGamePlay* _state)
     addChild(interactionMenu);
 
     lootMenu = new LootMenu(this);
-    addChild(interactionMenu);
+    addChild(lootMenu);
 
     minimap.load(this);
 
     // Hud Menus
     journal = new Journal(this);
     addChild(journal);
-    submenus.push_back(journal);
     
     inventory = new Inventory(this);
     addChild(inventory);
-    submenus.push_back(inventory);
 
     // Initialize all menus
+    submenus.push_back(inventory);
+    submenus.push_back(journal);
     for(unsigned int i=0; i < submenus.size(); i++)
     {
         submenus[i]->canHaveFocus = false;
