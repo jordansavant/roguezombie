@@ -204,11 +204,6 @@ void Character::checkMissions()
     }
 }
 
-void Character::addItemToInventory(Item* item)
-{
-    inventory->addItem(item);
-}
-
 void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
     // Body
@@ -228,12 +223,5 @@ void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
             packet << sf::Uint32(missions[i]->schema.id);
             missions[i]->prepareSnapshot(packet);
         }
-    }
-
-    // Items
-    packet << full;
-    if(full)
-    {
-        inventory->prepareSnapshot(packet);
     }
 }

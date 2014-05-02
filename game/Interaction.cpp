@@ -6,7 +6,7 @@ std::string Interaction::getTitle(Type type)
     switch(type)
     {
         default:
-            return "";
+            return "(Missing Interaction Label)";
         case Interaction::Type::LockWithKey:
             return "Lock with key";
         case Interaction::Type::LockWithLockpick:
@@ -17,5 +17,9 @@ std::string Interaction::getTitle(Type type)
             return "Unlock with lockpick";
         case Interaction::Type::UnlockWithBash:
             return "Unlock with bash";
+        case Interaction::Type::OpenInventory:
+            return "Open";
+        case Interaction::Type::CloseInventory:
+            return "Close";
     }
 }

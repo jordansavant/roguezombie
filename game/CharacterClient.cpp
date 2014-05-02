@@ -1,7 +1,7 @@
 #include "CharacterClient.hpp"
 
 CharacterClient::CharacterClient()
-    : schema(), inventoryClient()
+    : schema()
 {
 }
 
@@ -31,14 +31,6 @@ void CharacterClient::handleSnapshot(bit::ServerPacket &packet, bool full)
                 missionClients[missionId].handleSnapshot(packet);
             }
         }
-    }
-
-    // Item Clientside
-    bool hasBackpack;
-    packet >> hasBackpack;
-    if(hasBackpack)
-    {
-        inventoryClient.handleSnapshot(packet);
     }
 }
 

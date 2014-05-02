@@ -10,7 +10,6 @@
 #include "../bitengine/Network.hpp"
 #include <map>
 #include "mission/MissionClient.hpp"
-#include "items/ItemClient.hpp"
 
 class CharacterClient : public BodyClient
 {
@@ -20,7 +19,6 @@ public:
 
 	Character::Schema schema;
     std::map<unsigned int, MissionClient> missionClients;
-    ItemClient inventoryClient;
 
     virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 

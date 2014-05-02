@@ -26,8 +26,10 @@ void Chest::update(sf::Time &gameTime)
     Structure::update(gameTime);
 }
 
-void Chest::handleInteraction(Interaction::Type interaction, Body* interactor)
+void Chest::handleInteraction(Interaction::Type interaction, Body* interactor, bit::ServerPacket &responsePacket)
 {
+    Structure::handleInteraction(interaction, interactor, responsePacket);
+
     switch(interaction)
     {
         case Interaction::Type::UnlockWithKey:
@@ -42,7 +44,7 @@ void Chest::handleInteraction(Interaction::Type interaction, Body* interactor)
         {
             schema.isLocked = true;
             break;
-        };
+        }
     }
 }
 
@@ -65,7 +67,8 @@ void Chest::prepareInteractionTree(bit::ServerPacket &packet)
     }
     else
     {
-        packet << sf::Uint32(2);
+        packet << sf::Uint32(3);
+        packet << sf::Uint32(Interaction::Type::OpenInventory);
         packet << sf::Uint32(Interaction::Type::LockWithKey);
         packet << sf::Uint32(Interaction::Type::LockWithLockpick);
     }

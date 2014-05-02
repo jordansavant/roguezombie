@@ -13,6 +13,7 @@ class OptionsBar;
 class Journal;
 class Inventory;
 class InteractionMenu;
+class LootMenu;
 
 class Hud : public bit::Container
 {
@@ -26,6 +27,7 @@ public:
     Journal* journal;
     Inventory* inventory;
     InteractionMenu* interactionMenu;
+    LootMenu* lootMenu;
     Minimap minimap;
     sf::Texture interfaceTexture;
     bit::VertexMap interfaceVertexMap;

@@ -9,6 +9,7 @@
 #include "structures/Door.hpp"
 #include "structures/Chest.hpp"
 #include "levels/Interior.hpp"
+#include "items/Item.hpp"
 #include "GameplayServer.hpp"
 #include "SFML/Network.hpp"
 #include "../bitengine/Network.hpp"
@@ -95,45 +96,47 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
             {
                 case Interior::Spawn::Wall:
                 {
-                    Wall* w = new Wall();
-                    w->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
-                    walls.push_back(w);
+                    Wall* wall = new Wall();
+                    wall->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                    walls.push_back(wall);
                     break;
                 }
                 case Interior::Spawn::Zombie:
                 {
-                    Zombie* z = new Zombie();
-                    z->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
-                    zombies.push_back(z);
+                    Zombie* zombie = new Zombie();
+                    zombie->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                    zombies.push_back(zombie);
                     break;
                 }
                 case Interior::Spawn::Ogre:
                 {
-                    Ogre* o = new Ogre();
-                    o->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
-                    ogres.push_back(o);
+                    Ogre* ogre = new Ogre();
+                    ogre->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                    ogres.push_back(ogre);
                     break;
                 }
                 case Interior::Spawn::Light:
                 {
                     sf::Color c = sf::Color::Red;
-                    Light* l = new Light();
-                    l->load(this, t->schema.x, t->schema.y, 4, c, .66);
-                    lights.push_back(l);
+                    Light* light = new Light();
+                    light->load(this, t->schema.x, t->schema.y, 4, c, .66);
+                    lights.push_back(light);
                     break;
                 }
                 case Interior::Spawn::Door:
                 {
-                    Door* d = new Door();
-                    d->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
-                    doors.push_back(d);
+                    Door* door = new Door();
+                    door->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                    doors.push_back(door);
                     break;
                 }
                 case Interior::Spawn::Chest:
                 {
-                    Chest* d = new Chest();
-                    d->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
-                    chests.push_back(d);
+                    Chest* chest = new Chest();
+                    chest->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                    chest->addItemToInventory(Item::create(Item::Type::HardHat));
+                    chests.push_back(chest);
+
                     break;
                 }
                 case Interior::Spawn::PortalTo2:

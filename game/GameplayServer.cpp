@@ -225,7 +225,7 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
             Tile* t = player->level->getTileById(tileID);
             if(t && t->body)
             {
-                t->body->handleInteraction(interaction, player->character);
+                t->body->handleInteraction(interaction, player->character, responsePacket);
             }
 
             break;

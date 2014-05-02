@@ -7,6 +7,7 @@
 #include "../bitengine/Graphics.hpp"
 #include "../bitengine/Gui.hpp"
 #include "Command.hpp"
+#include "Interaction.hpp"
 
 class LevelClient;
 class RogueZombieGame;
@@ -42,6 +43,8 @@ public:
     virtual void drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera);
 
     void requestInteractionsForTile(unsigned int tileId);
+
+    void handleInteractionResponse(unsigned int tileId, Interaction::Type interaction, bit::ServerPacket &packet);
 
 protected:
 

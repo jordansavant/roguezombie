@@ -92,8 +92,6 @@ public:
 
     void assignMission(Mission* mission);
 
-    void addItemToInventory(Item* item);
-
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 
 protected:

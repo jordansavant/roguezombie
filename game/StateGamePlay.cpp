@@ -15,6 +15,7 @@
 #include "characters/ZombieClient.hpp"
 #include "hud/Hud.hpp"
 #include "hud/InteractionMenu.hpp"
+#include "hud/LootMenu.hpp"
 #include "items/ItemClient.hpp"
 #include <sstream>
 
@@ -214,6 +215,37 @@ void StateGamePlay::requestInteractionsForTile(unsigned int tileId)
     );
 }
 
+void StateGamePlay::handleInteractionResponse(unsigned int tileId, Interaction::Type interaction, bit::ServerPacket &packet)
+{
+    switch(interaction)
+    {
+        case Interaction::Type::UnlockWithKey:
+        case Interaction::Type::UnlockWithLockpick:
+        case Interaction::Type::UnlockWithBash:
+        case Interaction::Type::LockWithKey:
+        case Interaction::Type::LockWithLockpick:
+        {
+            requestInteractionsForTile(tileId);
+            break;
+        }
+        case Interaction::Type::OpenInventory:
+        {
+            bool givenAccess;
+            packet >> givenAccess;
+
+            if(givenAccess)
+            {
+                hud->lootMenu->handleInventorySnapshot(packet, tileId);
+            }
+            else
+            {
+                //hud->queueMessage("Cannot access inventory.");
+            }
+
+            break;
+        }
+    }
+}
 /**
  * Packet handling
  */

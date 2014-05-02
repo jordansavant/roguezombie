@@ -65,7 +65,7 @@ void InteractionMenu::handleInteractionTree(bit::ServerPacket &packet, unsigned 
                     packet << sf::Uint32(tileIdx);
                 },
                 [itx, tileIdx, mx] (bit::ServerPacket &packet) {
-                    mx->hud->state->requestInteractionsForTile(tileIdx);
+                    mx->hud->state->handleInteractionResponse(tileIdx, itx, packet);
                 }
             );
         };

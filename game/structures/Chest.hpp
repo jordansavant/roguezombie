@@ -39,7 +39,7 @@ public:
 
     virtual void update(sf::Time &gameTime);
 
-    virtual void handleInteraction(Interaction::Type interaction, Body* interactor);
+    virtual void handleInteraction(Interaction::Type interaction, Body* interactor, bit::ServerPacket &responsePacket);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 

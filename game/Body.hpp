@@ -29,6 +29,7 @@ public:
     Level* level;
     bool blockFoV;
     Item* inventory;
+    Body* inventoryAccessor;
 
 	struct Schema
 	{
@@ -73,7 +74,9 @@ public:
 
     virtual void update(sf::Time &gameTime);
 
-    virtual void handleInteraction(Interaction::Type interaction, Body* interactor);
+    void addItemToInventory(Item* item);
+
+    virtual void handleInteraction(Interaction::Type interaction, Body* interactor, bit::ServerPacket &responsePacket);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 

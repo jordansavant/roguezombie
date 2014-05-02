@@ -77,7 +77,7 @@ void Item::packIdHierarchy(bit::ServerPacket &packet)
 void Item::onAddToNewParent()
 {
     Body* b = getParentBody();
-    if(b->schema.type = Body::Type::Character)
+    if(b->schema.type == Body::Type::Character)
     {
         Character* c = static_cast<Character*>(b);
         if(c->schema.isPlayerCharacter)

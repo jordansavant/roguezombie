@@ -4,6 +4,7 @@
 #include "Journal.hpp"
 #include "Inventory.hpp"
 #include "InteractionMenu.hpp"
+#include "LootMenu.hpp"
 #include "../../ResourcePath.h"
 #include "../../bitengine/Input.hpp"
 #include "../StateGamePlay.hpp"
@@ -24,6 +25,9 @@ Hud::Hud(StateGamePlay* _state)
     addChild(optionsBar);
 
     interactionMenu = new InteractionMenu(this);
+    addChild(interactionMenu);
+
+    lootMenu = new LootMenu(this);
     addChild(interactionMenu);
 
     minimap.load(this);

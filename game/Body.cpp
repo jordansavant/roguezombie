@@ -10,7 +10,7 @@
 #include "items/Item.hpp"
 
 Body::Body()
-    : level(NULL), blockFoV(true), schema(), inventory(NULL)
+    : level(NULL), blockFoV(true), schema(), inventory(NULL), inventoryAccessor(NULL)
 {
 }
 
@@ -38,13 +38,47 @@ void Body::update(sf::Time &gameTime)
 {
 }
 
-void Body::handleInteraction(Interaction::Type interaction, Body* interactor)
+void Body::addItemToInventory(Item* item)
 {
+    inventory->addItem(item);
+}
+
+void Body::handleInteraction(Interaction::Type interaction, Body* interactor, bit::ServerPacket &responsePacket)
+{
+    switch(interaction)
+    {
+        case Interaction::Type::OpenInventory:
+        {
+            if(inventoryAccessor && inventoryAccessor != interactor)
+            {
+                responsePacket << false;
+            }
+            else
+            {
+                inventoryAccessor = interactor;
+                responsePacket << true;
+                inventory->prepareSnapshot(responsePacket);
+            }
+            break;
+        }
+        case Interaction::Type::CloseInventory:
+        {
+            inventoryAccessor = NULL;
+            break;
+        }
+    }
 }
 
 void Body::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
     packet << schema;
+
+    // Items
+    packet << full;
+    if(full)
+    {
+        inventory->prepareSnapshot(packet);
+    }
 }
 
 void Body::prepareInteractionTree(bit::ServerPacket &packet)
