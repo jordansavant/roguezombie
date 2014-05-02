@@ -14,6 +14,7 @@ public:
         UnlockWithKey,
         UnlockWithLockpick,
         UnlockWithBash,
+        AccessInventory,
     };
 
     static std::string getTitle(Type type);

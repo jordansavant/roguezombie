@@ -15,7 +15,7 @@
 #include "items/Item.hpp"
 
 Character::Character()
-    : Body(), moveTimer(.75f), schema(), backpack(NULL)
+    : Body(), moveTimer(.75f), schema()
 {
 }
 
@@ -25,8 +25,6 @@ Character::~Character()
     {
         delete missions[i];
     }
-
-    delete backpack;
 }
 
 void Character::load(Level* _level, unsigned int _id, Type _type, float _x, float _y, float _width, float _height)
@@ -36,10 +34,6 @@ void Character::load(Level* _level, unsigned int _id, Type _type, float _x, floa
     schema.type = _type;
     schema.maxHealth = 100;
 	schema.health = 100;
-
-    backpack = Item::create(Item::Type::Backpack);
-    backpack->parentCharacter = this;
-    backpack->schema.id = level->server->getNextItemId();
 
     moveToPosition(_x, _y);
 }
@@ -212,7 +206,7 @@ void Character::checkMissions()
 
 void Character::addItemToInventory(Item* item)
 {
-    backpack->addItem(item);
+    inventory->addItem(item);
 }
 
 void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
@@ -240,6 +234,6 @@ void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
     packet << full;
     if(full)
     {
-        backpack->prepareSnapshot(packet);
+        inventory->prepareSnapshot(packet);
     }
 }

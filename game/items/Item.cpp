@@ -3,13 +3,14 @@
 #include "../../bitengine/Math.hpp"
 #include "../../bitengine/Network.hpp"
 #include "../ServerEvent.hpp"
+#include "../Body.hpp"
 #include "../Character.hpp"
 #include "../Player.hpp"
 #include "../Level.hpp"
 #include "../GameplayServer.hpp"
 
 Item::Item()
-    : schema(), parentItem(NULL), parentCharacter(NULL)
+    : schema(), parentItem(NULL), parentBody(NULL)
 {
 }
 
@@ -41,14 +42,14 @@ void Item::addItem(Item* item)
     }
 }
 
-Character* Item::getParentCharacter()
+Body* Item::getParentBody()
 {
     if(parentItem)
     {
-        return parentItem->getParentCharacter();
+        return parentItem->getParentBody();
     }
 
-    return parentCharacter;
+    return parentBody;
 }
 
 // First elements are highest parents
@@ -75,10 +76,14 @@ void Item::packIdHierarchy(bit::ServerPacket &packet)
 
 void Item::onAddToNewParent()
 {
-    Character* c = getParentCharacter();
-    if(c->schema.isPlayerCharacter)
+    Body* b = getParentBody();
+    if(b->schema.type = Body::Type::Character)
     {
-        c->level->server->sendEventToClient(*c->schema.player->client, std::bind(&Item::prepareServerEventPacket_itemAdded, this, std::placeholders::_1));
+        Character* c = static_cast<Character*>(b);
+        if(c->schema.isPlayerCharacter)
+        {
+            c->level->server->sendEventToClient(*c->schema.player->client, std::bind(&Item::prepareServerEventPacket_itemAdded, this, std::placeholders::_1));
+        }
     }
 }
 

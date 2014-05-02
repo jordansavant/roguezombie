@@ -1,7 +1,7 @@
 #include "CharacterClient.hpp"
 
 CharacterClient::CharacterClient()
-    : schema(), backpackClient()
+    : schema(), inventoryClient()
 {
 }
 
@@ -38,7 +38,7 @@ void CharacterClient::handleSnapshot(bit::ServerPacket &packet, bool full)
     packet >> hasBackpack;
     if(hasBackpack)
     {
-        backpackClient.handleSnapshot(packet);
+        inventoryClient.handleSnapshot(packet);
     }
 }
 
@@ -71,16 +71,16 @@ void CharacterClient::handleServerEventPacket_itemAdded(bit::ServerPacket &packe
     unsigned int depth;
     packet >> depth;
 
-    unsigned int backpack_id;
-    packet >> backpack_id;
-    ItemClient* ic = &backpackClient;
+    unsigned int inventory_id;
+    packet >> inventory_id;
+    ItemClient* ic = &inventoryClient;
     // Adding an item to the inventory normally
-    // skip the first and last ID as that is our backpack then new item
+    // skip the first and last ID as that is our inventory then new item
     for(unsigned int i=1; i < depth - 1; i++)
     {
         unsigned int itemId;
         packet >> itemId;
-        ic = &backpackClient.itemClients[itemId];
+        ic = &inventoryClient.itemClients[itemId];
     }
 
     if(ic)
@@ -89,7 +89,7 @@ void CharacterClient::handleServerEventPacket_itemAdded(bit::ServerPacket &packe
         packet >> itemId;
 
         // unpack the item into it
-        backpackClient.itemClients[itemId] = ItemClient();
-        backpackClient.itemClients[itemId].handleSnapshot(packet);
+        inventoryClient.itemClients[itemId] = ItemClient();
+        inventoryClient.itemClients[itemId].handleSnapshot(packet);
     }
 }

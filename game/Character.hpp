@@ -34,7 +34,6 @@ public:
     bit::GameTimer moveTimer;
     std::vector<Light*> lights;
     std::vector<Mission*> missions;
-    Item* backpack;
 
 	struct Schema
 	{

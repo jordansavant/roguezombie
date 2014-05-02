@@ -20,7 +20,7 @@ public:
 
 	Character::Schema schema;
     std::map<unsigned int, MissionClient> missionClients;
-    ItemClient backpackClient;
+    ItemClient inventoryClient;
 
     virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 

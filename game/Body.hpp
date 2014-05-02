@@ -9,12 +9,15 @@
 #include "Interaction.hpp"
 
 class Level;
+class Item;
 
 class Body
 {
 public:
 
     Body();
+
+    ~Body();
 
     enum Type
     {
@@ -25,6 +28,7 @@ public:
 
     Level* level;
     bool blockFoV;
+    Item* inventory;
 
 	struct Schema
 	{

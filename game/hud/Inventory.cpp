@@ -25,7 +25,7 @@ void Inventory::update(sf::RenderWindow &window, sf::Time &gameTime)
     if(levelClient->playerCharacter)
     {
         std::string entry("Inventory\n");
-        for(auto iterator = levelClient->playerCharacter->backpackClient.itemClients.begin(); iterator != levelClient->playerCharacter->backpackClient.itemClients.end(); iterator++)
+        for(auto iterator = levelClient->playerCharacter->inventoryClient.itemClients.begin(); iterator != levelClient->playerCharacter->inventoryClient.itemClients.end(); iterator++)
         {
             // Level 1
             ItemClient* i = &iterator->second;

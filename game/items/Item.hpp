@@ -6,7 +6,7 @@
 #include <vector>
 #include "../../bitengine/Network.hpp"
 
-class Character;
+class Body;
 
 class Item
 {
@@ -68,7 +68,7 @@ public:
     };
     Schema schema;
     Item* parentItem;
-    Character* parentCharacter;
+    Body* parentBody;
     std::vector<Item*> items;
 
     bool hasAny(unsigned int currentValue, unsigned int filter);
@@ -79,7 +79,7 @@ public:
 
     void onAddToNewParent();
 
-    Character* getParentCharacter();
+    Body* getParentBody();
 
     void fillIdHierarchy(std::vector<unsigned int> &fill);
 
