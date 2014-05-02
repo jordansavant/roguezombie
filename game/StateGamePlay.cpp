@@ -236,10 +236,11 @@ void StateGamePlay::handleInteractionResponse(unsigned int tileId, Interaction::
             if(givenAccess)
             {
                 hud->lootMenu->handleInventorySnapshot(packet, tileId);
+                hud->displayMessage("Inventory opened");
             }
             else
             {
-                //hud->queueMessage("Cannot access inventory.");
+                hud->displayMessage("Cannot access inventory");
             }
 
             break;

@@ -14,6 +14,7 @@ class Journal;
 class Inventory;
 class InteractionMenu;
 class LootMenu;
+class Console;
 
 class Hud : public bit::Container
 {
@@ -28,6 +29,7 @@ public:
     Inventory* inventory;
     InteractionMenu* interactionMenu;
     LootMenu* lootMenu;
+    Console* console;
     Minimap minimap;
     sf::Texture interfaceTexture;
     bit::VertexMap interfaceVertexMap;
@@ -42,6 +44,8 @@ public:
     void activateJournal();
 
     void activateInventory();
+
+    void displayMessage(std::string message);
 
     bool typicalContainerControl(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime);
 

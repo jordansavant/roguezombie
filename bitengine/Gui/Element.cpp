@@ -8,19 +8,19 @@
 #include "../Math/Math.hpp"
 
 bit::Element::Element()
-    : sf::FloatRect(), parentElement(NULL), relativePosition(), anchorType(AnchorType::Center), scaleStyle(ScaleStyle::Smooth), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL), onActivate(NULL)
+    : sf::FloatRect(), parentElement(NULL), relativePosition(), anchorType(AnchorType::Center), scaleStyle(ScaleStyle::Smooth), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL), onActivate(NULL), removeFromParent(false)
 {
 }
 
 bit::Element::Element(float relativeX, float relativeY, float width, float height, AnchorType anchorType)
-    : sf::FloatRect(0, 0, width, height), parentElement(NULL), relativePosition(relativeX, relativeY), anchorType(anchorType), scaleStyle(ScaleStyle::Smooth), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL), onActivate(NULL)
+    : sf::FloatRect(0, 0, width, height), parentElement(NULL), relativePosition(relativeX, relativeY), anchorType(anchorType), scaleStyle(ScaleStyle::Smooth), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL), onActivate(NULL), removeFromParent(false)
 {
     targetWidth = width;
     targetHeight = height;
 }
 
 bit::Element::Element(float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput)
-    : sf::FloatRect(0, 0, width, height), parentElement(NULL), relativePosition(relativeX, relativeY), anchorType(anchorType), scaleStyle(ScaleStyle::Smooth), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(true), lambdaListenToInput(lambdaListenToInput), onActivate(NULL)
+    : sf::FloatRect(0, 0, width, height), parentElement(NULL), relativePosition(relativeX, relativeY), anchorType(anchorType), scaleStyle(ScaleStyle::Smooth), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(true), lambdaListenToInput(lambdaListenToInput), onActivate(NULL), removeFromParent(false)
 {
     targetWidth = width;
     targetHeight = height;

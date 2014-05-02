@@ -60,6 +60,7 @@ namespace bit
         std::deque<Effect*> effectQueue;
         std::list<Effect*> concurrentEffects;
         sf::RectangleShape debugRect; // debug
+        bool removeFromParent;
 
         virtual void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
 

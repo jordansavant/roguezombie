@@ -5,6 +5,7 @@
 #include "Inventory.hpp"
 #include "InteractionMenu.hpp"
 #include "LootMenu.hpp"
+#include "Console.hpp"
 #include "../../ResourcePath.h"
 #include "../../bitengine/Input.hpp"
 #include "../StateGamePlay.hpp"
@@ -26,9 +27,12 @@ Hud::Hud(StateGamePlay* _state)
 
     interactionMenu = new InteractionMenu(this);
     addChild(interactionMenu);
-
+    
     lootMenu = new LootMenu(this);
     addChild(lootMenu);
+    
+    console = new Console(this);
+    addChild(console);
 
     minimap.load(this);
 
@@ -112,6 +116,10 @@ void Hud::activateInventory()
     }
 }
 
+void Hud::displayMessage(std::string message)
+{
+    console->print(message);
+}
 
 bool Hud::typicalContainerControl(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime)
 {

@@ -28,9 +28,21 @@ void bit::Container::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     Element::update(window, gameTime);
 
-    for(unsigned int i = 0; i < childElements.size(); i++)
+    for(auto it = childElements.begin(); it != childElements.end();)
     {
-        childElements[i]->update(window, gameTime);
+        // Update children
+        (*it)->update(window, gameTime);
+
+        // Remove any that are requested to be removed
+        if ((*it)->removeFromParent)
+        {
+            delete (*it);
+            it = childElements.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
     }
 
     updateInput(window, gameTime);
