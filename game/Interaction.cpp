@@ -7,15 +7,15 @@ std::string Interaction::getTitle(Type type)
     {
         default:
             return "";
-        case Interaction::Type::LockableWithKey:
+        case Interaction::Type::LockWithKey:
             return "Lock with key";
-        case Interaction::Type::LockableWithLockpick:
+        case Interaction::Type::LockWithLockpick:
             return "Lock with lockpick";
-        case Interaction::Type::UnlockableWithKey:
+        case Interaction::Type::UnlockWithKey:
             return "Unlock with key";
-        case Interaction::Type::UnlockableWithLockpick:
+        case Interaction::Type::UnlockWithLockpick:
             return "Unlock with lockpick";
-        case Interaction::Type::UnlockableWithBash:
+        case Interaction::Type::UnlockWithBash:
             return "Unlock with bash";
     }
 }

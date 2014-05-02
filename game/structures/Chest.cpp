@@ -30,15 +30,15 @@ void Chest::handleInteraction(Interaction::Type interaction, Body* interactor)
 {
     switch(interaction)
     {
-        case Interaction::Type::UnlockableWithKey:
-        case Interaction::Type::UnlockableWithLockpick:
-        case Interaction::Type::UnlockableWithBash:
+        case Interaction::Type::UnlockWithKey:
+        case Interaction::Type::UnlockWithLockpick:
+        case Interaction::Type::UnlockWithBash:
         {
             schema.isLocked = false;
             break;
         }
-        case Interaction::Type::LockableWithKey:
-        case Interaction::Type::LockableWithLockpick:
+        case Interaction::Type::LockWithKey:
+        case Interaction::Type::LockWithLockpick:
         {
             schema.isLocked = true;
             break;
@@ -59,14 +59,14 @@ void Chest::prepareInteractionTree(bit::ServerPacket &packet)
     if(schema.isLocked)
     {
         packet << sf::Uint32(3);
-        packet << sf::Uint32(Interaction::Type::UnlockableWithKey);
-        packet << sf::Uint32(Interaction::Type::UnlockableWithLockpick);
-        packet << sf::Uint32(Interaction::Type::UnlockableWithBash);
+        packet << sf::Uint32(Interaction::Type::UnlockWithKey);
+        packet << sf::Uint32(Interaction::Type::UnlockWithLockpick);
+        packet << sf::Uint32(Interaction::Type::UnlockWithBash);
     }
     else
     {
         packet << sf::Uint32(2);
-        packet << sf::Uint32(Interaction::Type::LockableWithKey);
-        packet << sf::Uint32(Interaction::Type::LockableWithLockpick);
+        packet << sf::Uint32(Interaction::Type::LockWithKey);
+        packet << sf::Uint32(Interaction::Type::LockWithLockpick);
     }
 }

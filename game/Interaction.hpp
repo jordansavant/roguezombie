@@ -9,11 +9,11 @@ class Interaction
 public:
     enum Type
     {
-        LockableWithKey,
-        LockableWithLockpick,
-        UnlockableWithKey,
-        UnlockableWithLockpick,
-        UnlockableWithBash,
+        LockWithKey,
+        LockWithLockpick,
+        UnlockWithKey,
+        UnlockWithLockpick,
+        UnlockWithBash,
     };
 
     static std::string getTitle(Type type);
