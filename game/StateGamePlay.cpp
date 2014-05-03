@@ -222,9 +222,19 @@ void StateGamePlay::handleInteractionResponse(unsigned int tileId, Interaction::
         case Interaction::Type::UnlockWithKey:
         case Interaction::Type::UnlockWithLockpick:
         case Interaction::Type::UnlockWithBash:
+        {
+            bool unlocked;
+            packet >> unlocked;
+            hud->displayMessage(unlocked ? "Unlocked" : "Unlock failed");
+            requestInteractionsForTile(tileId);
+            break;
+        }
         case Interaction::Type::LockWithKey:
         case Interaction::Type::LockWithLockpick:
         {
+            bool locked;
+            packet >> locked;
+            hud->displayMessage(locked ? "Locked" : "Lock failed");
             requestInteractionsForTile(tileId);
             break;
         }

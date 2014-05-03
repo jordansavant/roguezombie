@@ -37,12 +37,20 @@ void Chest::handleInteraction(Interaction::Type interaction, Body* interactor, b
         case Interaction::Type::UnlockWithBash:
         {
             schema.isLocked = false;
+
+            // Success
+            responsePacket << true;
+
             break;
         }
         case Interaction::Type::LockWithKey:
         case Interaction::Type::LockWithLockpick:
         {
             schema.isLocked = true;
+
+            // Success
+            responsePacket << true;
+
             break;
         }
     }

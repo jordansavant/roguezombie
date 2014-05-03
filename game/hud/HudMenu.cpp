@@ -8,18 +8,24 @@
 #include "../mission/MissionClient.hpp"
 
 HudMenu::HudMenu(Hud* hud)
-    : bit::Container(-50, 50, 300, 500, bit::Element::AnchorType::TopRight, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(hud), isShown(false)
+    : bit::Container(350, 50, 300, 500, bit::Element::AnchorType::TopRight, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(hud), isShown(false)
 {
+    originX = relativePosition.x;
+    originY = relativePosition.y;
 }
 
 HudMenu::HudMenu(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType)
     : bit::Container(relativeX, relativeY, width, height, anchorType, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(hud), isShown(false)
 {
+    originX = relativePosition.x;
+    originY = relativePosition.y;
 }
 
 HudMenu::HudMenu(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput)
     : bit::Container(relativeX, relativeY, width, height, anchorType, lambdaListenToInput), hud(hud), isShown(false)
 {
+    originX = relativePosition.x;
+    originY = relativePosition.y;
 }
 
 void HudMenu::update(sf::RenderWindow &window, sf::Time &gameTime)
@@ -32,7 +38,7 @@ void HudMenu::hide()
     canHaveFocus = false;
     isShown = false;
     clearEffects();
-    immediateEffect(new bit::FadeEffect(100, 0));
+    immediateEffect(new bit::FadeEffect(150, 0));
 }
 
 void HudMenu::show()
@@ -40,7 +46,9 @@ void HudMenu::show()
     canHaveFocus = true;
     isShown = true;
     clearEffects();
-    immediateEffect(new bit::FadeEffect(100, 1));
+    relativePosition.x = originX;
+    immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, -400, 0));
+    immediateEffect(new bit::FadeEffect(300, 1));
 }
 
 void HudMenu::toggle()

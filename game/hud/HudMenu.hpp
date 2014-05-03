@@ -20,6 +20,7 @@ public:
 
     Hud* hud;
     bool isShown;
+    float originX, originY;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
