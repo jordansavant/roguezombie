@@ -82,6 +82,7 @@ Item* Item::removeItem(unsigned int itemId)
         }
     }
 
+    // if no child had it, cry
     return NULL;
 }
 

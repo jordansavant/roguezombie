@@ -60,10 +60,13 @@ void StateGamePlay::load()
 
 void StateGamePlay::changeMode(Mode _mode)
 {
-    displayMessage(std::string("Changed modes"));
-    modeExit[mode]();
-    mode = _mode;
-    modeEnter[mode]();
+    if(_mode != mode)
+    {
+        displayMessage(std::string("Changed modes"));
+        modeExit[mode]();
+        mode = _mode;
+        modeEnter[mode]();
+    }
 }
 
 
@@ -73,6 +76,7 @@ void StateGamePlay::changeMode(Mode _mode)
 
 void StateGamePlay::modeOnEnterFree()
 {
+    hud->hideAllMenus();
 }
 
 void StateGamePlay::modeOnExitFree()
@@ -330,7 +334,6 @@ void StateGamePlay::handleInteractionResponse(unsigned int tileId, Interaction::
             {
                 changeMode(Mode::Loot);
                 hud->lootMenu->handleInventorySnapshot(packet, tileId);
-                displayMessage(std::string("Inventory opened"));
             }
             else
             {
