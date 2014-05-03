@@ -32,12 +32,21 @@ void InteractionMenu::update(sf::RenderWindow &window, sf::Time &gameTime)
     }
 }
 
+void InteractionMenu::clear()
+{
+    isActive = false;
+    clearChildren();
+}
+
 void InteractionMenu::handleInteractionTree(bit::ServerPacket &packet, unsigned int tileId)
 {
     unsigned int optionSize;
     packet >> optionSize;
 
     clearChildren();
+
+    isActive = optionSize == 0 ? false : true;
+
     int y = 0;
     for(unsigned int i=0; i < optionSize; i++)
     {

@@ -22,6 +22,8 @@ public:
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
+    void clear();
+
     void handleInventorySnapshot(bit::ServerPacket &packet, unsigned int tileId);
 };
 

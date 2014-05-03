@@ -22,7 +22,17 @@ public:
 
     virtual ~StateGamePlay();
 
+    enum Mode
+    {
+        Free,
+        Combat,
+        Loot,
+        Trade,
+        Dialog,
+    };
+
     RogueZombieGame* rogueZombieGame;
+    Mode mode;
     LevelClient* levelClient;
 	std::vector<Command> commandQueue;
     sf::Vector2f mousePositionInLevel;
@@ -34,6 +44,8 @@ public:
     virtual void load();
 
 	void now();
+
+    void changeMode(Mode);
 
     virtual bool handleInput(sf::Time &gameTime);
 

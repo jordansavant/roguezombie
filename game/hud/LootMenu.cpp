@@ -26,6 +26,11 @@ void LootMenu::update(sf::RenderWindow &window, sf::Time &gameTime)
     bit::Container::update(window, gameTime);
 }
 
+void LootMenu::clear()
+{
+    entries->setSfFontString(std::string(""));
+}
+
 void LootMenu::handleInventorySnapshot(bit::ServerPacket &packet, unsigned int tileId)
 {
     inventory.handleSnapshot(packet);
