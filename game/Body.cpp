@@ -10,7 +10,7 @@
 #include "items/Item.hpp"
 
 Body::Body()
-    : level(NULL), blockFoV(true), schema(), inventory(NULL), inventoryAccessor(NULL)
+    : level(NULL), blockFoV(true), schema(), inventory(NULL), inventoryAccessor(NULL), inventoryAccessee(NULL)
 {
 }
 
@@ -43,12 +43,23 @@ void Body::addItemToInventory(Item* item)
     inventory->addItem(item);
 }
 
+Item* Body::removeItemFromInventory(unsigned int itemId)
+{
+    Item* item = inventory->removeItem(itemId);
+    if(item)
+    {
+        item->parentBody = NULL;
+    }
+    return item;
+}
+
 void Body::handleInteraction(Interaction::Type interaction, Body* interactor, bit::ServerPacket &responsePacket)
 {
     switch(interaction)
     {
         case Interaction::Type::OpenInventory:
         {
+            // If someone else is already accessing my inventory, deny
             if(inventoryAccessor && inventoryAccessor != interactor)
             {
                 responsePacket << false;
@@ -56,6 +67,7 @@ void Body::handleInteraction(Interaction::Type interaction, Body* interactor, bi
             else
             {
                 inventoryAccessor = interactor;
+                interactor->inventoryAccessee = this;
                 responsePacket << true;
                 inventory->prepareSnapshot(responsePacket);
             }
@@ -63,6 +75,9 @@ void Body::handleInteraction(Interaction::Type interaction, Body* interactor, bi
         }
         case Interaction::Type::CloseInventory:
         {
+            // Unset myself from their access perspective
+            if(inventoryAccessor)
+                inventoryAccessor->inventoryAccessee = NULL;
             inventoryAccessor = NULL;
             break;
         }

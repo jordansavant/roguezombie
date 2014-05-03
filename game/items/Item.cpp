@@ -42,6 +42,49 @@ void Item::addItem(Item* item)
     }
 }
 
+Item* Item::removeItem(unsigned int itemId)
+{
+    // Look through my items
+    for(auto it = items.begin(); it != items.end();)
+    {
+        Item* item = (*it);
+
+        // If one of my child items is the match
+        if(item->schema.id == itemId)
+        {
+            // Remove it from the list and return the pointer
+            items.erase(it);
+            item->parentItem = NULL;
+            return item;
+        }
+        // If my child is not the match
+        else
+        {
+            // If my child has more children
+            Item* childItem = NULL;
+            if(item->items.size() > 0)
+            {
+                // Recurse into the child to see if it has the item
+                childItem = item->removeItem(itemId);
+            }
+
+            // If my recursion found the item
+            if(childItem)
+            {
+                // return it
+                return childItem;
+            }
+            else
+            {
+                // go to next child item
+                ++it;
+            }
+        }
+    }
+
+    return NULL;
+}
+
 Body* Item::getParentBody()
 {
     if(parentItem)

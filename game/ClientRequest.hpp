@@ -5,8 +5,8 @@
 enum ClientRequest
 {
     GetInteractionOptions,
-    AccessObjectInventory,
     Interaction,
+    TransferItem,
 };
 
 #endif

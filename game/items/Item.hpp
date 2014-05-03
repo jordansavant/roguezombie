@@ -77,6 +77,8 @@ public:
 
     void addItem(Item* item);
 
+    Item* removeItem(unsigned int itemId);
+
     void onAddToNewParent();
 
     Body* getParentBody();

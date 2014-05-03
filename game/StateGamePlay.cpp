@@ -178,6 +178,7 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
 
 void StateGamePlay::modeOnEnterLoot()
 {
+    hud->activateInventory();
     hud->lootMenu->activate();
 }
 

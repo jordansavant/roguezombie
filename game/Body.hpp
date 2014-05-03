@@ -30,6 +30,7 @@ public:
     bool blockFoV;
     Item* inventory;
     Body* inventoryAccessor;
+    Body* inventoryAccessee;
 
 	struct Schema
 	{
@@ -75,6 +76,8 @@ public:
     virtual void update(sf::Time &gameTime);
 
     void addItemToInventory(Item* item);
+
+    Item* removeItemFromInventory(unsigned int itemId);
 
     virtual void handleInteraction(Interaction::Type interaction, Body* interactor, bit::ServerPacket &responsePacket);
 

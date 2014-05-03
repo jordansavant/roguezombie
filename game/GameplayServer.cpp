@@ -210,10 +210,6 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
     bit::NetworkHelper::unpackEnum<sf::Uint32, ClientRequest>(packet, request);
     switch(request)
     {
-        case ClientRequest::AccessObjectInventory:
-            bit::Output::Debug("Server detect request object inventory");
-            responsePacket << (bit::Math::randomFloat() < .5 ? true : false);
-            break;
         case ClientRequest::Interaction:
         {
             bit::Output::Debug("Server detect request interaction");
@@ -242,6 +238,34 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
                 t->body->prepareInteractionTree(responsePacket);
             else
                 responsePacket << sf::Uint32(0);
+
+            break;
+        }
+        case ClientRequest::TransferItem:
+        {
+            bit::Output::Debug("Server detect request transfer item");
+
+            unsigned int itemId;
+            packet >> itemId;
+
+            if(player->character->inventoryAccessee)
+            {
+                // Remove the item from the current accessee and then add it to the player
+                Item* item = player->character->inventoryAccessee->removeItemFromInventory(itemId);
+                if(item)
+                {
+                    player->character->addItemToInventory(item);
+                    responsePacket << true;
+                }
+                else
+                {
+                    responsePacket << false;
+                }
+            }
+            else
+            {
+                responsePacket << false;
+            }
 
             break;
         }
