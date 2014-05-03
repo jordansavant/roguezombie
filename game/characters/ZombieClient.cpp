@@ -12,7 +12,7 @@
 #include "../../bitengine/System.hpp"
 
 ZombieClient::ZombieClient()
-    : CharacterClient(), renderX(0), renderY(0), lastSnapshotId(0)
+    : CharacterClient(), renderX(0), renderY(0)
 {
 }
 

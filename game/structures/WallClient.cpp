@@ -12,7 +12,7 @@
 #include "../../bitengine/System.hpp"
 
 WallClient::WallClient()
-    : StructureClient(), lastSnapshotId(0)
+    : StructureClient()
 {
 }
 

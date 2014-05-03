@@ -5,6 +5,7 @@
 #include "Body.hpp"
 #include "../bitengine/Network.hpp"
 #include "items/ItemClient.hpp"
+#include "LevelClient.hpp"
 
 class BodyClient
 {
@@ -14,6 +15,7 @@ public:
 
     Body::Schema schema;
     ItemClient inventoryClient;
+    unsigned int lastSnapshotId;
 
     virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 };

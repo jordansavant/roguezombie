@@ -12,7 +12,7 @@
 #include "../../bitengine/System.hpp"
 
 DoorClient::DoorClient()
-    : StructureClient(), lastSnapshotId(0)
+    : StructureClient()
 {
 }
 

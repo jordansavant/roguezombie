@@ -22,7 +22,6 @@ public:
     LevelClient* level;
     bit::Sprite* sprite;
     unsigned int quadIndex;
-    unsigned int lastSnapshotId;
 
     void clientLoad(LevelClient* level);
 

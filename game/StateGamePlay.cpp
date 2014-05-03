@@ -250,7 +250,7 @@ void StateGamePlay::handleInteractionResponse(unsigned int tileId, Interaction::
             }
             else
             {
-                hud->displayMessage("Cannot access inventory");
+                hud->displayMessage("Inventory is occupied");
             }
 
             break;
@@ -280,6 +280,7 @@ void StateGamePlay::handlePacket_InitializeWorld(bit::ServerPacket &packet)
     levelClient->levelId = levelId;
     levelClient->load(this);
     levelClient->handleSnapshot(packet, true);
+    hud->displayMessage("World initialized");
 }
 
 void StateGamePlay::handlePacket_PeerClientConnected(bit::ServerPacket &packet)
@@ -327,9 +328,11 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
         switch(eventType)
         {
             case ServerEvent::MissionCompleted:
+                hud->displayMessage("Mission completed");
                 levelClient->playerCharacter->handleServerEventPacket_missionCompleted(packet);
                 break;
             case ServerEvent::ItemAdded:
+                hud->displayMessage("Item added to inventory");
                 levelClient->playerCharacter->handleServerEventPacket_itemAdded(packet);
                 break;
         }

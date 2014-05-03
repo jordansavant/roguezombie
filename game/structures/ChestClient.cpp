@@ -12,7 +12,7 @@
 #include "../../bitengine/System.hpp"
 
 ChestClient::ChestClient()
-    : StructureClient(), lastSnapshotId(0)
+    : StructureClient()
 {
 }
 

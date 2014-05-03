@@ -12,7 +12,7 @@
 #include <sstream>
 
 TileClient::TileClient()
-    : schema(), level(NULL), sprite(NULL), quadIndex(0), lastSnapshotId(0), renderX(0), renderY(0)
+    : schema(), level(NULL), sprite(NULL), quadIndex(0), renderX(0), renderY(0)
 {
 }
 
