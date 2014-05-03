@@ -11,6 +11,7 @@
 #include <deque>
 
 class LevelClient;
+class BodyClient;
 
 class TileClient
 {
@@ -27,6 +28,8 @@ public:
     unsigned int lastSnapshotId;
     float renderX, renderY;
 
+    bool isCardinallyAdjacent(BodyClient* body);
+    
     void clientLoad(LevelClient* level);
 
     void clientUpdate(sf::Time &gameTime);

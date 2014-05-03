@@ -83,21 +83,25 @@ void Character::setControllingPlayer(Player* player)
 
 bool Character::moveUp()
 {
+    path.clear();
     return moveToPosition(Body::schema.x, Body::schema.y - level->tileHeight);
 }
 
 bool Character::moveDown()
 {
+    path.clear();
     return moveToPosition(Body::schema.x, Body::schema.y + level->tileHeight);
 }
 
 bool Character::moveLeft()
 {
+    path.clear();
     return moveToPosition(Body::schema.x - level->tileWidth, Body::schema.y);
 }
 
 bool Character::moveRight()
 {
+    path.clear();
     return moveToPosition(Body::schema.x + level->tileWidth, Body::schema.y);
 }
 

@@ -100,10 +100,13 @@ bool StateGamePlay::handleInput(sf::Time &gameTime)
             {
                 TileClient* t = levelClient->hoveredTile;
 
-                // If the tile has a body run interactions
+                // If the tile has a body and it is adjacent run interactions
                 if(t->schema.bodyId > 0)
                 {
-                    requestInteractionsForTile(t->schema.id);
+                    if(t->isCardinallyAdjacent(levelClient->playerCharacter))
+                        requestInteractionsForTile(t->schema.id);
+                    else
+                        displayMessage(std::string("Object is too far away"));
                 }
                 // Else issue command to move to tile
                 else
@@ -201,6 +204,14 @@ unsigned short StateGamePlay::getServerPort()
 void StateGamePlay::displayMessage(std::string &message)
 {
     hud->displayMessage(message);
+}
+
+void StateGamePlay::displayPlayerMessage(CharacterClient* character, std::string &message)
+{
+    if(character == levelClient->playerCharacter)
+    {
+        displayMessage(message);
+    }
 }
 
 void StateGamePlay::requestInteractionsForTile(unsigned int tileId)
@@ -336,7 +347,6 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 levelClient->playerCharacter->handleServerEventPacket_missionCompleted(packet);
                 break;
             case ServerEvent::ItemAdded:
-                displayMessage(std::string("Item added to inventory"));
                 levelClient->playerCharacter->handleServerEventPacket_itemAdded(packet);
                 break;
         }

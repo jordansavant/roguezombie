@@ -54,7 +54,7 @@ void CharacterClient::handleServerEventPacket_missionCompleted(bit::ServerPacket
     if(mc)
     {
         mc->schema.isComplete = true;
-        level->state->displayMessage(std::string(JournalEntry::getTitle(mc->schema.journalEntry) + " completed"));
+        level->state->displayPlayerMessage(this, std::string(JournalEntry::getTitle(mc->schema.journalEntry) + " completed"));
     }
 }
 
@@ -84,5 +84,6 @@ void CharacterClient::handleServerEventPacket_itemAdded(bit::ServerPacket &packe
         // unpack the item into it
         inventoryClient.itemClients[itemId] = ItemClient();
         inventoryClient.itemClients[itemId].handleSnapshot(packet);
+        level->state->displayPlayerMessage(this, std::string(Item::getTitle(inventoryClient.itemClients[itemId].schema.type) + " gained"));
     }
 }

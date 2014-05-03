@@ -1,6 +1,7 @@
 #include "TileClient.hpp"
 #include "Tile.hpp"
 #include "LevelClient.hpp"
+#include "BodyClient.hpp"
 #include "StateGamePlay.hpp"
 #include "RogueZombieGame.hpp"
 #include "SFML/Graphics.hpp"
@@ -18,6 +19,12 @@ TileClient::TileClient()
 
 TileClient::~TileClient()
 {
+}
+
+bool TileClient::isCardinallyAdjacent(BodyClient* body)
+{
+    float distance = bit::VectorMath::distance(schema.x, schema.y, body->schema.x, body->schema.y);
+    return (distance <= schema.width || distance <= schema.height);
 }
 
 void TileClient::clientLoad(LevelClient* _level)

@@ -11,6 +11,7 @@
 
 class LevelClient;
 class RogueZombieGame;
+class CharacterClient;
 class Hud;
 
 class StateGamePlay : public bit::ClientServerState
@@ -43,6 +44,8 @@ public:
     virtual void drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera);
 
     void displayMessage(std::string &message);
+
+    void displayPlayerMessage(CharacterClient* character, std::string &message);
 
     void requestInteractionsForTile(unsigned int tileId);
 
