@@ -19,10 +19,13 @@ public:
     Hud* hud;
     bit::Label* entries;
     ItemClient inventory;
+    bool isActive;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
-    void clear();
+    void activate();
+
+    void deactivate();
 
     void handleInventorySnapshot(bit::ServerPacket &packet, unsigned int tileId);
 };

@@ -66,12 +66,20 @@ void StateGamePlay::changeMode(Mode _mode)
     modeEnter[mode]();
 }
 
+
+////////////////////////////////////////////////////////////////////////
+//                            FREE MODES                              //
+////////////////////////////////////////////////////////////////////////
+
 void StateGamePlay::modeOnEnterFree()
 {
 }
+
 void StateGamePlay::modeOnExitFree()
 {
+    hud->interactionMenu->deactivate();
 }
+
 void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
 {
     if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Up))
@@ -162,19 +170,28 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
         disconnect();
     }
 }
-    
+
+
+////////////////////////////////////////////////////////////////////////
+//                            LOOT MODES                              //
+////////////////////////////////////////////////////////////////////////
+
 void StateGamePlay::modeOnEnterLoot()
 {
+    hud->lootMenu->activate();
 }
+
 void StateGamePlay::modeOnExitLoot()
 {
+    hud->lootMenu->deactivate();
 }
+
 void StateGamePlay::modeOnUpdateLoot(sf::Time &gameTime)
 {
 	// Exit
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
     {
-        hud->lootMenu->clear();
+        hud->lootMenu->deactivate();
         changeMode(Mode::Free);
     }
 }
@@ -311,7 +328,6 @@ void StateGamePlay::handleInteractionResponse(unsigned int tileId, Interaction::
             if(givenAccess)
             {
                 changeMode(Mode::Loot);
-                hud->interactionMenu->clear();
                 hud->lootMenu->handleInventorySnapshot(packet, tileId);
                 displayMessage(std::string("Inventory opened"));
             }

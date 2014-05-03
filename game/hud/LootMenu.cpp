@@ -12,7 +12,7 @@
 #include "../TileClient.hpp"
 
 LootMenu::LootMenu(Hud* _hud)
-    : bit::Container(0, -50, 300, 400, bit::Element::AnchorType::Bottom, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(_hud), inventory()
+    : bit::Container(0, 50, 300, 400, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(_hud), inventory(), isActive(false)
 {
     entries = new bit::Label(0, 0, 0, 0, bit::Element::AnchorType::TopLeft);
     entries->setSfFontSize(24);
@@ -24,10 +24,28 @@ LootMenu::LootMenu(Hud* _hud)
 void LootMenu::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::Container::update(window, gameTime);
+
+    if(isActive)
+    {
+        canHaveFocus = true;
+        opacity = 1;
+    }
+    else
+    {
+        canHaveFocus = false;
+        opacity = 0;
+    }
 }
 
-void LootMenu::clear()
+void LootMenu::activate()
 {
+    isActive = true;
+    entries->setSfFontString(std::string("Loot\n"));
+}
+
+void LootMenu::deactivate()
+{
+    isActive = false;
     entries->setSfFontString(std::string(""));
 }
 
@@ -43,5 +61,4 @@ void LootMenu::handleInventorySnapshot(bit::ServerPacket &packet, unsigned int t
         entry += "- " + Item::getTitle(i->schema.type) + "\n";
     }
     entries->setSfFontString(entry);
-    entries->opacity = opacity;
 }

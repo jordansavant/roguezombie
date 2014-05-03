@@ -32,7 +32,7 @@ void InteractionMenu::update(sf::RenderWindow &window, sf::Time &gameTime)
     }
 }
 
-void InteractionMenu::clear()
+void InteractionMenu::deactivate()
 {
     isActive = false;
     clearChildren();
