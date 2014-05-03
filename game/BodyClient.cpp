@@ -1,7 +1,7 @@
 #include "BodyClient.hpp"
 
 BodyClient::BodyClient()
-    : schema(), lastSnapshotId(0), inventoryClient()
+    : schema(), lastSnapshotId(0), inventoryClient(), level(NULL)
 {
 }
 

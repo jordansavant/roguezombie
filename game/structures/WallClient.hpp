@@ -18,7 +18,6 @@ public:
 
     WallClient();
 
-    LevelClient* level;
     bit::Sprite* sprite;
     unsigned int quadIndex;
 

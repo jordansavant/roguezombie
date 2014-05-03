@@ -19,7 +19,6 @@ public:
 
     OgreClient();
 
-    LevelClient* level;
     float renderX, renderY;
     bit::Sprite* sprite;
     unsigned int quadIndex;

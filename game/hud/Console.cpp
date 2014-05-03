@@ -12,7 +12,7 @@ Console::Console(Hud* _hud)
 {
 }
 
-void Console::print(std::string message)
+void Console::print(std::string &message)
 {
     // Create the new line
     bit::Label* line = new bit::Label(-400, 0, 0, 0, bit::Element::AnchorType::BottomLeft);

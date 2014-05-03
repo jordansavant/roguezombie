@@ -116,7 +116,7 @@ void Hud::activateInventory()
     }
 }
 
-void Hud::displayMessage(std::string message)
+void Hud::displayMessage(std::string &message)
 {
     console->print(message);
 }

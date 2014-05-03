@@ -54,6 +54,7 @@ void CharacterClient::handleServerEventPacket_missionCompleted(bit::ServerPacket
     if(mc)
     {
         mc->schema.isComplete = true;
+        level->state->displayMessage(std::string(JournalEntry::getTitle(mc->schema.journalEntry) + " completed"));
     }
 }
 

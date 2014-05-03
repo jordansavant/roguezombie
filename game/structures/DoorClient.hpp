@@ -19,7 +19,6 @@ public:
     DoorClient();
 
     Door::Schema schema;
-    LevelClient* level;
     bit::Sprite* sprite;
     unsigned int quadIndex;
 

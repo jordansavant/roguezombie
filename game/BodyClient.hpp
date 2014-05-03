@@ -16,6 +16,7 @@ public:
     Body::Schema schema;
     ItemClient inventoryClient;
     unsigned int lastSnapshotId;
+    LevelClient* level;
 
     virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 };

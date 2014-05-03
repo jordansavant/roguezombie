@@ -45,7 +45,7 @@ public:
 
     void activateInventory();
 
-    void displayMessage(std::string message);
+    void displayMessage(std::string &message);
 
     bool typicalContainerControl(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime);
 

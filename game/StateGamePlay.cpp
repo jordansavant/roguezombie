@@ -198,6 +198,11 @@ unsigned short StateGamePlay::getServerPort()
     return BIT_SERVER_PORT;
 }
 
+void StateGamePlay::displayMessage(std::string &message)
+{
+    hud->displayMessage(message);
+}
+
 void StateGamePlay::requestInteractionsForTile(unsigned int tileId)
 {
     StateGamePlay* s = this;
@@ -225,7 +230,7 @@ void StateGamePlay::handleInteractionResponse(unsigned int tileId, Interaction::
         {
             bool unlocked;
             packet >> unlocked;
-            hud->displayMessage(unlocked ? "Unlocked" : "Unlock failed");
+            displayMessage(std::string(unlocked ? "Unlocked" : "Unlock failed"));
             requestInteractionsForTile(tileId);
             break;
         }
@@ -234,7 +239,7 @@ void StateGamePlay::handleInteractionResponse(unsigned int tileId, Interaction::
         {
             bool locked;
             packet >> locked;
-            hud->displayMessage(locked ? "Locked" : "Lock failed");
+            displayMessage(std::string(locked ? "Locked" : "Lock failed"));
             requestInteractionsForTile(tileId);
             break;
         }
@@ -246,11 +251,11 @@ void StateGamePlay::handleInteractionResponse(unsigned int tileId, Interaction::
             if(givenAccess)
             {
                 hud->lootMenu->handleInventorySnapshot(packet, tileId);
-                hud->displayMessage("Inventory opened");
+                displayMessage(std::string("Inventory opened"));
             }
             else
             {
-                hud->displayMessage("Inventory is occupied");
+                displayMessage(std::string("Inventory is occupied"));
             }
 
             break;
@@ -280,7 +285,7 @@ void StateGamePlay::handlePacket_InitializeWorld(bit::ServerPacket &packet)
     levelClient->levelId = levelId;
     levelClient->load(this);
     levelClient->handleSnapshot(packet, true);
-    hud->displayMessage("World initialized");
+    displayMessage(std::string("World initialized"));
 }
 
 void StateGamePlay::handlePacket_PeerClientConnected(bit::ServerPacket &packet)
@@ -328,11 +333,10 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
         switch(eventType)
         {
             case ServerEvent::MissionCompleted:
-                hud->displayMessage("Mission completed");
                 levelClient->playerCharacter->handleServerEventPacket_missionCompleted(packet);
                 break;
             case ServerEvent::ItemAdded:
-                hud->displayMessage("Item added to inventory");
+                displayMessage(std::string("Item added to inventory"));
                 levelClient->playerCharacter->handleServerEventPacket_itemAdded(packet);
                 break;
         }

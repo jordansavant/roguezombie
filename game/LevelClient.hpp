@@ -80,6 +80,7 @@ public:
             entity = pool.fetch();
             map.insert(std::pair<unsigned int, T*>(id, entity));
         }
+        entity->level = this;
         entity->lastSnapshotId = state->lastSnapshotId; // update snapshot id
         entity->handleSnapshot(packet, full);
 

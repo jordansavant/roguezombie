@@ -42,6 +42,8 @@ public:
 
     virtual void drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera);
 
+    void displayMessage(std::string &message);
+
     void requestInteractionsForTile(unsigned int tileId);
 
     void handleInteractionResponse(unsigned int tileId, Interaction::Type interaction, bit::ServerPacket &packet);
