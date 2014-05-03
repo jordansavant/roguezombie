@@ -29,10 +29,14 @@ public:
         Loot,
         Trade,
         Dialog,
+        _count
     };
 
     RogueZombieGame* rogueZombieGame;
     Mode mode;
+    std::vector<std::function<void()>> modeEnter;
+    std::vector<std::function<void(sf::Time&)>> modeUpdate;
+    std::vector<std::function<void()>> modeExit;
     LevelClient* levelClient;
 	std::vector<Command> commandQueue;
     sf::Vector2f mousePositionInLevel;
@@ -46,6 +50,14 @@ public:
 	void now();
 
     void changeMode(Mode);
+
+    void modeOnEnterFree();
+    void modeOnExitFree();
+    void modeOnUpdateFree(sf::Time &gameTime);
+    
+    void modeOnEnterLoot();
+    void modeOnExitLoot();
+    void modeOnUpdateLoot(sf::Time &gameTime);
 
     virtual bool handleInput(sf::Time &gameTime);
 

@@ -30,6 +30,19 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     levelClient = new LevelClient();
 
     hud = new Hud(this);
+
+    // Game play mode logic
+    modeEnter.resize(Mode::_count, NULL);
+    modeExit.resize(Mode::_count, NULL);
+    modeUpdate.resize(Mode::_count, NULL);
+
+    modeEnter[Mode::Free] = std::bind(&StateGamePlay::modeOnEnterFree, this);
+    modeExit[Mode::Free] = std::bind(&StateGamePlay::modeOnExitFree, this);
+    modeUpdate[Mode::Free] = std::bind(&StateGamePlay::modeOnUpdateFree, this, std::placeholders::_1);
+    
+    modeEnter[Mode::Loot] = std::bind(&StateGamePlay::modeOnEnterLoot, this);
+    modeExit[Mode::Loot] = std::bind(&StateGamePlay::modeOnExitLoot, this);
+    modeUpdate[Mode::Loot] = std::bind(&StateGamePlay::modeOnUpdateLoot, this, std::placeholders::_1);
 }
 
 StateGamePlay::~StateGamePlay()
@@ -48,7 +61,122 @@ void StateGamePlay::load()
 void StateGamePlay::changeMode(Mode _mode)
 {
     displayMessage(std::string("Changed modes"));
+    modeExit[mode]();
     mode = _mode;
+    modeEnter[mode]();
+}
+
+void StateGamePlay::modeOnEnterFree()
+{
+}
+void StateGamePlay::modeOnExitFree()
+{
+}
+void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
+{
+    if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Up))
+        cameras[0]->direction.y = -1;
+    if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Down))
+        cameras[0]->direction.y = 1;
+    if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Left))
+        cameras[0]->direction.x = -1;
+    if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Right))
+        cameras[0]->direction.x = 1;
+
+    // Listen for Game Commands
+    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::X))
+    {
+	    Command cmd;
+        cmd.type = Command::Type::PlayerSwitchLevel;
+	    commandQueue.push_back(cmd);
+    }
+    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::W))
+    {
+        Command cmd;
+        cmd.type = Command::Type::PlayerMoveUp;
+	    commandQueue.push_back(cmd);
+    }
+    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::S))
+    {
+	    Command cmd;
+        cmd.type = Command::Type::PlayerMoveDown;
+	    commandQueue.push_back(cmd);
+    }
+    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::A))
+    {
+	    Command cmd;
+        cmd.type = Command::Type::PlayerMoveLeft;
+	    commandQueue.push_back(cmd);
+    }
+    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::D))
+    {
+	    Command cmd;
+        cmd.type = Command::Type::PlayerMoveRight;
+	    commandQueue.push_back(cmd);
+    }
+    if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
+    {
+        // See if a tile is being hovered over
+        if(levelClient->hoveredTile)
+        {
+            TileClient* t = levelClient->hoveredTile;
+
+            // If the tile has a body and it is adjacent run interactions
+            if(t->schema.bodyId > 0)
+            {
+                if(t->isCardinallyAdjacent(levelClient->playerCharacter))
+                    requestInteractionsForTile(t->schema.id);
+                else
+                    displayMessage(std::string("Object is too far away"));
+            }
+            // Else issue command to move to tile
+            else
+            {
+                Command cmd;
+                cmd.type = Command::Type::MoveToTile;
+                cmd.pack = [t] (sf::Packet &packet) {
+                    packet << sf::Uint32(t->schema.id);
+                };
+		        commandQueue.push_back(cmd);
+            }
+        }
+    }
+    if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Right))
+    {
+        // See if a tile is being hovered over
+        if(levelClient->hoveredTile)
+        {
+            TileClient* t = levelClient->hoveredTile;
+            Command cmd;
+            cmd.type = Command::Type::PlayerRightClickTile;
+            cmd.pack = [t] (sf::Packet &packet) {
+                packet << sf::Uint32(t->schema.id);
+            };
+		    commandQueue.push_back(cmd);
+        }
+    }
+
+    // Exit
+    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
+    {
+        disconnect();
+    }
+}
+    
+void StateGamePlay::modeOnEnterLoot()
+{
+}
+void StateGamePlay::modeOnExitLoot()
+{
+}
+void StateGamePlay::modeOnUpdateLoot(sf::Time &gameTime)
+{
+	// Exit
+    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
+    {
+        hud->lootMenu->clear();
+        changeMode(Mode::Free);
+    }
 }
 
 bool StateGamePlay::handleInput(sf::Time &gameTime)
@@ -59,113 +187,8 @@ bool StateGamePlay::handleInput(sf::Time &gameTime)
     {
         levelClient->captureInput(gameTime);
 
-        switch(mode)
-        {
-            case Mode::Free:
-            {
-                if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Up))
-                    cameras[0]->direction.y = -1;
-                if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Down))
-                    cameras[0]->direction.y = 1;
-                if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Left))
-                    cameras[0]->direction.x = -1;
-                if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Right))
-                    cameras[0]->direction.x = 1;
-
-	            // Listen for Game Commands
-                if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::X))
-	            {
-		            Command cmd;
-                    cmd.type = Command::Type::PlayerSwitchLevel;
-		            commandQueue.push_back(cmd);
-	            }
-                if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::W))
-	            {
-                    Command cmd;
-                    cmd.type = Command::Type::PlayerMoveUp;
-		            commandQueue.push_back(cmd);
-	            }
-	            if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::S))
-	            {
-		            Command cmd;
-                    cmd.type = Command::Type::PlayerMoveDown;
-		            commandQueue.push_back(cmd);
-	            }
-	            if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::A))
-	            {
-		            Command cmd;
-                    cmd.type = Command::Type::PlayerMoveLeft;
-		            commandQueue.push_back(cmd);
-	            }
-	            if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::D))
-	            {
-		            Command cmd;
-                    cmd.type = Command::Type::PlayerMoveRight;
-		            commandQueue.push_back(cmd);
-	            }
-                if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
-                {
-                    // See if a tile is being hovered over
-                    if(levelClient->hoveredTile)
-                    {
-                        TileClient* t = levelClient->hoveredTile;
-
-                        // If the tile has a body and it is adjacent run interactions
-                        if(t->schema.bodyId > 0)
-                        {
-                            if(t->isCardinallyAdjacent(levelClient->playerCharacter))
-                                requestInteractionsForTile(t->schema.id);
-                            else
-                                displayMessage(std::string("Object is too far away"));
-                        }
-                        // Else issue command to move to tile
-                        else
-                        {
-                            Command cmd;
-                            cmd.type = Command::Type::MoveToTile;
-                            cmd.pack = [t] (sf::Packet &packet) {
-                                packet << sf::Uint32(t->schema.id);
-                            };
-		                    commandQueue.push_back(cmd);
-                        }
-                    }
-                }
-                if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Right))
-                {
-                    // See if a tile is being hovered over
-                    if(levelClient->hoveredTile)
-                    {
-                        TileClient* t = levelClient->hoveredTile;
-                        Command cmd;
-                        cmd.type = Command::Type::PlayerRightClickTile;
-                        cmd.pack = [t] (sf::Packet &packet) {
-                            packet << sf::Uint32(t->schema.id);
-                        };
-		                commandQueue.push_back(cmd);
-                    }
-                }
-
-	            // Exit
-                if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
-                {
-                    disconnect();
-                }
-
-                break;
-
-                case Mode::Loot:
-                {
-	                // Exit
-                    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
-                    {
-                        hud->lootMenu->clear();
-                        changeMode(Mode::Free);
-                    }
-
-                    break;
-                }
-            }
-        }
+        // Update gameplay mode input
+        modeUpdate[mode](gameTime);
     }
 
     return true;
