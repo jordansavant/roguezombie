@@ -7,6 +7,7 @@ enum ClientRequest
     GetInteractionOptions,
     Interaction,
     TransferItem,
+    CloseInventory,
 };
 
 #endif

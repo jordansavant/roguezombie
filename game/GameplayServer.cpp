@@ -269,6 +269,21 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
 
             break;
         }
+        case ClientRequest::CloseInventory:
+        {
+            bit::Output::Debug("Server detect request close inventory");
+
+            unsigned int itemId;
+            packet >> itemId;
+
+            if(player->character->inventoryAccessee)
+            {
+                player->character->inventoryAccessee->inventoryAccessor = NULL;
+                player->character->inventoryAccessee = NULL;
+            }
+
+            break;
+        }
     }
 }
 

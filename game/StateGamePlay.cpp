@@ -189,6 +189,14 @@ void StateGamePlay::modeOnEnterLoot()
 void StateGamePlay::modeOnExitLoot()
 {
     hud->lootMenu->deactivate();
+
+    serverRequest(
+        [](bit::ClientPacket& packet) {
+            packet << sf::Uint32(ClientRequest::CloseInventory);
+        },
+        [](bit::ServerPacket& response){
+        }
+    );
 }
 
 void StateGamePlay::modeOnUpdateLoot(sf::Time &gameTime)
