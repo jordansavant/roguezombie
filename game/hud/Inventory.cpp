@@ -13,13 +13,6 @@ Inventory::Inventory(Hud* _hud)
     originX = 0;
     originY = 0;
 
-    entries = new bit::Label(0, 0, 0, 0, bit::Element::AnchorType::TopLeft);
-    entries->setSfFontSize(24);
-    entries->setSfFont(hud->journalFont);
-    entries->normalColor = sf::Color::White;
-    addChild(entries);
-
-
     /* lool
      __________________________________________
     |   Equiment   |         Inventory         |
@@ -67,8 +60,14 @@ Inventory::Inventory(Hud* _hud)
     secondaryWeaponBox = new bit::Container(150, topOffset + 240, 100, 100, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     equipmentPanel->addChild(secondaryWeaponBox);
 
+}
 
-    // ITEM LISTING
+Inventory::~Inventory()
+{
+    for(unsigned int i=0; i < itemDraggables.size(); i++)
+    {
+        delete itemDraggables[i];
+    }
 }
 
 void Inventory::update(sf::RenderWindow &window, sf::Time &gameTime)
@@ -96,7 +95,13 @@ void Inventory::buildItemList()
         return;
     }
 
+    // clean up
     inventoryPanel->clearChildren();
+    for(unsigned int i=0; i < itemDraggables.size(); i++)
+    {
+        delete itemDraggables[i];
+    }
+    itemDraggables.clear();
 
     float y = 10;
     bit::Label* title = new bit::Label(10, y, 0, 0, bit::Element::AnchorType::TopLeft);
@@ -111,8 +116,12 @@ void Inventory::buildItemList()
     {
         ItemClient* i = &iterator->second;
 
+        Draggable* draggable = new Draggable(hud->state->rogueZombieGame->inputManager);
+        itemDraggables.push_back(draggable);
+
         Inventory* m = this;
-        bit::Label* option = new bit::Label(10, y, 0, 0, bit::Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+        bit::Label* option = new bit::Label(10, y, 0, 0, bit::Element::AnchorType::TopLeft);
+        option->onAfterUpdate = std::bind(&Draggable::focusListener, draggable, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
         option->setSfFontSize(24);
         option->setSfFont(hud->journalFont);
         option->normalColor = sf::Color::White;

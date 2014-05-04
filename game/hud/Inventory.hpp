@@ -6,6 +6,7 @@
 #include "SFML/Graphics.hpp"
 #include "../../bitengine/Gui.hpp"
 #include "../../bitengine/Graphics.hpp"
+#include "Draggable.hpp"
 
 class Hud;
 
@@ -15,7 +16,7 @@ public:
 
     Inventory(Hud* hud);
 
-    bit::Label* entries;
+    virtual ~Inventory();
 
     bit::Container* equipmentPanel;
     bit::Container* inventoryPanel;
@@ -28,6 +29,8 @@ public:
     bit::Container* totemBox;
     bit::Container* primaryWeaponBox;
     bit::Container* secondaryWeaponBox;
+
+    std::vector<Draggable*> itemDraggables;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
