@@ -57,9 +57,8 @@ Inventory::Inventory(Hud* _hud)
     primaryWeaponBox = new bit::Container(150, topOffset + 120, 100, 100, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     equipmentPanel->addChild(primaryWeaponBox);
     
-    secondaryWeaponBox = new bit::Container(150, topOffset + 240, 100, 100, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    secondaryWeaponBox = new bit::Container(150, topOffset + 240, 100, 100, bit::Element::AnchorType::Top, std::bind(&Inventory::droppableListener, this, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     equipmentPanel->addChild(secondaryWeaponBox);
-
 }
 
 Inventory::~Inventory()
@@ -118,6 +117,11 @@ void Inventory::buildItemList()
 
         Draggable* draggable = new Draggable(hud->state->rogueZombieGame->inputManager);
         itemDraggables.push_back(draggable);
+        draggable->onDragStop = [] (Draggable* d, Element* e) -> bool
+        {
+            return false;
+        };
+
 
         Inventory* m = this;
         bit::Label* option = new bit::Label(10, y, 0, 0, bit::Element::AnchorType::TopLeft);
@@ -154,4 +158,51 @@ void Inventory::show()
     relativePosition.x = targetWidth;
     immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, -targetWidth, 0));
     immediateEffect(new bit::FadeEffect(300, 1));
+}
+
+bool Inventory::droppableListener(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime)
+{
+    bit::Container* container = static_cast<bit::Container*>(element);
+    sf::Vector2i pixelPos = sf::Mouse::getPosition(*window);
+
+    if(!container || !this->hud->state->rogueZombieGame->isInFocus)
+    {
+        return false;
+    }
+
+    bool in = false;
+    for(int i = 0; i < container->childElements.size(); i++)
+    {
+        if(container->childElements[i]->canHaveFocus)
+        {
+            if(container->childElements[i]->contains(pixelPos.x, pixelPos.y))
+            {
+                in = true;
+                container->changeFocusedChild(i);
+                break;
+            }
+        }
+    }
+
+    if(!in)
+    {
+        container->clearFocusedChild();
+    }
+
+
+    if(Draggable::draggingElement)
+    {
+        if(this->hud->state->rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
+        {
+            if(Draggable::draggingElement->parentElement)
+            {
+                Container* me = static_cast<Container*>(element);
+                Container* parent = static_cast<Container*>(Draggable::draggingElement->parentElement);
+                parent->moveChild(me, Draggable::draggingElement);
+            }
+        }
+    }
+
+    // Never block child input
+    return false;
 }

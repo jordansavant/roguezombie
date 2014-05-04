@@ -187,5 +187,38 @@ void bit::Container::clearChildren()
 void bit::Container::removeChild(unsigned int index)
 {
     delete childElements[index];
+}
+
+void bit::Container::moveChild(Container* other, unsigned int index)
+{
+    Element* child = childElements[index];
+
+    if(child == focusedChild)
+    {
+        clearFocusedChild();
+    }
+
     childElements.erase(childElements.begin() + index);
+
+    other->addChild(child);
+}
+
+void bit::Container::moveChild(Container* other, Element* child)
+{
+    // find the child
+    bool located = false;
+    unsigned int location = 0;
+    for(unsigned int i=0; i < childElements.size(); i++)
+    {
+        if(childElements[i] == child)
+        {
+            located = true;
+            location = i;
+        }
+    }
+
+    if(located)
+    {
+        moveChild(other, location);
+    }
 }

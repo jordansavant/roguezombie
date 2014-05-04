@@ -44,6 +44,10 @@ namespace bit
 
         virtual void removeChild(unsigned int childIndex);
 
+        virtual void moveChild(Container* other, unsigned int childIndex);
+
+        virtual void moveChild(Container* other, Element* child);
+
     private:
         Element* focusedChild;
         int focusedChildIndex;

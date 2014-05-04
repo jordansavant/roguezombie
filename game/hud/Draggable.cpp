@@ -1,9 +1,12 @@
 #include "Draggable.hpp"
 
 Draggable::Draggable(bit::InputManager* inputManager)
-    : inputManager(inputManager), isDragging(false), dragOriginX(0), dragOriginY(0), elementOriginX(0), elementOriginY(0)
+    : inputManager(inputManager), isDragging(false), dragOriginX(0), dragOriginY(0), elementOriginX(0), elementOriginY(0), onDragStart(NULL), onDragStop(NULL)
 {
 }
+
+bit::Element* Draggable::draggingElement = NULL;
+Draggable* Draggable::draggingDraggable = NULL;
 
 void Draggable::focusListener(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime)
 {
@@ -25,6 +28,14 @@ void Draggable::focusListener(bit::Element* element, sf::RenderWindow* window, s
 
                 elementOriginX = element->relativePosition.x;
                 elementOriginY = element->relativePosition.y;
+
+                draggingElement = element;
+                draggingDraggable = this;
+
+                if(onDragStart)
+                {
+                    onDragStart(this, element);
+                }
             }
         }
     }
@@ -40,6 +51,21 @@ void Draggable::focusListener(bit::Element* element, sf::RenderWindow* window, s
         if(inputManager->isButtonReleased(sf::Mouse::Left))
         {
             isDragging = false;
+
+            bool accept = true;
+            if(onDragStop)
+            {
+                accept = onDragStop(this, element);
+            }
+
+            if(!accept)
+            {
+                element->relativePosition.x = elementOriginX;
+                element->relativePosition.y = elementOriginY;
+            }
+
+            draggingElement = NULL;
+            draggingDraggable = NULL;
         }
     }
 }
