@@ -1,14 +1,14 @@
 #include "Draggable.hpp"
 
-Draggable::Draggable(bit::InputManager* inputManager)
+bit::Draggable::Draggable(bit::InputManager* inputManager)
     : inputManager(inputManager), isDragging(false), dragOriginX(0), dragOriginY(0), elementOriginX(0), elementOriginY(0), onDragStart(NULL), onDragStop(NULL)
 {
 }
 
-bit::Element* Draggable::draggingElement = NULL;
-Draggable* Draggable::draggingDraggable = NULL;
+bit::Element* bit::Draggable::draggingElement = NULL;
+bit::Draggable* bit::Draggable::draggingDraggable = NULL;
 
-void Draggable::focusListener(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime)
+void bit::Draggable::focusListener(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime)
 {
     sf::Vector2i mousePositionInScreen = sf::Mouse::getPosition(*window);
 

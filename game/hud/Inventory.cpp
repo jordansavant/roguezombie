@@ -95,12 +95,13 @@ void Inventory::buildItemList()
     }
 
     // clean up
-    inventoryPanel->clearChildren();
     for(unsigned int i=0; i < itemDraggables.size(); i++)
     {
         delete itemDraggables[i];
     }
     itemDraggables.clear();
+    inventoryPanel->clearChildren();
+
 
     float y = 10;
     bit::Label* title = new bit::Label(10, y, 0, 0, bit::Element::AnchorType::TopLeft);
@@ -116,10 +117,11 @@ void Inventory::buildItemList()
         ItemClient* i = &iterator->second;
 
         Inventory* inventory = this;
-        Draggable* draggable = new Draggable(hud->state->rogueZombieGame->inputManager);
+        bit::Draggable* draggable = new bit::Draggable(hud->state->rogueZombieGame->inputManager);
         itemDraggables.push_back(draggable);
-        draggable->onDragStop = [inventory] (Draggable* d, Element* e) -> bool
+        draggable->onDragStop = [inventory] (bit::Draggable* d, Element* e) -> bool
         {
+            // If dropping into an equipment slot
             for(unsigned int i=0; i < inventory->equipmentPanel->childElements.size(); i++)
             {
                 if(inventory->equipmentPanel->childElements[i]->isInfocus)
@@ -127,8 +129,20 @@ void Inventory::buildItemList()
                     bit::Container* c = static_cast<bit::Container*>(inventory->equipmentPanel->childElements[i]);
                     bit::Container* p = static_cast<bit::Container*>(e->parentElement);
                     p->moveChild(c, e);
+                    e->relativePosition.x = 0;
+                    e->relativePosition.y = 0;
                     return true;
                 }
+            }
+
+            // If dropping into the inventory
+            if(inventory->inventoryPanel->isInfocus)
+            {
+                bit::Container* p = static_cast<bit::Container*>(e->parentElement);
+                p->moveChild(inventory->inventoryPanel, e);
+                e->relativePosition.x = 0;
+                e->relativePosition.y = 0;
+                return true;
             }
 
             return false;
@@ -136,7 +150,7 @@ void Inventory::buildItemList()
 
         Inventory* m = this;
         bit::Label* option = new bit::Label(10, y, 0, 0, bit::Element::AnchorType::TopLeft);
-        option->onAfterUpdate = std::bind(&Draggable::focusListener, draggable, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+        option->onAfterUpdate = std::bind(&bit::Draggable::focusListener, draggable, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
         option->setSfFontSize(24);
         option->setSfFont(hud->journalFont);
         option->normalColor = sf::Color::White;

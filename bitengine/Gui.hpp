@@ -3,6 +3,7 @@
 
 #include "Gui/Checkbox.hpp"
 #include "Gui/Container.hpp"
+#include "Gui/Draggable.hpp"
 #include "Gui/Easing.hpp"
 #include "Gui/Effect.hpp"
 #include "Gui/Element.hpp"
