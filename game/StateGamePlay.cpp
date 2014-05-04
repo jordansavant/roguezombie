@@ -168,6 +168,18 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
         }
     }
 
+    
+    // Inentory hot key
+    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::I))
+    {
+        hud->activateInventory(true);
+    }
+    // Journal hot key
+    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::J))
+    {
+        hud->activateJournal(true);
+    }
+
     // Exit
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
     {
@@ -182,7 +194,7 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
 
 void StateGamePlay::modeOnEnterLoot()
 {
-    hud->activateInventory();
+    hud->activateInventory(false);
     hud->lootMenu->activate();
 }
 

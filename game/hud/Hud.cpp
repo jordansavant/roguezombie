@@ -82,35 +82,38 @@ void Hud::draw(sf::RenderWindow &window, sf::Time &gameTime)
 }
 
 
-void Hud::hideAllMenus()
+void Hud::hideAllMenus(Element* except)
 {
     for(unsigned int i=0; i < submenus.size(); i++)
     {
-        submenus[i]->hide();
+        if(submenus[i] != except)
+        {
+            submenus[i]->hide();
+        }
     }
 }
 
-void Hud::activateJournal()
+void Hud::activateJournal(bool hideIfShowing)
 {
     if(!journal->isShown)
     {
-        hideAllMenus();
+        hideAllMenus(journal);
         journal->show();
     }
-    else
+    else if(hideIfShowing)
     {
         hideAllMenus();
     }
 }
 
-void Hud::activateInventory()
+void Hud::activateInventory(bool hideIfShowing)
 {
     if(!inventory->isShown)
     {
-        hideAllMenus();
+        hideAllMenus(inventory);
         inventory->show();
     }
-    else
+    else if(hideIfShowing)
     {
         hideAllMenus();
     }

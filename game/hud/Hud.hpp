@@ -39,11 +39,11 @@ public:
 
 	void draw(sf::RenderWindow &window, sf::Time &gameTime);
 
-    void hideAllMenus();
+    void hideAllMenus(Element* except = NULL);
 
-    void activateJournal();
+    void activateJournal(bool hideIfShowing = true);
 
-    void activateInventory();
+    void activateInventory(bool hideIfShowing = true);
 
     void displayMessage(std::string &message);
 
