@@ -51,6 +51,7 @@ namespace bit
     private:
         Element* focusedChild;
         int focusedChildIndex;
+        Element* transferChild;
     };
 }
 #endif

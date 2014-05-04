@@ -5,23 +5,26 @@
 #include "../Math/Math.hpp"
 
 bit::Container::Container()
-    : Element(), childElements(), focusedChild(NULL), focusedChildIndex(-1)
+    : Element(), childElements(), focusedChild(NULL), focusedChildIndex(-1), transferChild(NULL)
 {
 }
 
 bit::Container::Container(float relativeX, float relativeY, float width, float height, AnchorType anchorType)
-    : Element(relativeX, relativeY, width, height, anchorType), childElements(), focusedChild(NULL), focusedChildIndex(-1)
+    : Element(relativeX, relativeY, width, height, anchorType), childElements(), focusedChild(NULL), focusedChildIndex(-1), transferChild(NULL)
 {
 }
 
 bit::Container::Container(float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput)
-    : Element(relativeX, relativeY, width, height, anchorType, lambdaListenToInput), childElements(), focusedChild(NULL), focusedChildIndex(-1)
+    : Element(relativeX, relativeY, width, height, anchorType, lambdaListenToInput), childElements(), focusedChild(NULL), focusedChildIndex(-1), transferChild(NULL)
 {
 }
 
 bit::Container::~Container()
 {
     clearChildren();
+
+    if(transferChild)
+        delete transferChild;
 }
 
 void bit::Container::update(sf::RenderWindow &window, sf::Time &gameTime)
@@ -39,10 +42,22 @@ void bit::Container::update(sf::RenderWindow &window, sf::Time &gameTime)
             delete (*it);
             it = childElements.erase(it);
         }
+        // Something is taking over so remove it from the list but dont delete it
+        else if((*it)->transitFromParent)
+        {
+            it = childElements.erase(it);
+        }
         else
         {
             ++it;
         }
+    }
+
+    if(transferChild)
+    {
+        addChild(transferChild);
+        transferChild->transitFromParent = false;
+        transferChild = NULL;
     }
 
     updateInput(window, gameTime);
@@ -198,9 +213,8 @@ void bit::Container::moveChild(Container* other, unsigned int index)
         clearFocusedChild();
     }
 
-    childElements.erase(childElements.begin() + index);
-
-    other->addChild(child);
+    child->transitFromParent = true;
+    other->transferChild = child;
 }
 
 void bit::Container::moveChild(Container* other, Element* child)

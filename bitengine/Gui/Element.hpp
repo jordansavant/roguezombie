@@ -62,6 +62,7 @@ namespace bit
         std::list<Effect*> concurrentEffects;
         sf::RectangleShape debugRect; // debug
         bool removeFromParent;
+        bool transitFromParent;
 
         virtual void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
 

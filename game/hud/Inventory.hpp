@@ -40,8 +40,6 @@ public:
 
     virtual void show();
 
-    bool droppableListener(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime);
-
 };
 
 #endif
