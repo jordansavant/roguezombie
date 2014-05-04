@@ -25,7 +25,7 @@ namespace bit
         static bit::Element* draggingElement;
         static Draggable* draggingDraggable;
 	
-        void focusListener(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime);
+        void update(bit::Element* element, sf::RenderWindow &window, sf::Time &gameTime);
     };
 }
 

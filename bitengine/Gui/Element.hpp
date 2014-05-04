@@ -6,11 +6,14 @@
 #include <queue>
 #include <list>
 #include <functional>
-#include "Effect.hpp"
 #include "../Game/Game.hpp"
+#include "Effect.hpp"
 
 namespace bit
 {
+    class Draggable;
+    class InputManager;
+
     class Element : public sf::FloatRect
     {
     public:
@@ -63,6 +66,7 @@ namespace bit
         sf::RectangleShape debugRect; // debug
         bool removeFromParent;
         bool transitFromParent;
+        Draggable* draggable;
 
         virtual void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
 
@@ -87,6 +91,8 @@ namespace bit
         void updateEffects(sf::RenderWindow &window, sf::Time &gameTime);
 
         sf::Vector2f calculateAnchor(sf::RenderWindow &window);
+
+        void makeDraggable(InputManager*);
     };
 }
 #endif

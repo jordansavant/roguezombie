@@ -61,14 +61,6 @@ Inventory::Inventory(Hud* _hud)
     equipmentPanel->addChild(secondaryWeaponBox);
 }
 
-Inventory::~Inventory()
-{
-    for(unsigned int i=0; i < itemDraggables.size(); i++)
-    {
-        delete itemDraggables[i];
-    }
-}
-
 void Inventory::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     HudMenu::update(window, gameTime);
@@ -95,13 +87,7 @@ void Inventory::buildItemList()
     }
 
     // clean up
-    for(unsigned int i=0; i < itemDraggables.size(); i++)
-    {
-        delete itemDraggables[i];
-    }
-    itemDraggables.clear();
     inventoryPanel->clearChildren();
-
 
     float y = 10;
     bit::Label* title = new bit::Label(10, y, 0, 0, bit::Element::AnchorType::TopLeft);
@@ -116,10 +102,20 @@ void Inventory::buildItemList()
     {
         ItemClient* i = &iterator->second;
 
+        bit::Label* option = new bit::Label(10, y, 0, 0, bit::Element::AnchorType::TopLeft);
+        //option->onAfterUpdate = std::bind(&bit::Draggable::focusListener, draggable, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+        option->setSfFontSize(24);
+        option->setSfFont(hud->journalFont);
+        option->normalColor = sf::Color::White;
+        option->setSfFontString(std::string("- " + Item::getTitle(i->schema.type)));
+        option->canHaveFocus = true;
+        option->paddingRight = 10;
+        option->paddingBottom = 10;
+        inventoryPanel->addChild(option);
+
         Inventory* inventory = this;
-        bit::Draggable* draggable = new bit::Draggable(hud->state->rogueZombieGame->inputManager);
-        itemDraggables.push_back(draggable);
-        draggable->onDragStop = [inventory] (bit::Draggable* d, Element* e) -> bool
+        option->makeDraggable(hud->state->rogueZombieGame->inputManager);
+        option->draggable->onDragStop = [inventory] (bit::Draggable* d, Element* e) -> bool
         {
             // If dropping into an equipment slot
             for(unsigned int i=0; i < inventory->equipmentPanel->childElements.size(); i++)
@@ -147,18 +143,6 @@ void Inventory::buildItemList()
 
             return false;
         };
-
-        Inventory* m = this;
-        bit::Label* option = new bit::Label(10, y, 0, 0, bit::Element::AnchorType::TopLeft);
-        option->onAfterUpdate = std::bind(&bit::Draggable::focusListener, draggable, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
-        option->setSfFontSize(24);
-        option->setSfFont(hud->journalFont);
-        option->normalColor = sf::Color::White;
-        option->setSfFontString(std::string("- " + Item::getTitle(i->schema.type)));
-        option->canHaveFocus = true;
-        option->paddingRight = 10;
-        option->paddingBottom = 10;
-        inventoryPanel->addChild(option);
 
         y += 30;
     }

@@ -4,23 +4,24 @@
 #include <list>
 #include <functional>
 #include "Effect.hpp"
+#include "Draggable.hpp"
 #include "../Game/VideoGame.hpp"
 #include "../Math/Math.hpp"
 
 bit::Element::Element()
-    : sf::FloatRect(), parentElement(NULL), relativePosition(), anchorType(AnchorType::Center), scaleStyle(ScaleStyle::Smooth), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL), onAfterUpdate(NULL), onActivate(NULL), removeFromParent(false), transitFromParent(false)
+    : sf::FloatRect(), parentElement(NULL), relativePosition(), anchorType(AnchorType::Center), scaleStyle(ScaleStyle::Smooth), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL), onAfterUpdate(NULL), onActivate(NULL), removeFromParent(false), transitFromParent(false), draggable(NULL)
 {
 }
 
 bit::Element::Element(float relativeX, float relativeY, float width, float height, AnchorType anchorType)
-    : sf::FloatRect(0, 0, width, height), parentElement(NULL), relativePosition(relativeX, relativeY), anchorType(anchorType), scaleStyle(ScaleStyle::Smooth), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL), onAfterUpdate(NULL), onActivate(NULL), removeFromParent(false), transitFromParent(false)
+    : sf::FloatRect(0, 0, width, height), parentElement(NULL), relativePosition(relativeX, relativeY), anchorType(anchorType), scaleStyle(ScaleStyle::Smooth), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL), onAfterUpdate(NULL), onActivate(NULL), removeFromParent(false), transitFromParent(false), draggable(NULL)
 {
     targetWidth = width;
     targetHeight = height;
 }
 
 bit::Element::Element(float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput)
-    : sf::FloatRect(0, 0, width, height), parentElement(NULL), relativePosition(relativeX, relativeY), anchorType(anchorType), scaleStyle(ScaleStyle::Smooth), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(true), lambdaListenToInput(lambdaListenToInput), onAfterUpdate(NULL), onActivate(NULL), removeFromParent(false), transitFromParent(false)
+    : sf::FloatRect(0, 0, width, height), parentElement(NULL), relativePosition(relativeX, relativeY), anchorType(anchorType), scaleStyle(ScaleStyle::Smooth), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(true), lambdaListenToInput(lambdaListenToInput), onAfterUpdate(NULL), onActivate(NULL), removeFromParent(false), transitFromParent(false), draggable(NULL)
 {
     targetWidth = width;
     targetHeight = height;
@@ -29,6 +30,8 @@ bit::Element::Element(float relativeX, float relativeY, float width, float heigh
 bit::Element::~Element()
 {
     clearEffects();
+
+    delete draggable;
 }
 
 void bit::Element::updateTargets(sf::RenderWindow &window, sf::Time &gameTime)
@@ -122,6 +125,13 @@ void bit::Element::update(sf::RenderWindow &window, sf::Time &gameTime)
     // Allow elements to update their items with real size data
     updateReals(window, gameTime);
 
+    // Draggable
+    if(draggable)
+    {
+        draggable->update(this, window, gameTime);
+    }
+
+    // Custom updater
     if(onAfterUpdate)
     {
         onAfterUpdate(this, &window, &gameTime);
@@ -243,5 +253,13 @@ sf::Vector2f bit::Element::calculateAnchor(sf::RenderWindow &window)
             return sf::Vector2f(0, 0 - height / 2 + parentHeight / 2);
         case AnchorType::Center:
             return sf::Vector2f(0 - width / 2 + parentWidth / 2,  0 - height / 2 + parentHeight / 2);
+    }
+}
+
+void bit::Element::makeDraggable(bit::InputManager* inputManager)
+{
+    if(draggable == NULL)
+    {
+        draggable = new Draggable(inputManager);
     }
 }

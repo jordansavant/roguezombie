@@ -15,8 +15,6 @@ public:
 
     Inventory(Hud* hud);
 
-    virtual ~Inventory();
-
     bit::Container* equipmentPanel;
     bit::Container* inventoryPanel;
 
@@ -28,8 +26,6 @@ public:
     bit::Container* totemBox;
     bit::Container* primaryWeaponBox;
     bit::Container* secondaryWeaponBox;
-
-    std::vector<bit::Draggable*> itemDraggables;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 

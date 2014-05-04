@@ -8,9 +8,9 @@ bit::Draggable::Draggable(bit::InputManager* inputManager)
 bit::Element* bit::Draggable::draggingElement = NULL;
 bit::Draggable* bit::Draggable::draggingDraggable = NULL;
 
-void bit::Draggable::focusListener(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime)
+void bit::Draggable::update(bit::Element* element, sf::RenderWindow &window, sf::Time &gameTime)
 {
-    sf::Vector2i mousePositionInScreen = sf::Mouse::getPosition(*window);
+    sf::Vector2i mousePositionInScreen = sf::Mouse::getPosition(window);
 
     // If we are not dragging, recognize the drag
     if(!isDragging)
