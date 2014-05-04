@@ -17,7 +17,23 @@ public:
 
     bit::Label* entries;
 
+    bit::Container* equipmentPanel;
+    bit::Container* inventoryPanel;
+
+    bit::Container* headBox;
+    bit::Container* chestBox;
+    bit::Container* handBox;
+    bit::Container* legBox;
+    bit::Container* footBox;
+    bit::Container* totemBox;
+    bit::Container* primaryWeaponBox;
+    bit::Container* secondaryWeaponBox;
+
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
+
+    virtual void hide();
+
+    virtual void show();
 
 };
 
