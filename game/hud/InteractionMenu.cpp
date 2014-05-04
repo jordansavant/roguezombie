@@ -12,7 +12,7 @@
 #include "../TileClient.hpp"
 
 InteractionMenu::InteractionMenu(Hud* _hud)
-    : bit::Container(0, 50, 300, 400, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(_hud), isActive(true)
+    : bit::Container(50, 0, 300, 400, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(_hud), isActive(true)
 {
 }
 

@@ -15,6 +15,7 @@
 #include "characters/ZombieClient.hpp"
 #include "hud/Hud.hpp"
 #include "hud/InteractionMenu.hpp"
+#include "hud/Inventory.hpp"
 #include "hud/LootMenu.hpp"
 #include "items/ItemClient.hpp"
 #include <sstream>
@@ -439,6 +440,7 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 break;
             case ServerEvent::ItemAdded:
                 levelClient->playerCharacter->handleServerEventPacket_itemAdded(packet);
+                hud->inventory->buildItemList();
                 break;
         }
     }

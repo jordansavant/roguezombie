@@ -66,6 +66,9 @@ Inventory::Inventory(Hud* _hud)
     
     secondaryWeaponBox = new bit::Container(150, topOffset + 240, 100, 100, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     equipmentPanel->addChild(secondaryWeaponBox);
+
+
+    // ITEM LISTING
 }
 
 void Inventory::update(sf::RenderWindow &window, sf::Time &gameTime)
@@ -83,23 +86,43 @@ void Inventory::update(sf::RenderWindow &window, sf::Time &gameTime)
     handBox->opacity = opacity;
     primaryWeaponBox->opacity = opacity;
     secondaryWeaponBox->opacity = opacity;
+}
 
-    //headBox->opacity = opacity;
-
-    entries->opacity = opacity;
-
+void Inventory::buildItemList()
+{
     LevelClient* levelClient = hud->state->levelClient;
-    if(levelClient->playerCharacter)
+    if(levelClient->playerCharacter == NULL)
     {
-        std::string entry("Inventory\n");
-        for(auto iterator = levelClient->playerCharacter->inventoryClient.itemClients.begin(); iterator != levelClient->playerCharacter->inventoryClient.itemClients.end(); iterator++)
-        {
-            // Level 1
-            ItemClient* i = &iterator->second;
-            entry += "- " + Item::getTitle(i->schema.type) + "\n";
-        }
-        entries->setSfFontString(entry);
-        entries->opacity = opacity;
+        return;
+    }
+
+    inventoryPanel->clearChildren();
+
+    float y = 10;
+    bit::Label* title = new bit::Label(10, y, 0, 0, bit::Element::AnchorType::TopLeft);
+    title->setSfFontSize(24);
+    title->setSfFont(hud->journalFont);
+    title->normalColor = sf::Color::White;
+    title->setSfFontString(std::string("Inventory"));
+    inventoryPanel->addChild(title);
+    y += 30;
+
+    for(auto iterator = levelClient->playerCharacter->inventoryClient.itemClients.begin(); iterator != levelClient->playerCharacter->inventoryClient.itemClients.end(); iterator++)
+    {
+        ItemClient* i = &iterator->second;
+
+        Inventory* m = this;
+        bit::Label* option = new bit::Label(10, y, 0, 0, bit::Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+        option->setSfFontSize(24);
+        option->setSfFont(hud->journalFont);
+        option->normalColor = sf::Color::White;
+        option->setSfFontString(std::string("- " + Item::getTitle(i->schema.type)));
+        option->canHaveFocus = true;
+        option->paddingRight = 10;
+        option->paddingBottom = 10;
+        inventoryPanel->addChild(option);
+
+        y += 30;
     }
 }
 
@@ -115,6 +138,7 @@ void Inventory::hide()
 
 void Inventory::show()
 {
+    buildItemList();
     canHaveFocus = true;
     isShown = true;
     clearEffects();

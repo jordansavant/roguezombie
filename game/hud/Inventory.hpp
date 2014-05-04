@@ -31,6 +31,8 @@ public:
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
+    void buildItemList();
+
     virtual void hide();
 
     virtual void show();

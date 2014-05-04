@@ -12,7 +12,7 @@
 #include "../TileClient.hpp"
 
 LootMenu::LootMenu(Hud* _hud)
-    : bit::Container(0, 50, 300, 400, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(_hud), inventory(), isActive(false)
+    : bit::Container(50, 0, 300, 400, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(_hud), inventory(), isActive(false)
 {
     entries = new bit::Label(0, 0, 0, 0, bit::Element::AnchorType::TopLeft);
     entries->setSfFontSize(24);
