@@ -34,11 +34,19 @@ public:
     bit::GameTimer moveTimer;
     std::vector<Light*> lights;
     std::vector<Mission*> missions;
+    Item* equipmentSlot_head;
+    //Item* equipmentSlot_chest;
+    //Item* equipmentSlot_legs;
+    //Item* equipmentSlot_feet;
+    //Item* equipmentSlot_hands;
+    //Item* equipmentSlot_totem;
+    //Item* equipmentSlot_weaponPrimary;
+    //Item* equipmentSlot_weaponSecondary;
 
 	struct Schema
 	{
         Schema()
-           : maxHealth(0), isPlayerCharacter(false), clientId(0), player(NULL), type(Type::None), health(0)
+           : maxHealth(0), isPlayerCharacter(false), clientId(0), player(NULL), type(Type::None), health(0), itemId_equipmentSlot_head(0)
         {
         }
 
@@ -48,6 +56,7 @@ public:
         Player* player;
         Type type;
         int health;
+        unsigned int itemId_equipmentSlot_head;
 
         friend sf::Packet& operator <<(sf::Packet& packet, const Schema &schema)
         {
@@ -56,6 +65,7 @@ public:
             packet << sf::Uint32(schema.clientId);
             packet << sf::Uint32(schema.type);
             packet << sf::Int32(schema.health);
+            packet << sf::Uint32(schema.itemId_equipmentSlot_head);
             return packet;
         }
         friend sf::Packet& operator >>(sf::Packet& packet, Schema &schema)
@@ -65,6 +75,7 @@ public:
             packet >> schema.clientId;
             bit::NetworkHelper::unpackEnum<sf::Uint32, Character::Type>(packet, schema.type);
             packet >> schema.health;
+            packet >> schema.itemId_equipmentSlot_head;
             return packet;
         }
 	};
@@ -73,6 +84,12 @@ public:
     virtual void load(Level* level, unsigned int id, Type type, float x, float y, float width, float height);
 
     virtual void update(sf::Time &gameTime);
+
+    virtual bool equipHeadFromInventory(unsigned int itemId);
+
+    virtual bool equipHead(Item* item);
+
+    virtual void unequipHead();
 
     virtual void setControllingPlayer(Player* player);
 

@@ -18,6 +18,10 @@ public:
     CharacterClient();
 
 	Character::Schema schema;
+
+    bool has_equipmentSlot_head;
+    ItemClient equipmentSlot_head;
+    
     std::map<unsigned int, MissionClient> missionClients;
 
     virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);

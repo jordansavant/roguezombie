@@ -1,7 +1,7 @@
 #include "CharacterClient.hpp"
 
 CharacterClient::CharacterClient()
-    : schema()
+    : schema(), has_equipmentSlot_head(false)
 {
 }
 
@@ -12,6 +12,13 @@ void CharacterClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 
     // Character
     packet >> schema;
+
+    // Equipment
+    packet >> has_equipmentSlot_head;
+    if(has_equipmentSlot_head)
+    {
+        equipmentSlot_head.handleSnapshot(packet);
+    }
 
     // Mission Clientside
     bool hasMissionUpdate;

@@ -132,6 +132,9 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
         Item* magnum = Item::create(Item::Type::Magnum357);
         magnum->schema.id = getNextItemId();
         p->character->addItemToInventory(magnum);
+        Item* hardhat = Item::create(Item::Type::HardHat);
+        hardhat->schema.id = getNextItemId();
+        p->character->equipHead(hardhat);
     }
 }
 
@@ -281,6 +284,17 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
                 player->character->inventoryAccessee->inventoryAccessor = NULL;
                 player->character->inventoryAccessee = NULL;
             }
+
+            break;
+        }
+        case ClientRequest::EquipHead:
+        {
+            bit::Output::Debug("Server detect request equip head request");
+
+            unsigned int itemId;
+            packet >> itemId;
+
+            responsePacket << player->character->equipHeadFromInventory(itemId);
 
             break;
         }

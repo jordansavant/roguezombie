@@ -15,7 +15,7 @@
 #include "items/Item.hpp"
 
 Character::Character()
-    : Body(), moveTimer(.75f), schema()
+    : Body(), moveTimer(.75f), equipmentSlot_head(NULL), schema()
 {
 }
 
@@ -25,6 +25,8 @@ Character::~Character()
     {
         delete missions[i];
     }
+
+    delete equipmentSlot_head;
 }
 
 void Character::load(Level* _level, unsigned int _id, Type _type, float _x, float _y, float _width, float _height)
@@ -73,6 +75,43 @@ void Character::update(sf::Time &gameTime)
     // See if any missions are complete // TODO: distribute into a less updated manner
     checkMissions();
 }
+
+
+
+
+bool Character::equipHeadFromInventory(unsigned int itemId)
+{
+    Item* item = inventory->removeItem(itemId);
+    if(item)
+    {
+        unequipHead();
+        return equipHead(item);
+    }
+    return false;
+}
+
+bool Character::equipHead(Item* item)
+{
+    if(!equipmentSlot_head)
+    {
+        equipmentSlot_head = item;
+        schema.itemId_equipmentSlot_head = item->schema.id;
+        return true;
+    }
+    return false;
+}
+
+void Character::unequipHead()
+{
+    if(equipmentSlot_head)
+    {
+        schema.itemId_equipmentSlot_head = 0;
+        inventory->addItem(equipmentSlot_head);
+    }
+}
+
+
+
 
 void Character::setControllingPlayer(Player* player)
 {
@@ -215,6 +254,17 @@ void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
 
     // Character
     packet << schema;
+
+    // Equipment
+    if(equipmentSlot_head)
+    {
+        packet << true;
+        equipmentSlot_head->prepareSnapshot(packet);
+    }
+    else
+    {
+        packet << false;
+    }
 
     // Missions
     packet << full;

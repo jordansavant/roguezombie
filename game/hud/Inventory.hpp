@@ -8,6 +8,7 @@
 #include "../../bitengine/Graphics.hpp"
 
 class Hud;
+class ItemClient;
 
 class Inventory : public HudMenu
 {
@@ -29,7 +30,11 @@ public:
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
+    void buildEquipment();
+
     void buildItemList();
+
+    bit::Label* buildItem(ItemClient* i, float x, float y);
 
     virtual void hide();
 
