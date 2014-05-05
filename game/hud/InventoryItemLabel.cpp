@@ -1,4 +1,5 @@
 #include "InventoryItemLabel.hpp"
+#include "InventoryEquipmentSlot.hpp"
 #include "Inventory.hpp"
 #include "Hud.hpp"
 #include "../StateGamePlay.hpp"
@@ -24,16 +25,16 @@ InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, f
         {
             if(inventory->equipmentPanel->childElements[i]->isInfocus)
             {
-                bit::Container* c = static_cast<bit::Container*>(inventory->equipmentPanel->childElements[i]);
-                bit::Container* p = static_cast<bit::Container*>(e->parentElement);
-                p->moveChild(c, e);
+                InventoryEquipmentSlot* slot = static_cast<InventoryEquipmentSlot*>(inventory->equipmentPanel->childElements[i]);
+                bit::Container* currentParent = static_cast<bit::Container*>(e->parentElement);
+                currentParent->moveChild(slot, e);
                 e->relativePosition.x = 0;
                 e->relativePosition.y = 0;
 
-
                 ItemClient* itemx = item;
-                if(inventory->equipmentPanel->childElements[i] == inventory->headBox)
+                if(slot == inventory->headBox)
                 {
+                    // Send the request to change the head equipment
                     inventory->hud->state->serverRequest(
                         [itemx](bit::ClientPacket& requestPacket)
                         {

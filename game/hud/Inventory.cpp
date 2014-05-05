@@ -1,6 +1,7 @@
 #include "Inventory.hpp"
 #include "Hud.hpp"
 #include "InventoryItemLabel.hpp"
+#include "InventoryEquipmentSlot.hpp"
 #include "../../bitengine/Input.hpp"
 #include "../ClientRequest.hpp"
 #include "../StateGamePlay.hpp"
@@ -38,28 +39,29 @@ Inventory::Inventory(Hud* _hud)
 
     // EQUIPMENT BOXES
     int topOffset = 150;
-    headBox = new bit::Container(0, topOffset + 0, 200, 100, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+
+    headBox = new InventoryEquipmentSlot(this, 0, topOffset + 0, 200, 100, bit::Element::AnchorType::Top);
     equipmentPanel->addChild(headBox);
     
-    chestBox = new bit::Container(0, topOffset + 120, 160, 100, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    chestBox = new InventoryEquipmentSlot(this, 0, topOffset + 120, 160, 100, bit::Element::AnchorType::Top);
     equipmentPanel->addChild(chestBox);
     
-    legBox = new bit::Container(0, topOffset + 240, 160, 60, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    legBox = new InventoryEquipmentSlot(this, 0, topOffset + 240, 160, 60, bit::Element::AnchorType::Top);
     equipmentPanel->addChild(legBox);
     
-    footBox = new bit::Container(0, topOffset + 320, 160, 30, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    footBox = new InventoryEquipmentSlot(this, 0, topOffset + 320, 160, 30, bit::Element::AnchorType::Top);
     equipmentPanel->addChild(footBox);
     
-    totemBox = new bit::Container(-130, topOffset + 120, 60, 60, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    totemBox = new InventoryEquipmentSlot(this, -130, topOffset + 120, 60, 60, bit::Element::AnchorType::Top);
     equipmentPanel->addChild(totemBox);
     
-    handBox = new bit::Container(-130, topOffset + 200, 60, 60, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    handBox = new InventoryEquipmentSlot(this, -130, topOffset + 200, 60, 60, bit::Element::AnchorType::Top);
     equipmentPanel->addChild(handBox);
     
-    primaryWeaponBox = new bit::Container(150, topOffset + 120, 100, 100, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    primaryWeaponBox = new InventoryEquipmentSlot(this, 150, topOffset + 120, 100, 100, bit::Element::AnchorType::Top);
     equipmentPanel->addChild(primaryWeaponBox);
     
-    secondaryWeaponBox = new bit::Container(150, topOffset + 240, 100, 100, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    secondaryWeaponBox = new InventoryEquipmentSlot(this, 150, topOffset + 240, 100, 100, bit::Element::AnchorType::Top);
     equipmentPanel->addChild(secondaryWeaponBox);
 }
 
@@ -78,6 +80,8 @@ void Inventory::update(sf::RenderWindow &window, sf::Time &gameTime)
     handBox->opacity = opacity;
     primaryWeaponBox->opacity = opacity;
     secondaryWeaponBox->opacity = opacity;
+
+    buildEquipment();
 }
 
 void Inventory::buildEquipment()
@@ -89,11 +93,21 @@ void Inventory::buildEquipment()
     }
 
     // HEAD
-    headBox->clearChildren();
-    if(levelClient->playerCharacter->has_equipmentSlot_head)
+    // If the gear is not present, add it
+    if(levelClient->playerCharacter->has_equipmentSlot_head && headBox->equippedItemLabel == NULL)
     {
-        bit::Label* label = buildItem(&levelClient->playerCharacter->equipmentSlot_head, 0, 0);
-        headBox->addChild(label);
+        headBox->addItemLabel(buildItem(&levelClient->playerCharacter->equipmentSlot_head, 0, 0));
+    }
+    // If the gear is present but does not match, remove it
+    else if(levelClient->playerCharacter->has_equipmentSlot_head && headBox->equippedItemLabel->item->schema.id != levelClient->playerCharacter->equipmentSlot_head.schema.id)
+    {
+        headBox->removeItemLabel();
+        headBox->addItemLabel(buildItem(&levelClient->playerCharacter->equipmentSlot_head, 0, 0));
+    }
+    // If the gear is present but not on the player, remove it
+    else if(!levelClient->playerCharacter->has_equipmentSlot_head)
+    {
+        headBox->removeItemLabel();
     }
 }
 

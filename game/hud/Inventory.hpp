@@ -10,6 +10,7 @@
 class Hud;
 class ItemClient;
 class InventoryItemLabel;
+class InventoryEquipmentSlot;
 
 class Inventory : public HudMenu
 {
@@ -20,14 +21,14 @@ public:
     bit::Container* equipmentPanel;
     bit::Container* inventoryPanel;
 
-    bit::Container* headBox;
-    bit::Container* chestBox;
-    bit::Container* handBox;
-    bit::Container* legBox;
-    bit::Container* footBox;
-    bit::Container* totemBox;
-    bit::Container* primaryWeaponBox;
-    bit::Container* secondaryWeaponBox;
+    InventoryEquipmentSlot* headBox;
+    InventoryEquipmentSlot* chestBox;
+    InventoryEquipmentSlot* handBox;
+    InventoryEquipmentSlot* legBox;
+    InventoryEquipmentSlot* footBox;
+    InventoryEquipmentSlot* totemBox;
+    InventoryEquipmentSlot* primaryWeaponBox;
+    InventoryEquipmentSlot* secondaryWeaponBox;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
