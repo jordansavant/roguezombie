@@ -53,6 +53,7 @@ Item* Item::removeItem(unsigned int itemId)
         if(item->schema.id == itemId)
         {
             // Remove it from the list and return the pointer
+            item->onBeforeRemoveFromParent();
             items.erase(it);
             item->parentItem = NULL;
             return item;
@@ -131,6 +132,19 @@ void Item::onAddToNewParent()
     }
 }
 
+void Item::onBeforeRemoveFromParent()
+{
+    Body* b = getParentBody();
+    if(b->schema.type == Body::Type::Character)
+    {
+        Character* c = static_cast<Character*>(b);
+        if(c->schema.isPlayerCharacter)
+        {
+            c->level->server->sendEventToClient(*c->schema.player->client, std::bind(&Item::prepareServerEventPacket_itemRemoved, this, std::placeholders::_1));
+        }
+    }
+}
+
 void Item::prepareSnapshot(bit::ServerPacket &packet)
 {
     packet << schema;
@@ -146,6 +160,13 @@ void Item::prepareSnapshot(bit::ServerPacket &packet)
 void Item::prepareServerEventPacket_itemAdded(bit::ServerPacket &packet)
 {
     packet << sf::Uint32(ServerEvent::ItemAdded);
+    packIdHierarchy(packet);
+    prepareSnapshot(packet);
+}
+
+void Item::prepareServerEventPacket_itemRemoved(bit::ServerPacket &packet)
+{
+    packet << sf::Uint32(ServerEvent::ItemRemoved);
     packIdHierarchy(packet);
     prepareSnapshot(packet);
 }

@@ -44,6 +44,7 @@ public:
 
         friend sf::Packet& operator <<(sf::Packet& packet, const Schema &schema)
         {
+            packet << sf::Uint32(schema.id);
             packet << sf::Uint32(schema.CategoryBase);
             packet << sf::Uint32(schema.CategoryArmor);
             packet << sf::Uint32(schema.CategoryWeapon);
@@ -56,6 +57,7 @@ public:
 
         friend sf::Packet& operator >>(sf::Packet& packet, Schema &schema)
         {
+            packet >> schema.id;
             packet >> schema.CategoryBase;
             packet >> schema.CategoryArmor;
             packet >> schema.CategoryWeapon;
@@ -81,6 +83,8 @@ public:
 
     void onAddToNewParent();
 
+    void onBeforeRemoveFromParent();
+
     Body* getParentBody();
 
     void fillIdHierarchy(std::vector<unsigned int> &fill);
@@ -90,6 +94,8 @@ public:
     void prepareSnapshot(bit::ServerPacket &packet);
 
     void prepareServerEventPacket_itemAdded(bit::ServerPacket &packet);
+
+    void prepareServerEventPacket_itemRemoved(bit::ServerPacket &packet);
 
     static std::string getTitle(Type type);
 

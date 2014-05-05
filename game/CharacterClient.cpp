@@ -94,3 +94,33 @@ void CharacterClient::handleServerEventPacket_itemAdded(bit::ServerPacket &packe
         level->state->displayPlayerMessage(this, std::string(Item::getTitle(inventoryClient.itemClients[itemId].schema.type) + " gained"));
     }
 }
+
+void CharacterClient::handleServerEventPacket_itemRemoved(bit::ServerPacket &packet)
+{
+    // depth includes all parents and the new item id
+    unsigned int depth;
+    packet >> depth;
+
+    unsigned int inventory_id;
+    packet >> inventory_id;
+    ItemClient* ic = &inventoryClient;
+
+    // Adding an item to the inventory normally
+    // skip the first and last ID as that is our inventory then new item
+    for(unsigned int i=1; i < depth - 1; i++)
+    {
+        unsigned int itemId;
+        packet >> itemId;
+        ic = &inventoryClient.itemClients[itemId];
+    }
+
+    if(ic)
+    {
+        unsigned int itemId;
+        packet >> itemId;
+
+        // Remove the item
+        level->state->displayPlayerMessage(this, std::string(Item::getTitle(inventoryClient.itemClients[itemId].schema.type) + " removed"));
+        inventoryClient.itemClients.erase(itemId);
+    }
+}

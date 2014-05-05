@@ -441,6 +441,12 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
             case ServerEvent::ItemAdded:
                 levelClient->playerCharacter->handleServerEventPacket_itemAdded(packet);
                 hud->inventory->buildItemList();
+                hud->inventory->buildEquipment();
+                break;
+            case ServerEvent::ItemRemoved:
+                levelClient->playerCharacter->handleServerEventPacket_itemRemoved(packet);
+                hud->inventory->buildItemList();
+                hud->inventory->buildEquipment();
                 break;
         }
     }

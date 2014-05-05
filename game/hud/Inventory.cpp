@@ -1,6 +1,8 @@
 #include "Inventory.hpp"
 #include "Hud.hpp"
+#include "InventoryItemLabel.hpp"
 #include "../../bitengine/Input.hpp"
+#include "../ClientRequest.hpp"
 #include "../StateGamePlay.hpp"
 #include "../LevelClient.hpp"
 #include "../CharacterClient.hpp"
@@ -119,56 +121,16 @@ void Inventory::buildItemList()
     {
         ItemClient* i = &iterator->second;
 
-        bit::Label* option = buildItem(i, 10, y);
+        InventoryItemLabel* option = buildItem(i, 10, y);
         inventoryPanel->addChild(option);
 
         y += 30;
     }
 }
 
-bit::Label* Inventory::buildItem(ItemClient* i, float x, float y)
+InventoryItemLabel* Inventory::buildItem(ItemClient* item, float x, float y)
 {
-    bit::Label* option = new bit::Label(x, y, 0, 0, bit::Element::AnchorType::TopLeft);
-    option->setSfFontSize(24);
-    option->setSfFont(hud->journalFont);
-    option->normalColor = sf::Color::White;
-    option->setSfFontString(std::string("- " + Item::getTitle(i->schema.type)));
-    option->canHaveFocus = true;
-    option->paddingRight = 10;
-    option->paddingBottom = 10;
-
-    Inventory* inventory = this;
-    option->makeDraggable(hud->state->rogueZombieGame->inputManager);
-    option->draggable->onDragStop = [inventory] (bit::Draggable* d, Element* e) -> bool
-    {
-        // If dropping into an equipment slot
-        for(unsigned int i=0; i < inventory->equipmentPanel->childElements.size(); i++)
-        {
-            if(inventory->equipmentPanel->childElements[i]->isInfocus)
-            {
-                bit::Container* c = static_cast<bit::Container*>(inventory->equipmentPanel->childElements[i]);
-                bit::Container* p = static_cast<bit::Container*>(e->parentElement);
-                p->moveChild(c, e);
-                e->relativePosition.x = 0;
-                e->relativePosition.y = 0;
-                return true;
-            }
-        }
-
-        // If dropping into the inventory
-        if(inventory->inventoryPanel->isInfocus)
-        {
-            bit::Container* p = static_cast<bit::Container*>(e->parentElement);
-            p->moveChild(inventory->inventoryPanel, e);
-            e->relativePosition.x = 0;
-            e->relativePosition.y = 0;
-            return true;
-        }
-
-        return false;
-    };
-
-    return option;
+    return new InventoryItemLabel(this, item, x, y, bit::Element::AnchorType::TopLeft);
 }
 
 void Inventory::hide()

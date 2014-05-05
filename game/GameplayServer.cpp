@@ -134,7 +134,7 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
         p->character->addItemToInventory(magnum);
         Item* hardhat = Item::create(Item::Type::HardHat);
         hardhat->schema.id = getNextItemId();
-        p->character->equipHead(hardhat);
+        p->character->addItemToInventory(hardhat);
     }
 }
 

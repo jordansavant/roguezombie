@@ -7,6 +7,7 @@ enum ServerEvent
     MissionAssigned,
     MissionCompleted,
     ItemAdded,
+    ItemRemoved,
 };
 
 #endif

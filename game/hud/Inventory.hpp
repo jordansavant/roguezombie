@@ -9,6 +9,7 @@
 
 class Hud;
 class ItemClient;
+class InventoryItemLabel;
 
 class Inventory : public HudMenu
 {
@@ -34,7 +35,7 @@ public:
 
     void buildItemList();
 
-    bit::Label* buildItem(ItemClient* i, float x, float y);
+    InventoryItemLabel* buildItem(ItemClient* i, float x, float y);
 
     virtual void hide();
 
