@@ -13,7 +13,6 @@ InventoryEquipmentSlot::InventoryEquipmentSlot(Inventory* inventory, float relat
 
 void InventoryEquipmentSlot::addItemLabel(InventoryItemLabel* label)
 {
-    equippedItemLabel = label;
     addChild(label);
 }
 
@@ -21,6 +20,13 @@ void InventoryEquipmentSlot::removeItemLabel()
 {
     equippedItemLabel = NULL;
     clearChildren();
+}
+
+unsigned int InventoryEquipmentSlot::addChild(Element* child)
+{
+    InventoryItemLabel* label = static_cast<InventoryItemLabel*>(child);
+    equippedItemLabel = label;
+    return bit::Container::addChild(child);
 }
 
 void InventoryEquipmentSlot::moveChild(Container* other, unsigned int index)

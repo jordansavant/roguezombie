@@ -18,6 +18,7 @@ public:
 
     Inventory(Hud* hud);
 
+    bit::GameTimer refreshTimer;
     bit::Container* equipmentPanel;
     bit::Container* inventoryPanel;
 

@@ -9,6 +9,7 @@ enum ClientRequest
     TransferItem,
     CloseInventory,
     EquipHead,
+    UnequipHead,
 };
 
 #endif

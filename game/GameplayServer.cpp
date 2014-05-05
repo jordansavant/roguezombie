@@ -298,6 +298,14 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
 
             break;
         }
+        case ClientRequest::UnequipHead:
+        {
+            bit::Output::Debug("Server detect request unequip head request");
+
+            player->character->unequipHead();
+
+            break;
+        }
     }
 }
 

@@ -11,7 +11,7 @@
 #include "../mission/MissionClient.hpp"
 
 Inventory::Inventory(Hud* _hud)
-    : HudMenu(_hud, 0, 0, 1300, 720, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3))
+    : HudMenu(_hud, 0, 0, 1300, 720, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), refreshTimer(1)
 {
     originX = 0;
     originY = 0;
@@ -81,7 +81,10 @@ void Inventory::update(sf::RenderWindow &window, sf::Time &gameTime)
     primaryWeaponBox->opacity = opacity;
     secondaryWeaponBox->opacity = opacity;
 
-    buildEquipment();
+    if(refreshTimer.update(gameTime))
+    {
+        buildEquipment();
+    }
 }
 
 void Inventory::buildEquipment()

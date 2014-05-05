@@ -105,8 +105,9 @@ void Character::unequipHead()
 {
     if(equipmentSlot_head)
     {
-        schema.itemId_equipmentSlot_head = 0;
         inventory->addItem(equipmentSlot_head);
+        schema.itemId_equipmentSlot_head = 0;
+        equipmentSlot_head = NULL;
     }
 }
 

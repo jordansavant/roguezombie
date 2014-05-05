@@ -23,9 +23,10 @@ InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, f
         // If dropping into an equipment slot
         for(unsigned int i=0; i < inventory->equipmentPanel->childElements.size(); i++)
         {
-            if(inventory->equipmentPanel->childElements[i]->isInfocus)
+            // If the slot is not already equipped with the item
+            InventoryEquipmentSlot* slot = static_cast<InventoryEquipmentSlot*>(inventory->equipmentPanel->childElements[i]);
+            if(slot->isInfocus && slot->equippedItemLabel != e)
             {
-                InventoryEquipmentSlot* slot = static_cast<InventoryEquipmentSlot*>(inventory->equipmentPanel->childElements[i]);
                 bit::Container* currentParent = static_cast<bit::Container*>(e->parentElement);
                 currentParent->moveChild(slot, e);
                 e->relativePosition.x = 0;
@@ -56,6 +57,27 @@ InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, f
         // If dropping into the inventory
         if(inventory->inventoryPanel->isInfocus)
         {
+            // See which equipment slot it came from
+            for(unsigned int i=0; i < inventory->equipmentPanel->childElements.size(); i++)
+            {
+                InventoryEquipmentSlot* slot = static_cast<InventoryEquipmentSlot*>(inventory->equipmentPanel->childElements[i]);
+                if(slot->equippedItemLabel == e)
+                {
+                    // If it did come from an equipment slot send the unequip packet
+                    if(slot == inventory->headBox)
+                    {
+                        inventory->hud->state->serverRequest(
+                            [](bit::ClientPacket& requestPacket)
+                            {
+                                requestPacket <<sf::Uint32(ClientRequest::UnequipHead);
+                            },
+                            [](bit::ServerPacket& responsePacket)
+                            {
+                            }
+                        );
+                    }
+                }
+            }
             bit::Container* p = static_cast<bit::Container*>(e->parentElement);
             p->moveChild(inventory->inventoryPanel, e);
             e->relativePosition.x = 0;

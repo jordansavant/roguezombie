@@ -23,6 +23,8 @@ public:
 
     void removeItemLabel();
 
+    virtual unsigned int addChild(Element* child);
+
     virtual void moveChild(Container* other, unsigned int childIndex);
 
 };
