@@ -20,8 +20,15 @@ public:
     ZombieClient();
 
     float renderX, renderY;
-    bit::Sprite* sprite;
-    unsigned int quadIndex;
+
+    bit::Sprite* headSprite;
+    unsigned int headQuadIndex;
+    bit::Sprite* frontarmSprite;
+    unsigned int frontarmQuadIndex;
+    bit::Sprite* bodySprite;
+    unsigned int bodyQuadIndex;
+    bit::Sprite* shadowSprite;
+    unsigned int shadowQuadIndex;
 
     void clientLoad(LevelClient* level);
 

@@ -4,4 +4,8 @@ Door,154,2,64,64,0,0,64,64,false
 Ogre,2,2,84,116,0,0,84,116,false
 Wall,88,2,64,64,0,0,64,64,false
 Water,88,68,64,32,0,0,64,32,false
-Zombie,220,2,21,29,0,0,21,29,false
+Zombie,177,95,21,29,0,0,21,29,false
+Zombie_Body,154,95,21,29,0,0,21,29,false
+Zombie_FrontArm,220,64,21,29,0,0,21,29,false
+Zombie_Head,220,33,21,29,0,0,21,29,false
+Zombie_Shadow,220,2,21,29,0,0,21,29,false

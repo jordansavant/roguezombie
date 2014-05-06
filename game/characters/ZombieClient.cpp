@@ -20,17 +20,26 @@ void ZombieClient::clientLoad(LevelClient* _level)
 {
     level = _level;
 
-    quadIndex = level->vertexMap_01.requestVertexIndex();
-    sprite = level->state->rogueZombieGame->spriteLoader->getSprite("Zombie");
-    sprite->applyToQuad(&level->vertexMap_01.vertexArray[quadIndex]);
+    shadowQuadIndex = level->vertexMap_01.requestVertexIndex();
+    shadowSprite = level->state->rogueZombieGame->spriteLoader->getSprite("Zombie_Shadow");
+    shadowSprite->applyToQuad(&level->vertexMap_01.vertexArray[shadowQuadIndex]);
+    
+    bodyQuadIndex = level->vertexMap_01.requestVertexIndex();
+    bodySprite = level->state->rogueZombieGame->spriteLoader->getSprite("Zombie_Body");
+    bodySprite->applyToQuad(&level->vertexMap_01.vertexArray[bodyQuadIndex]);
+    
+    frontarmQuadIndex = level->vertexMap_01.requestVertexIndex();
+    frontarmSprite = level->state->rogueZombieGame->spriteLoader->getSprite("Zombie_FrontArm");
+    frontarmSprite->applyToQuad(&level->vertexMap_01.vertexArray[frontarmQuadIndex]);
+    
+    headQuadIndex = level->vertexMap_01.requestVertexIndex();
+    headSprite = level->state->rogueZombieGame->spriteLoader->getSprite("Zombie_Head");
+    headSprite->applyToQuad(&level->vertexMap_01.vertexArray[headQuadIndex]);
+
 }
 
 void ZombieClient::clientUpdate(sf::Time &gameTime)
 {
-    // Sprite
-    sprite->applyToQuad(&level->vertexMap_01.vertexArray[quadIndex]);
-
-    // Position
     bit::VectorMath::incrementTowards(renderX, renderY, BodyClient::schema.x, BodyClient::schema.y, 4, 4);
 
     float spriteWidth = 21;
@@ -45,12 +54,25 @@ void ZombieClient::clientUpdate(sf::Time &gameTime)
     r.y = r.y - spriteHeight + yFootOffset;
 
     float z = bit::Math::calculateDrawDepth(r.y + spriteHeight);
-    bit::Vertex3* quad = &level->vertexMap_01.vertexArray[quadIndex];
-    bit::VertexHelper::positionQuad(quad, r.x, r.y, z, spriteWidth, spriteHeight);
+
+    // Position
+    bit::VertexHelper::positionQuad(&level->vertexMap_01.vertexArray[headQuadIndex], r.x, r.y, z, spriteWidth, spriteHeight);
+    bit::VertexHelper::positionQuad(&level->vertexMap_01.vertexArray[frontarmQuadIndex], r.x, r.y, z, spriteWidth, spriteHeight);
+    bit::VertexHelper::positionQuad(&level->vertexMap_01.vertexArray[bodyQuadIndex], r.x, r.y, z, spriteWidth, spriteHeight);
+    bit::VertexHelper::positionQuad(&level->vertexMap_01.vertexArray[shadowQuadIndex], r.x, r.y, z, spriteWidth, spriteHeight);
 
     // Color and luminence
     sf::Color color((int)(255.0f * BodyClient::schema.illumination), (int)(255.0f * BodyClient::schema.illumination), (int)(255.0f * BodyClient::schema.illumination));
-    bit::VertexHelper::colorQuad(quad, color);
+    bit::VertexHelper::colorQuad(&level->vertexMap_01.vertexArray[headQuadIndex], color);
+    bit::VertexHelper::colorQuad(&level->vertexMap_01.vertexArray[frontarmQuadIndex], color);
+    bit::VertexHelper::colorQuad(&level->vertexMap_01.vertexArray[bodyQuadIndex], color);
+    bit::VertexHelper::colorQuad(&level->vertexMap_01.vertexArray[shadowQuadIndex], color);
+
+    // Sprite
+    headSprite->applyToQuad(&level->vertexMap_01.vertexArray[headQuadIndex]);
+    frontarmSprite->applyToQuad(&level->vertexMap_01.vertexArray[frontarmQuadIndex]);
+    bodySprite->applyToQuad(&level->vertexMap_01.vertexArray[bodyQuadIndex]);
+    shadowSprite->applyToQuad(&level->vertexMap_01.vertexArray[shadowQuadIndex]);
 }
 
 void ZombieClient::handleSnapshot(bit::ServerPacket &packet, bool full)
@@ -67,5 +89,8 @@ void ZombieClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 void ZombieClient::reset()
 {
     renderX = renderY = 0;
-    bit::VertexHelper::resetQuad(&level->vertexMap_01.vertexArray[quadIndex]);
+    bit::VertexHelper::resetQuad(&level->vertexMap_01.vertexArray[headQuadIndex]);
+    bit::VertexHelper::resetQuad(&level->vertexMap_01.vertexArray[frontarmQuadIndex]);
+    bit::VertexHelper::resetQuad(&level->vertexMap_01.vertexArray[bodyQuadIndex]);
+    bit::VertexHelper::resetQuad(&level->vertexMap_01.vertexArray[shadowQuadIndex]);
 }
