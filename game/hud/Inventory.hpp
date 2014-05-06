@@ -35,7 +35,7 @@ public:
 
     void buildEquipment();
 
-    void buildItemList();
+    void buildItemList(bool force = true);
 
     InventoryItemLabel* buildItem(ItemClient* i, float x, float y);
 

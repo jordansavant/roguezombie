@@ -34,3 +34,9 @@ void InventoryEquipmentSlot::moveChild(Container* other, unsigned int index)
     bit::Container::moveChild(other, index);
     equippedItemLabel = NULL;
 }
+
+void InventoryEquipmentSlot::removeChild(unsigned int index)
+{
+    bit::Container::removeChild(index);
+    equippedItemLabel = NULL;
+}

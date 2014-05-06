@@ -11,7 +11,7 @@
 #include "../mission/MissionClient.hpp"
 
 Inventory::Inventory(Hud* _hud)
-    : HudMenu(_hud, 0, 0, 1300, 720, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), refreshTimer(1)
+    : HudMenu(_hud, 0, 0, 1300, 720, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), refreshTimer(5)
 {
     originX = 0;
     originY = 0;
@@ -84,6 +84,7 @@ void Inventory::update(sf::RenderWindow &window, sf::Time &gameTime)
     if(refreshTimer.update(gameTime))
     {
         buildEquipment();
+        buildItemList(false);
     }
 }
 
@@ -108,16 +109,23 @@ void Inventory::buildEquipment()
         headBox->addItemLabel(buildItem(&levelClient->playerCharacter->equipmentSlot_head, 0, 0));
     }
     // If the gear is present but not on the player, remove it
-    else if(!levelClient->playerCharacter->has_equipmentSlot_head)
+    else if(!levelClient->playerCharacter->has_equipmentSlot_head && headBox->equippedItemLabel)
     {
         headBox->removeItemLabel();
     }
 }
 
-void Inventory::buildItemList()
+void Inventory::buildItemList(bool force)
 {
+    // If no player character, skip
     LevelClient* levelClient = hud->state->levelClient;
     if(levelClient->playerCharacter == NULL)
+    {
+        return;
+    }
+
+    // If the number of items matches the last sync, skip // TODO - improve
+    if(!force && inventoryPanel->childElements.size() - 1 == levelClient->playerCharacter->inventoryClient.itemClients.size())
     {
         return;
     }
@@ -137,7 +145,6 @@ void Inventory::buildItemList()
     for(auto iterator = levelClient->playerCharacter->inventoryClient.itemClients.begin(); iterator != levelClient->playerCharacter->inventoryClient.itemClients.end(); iterator++)
     {
         ItemClient* i = &iterator->second;
-
         InventoryItemLabel* option = buildItem(i, 10, y);
         inventoryPanel->addChild(option);
 

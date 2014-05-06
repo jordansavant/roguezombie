@@ -27,6 +27,7 @@ public:
 
     virtual void moveChild(Container* other, unsigned int childIndex);
 
+    virtual void removeChild(unsigned int childIndex);
 };
 
 #endif
