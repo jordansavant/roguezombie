@@ -4,6 +4,7 @@
 
 #include "Zombie.hpp"
 #include "../CharacterClient.hpp"
+#include "../CharacterSprite.hpp"
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
 #include "../../bitengine/Game.hpp"
@@ -19,16 +20,7 @@ public:
 
     ZombieClient();
 
-    float renderX, renderY;
-
-    bit::Sprite* headSprite;
-    unsigned int headQuadIndex;
-    bit::Sprite* frontarmSprite;
-    unsigned int frontarmQuadIndex;
-    bit::Sprite* bodySprite;
-    unsigned int bodyQuadIndex;
-    bit::Sprite* shadowSprite;
-    unsigned int shadowQuadIndex;
+    CharacterSprite sprite;
 
     void clientLoad(LevelClient* level);
 
