@@ -12,7 +12,7 @@
 #include "../../bitengine/System.hpp"
 
 OgreClient::OgreClient()
-    : CharacterClient(), renderX(0), renderY(0), lastSnapshotId(0)
+    : CharacterClient(), sprite(84, 116, 30, 96)
 {
 }
 
@@ -20,52 +20,27 @@ void OgreClient::clientLoad(LevelClient* _level)
 {
     level = _level;
 
-    quadIndex = level->vertexMap_01.requestVertexIndex();
-    sprite = level->state->rogueZombieGame->spriteLoader->getSprite("Ogre");
-    sprite->applyToQuad(&level->vertexMap_01.vertexArray[quadIndex]);
+    sprite.load(this, level->state->rogueZombieGame->spriteLoader, level->vertexMap_01);
+    sprite.setSprites(std::string("Ogre_Head"), std::string("Ogre_FrontArm"), std::string("Ogre_Body"), std::string("Ogre_Shadow"));
 }
 
 void OgreClient::clientUpdate(sf::Time &gameTime)
 {
-    // Sprite
-    sprite->applyToQuad(&level->vertexMap_01.vertexArray[quadIndex]);
-
-    // Position
-    bit::VectorMath::incrementTowards(renderX, renderY, BodyClient::schema.x, BodyClient::schema.y, 4, 4);
-
-    float spriteWidth = 84;
-    float spriteHeight = 116;
-    float xFootOffset = 30;
-    float yFootOffset = 20;
-    float levelCenterX = renderX + BodyClient::schema.width / 2;
-    float levelCenterY = renderY + BodyClient::schema.height / 2;
-
-    sf::Vector2f r = bit::VectorMath::normalToIsometric(levelCenterX, levelCenterY);
-    r.x = r.x - spriteWidth / 2 + xFootOffset / 2;
-    r.y = r.y - spriteHeight + yFootOffset;
-
-    float z = bit::Math::calculateDrawDepth(r.y + spriteHeight);
-    bit::Vertex3* quad = &level->vertexMap_01.vertexArray[quadIndex];
-    bit::VertexHelper::positionQuad(quad, r.x, r.y, z, spriteWidth, spriteHeight);
-
-    // Color and luminence
-    sf::Color color(255 * BodyClient::schema.illumination, 255 * BodyClient::schema.illumination, 255 * BodyClient::schema.illumination);
-    bit::VertexHelper::colorQuad(quad, color);
+    sprite.update(gameTime);
 }
 
 void OgreClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
 	CharacterClient::handleSnapshot(packet, full);
 
-    if(renderX == 0 && renderY == 0)
+    if(sprite.renderX == 0 && sprite.renderY == 0)
     {
-        renderX = BodyClient::schema.x;
-        renderY = BodyClient::schema.y;
+        sprite.renderX = BodyClient::schema.x;
+        sprite.renderY = BodyClient::schema.y;
     }
 }
 
 void OgreClient::reset()
 {
-    renderX = renderY = 0;
-    bit::VertexHelper::resetQuad(&level->vertexMap_01.vertexArray[quadIndex]);
+    sprite.reset();
 }

@@ -5,7 +5,7 @@
 #include "../bitengine/Graphics.hpp"
 #include "../bitengine/Math.hpp"
 
-CharacterSprite::CharacterSprite(unsigned int width, unsigned int height, unsigned int baseOffsetX, unsigned int basOffsetY)
+CharacterSprite::CharacterSprite(unsigned int width, unsigned int height, unsigned int baseOffsetX, unsigned int baseOffsetY)
     : renderX(0), renderY(0), width(width), height(height), baseOffsetX(baseOffsetX), baseOffsetY(baseOffsetY),
       vertexMap(NULL), spriteLoader(NULL), headSprite(NULL), frontarmSprite(NULL), bodySprite(NULL), shadowSprite(NULL)
 {
@@ -41,12 +41,12 @@ void CharacterSprite::update(sf::Time &gameTime)
     float spriteWidth = (float)width;
     float spriteHeight = (float)height;
     float xFootOffset = (float)baseOffsetX;
-    float yFootOffset = (float)baseOffsetX;
+    float yFootOffset = (float)baseOffsetY;
     float levelCenterX = renderX + character->BodyClient::schema.width / 2;
     float levelCenterY = renderY + character->BodyClient::schema.height / 2;
     sf::Vector2f r = bit::VectorMath::normalToIsometric(levelCenterX, levelCenterY);
-    r.x = r.x - spriteWidth / 2 + xFootOffset / 2;
-    r.y = r.y - spriteHeight + yFootOffset;
+    r.x -= spriteWidth / 2 + xFootOffset / 2;
+    r.y -= yFootOffset;
 
     // Position
     float z = bit::Math::calculateDrawDepth(r.y + spriteHeight);

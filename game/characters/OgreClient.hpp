@@ -4,6 +4,7 @@
 
 #include "Ogre.hpp"
 #include "../CharacterClient.hpp"
+#include "../CharacterSprite.hpp"
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
 #include "../../bitengine/Game.hpp"
@@ -19,10 +20,7 @@ public:
 
     OgreClient();
 
-    float renderX, renderY;
-    bit::Sprite* sprite;
-    unsigned int quadIndex;
-    unsigned int lastSnapshotId;
+    CharacterSprite sprite;
 
     void clientLoad(LevelClient* level);
 

@@ -12,7 +12,7 @@
 #include "../../bitengine/System.hpp"
 
 ZombieClient::ZombieClient()
-    : CharacterClient(), sprite(21, 29, 8, 5)
+    : CharacterClient(), sprite(21, 29, 8, 24)
 {
 }
 
