@@ -5,8 +5,9 @@
 #include "../bitengine/Graphics.hpp"
 #include "../bitengine/Math.hpp"
 
-CharacterSprite::CharacterSprite()
-    : renderX(0), renderY(0), vertexMap(NULL), spriteLoader(NULL), headSprite(NULL), frontarmSprite(NULL), bodySprite(NULL), shadowSprite(NULL)
+CharacterSprite::CharacterSprite(unsigned int width, unsigned int height, unsigned int baseOffsetX, unsigned int basOffsetY)
+    : renderX(0), renderY(0), width(width), height(height), baseOffsetX(baseOffsetX), baseOffsetY(baseOffsetY),
+      vertexMap(NULL), spriteLoader(NULL), headSprite(NULL), frontarmSprite(NULL), bodySprite(NULL), shadowSprite(NULL)
 {
 }
 
@@ -29,15 +30,6 @@ void CharacterSprite::load(CharacterClient* _character, bit::SpriteLoader* _spri
     
     frontarmQuadIndex = vertexMap->requestVertexIndex();
     frontarmQuad = &vertexMap->vertexArray[frontarmQuadIndex];
-
-    shadowSprite = spriteLoader->getSprite("Zombie_Shadow");
-    shadowSprite->applyToQuad(&_vertexMap.vertexArray[shadowQuadIndex]);
-    bodySprite = spriteLoader->getSprite("Zombie_Body");
-    bodySprite->applyToQuad(&_vertexMap.vertexArray[bodyQuadIndex]);
-    headSprite = spriteLoader->getSprite("Zombie_Head");
-    headSprite->applyToQuad(&_vertexMap.vertexArray[headQuadIndex]);
-    frontarmSprite = spriteLoader->getSprite("Zombie_FrontArm");
-    frontarmSprite->applyToQuad(&_vertexMap.vertexArray[frontarmQuadIndex]);
 }
 
 void CharacterSprite::update(sf::Time &gameTime)
@@ -46,10 +38,10 @@ void CharacterSprite::update(sf::Time &gameTime)
     bit::VectorMath::incrementTowards(renderX, renderY, character->BodyClient::schema.x, character->BodyClient::schema.y, 4, 4);
 
     // Calculate render position given sprite information and the isometric rendering
-    float spriteWidth = 21;
-    float spriteHeight = 29;
-    float xFootOffset = 8;
-    float yFootOffset = 5;
+    float spriteWidth = (float)width;
+    float spriteHeight = (float)height;
+    float xFootOffset = (float)baseOffsetX;
+    float yFootOffset = (float)baseOffsetX;
     float levelCenterX = renderX + character->BodyClient::schema.width / 2;
     float levelCenterY = renderY + character->BodyClient::schema.height / 2;
     sf::Vector2f r = bit::VectorMath::normalToIsometric(levelCenterX, levelCenterY);
@@ -84,4 +76,36 @@ void CharacterSprite::reset()
     bit::VertexHelper::resetQuad(frontarmQuad);
     bit::VertexHelper::resetQuad(bodyQuad);
     bit::VertexHelper::resetQuad(shadowQuad);
+}
+
+void CharacterSprite::setSprites(std::string& head, std::string& frontarm, std::string& body, std::string& shadow)
+{
+    setHeadSprite(head);
+    setFrontarmSprite(frontarm);
+    setBodySprite(body);
+    setShadowSprite(shadow);
+}
+
+void CharacterSprite::setHeadSprite(std::string& spriteName)
+{
+    headSprite = spriteLoader->getSprite(spriteName);
+    headSprite->applyToQuad(headQuad);
+}
+
+void CharacterSprite::setFrontarmSprite(std::string& spriteName)
+{
+    frontarmSprite = spriteLoader->getSprite(spriteName);
+    frontarmSprite->applyToQuad(frontarmQuad);
+}
+
+void CharacterSprite::setBodySprite(std::string& spriteName)
+{
+    bodySprite = spriteLoader->getSprite(spriteName);
+    bodySprite->applyToQuad(bodyQuad);
+}
+
+void CharacterSprite::setShadowSprite(std::string& spriteName)
+{
+    shadowSprite = spriteLoader->getSprite(spriteName);
+    shadowSprite->applyToQuad(shadowQuad);
 }

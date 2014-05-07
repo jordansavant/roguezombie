@@ -12,7 +12,7 @@
 #include "../../bitengine/System.hpp"
 
 ZombieClient::ZombieClient()
-    : CharacterClient(), sprite()
+    : CharacterClient(), sprite(21, 29, 8, 5)
 {
 }
 
@@ -21,7 +21,7 @@ void ZombieClient::clientLoad(LevelClient* _level)
     level = _level;
 
     sprite.load(this, level->state->rogueZombieGame->spriteLoader, level->vertexMap_01);
-
+    sprite.setSprites(std::string("Zombie_Head"), std::string("Zombie_FrontArm"), std::string("Zombie_Body"), std::string("Zombie_Shadow"));
 }
 
 void ZombieClient::clientUpdate(sf::Time &gameTime)

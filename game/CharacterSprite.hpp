@@ -13,10 +13,11 @@ class CharacterSprite
 {
 public:
 
-    CharacterSprite();
+    CharacterSprite(unsigned int width, unsigned int height, unsigned int baseOffsetX, unsigned int basOffsetY);
 
     CharacterClient* character;
     float renderX, renderY;
+    unsigned int width, height, baseOffsetX, baseOffsetY;
     bit::VertexMap* vertexMap;
     bit::SpriteLoader* spriteLoader;
 
@@ -42,6 +43,7 @@ public:
     
     void reset();
 
+    void setSprites(std::string& head, std::string& frontarm, std::string& body, std::string& shadow);
     void setHeadSprite(std::string& spriteName);
     void setFrontarmSprite(std::string& spriteName);
     void setBodySprite(std::string& spriteName);
