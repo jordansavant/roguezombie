@@ -97,9 +97,11 @@ public:
 
     void prepareServerEventPacket_itemRemoved(bit::ServerPacket &packet);
 
+    static Item* create(Type type);
+
     static std::string getTitle(Type type);
 
-    static Item* create(Type type);
+    static std::string getSpriteName(Type type);
 };
 
 #endif

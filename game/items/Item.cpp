@@ -171,25 +171,6 @@ void Item::prepareServerEventPacket_itemRemoved(bit::ServerPacket &packet)
     prepareSnapshot(packet);
 }
 
-std::string Item::getTitle(Type type)
-{
-    switch(type)
-    {
-        default:
-        case Type::None:
-            return "None";
-
-        case Type::Backpack:
-            return "Backpack";
-
-        case Type::HardHat:
-            return "Hardhat";
-
-        case Type::Magnum357:
-            return ".357 Magnum";
-    }
-}
-
 Item* Item::create(Type type)
 {
     Item* i = 0;
@@ -228,4 +209,42 @@ Item* Item::create(Type type)
 
     i->schema.type = type;
     return i;
+}
+
+std::string Item::getTitle(Type type)
+{
+    switch(type)
+    {
+        default:
+        case Type::None:
+            return "None";
+
+        case Type::Backpack:
+            return "Backpack";
+
+        case Type::HardHat:
+            return "Hardhat";
+
+        case Type::Magnum357:
+            return ".357 Magnum";
+    }
+}
+
+std::string Item::getSpriteName(Type type)
+{
+    switch(type)
+    {
+        default:
+        case Type::None:
+            return "";
+
+        case Type::Backpack:
+            return "Backpack";
+
+        case Type::HardHat:
+            return "HardHat";
+
+        case Type::Magnum357:
+            return "Magnum357";
+    }
 }

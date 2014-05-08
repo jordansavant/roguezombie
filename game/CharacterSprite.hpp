@@ -3,6 +3,7 @@
 #define RZ_CHARACTERSPRITE_H
 
 #include "CharacterClient.hpp"
+#include "items/Item.hpp"
 #include "SFML/Graphics.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Graphics.hpp"
@@ -21,9 +22,12 @@ public:
     bit::VertexMap* vertexMap;
     bit::SpriteLoader* spriteLoader;
 
+    Item::Type equipmentHeadItemType;
     bit::Sprite* equipmentHeadSprite;
     unsigned int equipmentHeadQuadIndex;
     bit::Vertex3* equipmentHeadQuad;
+    void setEquipmentHeadSprite(Item::Type itemType);
+    void unsetEquipmentHeadSprite();
 
     bit::Sprite* headSprite;
     unsigned int headQuadIndex;
@@ -47,12 +51,13 @@ public:
     
     void reset();
 
+    void syncronizeEquipment();
+
     void setSprites(std::string& head, std::string& frontarm, std::string& body, std::string& shadow);
     void setHeadSprite(std::string& spriteName);
     void setFrontarmSprite(std::string& spriteName);
     void setBodySprite(std::string& spriteName);
     void setShadowSprite(std::string& spriteName);
-    void setEquipmentHeadSprite(std::string& spriteName);
 
 };
 

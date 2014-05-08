@@ -38,6 +38,7 @@ void OgreClient::handleSnapshot(bit::ServerPacket &packet, bool full)
         sprite.renderX = BodyClient::schema.x;
         sprite.renderY = BodyClient::schema.y;
     }
+    sprite.syncronizeEquipment();
 }
 
 void OgreClient::reset()

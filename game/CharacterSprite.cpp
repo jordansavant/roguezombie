@@ -8,7 +8,7 @@
 CharacterSprite::CharacterSprite(unsigned int width, unsigned int height, unsigned int baseOffsetX, unsigned int baseOffsetY)
     : renderX(0), renderY(0), width(width), height(height), baseOffsetX(baseOffsetX), baseOffsetY(baseOffsetY),
       vertexMap(NULL), spriteLoader(NULL), headSprite(NULL), frontarmSprite(NULL), bodySprite(NULL), shadowSprite(NULL),
-      equipmentHeadSprite(NULL)
+      equipmentHeadSprite(NULL), equipmentHeadItemType(Item::Type::None)
 {
 }
 
@@ -88,6 +88,38 @@ void CharacterSprite::reset()
     bit::VertexHelper::resetQuad(shadowQuad);
 }
 
+void CharacterSprite::syncronizeEquipment()
+{
+    // If the character has a head slot and its not the same as ours, change it
+    if(character->has_equipmentSlot_head && character->equipmentSlot_head.schema.type != equipmentHeadItemType)
+    {
+        unsetEquipmentHeadSprite();
+        setEquipmentHeadSprite(character->equipmentSlot_head.schema.type);
+    }
+    // If the character does not have a head slot but we are rendering on, remove it
+    else if(!character->has_equipmentSlot_head && equipmentHeadSprite)
+    {
+        unsetEquipmentHeadSprite();
+    }
+
+}
+void CharacterSprite::setEquipmentHeadSprite(Item::Type itemType)
+{
+    equipmentHeadItemType = itemType;
+    equipmentHeadSprite = spriteLoader->getSprite(Item::getSpriteName(character->equipmentSlot_head.schema.type));
+    equipmentHeadSprite->applyToQuad(equipmentHeadQuad);
+}
+void CharacterSprite::unsetEquipmentHeadSprite()
+{
+    equipmentHeadItemType = Item::Type::None;
+    if(equipmentHeadSprite)
+    {
+        bit::VertexHelper::resetQuad(equipmentHeadQuad);
+        equipmentHeadSprite = NULL;
+    }
+}
+
+
 void CharacterSprite::setSprites(std::string& head, std::string& frontarm, std::string& body, std::string& shadow)
 {
     setHeadSprite(head);
@@ -118,10 +150,4 @@ void CharacterSprite::setShadowSprite(std::string& spriteName)
 {
     shadowSprite = spriteLoader->getSprite(spriteName);
     shadowSprite->applyToQuad(shadowQuad);
-}
-
-void CharacterSprite::setEquipmentHeadSprite(std::string& spriteName)
-{
-    equipmentHeadSprite = spriteLoader->getSprite(spriteName);
-    equipmentHeadSprite->applyToQuad(equipmentHeadQuad);
 }

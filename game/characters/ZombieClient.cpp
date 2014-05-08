@@ -38,16 +38,7 @@ void ZombieClient::handleSnapshot(bit::ServerPacket &packet, bool full)
         sprite.renderX = BodyClient::schema.x;
         sprite.renderY = BodyClient::schema.y;
     }
-
-    if(schema.itemId_equipmentSlot_head > 0 && sprite.equipmentHeadSprite == NULL)
-    {
-        sprite.setEquipmentHeadSprite(std::string("HardHat"));
-    }
-    else if(schema.itemId_equipmentSlot_head == 0 && sprite.equipmentHeadSprite)
-    {
-        bit::VertexHelper::resetQuad(sprite.equipmentHeadQuad);
-        sprite.equipmentHeadSprite = NULL;
-    }
+    sprite.syncronizeEquipment();
 }
 
 void ZombieClient::reset()
