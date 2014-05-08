@@ -7,7 +7,8 @@
 
 CharacterSprite::CharacterSprite(unsigned int width, unsigned int height, unsigned int baseOffsetX, unsigned int baseOffsetY)
     : renderX(0), renderY(0), width(width), height(height), baseOffsetX(baseOffsetX), baseOffsetY(baseOffsetY),
-      vertexMap(NULL), spriteLoader(NULL), headSprite(NULL), frontarmSprite(NULL), bodySprite(NULL), shadowSprite(NULL)
+      vertexMap(NULL), spriteLoader(NULL), headSprite(NULL), frontarmSprite(NULL), bodySprite(NULL), shadowSprite(NULL),
+      equipmentHeadSprite(NULL)
 {
 }
 
@@ -30,6 +31,9 @@ void CharacterSprite::load(CharacterClient* _character, bit::SpriteLoader* _spri
     
     frontarmQuadIndex = vertexMap->requestVertexIndex();
     frontarmQuad = &vertexMap->vertexArray[frontarmQuadIndex];
+    
+    equipmentHeadQuadIndex = vertexMap->requestVertexIndex();
+    equipmentHeadQuad = &vertexMap->vertexArray[equipmentHeadQuadIndex];
 }
 
 void CharacterSprite::update(sf::Time &gameTime)
@@ -48,25 +52,31 @@ void CharacterSprite::update(sf::Time &gameTime)
     r.x -= spriteWidth / 2 + xFootOffset / 2;
     r.y -= yFootOffset;
 
-    // Position
     float z = bit::Math::calculateDrawDepth(r.y + spriteHeight);
-    bit::VertexHelper::positionQuad(headQuad, r.x, r.y, z, spriteWidth, spriteHeight);
-    bit::VertexHelper::positionQuad(frontarmQuad, r.x, r.y, z, spriteWidth, spriteHeight);
-    bit::VertexHelper::positionQuad(bodyQuad, r.x, r.y, z, spriteWidth, spriteHeight);
-    bit::VertexHelper::positionQuad(shadowQuad, r.x, r.y, z, spriteWidth, spriteHeight);
-
-    // Color and luminence
     sf::Color color((int)(255.0f * character->BodyClient::schema.illumination), (int)(255.0f * character->BodyClient::schema.illumination), (int)(255.0f * character->BodyClient::schema.illumination));
-    bit::VertexHelper::colorQuad(headQuad, color);
-    bit::VertexHelper::colorQuad(frontarmQuad, color);
-    bit::VertexHelper::colorQuad(bodyQuad, color);
-    bit::VertexHelper::colorQuad(shadowQuad, color);
 
-    // Sprite
+    bit::VertexHelper::positionQuad(headQuad, r.x, r.y, z, spriteWidth, spriteHeight);
+    bit::VertexHelper::colorQuad(headQuad, color);
     headSprite->applyToQuad(headQuad);
+
+    bit::VertexHelper::positionQuad(frontarmQuad, r.x, r.y, z, spriteWidth, spriteHeight);
+    bit::VertexHelper::colorQuad(frontarmQuad, color);
     frontarmSprite->applyToQuad(frontarmQuad);
+
+    bit::VertexHelper::positionQuad(bodyQuad, r.x, r.y, z, spriteWidth, spriteHeight);
+    bit::VertexHelper::colorQuad(bodyQuad, color);
     bodySprite->applyToQuad(bodyQuad);
+
+    bit::VertexHelper::positionQuad(shadowQuad, r.x, r.y, z, spriteWidth, spriteHeight);
+    bit::VertexHelper::colorQuad(shadowQuad, color);
     shadowSprite->applyToQuad(shadowQuad);
+
+    if(equipmentHeadSprite)
+    {
+        bit::VertexHelper::positionQuad(equipmentHeadQuad, r.x, r.y, z, spriteWidth, spriteHeight);
+        bit::VertexHelper::colorQuad(equipmentHeadQuad, color);
+        equipmentHeadSprite->applyToQuad(equipmentHeadQuad);
+    }
 }
 
 void CharacterSprite::reset()
@@ -108,4 +118,10 @@ void CharacterSprite::setShadowSprite(std::string& spriteName)
 {
     shadowSprite = spriteLoader->getSprite(spriteName);
     shadowSprite->applyToQuad(shadowQuad);
+}
+
+void CharacterSprite::setEquipmentHeadSprite(std::string& spriteName)
+{
+    equipmentHeadSprite = spriteLoader->getSprite(spriteName);
+    equipmentHeadSprite->applyToQuad(equipmentHeadQuad);
 }

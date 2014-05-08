@@ -21,6 +21,10 @@ public:
     bit::VertexMap* vertexMap;
     bit::SpriteLoader* spriteLoader;
 
+    bit::Sprite* equipmentHeadSprite;
+    unsigned int equipmentHeadQuadIndex;
+    bit::Vertex3* equipmentHeadQuad;
+
     bit::Sprite* headSprite;
     unsigned int headQuadIndex;
     bit::Vertex3* headQuad;
@@ -48,6 +52,7 @@ public:
     void setFrontarmSprite(std::string& spriteName);
     void setBodySprite(std::string& spriteName);
     void setShadowSprite(std::string& spriteName);
+    void setEquipmentHeadSprite(std::string& spriteName);
 
 };
 
