@@ -15,8 +15,9 @@
 #include "items/Item.hpp"
 
 Character::Character()
-    : Body(), moveTimer(.75f), equipmentSlot_head(NULL), schema()
+    : Body(), moveTimer(.75f), equipment(), schema()
 {
+    equipment.resize(EquipmentSlot::_count, NULL);
 }
 
 Character::~Character()
@@ -26,7 +27,10 @@ Character::~Character()
         delete missions[i];
     }
 
-    delete equipmentSlot_head;
+    for(unsigned int i=0; i < equipment.size(); i++)
+    {
+        delete equipment[i];
+    }
 }
 
 void Character::load(Level* _level, unsigned int _id, Type _type, float _x, float _y, float _width, float _height)
@@ -79,40 +83,39 @@ void Character::update(sf::Time &gameTime)
 
 
 
-bool Character::equipHeadFromInventory(unsigned int itemId)
+bool Character::equipFromInventory(EquipmentSlot slot, unsigned int itemId)
 {
     Item* item = inventory->removeItem(itemId);
     if(item)
     {
-        unequipHead();
-        return equipHead(item);
+        unequip(slot);
+        return equip(slot, item);
     }
     return false;
 }
 
-bool Character::equipHead(Item* item)
+bool Character::equip(EquipmentSlot slot, Item* item)
 {
-    if(!equipmentSlot_head)
+    Item* equippedItem = equipment[slot];
+    if(!equippedItem)
     {
-        equipmentSlot_head = item;
-        schema.itemId_equipmentSlot_head = item->schema.id;
+        equipment[slot] = item;
+        schema.equipmentIds[slot] = item->schema.id;
         return true;
     }
     return false;
 }
 
-void Character::unequipHead()
+void Character::unequip(EquipmentSlot slot)
 {
-    if(equipmentSlot_head)
+    Item* equippedItem = equipment[slot];
+    if(equippedItem)
     {
-        inventory->addItem(equipmentSlot_head);
-        schema.itemId_equipmentSlot_head = 0;
-        equipmentSlot_head = NULL;
+        inventory->addItem(equippedItem);
+        schema.equipmentIds[slot] = 0;
+        equipment[slot] = NULL;
     }
 }
-
-
-
 
 void Character::setControllingPlayer(Player* player)
 {
@@ -257,14 +260,18 @@ void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
     packet << schema;
 
     // Equipment
-    if(equipmentSlot_head)
+    for(unsigned int i=0; i < EquipmentSlot::_count; i++)
     {
-        packet << true;
-        equipmentSlot_head->prepareSnapshot(packet);
-    }
-    else
-    {
-        packet << false;
+        Item* equippedItem = equipment[i];
+        if(equippedItem)
+        {
+            packet << true;
+            equippedItem->prepareSnapshot(packet);
+        }
+        else
+        {
+            packet << false;
+        }
     }
 
     // Missions

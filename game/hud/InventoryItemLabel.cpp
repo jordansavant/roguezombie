@@ -36,23 +36,21 @@ InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, f
                 e->relativePosition.x = 0;
                 e->relativePosition.y = 0;
 
+                // Send the request to change the equipment
                 ItemClient* itemx = item;
-                if(slot == inventory->headBox)
-                {
-                    // Send the request to change the head equipment
-                    inventory->hud->state->serverRequest(
-                        [itemx](bit::ClientPacket& requestPacket)
-                        {
-                            requestPacket <<sf::Uint32(ClientRequest::EquipHead);
-                            requestPacket << sf::Uint32(itemx->schema.id);
-                        },
-                        [itemx](bit::ServerPacket& responsePacket)
-                        {
-                            bool success;
-                            responsePacket >> success;
-                        }
-                    );
-                }
+                inventory->hud->state->serverRequest(
+                    [itemx, slot](bit::ClientPacket& requestPacket)
+                    {
+                        requestPacket <<sf::Uint32(ClientRequest::EquipItem);
+                        requestPacket << sf::Uint32(slot->slot);
+                        requestPacket << sf::Uint32(itemx->schema.id);
+                    },
+                    [itemx](bit::ServerPacket& responsePacket)
+                    {
+                        bool success;
+                        responsePacket >> success;
+                    }
+                );
 
                 return true;
             }
@@ -68,18 +66,16 @@ InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, f
                 if(slot->equippedItemLabel == e)
                 {
                     // If it did come from an equipment slot send the unequip packet
-                    if(slot == inventory->headBox)
-                    {
-                        inventory->hud->state->serverRequest(
-                            [](bit::ClientPacket& requestPacket)
-                            {
-                                requestPacket <<sf::Uint32(ClientRequest::UnequipHead);
-                            },
-                            [](bit::ServerPacket& responsePacket)
-                            {
-                            }
-                        );
-                    }
+                    inventory->hud->state->serverRequest(
+                        [slot](bit::ClientPacket& requestPacket)
+                        {
+                            requestPacket <<sf::Uint32(ClientRequest::UnequipItem);
+                            requestPacket << sf::Uint32(slot->slot);
+                        },
+                        [](bit::ServerPacket& responsePacket)
+                        {
+                        }
+                    );
                 }
             }
             bit::Container* p = static_cast<bit::Container*>(e->parentElement);

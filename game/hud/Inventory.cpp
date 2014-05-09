@@ -6,6 +6,7 @@
 #include "../ClientRequest.hpp"
 #include "../StateGamePlay.hpp"
 #include "../LevelClient.hpp"
+#include "../Character.hpp"
 #include "../CharacterClient.hpp"
 #include "../RogueZombieGame.hpp"
 #include "../mission/MissionClient.hpp"
@@ -39,30 +40,31 @@ Inventory::Inventory(Hud* _hud)
 
     // EQUIPMENT BOXES
     int topOffset = 150;
+    equipmentSlotBoxes.resize(Character::EquipmentSlot::_count, NULL);
 
-    headBox = new InventoryEquipmentSlot(this, 0, topOffset + 0, 200, 100, bit::Element::AnchorType::Top);
-    equipmentPanel->addChild(headBox);
+    equipmentSlotBoxes[Character::EquipmentSlot::Head] = new InventoryEquipmentSlot(Character::EquipmentSlot::Head, this, 0, topOffset + 0, 200, 100, bit::Element::AnchorType::Top);
+    equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Head]);
     
-    chestBox = new InventoryEquipmentSlot(this, 0, topOffset + 120, 160, 100, bit::Element::AnchorType::Top);
-    equipmentPanel->addChild(chestBox);
+    equipmentSlotBoxes[Character::EquipmentSlot::Chest] = new InventoryEquipmentSlot(Character::EquipmentSlot::Chest, this, 0, topOffset + 120, 160, 100, bit::Element::AnchorType::Top);
+    equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Chest]);
     
-    legBox = new InventoryEquipmentSlot(this, 0, topOffset + 240, 160, 60, bit::Element::AnchorType::Top);
-    equipmentPanel->addChild(legBox);
+    equipmentSlotBoxes[Character::EquipmentSlot::Legs] = new InventoryEquipmentSlot(Character::EquipmentSlot::Legs, this, 0, topOffset + 240, 160, 60, bit::Element::AnchorType::Top);
+    equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Legs]);
     
-    footBox = new InventoryEquipmentSlot(this, 0, topOffset + 320, 160, 30, bit::Element::AnchorType::Top);
-    equipmentPanel->addChild(footBox);
+    equipmentSlotBoxes[Character::EquipmentSlot::Feet] = new InventoryEquipmentSlot(Character::EquipmentSlot::Feet, this, 0, topOffset + 320, 160, 30, bit::Element::AnchorType::Top);
+    equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Feet]);
     
-    totemBox = new InventoryEquipmentSlot(this, -130, topOffset + 120, 60, 60, bit::Element::AnchorType::Top);
-    equipmentPanel->addChild(totemBox);
+    equipmentSlotBoxes[Character::EquipmentSlot::Totem] = new InventoryEquipmentSlot(Character::EquipmentSlot::Totem, this, -130, topOffset + 120, 60, 60, bit::Element::AnchorType::Top);
+    equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Totem]);
     
-    handBox = new InventoryEquipmentSlot(this, -130, topOffset + 200, 60, 60, bit::Element::AnchorType::Top);
-    equipmentPanel->addChild(handBox);
+    equipmentSlotBoxes[Character::EquipmentSlot::Hands] = new InventoryEquipmentSlot(Character::EquipmentSlot::Hands, this, -130, topOffset + 200, 60, 60, bit::Element::AnchorType::Top);
+    equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Hands]);
     
-    primaryWeaponBox = new InventoryEquipmentSlot(this, 150, topOffset + 120, 100, 100, bit::Element::AnchorType::Top);
-    equipmentPanel->addChild(primaryWeaponBox);
+    equipmentSlotBoxes[Character::EquipmentSlot::WeaponPrimary] = new InventoryEquipmentSlot(Character::EquipmentSlot::WeaponPrimary, this, 150, topOffset + 120, 100, 100, bit::Element::AnchorType::Top);
+    equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::WeaponPrimary]);
     
-    secondaryWeaponBox = new InventoryEquipmentSlot(this, 150, topOffset + 240, 100, 100, bit::Element::AnchorType::Top);
-    equipmentPanel->addChild(secondaryWeaponBox);
+    equipmentSlotBoxes[Character::EquipmentSlot::WeaponSecondary] = new InventoryEquipmentSlot(Character::EquipmentSlot::WeaponSecondary, this, 150, topOffset + 240, 100, 100, bit::Element::AnchorType::Top);
+    equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::WeaponSecondary]);
 }
 
 void Inventory::update(sf::RenderWindow &window, sf::Time &gameTime)
@@ -72,14 +74,10 @@ void Inventory::update(sf::RenderWindow &window, sf::Time &gameTime)
     equipmentPanel->opacity = opacity;
     inventoryPanel->opacity = opacity;
 
-    headBox->opacity = opacity;
-    chestBox->opacity = opacity;
-    legBox->opacity = opacity;
-    footBox->opacity = opacity;
-    totemBox->opacity = opacity;
-    handBox->opacity = opacity;
-    primaryWeaponBox->opacity = opacity;
-    secondaryWeaponBox->opacity = opacity;
+    for(unsigned int i=0; i < equipmentSlotBoxes.size(); i++)
+    {
+        equipmentSlotBoxes[i]->opacity = opacity;
+    }
 
     if(refreshTimer.update(gameTime))
     {
@@ -98,20 +96,25 @@ void Inventory::buildEquipment()
 
     // HEAD
     // If the gear is not present, add it
-    if(levelClient->playerCharacter->has_equipmentSlot_head && headBox->equippedItemLabel == NULL)
+    for(unsigned int i=0; i < Character::EquipmentSlot::_count; i++)
     {
-        headBox->addItemLabel(buildItem(&levelClient->playerCharacter->equipmentSlot_head, 0, 0));
-    }
-    // If the gear is present but does not match, remove it
-    else if(levelClient->playerCharacter->has_equipmentSlot_head && headBox->equippedItemLabel->item->schema.id != levelClient->playerCharacter->equipmentSlot_head.schema.id)
-    {
-        headBox->removeItemLabel();
-        headBox->addItemLabel(buildItem(&levelClient->playerCharacter->equipmentSlot_head, 0, 0));
-    }
-    // If the gear is present but not on the player, remove it
-    else if(!levelClient->playerCharacter->has_equipmentSlot_head && headBox->equippedItemLabel)
-    {
-        headBox->removeItemLabel();
+        Character::EquipmentSlot slot = static_cast<Character::EquipmentSlot>(i);
+
+        if(levelClient->playerCharacter->hasEquipment[slot] && equipmentSlotBoxes[slot]->equippedItemLabel == NULL)
+        {
+            equipmentSlotBoxes[slot]->addItemLabel(buildItem(&levelClient->playerCharacter->equipment[slot], 0, 0));
+        }
+        // If the gear is present but does not match, remove it
+        else if(levelClient->playerCharacter->hasEquipment[slot] && equipmentSlotBoxes[slot]->equippedItemLabel->item->schema.id != levelClient->playerCharacter->equipment[slot].schema.id)
+        {
+            equipmentSlotBoxes[slot]->removeItemLabel();
+            equipmentSlotBoxes[slot]->addItemLabel(buildItem(&levelClient->playerCharacter->equipment[slot], 0, 0));
+        }
+        // If the gear is present but not on the player, remove it
+        else if(!levelClient->playerCharacter->hasEquipment[slot] && equipmentSlotBoxes[slot]->equippedItemLabel)
+        {
+            equipmentSlotBoxes[slot]->removeItemLabel();
+        }
     }
 }
 

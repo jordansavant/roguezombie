@@ -8,8 +8,8 @@ enum ClientRequest
     Interaction,
     TransferItem,
     CloseInventory,
-    EquipHead,
-    UnequipHead,
+    EquipItem,
+    UnequipItem,
 };
 
 #endif

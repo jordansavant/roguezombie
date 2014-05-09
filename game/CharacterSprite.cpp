@@ -7,9 +7,9 @@
 
 CharacterSprite::CharacterSprite(unsigned int width, unsigned int height, unsigned int baseOffsetX, unsigned int baseOffsetY)
     : renderX(0), renderY(0), width(width), height(height), baseOffsetX(baseOffsetX), baseOffsetY(baseOffsetY), facingRight(true), lastRenderX(0), lastRenderY(0),
-      vertexMap(NULL), spriteLoader(NULL), headSprite(NULL), frontarmSprite(NULL), bodySprite(NULL), shadowSprite(NULL),
-      equipmentHeadSprite(NULL), equipmentHeadItemType(Item::Type::None)
+      vertexMap(NULL), spriteLoader(NULL), headSprite(NULL), frontarmSprite(NULL), bodySprite(NULL), shadowSprite(NULL)
 {
+    equipmentProfiles.resize(Character::EquipmentSlot::_count);
 }
 
 void CharacterSprite::load(CharacterClient* _character, bit::SpriteLoader* _spriteLoader, bit::VertexMap &_vertexMap)
@@ -32,8 +32,11 @@ void CharacterSprite::load(CharacterClient* _character, bit::SpriteLoader* _spri
     frontarmQuadIndex = vertexMap->requestVertexIndex();
     frontarmQuad = &vertexMap->vertexArray[frontarmQuadIndex];
     
-    equipmentHeadQuadIndex = vertexMap->requestVertexIndex();
-    equipmentHeadQuad = &vertexMap->vertexArray[equipmentHeadQuadIndex];
+    for(unsigned int i=0; i < equipmentProfiles.size(); i++)
+    {
+        equipmentProfiles[i].quadIndex = vertexMap->requestVertexIndex();
+        equipmentProfiles[i].quad = &vertexMap->vertexArray[equipmentProfiles[i].quadIndex];
+    }
 }
 
 void CharacterSprite::update(sf::Time &gameTime)
@@ -70,32 +73,37 @@ void CharacterSprite::update(sf::Time &gameTime)
     float z = bit::Math::calculateDrawDepth(r.y + spriteHeight);
     sf::Color color((int)(255.0f * character->BodyClient::schema.illumination), (int)(255.0f * character->BodyClient::schema.illumination), (int)(255.0f * character->BodyClient::schema.illumination));
 
+    // BODY SPRITES
     bit::VertexHelper::positionQuad(headQuad, r.x, r.y, z, spriteWidth, spriteHeight);
     bit::VertexHelper::colorQuad(headQuad, color);
     headSprite->applyToQuad(headQuad);
-    if(!facingRight) bit::VertexHelper::flipQuad(headQuad, true, false);
+    bit::VertexHelper::flipQuad(headQuad, !facingRight, false);
 
     bit::VertexHelper::positionQuad(frontarmQuad, r.x, r.y, z, spriteWidth, spriteHeight);
     bit::VertexHelper::colorQuad(frontarmQuad, color);
     frontarmSprite->applyToQuad(frontarmQuad);
-    if(!facingRight) bit::VertexHelper::flipQuad(frontarmQuad, true, false);
+    bit::VertexHelper::flipQuad(frontarmQuad, !facingRight, false);
 
     bit::VertexHelper::positionQuad(bodyQuad, r.x, r.y, z, spriteWidth, spriteHeight);
     bit::VertexHelper::colorQuad(bodyQuad, color);
     bodySprite->applyToQuad(bodyQuad);
-    if(!facingRight) bit::VertexHelper::flipQuad(bodyQuad, true, false);
+    bit::VertexHelper::flipQuad(bodyQuad, !facingRight, false);
 
     bit::VertexHelper::positionQuad(shadowQuad, r.x, r.y, z, spriteWidth, spriteHeight);
     bit::VertexHelper::colorQuad(shadowQuad, color);
     shadowSprite->applyToQuad(shadowQuad);
-    if(!facingRight) bit::VertexHelper::flipQuad(shadowQuad, true, false);
+    bit::VertexHelper::flipQuad(shadowQuad, !facingRight, false);
 
-    if(equipmentHeadSprite)
+    // EQUIPMENT SPRITES
+    for(unsigned int i=0; i < equipmentProfiles.size(); i++)
     {
-        bit::VertexHelper::positionQuad(equipmentHeadQuad, r.x, r.y, z, spriteWidth, spriteHeight);
-        bit::VertexHelper::colorQuad(equipmentHeadQuad, color);
-        equipmentHeadSprite->applyToQuad(equipmentHeadQuad);
-        if(!facingRight) bit::VertexHelper::flipQuad(equipmentHeadQuad, true, false);
+        if(equipmentProfiles[i].sprite)
+        {
+            bit::VertexHelper::positionQuad(equipmentProfiles[i].quad, r.x, r.y, z, spriteWidth, spriteHeight);
+            bit::VertexHelper::colorQuad(equipmentProfiles[i].quad, color);
+            equipmentProfiles[i].sprite->applyToQuad(equipmentProfiles[i].quad);
+            bit::VertexHelper::flipQuad(equipmentProfiles[i].quad, !facingRight, false);
+        }
     }
 }
 
@@ -115,32 +123,37 @@ void CharacterSprite::reset()
 
 void CharacterSprite::syncronizeEquipment()
 {
-    // If the character has a head slot and its not the same as ours, change it
-    if(character->has_equipmentSlot_head && character->equipmentSlot_head.schema.type != equipmentHeadItemType)
+    for(unsigned int i=0; i < Character::EquipmentSlot::_count; i++)
     {
-        unsetEquipmentHeadSprite();
-        setEquipmentHeadSprite(character->equipmentSlot_head.schema.type);
+        Character::EquipmentSlot slot = static_cast<Character::EquipmentSlot>(i);
+        EquipmentProfile* profile = &equipmentProfiles[slot];
+        // If the character has a head slot and its not the same as ours, change it
+        if(character->hasEquipment[slot] && character->equipment[slot].schema.type != profile->type)
+        {
+            unsetEquipmentSprite(slot);
+            setEquipmentSprite(slot, character->equipment[slot].schema.type);
+        }
+        // If the character does not have a head slot but we are rendering on, remove it
+        else if(!character->hasEquipment[slot] && profile->sprite)
+        {
+            unsetEquipmentSprite(slot);
+        }
     }
-    // If the character does not have a head slot but we are rendering on, remove it
-    else if(!character->has_equipmentSlot_head && equipmentHeadSprite)
-    {
-        unsetEquipmentHeadSprite();
-    }
+}
 
-}
-void CharacterSprite::setEquipmentHeadSprite(Item::Type itemType)
+void CharacterSprite::setEquipmentSprite(Character::EquipmentSlot slot, Item::Type type)
 {
-    equipmentHeadItemType = itemType;
-    equipmentHeadSprite = spriteLoader->getSprite(Item::getSpriteName(character->equipmentSlot_head.schema.type));
-    equipmentHeadSprite->applyToQuad(equipmentHeadQuad);
+    equipmentProfiles[slot].type = type;
+    equipmentProfiles[slot].sprite = spriteLoader->getSprite(Item::getSpriteName(type));
+    equipmentProfiles[slot].sprite->applyToQuad(equipmentProfiles[slot].quad);
 }
-void CharacterSprite::unsetEquipmentHeadSprite()
+void CharacterSprite::unsetEquipmentSprite(Character::EquipmentSlot slot)
 {
-    equipmentHeadItemType = Item::Type::None;
-    if(equipmentHeadSprite)
+    equipmentProfiles[slot].type = Item::Type::None;
+    if(equipmentProfiles[slot].sprite)
     {
-        bit::VertexHelper::resetQuad(equipmentHeadQuad);
-        equipmentHeadSprite = NULL;
+        bit::VertexHelper::resetQuad(equipmentProfiles[slot].quad);
+        equipmentProfiles[slot].sprite = NULL;
     }
 }
 

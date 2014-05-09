@@ -6,8 +6,8 @@
 #include "../RogueZombieGame.hpp"
 #include "../ClientRequest.hpp"
 
-InventoryEquipmentSlot::InventoryEquipmentSlot(Inventory* inventory, float relativeX, float relativeY, float width, float height, AnchorType anchorType)
-    : bit::Container(relativeX, relativeY, width, height, anchorType, std::bind(&Hud::typicalContainerControl, inventory->hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), inventory(inventory), equippedItemLabel(NULL)
+InventoryEquipmentSlot::InventoryEquipmentSlot(Character::EquipmentSlot slot, Inventory* inventory, float relativeX, float relativeY, float width, float height, AnchorType anchorType)
+    : bit::Container(relativeX, relativeY, width, height, anchorType, std::bind(&Hud::typicalContainerControl, inventory->hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), slot(slot), inventory(inventory), equippedItemLabel(NULL)
 {
 }
 

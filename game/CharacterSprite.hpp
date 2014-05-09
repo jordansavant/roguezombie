@@ -24,13 +24,23 @@ public:
     bit::VertexMap* vertexMap;
     bit::SpriteLoader* spriteLoader;
 
+    struct EquipmentProfile
+    {
+        EquipmentProfile()
+            : type(Item::Type::None), sprite(NULL), quadIndex(0), quad(NULL)
+        {
+        }
+
+        Item::Type type;
+        bit::Sprite* sprite;
+        unsigned int quadIndex;
+        bit::Vertex3* quad;
+    };
+
     // Equipment spriting
-    Item::Type equipmentHeadItemType;
-    bit::Sprite* equipmentHeadSprite;
-    unsigned int equipmentHeadQuadIndex;
-    bit::Vertex3* equipmentHeadQuad;
-    void setEquipmentHeadSprite(Item::Type itemType);
-    void unsetEquipmentHeadSprite();
+    std::vector<EquipmentProfile> equipmentProfiles;
+    void setEquipmentSprite(Character::EquipmentSlot slot, Item::Type type);
+    void unsetEquipmentSprite(Character::EquipmentSlot slot);
 
     // Body spriting
     void setBodySprites(std::string& head, std::string& frontarm, std::string& body, std::string& shadow);

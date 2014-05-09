@@ -19,8 +19,8 @@ public:
 
 	Character::Schema schema;
 
-    bool has_equipmentSlot_head;
-    ItemClient equipmentSlot_head;
+    std::vector<bool> hasEquipment;
+    std::vector<ItemClient> equipment;
     
     std::map<unsigned int, MissionClient> missionClients;
 

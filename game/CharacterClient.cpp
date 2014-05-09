@@ -1,8 +1,10 @@
 #include "CharacterClient.hpp"
 
 CharacterClient::CharacterClient()
-    : schema(), has_equipmentSlot_head(false)
+    : schema()
 {
+    hasEquipment.resize(Character::EquipmentSlot::_count, false);
+    equipment.resize(Character::EquipmentSlot::_count);
 }
 
 void CharacterClient::handleSnapshot(bit::ServerPacket &packet, bool full)
@@ -14,10 +16,15 @@ void CharacterClient::handleSnapshot(bit::ServerPacket &packet, bool full)
     packet >> schema;
 
     // Equipment
-    packet >> has_equipmentSlot_head;
-    if(has_equipmentSlot_head)
+    for(unsigned int i=0; i < Character::EquipmentSlot::_count; i++)
     {
-        equipmentSlot_head.handleSnapshot(packet);
+        bool has;
+        packet >> has;
+        hasEquipment[i] = has;
+        if(has)
+        {
+            equipment[i].handleSnapshot(packet);
+        }
     }
 
     // Mission Clientside

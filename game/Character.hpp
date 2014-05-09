@@ -30,24 +30,31 @@ public:
         Ogre
     };
 
+    enum EquipmentSlot
+    {
+        Head,
+        Chest,
+        Legs,
+        Feet,
+        Hands,
+        Totem,
+        WeaponPrimary,
+        WeaponSecondary,
+        _count,
+    };
+
     std::vector<Tile*> path;
     bit::GameTimer moveTimer;
     std::vector<Light*> lights;
     std::vector<Mission*> missions;
-    Item* equipmentSlot_head;
-    //Item* equipmentSlot_chest;
-    //Item* equipmentSlot_legs;
-    //Item* equipmentSlot_feet;
-    //Item* equipmentSlot_hands;
-    //Item* equipmentSlot_totem;
-    //Item* equipmentSlot_weaponPrimary;
-    //Item* equipmentSlot_weaponSecondary;
+    std::vector<Item*> equipment;
 
 	struct Schema
 	{
         Schema()
-           : maxHealth(0), isPlayerCharacter(false), clientId(0), player(NULL), type(Type::None), health(0), itemId_equipmentSlot_head(0)
+           : maxHealth(0), isPlayerCharacter(false), clientId(0), player(NULL), type(Type::None), health(0)
         {
+            equipmentIds.resize(EquipmentSlot::_count, 0);
         }
 
 		int maxHealth;
@@ -56,7 +63,7 @@ public:
         Player* player;
         Type type;
         int health;
-        unsigned int itemId_equipmentSlot_head;
+        std::vector<unsigned int> equipmentIds;
 
         friend sf::Packet& operator <<(sf::Packet& packet, const Schema &schema)
         {
@@ -65,7 +72,10 @@ public:
             packet << sf::Uint32(schema.clientId);
             packet << sf::Uint32(schema.type);
             packet << sf::Int32(schema.health);
-            packet << sf::Uint32(schema.itemId_equipmentSlot_head);
+            for(unsigned int i=0; i < schema.equipmentIds.size(); i++)
+            {
+                packet << sf::Uint32(schema.equipmentIds[i]);
+            }
             return packet;
         }
         friend sf::Packet& operator >>(sf::Packet& packet, Schema &schema)
@@ -75,7 +85,10 @@ public:
             packet >> schema.clientId;
             bit::NetworkHelper::unpackEnum<sf::Uint32, Character::Type>(packet, schema.type);
             packet >> schema.health;
-            packet >> schema.itemId_equipmentSlot_head;
+            for(unsigned int i=0; i < Character::EquipmentSlot::_count; i++)
+            {
+                packet >> schema.equipmentIds[i];
+            }
             return packet;
         }
 	};
@@ -85,11 +98,11 @@ public:
 
     virtual void update(sf::Time &gameTime);
 
-    virtual bool equipHeadFromInventory(unsigned int itemId);
+    virtual bool equipFromInventory(EquipmentSlot slot, unsigned int itemId);
+    
+    virtual bool equip(EquipmentSlot slot, Item* item);
 
-    virtual bool equipHead(Item* item);
-
-    virtual void unequipHead();
+    virtual void unequip(EquipmentSlot slot);
 
     virtual void setControllingPlayer(Player* player);
 

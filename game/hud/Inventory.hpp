@@ -22,14 +22,15 @@ public:
     bit::Container* equipmentPanel;
     bit::Container* inventoryPanel;
 
-    InventoryEquipmentSlot* headBox;
-    InventoryEquipmentSlot* chestBox;
-    InventoryEquipmentSlot* handBox;
-    InventoryEquipmentSlot* legBox;
-    InventoryEquipmentSlot* footBox;
-    InventoryEquipmentSlot* totemBox;
-    InventoryEquipmentSlot* primaryWeaponBox;
-    InventoryEquipmentSlot* secondaryWeaponBox;
+    std::vector<InventoryEquipmentSlot*> equipmentSlotBoxes;
+    //InventoryEquipmentSlot* headBox;
+    //InventoryEquipmentSlot* chestBox;
+    //InventoryEquipmentSlot* handBox;
+    //InventoryEquipmentSlot* legBox;
+    //InventoryEquipmentSlot* footBox;
+    //InventoryEquipmentSlot* totemBox;
+    //InventoryEquipmentSlot* primaryWeaponBox;
+    //InventoryEquipmentSlot* secondaryWeaponBox;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 

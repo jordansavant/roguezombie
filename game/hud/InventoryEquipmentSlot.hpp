@@ -7,6 +7,7 @@
 #include "../../bitengine/Gui.hpp"
 #include "../../bitengine/Graphics.hpp"
 #include "../items/ItemClient.hpp"
+#include "../Character.hpp"
 
 class InventoryItemLabel;
 
@@ -14,10 +15,11 @@ class InventoryEquipmentSlot : public bit::Container
 {
 public:
 
-    InventoryEquipmentSlot(Inventory* inventory, float relativeX, float relativeY, float width, float height, AnchorType anchorType);
+    InventoryEquipmentSlot(Character::EquipmentSlot slot, Inventory* inventory, float relativeX, float relativeY, float width, float height, AnchorType anchorType);
 
     Inventory* inventory;
     InventoryItemLabel* equippedItemLabel;
+    Character::EquipmentSlot slot;
 
     void addItemLabel(InventoryItemLabel* label);
 
