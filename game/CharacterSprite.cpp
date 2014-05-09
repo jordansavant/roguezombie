@@ -114,6 +114,11 @@ void CharacterSprite::reset()
     bit::VertexHelper::resetQuad(frontarmQuad);
     bit::VertexHelper::resetQuad(bodyQuad);
     bit::VertexHelper::resetQuad(shadowQuad);
+
+    for(unsigned int i=0; i < equipmentProfiles.size(); i++)
+    {
+        bit::VertexHelper::resetQuad(equipmentProfiles[i].quad);
+    }
 }
 
 
@@ -127,13 +132,13 @@ void CharacterSprite::syncronizeEquipment()
     {
         Character::EquipmentSlot slot = static_cast<Character::EquipmentSlot>(i);
         EquipmentProfile* profile = &equipmentProfiles[slot];
-        // If the character has a head slot and its not the same as ours, change it
+        // If the character has a slot and its not the same as ours, change it
         if(character->hasEquipment[slot] && character->equipment[slot].schema.type != profile->type)
         {
             unsetEquipmentSprite(slot);
             setEquipmentSprite(slot, character->equipment[slot].schema.type);
         }
-        // If the character does not have a head slot but we are rendering on, remove it
+        // If the character does not have a slot but we are rendering on, remove it
         else if(!character->hasEquipment[slot] && profile->sprite)
         {
             unsetEquipmentSprite(slot);
