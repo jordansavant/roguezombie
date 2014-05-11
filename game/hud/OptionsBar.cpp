@@ -18,7 +18,7 @@ OptionsBar::OptionsBar(Hud* _hud)
 
     journal = new HudElement(64, 0, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     journal->load(hud, std::string("optionbar_journal"));
-    journal->onActivate = [_hud] (Element* e) { _hud->activateJournal(true); };
+    journal->onActivate = [_hud] (Element* e) { _hud->state->changeMode(StateGamePlay::Mode::Journal); };
     addChild(journal);
 
     character = new HudElement(128, 0, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));

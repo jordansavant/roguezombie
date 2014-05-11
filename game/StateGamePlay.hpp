@@ -28,6 +28,7 @@ public:
         Combat,
         Loot,
         Inventory,
+        Journal,
         Trade,
         Dialog,
         _count
@@ -63,6 +64,12 @@ public:
     void modeOnEnterInventory();
     void modeOnExitInventory();
     void modeOnUpdateInventory(sf::Time &gameTime);
+
+    void modeOnEnterJournal();
+    void modeOnExitJournal();
+    void modeOnUpdateJournal(sf::Time &gameTime);
+
+    void modeOnUpdateCommonListener(sf::Time &gameTime);
 
     virtual bool handleInput(sf::Time &gameTime);
 

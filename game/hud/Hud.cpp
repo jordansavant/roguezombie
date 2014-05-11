@@ -106,6 +106,14 @@ void Hud::activateJournal(bool hideIfShowing)
     }
 }
 
+void Hud::deactivateJournal()
+{
+    if(journal->isShown)
+    {
+        journal->hide();
+    }
+}
+
 void Hud::activateInventory(bool hideIfShowing)
 {
     if(!inventory->isShown)
@@ -116,6 +124,14 @@ void Hud::activateInventory(bool hideIfShowing)
     else if(hideIfShowing)
     {
         hideAllMenus();
+    }
+}
+
+void Hud::deactivateInventory()
+{
+    if(inventory->isShown)
+    {
+        inventory->hide();
     }
 }
 

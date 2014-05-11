@@ -48,6 +48,10 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     modeEnter[Mode::Inventory] = std::bind(&StateGamePlay::modeOnEnterInventory, this);
     modeExit[Mode::Inventory] = std::bind(&StateGamePlay::modeOnExitInventory, this);
     modeUpdate[Mode::Inventory] = std::bind(&StateGamePlay::modeOnUpdateInventory, this, std::placeholders::_1);
+    
+    modeEnter[Mode::Journal] = std::bind(&StateGamePlay::modeOnEnterJournal, this);
+    modeExit[Mode::Journal] = std::bind(&StateGamePlay::modeOnExitJournal, this);
+    modeUpdate[Mode::Journal] = std::bind(&StateGamePlay::modeOnUpdateJournal, this, std::placeholders::_1);
 }
 
 StateGamePlay::~StateGamePlay()
@@ -173,17 +177,8 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
         }
     }
 
-    
-    // Inentory hot key
-    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::I))
-    {
-        changeMode(Mode::Inventory);
-    }
-    // Journal hot key
-    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::J))
-    {
-        hud->activateJournal(true);
-    }
+    // Menu Hot Keys
+    modeOnUpdateCommonListener(gameTime);
 
     // Exit
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
@@ -239,15 +234,68 @@ void StateGamePlay::modeOnEnterInventory()
 
 void StateGamePlay::modeOnExitInventory()
 {
-    hud->inventory->hide();
+    hud->deactivateInventory();
 }
 
 void StateGamePlay::modeOnUpdateInventory(sf::Time &gameTime)
 {
-	// Exit
-    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape) || rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::I))
+    modeOnUpdateCommonListener(gameTime);
+}
+
+
+////////////////////////////////////////////////////////////////////////
+//                          JOURNAL MODES                             //
+////////////////////////////////////////////////////////////////////////
+
+void StateGamePlay::modeOnEnterJournal()
+{
+    hud->activateJournal(false);
+}
+
+void StateGamePlay::modeOnExitJournal()
+{
+    hud->deactivateJournal();
+}
+
+void StateGamePlay::modeOnUpdateJournal(sf::Time &gameTime)
+{
+    modeOnUpdateCommonListener(gameTime);
+}
+
+
+
+
+void StateGamePlay::modeOnUpdateCommonListener(sf::Time &gameTime)
+{
+    // Inventory hot key
+    if(mode == Mode::Inventory && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::I) || rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape)))
     {
         changeMode(Mode::Free);
+        return;
+    }
+    if(mode != Mode::Inventory && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::I)))
+    {
+        changeMode(Mode::Inventory);
+        return;
+    }
+
+    // Journal hot key
+    if(mode == Mode::Journal && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::J) || rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape)))
+    {
+        changeMode(Mode::Free);
+        return;
+    }
+    if(mode != Mode::Journal && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::J)))
+    {
+        changeMode(Mode::Journal);
+        return;
+    }
+
+    // Loot hot key
+    if(mode == Mode::Loot && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::I) || rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape)))
+    {
+        changeMode(Mode::Free);
+        return;
     }
 }
 

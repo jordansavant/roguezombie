@@ -43,7 +43,11 @@ public:
 
     void activateJournal(bool hideIfShowing = true);
 
+    void deactivateJournal();
+
     void activateInventory(bool hideIfShowing = true);
+
+    void deactivateInventory();
 
     void displayMessage(std::string &message);
 
