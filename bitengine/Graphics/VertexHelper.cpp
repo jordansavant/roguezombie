@@ -64,30 +64,38 @@ void bit::VertexHelper::colorQuad(Vertex3* quad, sf::Color &color)
     (quad + 3)->color = color;
 }
 
-void bit::VertexHelper::rotateQuad(Vertex3* quad, float radians, float centerX, float centerY)
+void bit::VertexHelper::rotateQuad(Vertex3* quad, float radians)
+{
+    float centerX = quad[0].position.x + (quad[1].position.x - quad[0].position.x) / 2;
+    float centerY = quad[0].position.y + (quad[2].position.y - quad[0].position.y) / 2;
+
+    rotateQuad(quad, radians, centerX, centerY);
+}
+
+void bit::VertexHelper::rotateQuad(Vertex3* quad, float radians, float aroundX, float aroundY)
 {
     float cosRadians = std::cos(radians);
     float sinRadians = std::sin(radians);
 
-    float x = (quad + 0)->position.x - centerX;
-    float y = (quad + 0)->position.y - centerY;
-    (quad + 0)->position.x = x * cosRadians - y * sinRadians + centerX;
-    (quad + 0)->position.y = x * sinRadians + y * cosRadians + centerY;
+    float x = (quad + 0)->position.x - aroundX;
+    float y = (quad + 0)->position.y - aroundY;
+    (quad + 0)->position.x = x * cosRadians - y * sinRadians + aroundX;
+    (quad + 0)->position.y = x * sinRadians + y * cosRadians + aroundY;
 
-    x = (quad + 1)->position.x - centerX;
-    y = (quad + 1)->position.y - centerY;
-    (quad + 1)->position.x = x * cosRadians - y * sinRadians + centerX;
-    (quad + 1)->position.y = x * sinRadians + y * cosRadians + centerY;
+    x = (quad + 1)->position.x - aroundX;
+    y = (quad + 1)->position.y - aroundY;
+    (quad + 1)->position.x = x * cosRadians - y * sinRadians + aroundX;
+    (quad + 1)->position.y = x * sinRadians + y * cosRadians + aroundY;
 
-    x = (quad + 2)->position.x - centerX;
-    y = (quad + 2)->position.y - centerY;
-    (quad + 2)->position.x = x * cosRadians - y * sinRadians + centerX;
-    (quad + 2)->position.y = x * sinRadians + y * cosRadians + centerY;
+    x = (quad + 2)->position.x - aroundX;
+    y = (quad + 2)->position.y - aroundY;
+    (quad + 2)->position.x = x * cosRadians - y * sinRadians + aroundX;
+    (quad + 2)->position.y = x * sinRadians + y * cosRadians + aroundY;
 
-    x = (quad + 3)->position.x - centerX;
-    y = (quad + 3)->position.y - centerY;
-    (quad + 3)->position.x = x * cosRadians - y * sinRadians + centerX;
-    (quad + 3)->position.y = x * sinRadians + y * cosRadians + centerY;
+    x = (quad + 3)->position.x - aroundX;
+    y = (quad + 3)->position.y - aroundY;
+    (quad + 3)->position.x = x * cosRadians - y * sinRadians + aroundX;
+    (quad + 3)->position.y = x * sinRadians + y * cosRadians + aroundY;
 }
 
 void bit::VertexHelper::flipQuad(Vertex3* quad, bool horizontal, bool vertical)

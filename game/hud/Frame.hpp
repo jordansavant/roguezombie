@@ -24,6 +24,12 @@ public:
     unsigned int bottomRightQuadIndex;
     bit::Sprite* cornerSprite;
 
+    unsigned int topQuadIndex;
+    unsigned int bottomQuadIndex;
+    unsigned int leftQuadIndex;
+    unsigned int rightQuadIndex;
+    bit::Sprite* edgeSprite;
+
     void load(Hud* hud);
 
     void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);

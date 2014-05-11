@@ -18,7 +18,9 @@ namespace bit
 
         static void colorQuad(Vertex3* quad, sf::Color &color);
 
-        static void rotateQuad(Vertex3* quad, float radians, float centerX, float centerY);
+        static void rotateQuad(Vertex3* quad, float radians);
+
+        static void rotateQuad(Vertex3* quad, float radians, float aroundX, float aroundY);
 
         static void flipQuad(Vertex3* quad, bool horizontal = true, bool vertical = false);
     };
