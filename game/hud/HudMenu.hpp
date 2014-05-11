@@ -2,13 +2,14 @@
 #ifndef RZ_HUDMENU_H
 #define RZ_HUDMENU_H
 
+#include "Frame.hpp"
 #include "SFML/Graphics.hpp"
 #include "../../bitengine/Gui.hpp"
 #include "../../bitengine/Graphics.hpp"
 
 class Hud;
 
-class HudMenu : public bit::Container
+class HudMenu : public Frame
 {
 public:
 
@@ -18,7 +19,6 @@ public:
 
     HudMenu(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput);
 
-    Hud* hud;
     bool isShown;
     float originX, originY;
 

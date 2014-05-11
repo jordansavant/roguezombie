@@ -2,6 +2,7 @@
 #ifndef RZ_LOOTMENU_H
 #define RZ_LOOTMENU_H
 
+#include "Frame.hpp"
 #include "SFML/Graphics.hpp"
 #include "../../bitengine/Gui.hpp"
 #include "../../bitengine/Graphics.hpp"
@@ -10,13 +11,12 @@
 
 class Hud;
 
-class LootMenu : public bit::Container
+class LootMenu : public Frame
 {
 public:
 
     LootMenu(Hud* hud);
 
-    Hud* hud;
     bit::Label* entries;
     ItemClient inventory;
     bool isActive;

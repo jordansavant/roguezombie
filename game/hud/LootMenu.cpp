@@ -12,8 +12,9 @@
 #include "../TileClient.hpp"
 
 LootMenu::LootMenu(Hud* _hud)
-    : bit::Container(50, 0, 300, 400, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(_hud), inventory(), isActive(false)
+    : Frame(_hud, 50, 0, 300, 300, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), inventory(), isActive(false)
 {
+    opacity = 0;
     entries = new bit::Label(0, 0, 0, 0, bit::Element::AnchorType::TopLeft);
     entries->setSfFontSize(24);
     entries->setSfFont(hud->journalFont);
@@ -52,27 +53,27 @@ void LootMenu::handleInventorySnapshot(bit::ServerPacket &packet, unsigned int t
 {
     inventory.handleSnapshot(packet);
 
-    int y = 0;
+    int y = 10;
     clearChildren();
 
-    bit::Label* title = new bit::Label(0, y, 0, 0, bit::Element::AnchorType::TopLeft);
+    bit::Label* title = new bit::Label(0, y, 0, 0, bit::Element::AnchorType::Top);
     title->setSfFontSize(24);
     title->setSfFont(hud->journalFont);
     title->normalColor = sf::Color::White;
-    title->setSfFontString(std::string("Loot"));
+    title->setSfFontString(std::string("Loot..."));
     addChild(title);
-    y += 30;
+    y += 40;
 
     for(auto iterator = inventory.itemClients.begin(); iterator != inventory.itemClients.end(); iterator++)
     {
         ItemClient* i = &iterator->second;
 
         LootMenu* m = this;
-        bit::Label* option = new bit::Label(0, y, 0, 0, bit::Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+        bit::Label* option = new bit::Label(0, y, 0, 0, bit::Element::AnchorType::Top, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
         option->setSfFontSize(24);
         option->setSfFont(hud->journalFont);
         option->normalColor = sf::Color::White;
-        option->setSfFontString(std::string("- " + Item::getTitle(i->schema.type)));
+        option->setSfFontString(std::string(Item::getTitle(i->schema.type)));
         option->canHaveFocus = true;
         option->paddingRight = 10;
         option->paddingBottom = 10;

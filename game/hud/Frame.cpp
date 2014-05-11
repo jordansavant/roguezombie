@@ -31,6 +31,8 @@ Frame::Frame(Hud* hud, float relativeX, float relativeY, float width, float heig
 
 void Frame::load()
 {
+    opacity = 0;
+
     // Corners
     topLeftQuadIndex = hud->interfaceVertexMap.requestVertexIndex();
     topRightQuadIndex = hud->interfaceVertexMap.requestVertexIndex();

@@ -86,7 +86,7 @@ void Hud::hideAllMenus(Element* except)
 {
     for(unsigned int i=0; i < submenus.size(); i++)
     {
-        if(submenus[i] != except)
+        if(submenus[i] != except && submenus[i]->isShown)
         {
             submenus[i]->hide();
         }

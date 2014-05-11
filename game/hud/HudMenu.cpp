@@ -8,21 +8,21 @@
 #include "../mission/MissionClient.hpp"
 
 HudMenu::HudMenu(Hud* hud)
-    : bit::Container(350, 50, 300, 500, bit::Element::AnchorType::TopRight, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(hud), isShown(false)
+    : Frame(hud, 350, 50, 300, 500, bit::Element::AnchorType::TopRight, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), isShown(false)
 {
     originX = relativePosition.x;
     originY = relativePosition.y;
 }
 
 HudMenu::HudMenu(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType)
-    : bit::Container(relativeX, relativeY, width, height, anchorType, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(hud), isShown(false)
+    : Frame(hud, relativeX, relativeY, width, height, anchorType, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), isShown(false)
 {
     originX = relativePosition.x;
     originY = relativePosition.y;
 }
 
 HudMenu::HudMenu(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput)
-    : bit::Container(relativeX, relativeY, width, height, anchorType, lambdaListenToInput), hud(hud), isShown(false)
+    : Frame(hud, relativeX, relativeY, width, height, anchorType, lambdaListenToInput), isShown(false)
 {
     originX = relativePosition.x;
     originY = relativePosition.y;

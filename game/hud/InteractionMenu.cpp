@@ -50,6 +50,15 @@ void InteractionMenu::handleInteractionTree(bit::ServerPacket &packet, unsigned 
     isActive = optionSize == 0 ? false : true;
 
     int y = 10;
+    
+    bit::Label* title = new bit::Label(0, y, 0, 0, bit::Element::AnchorType::Top);
+    title->setSfFontSize(24);
+    title->setSfFont(hud->journalFont);
+    title->normalColor = sf::Color::White;
+    title->setSfFontString(std::string("Interact..."));
+    addChild(title);
+    y += 40;
+    
     for(unsigned int i=0; i < optionSize; i++)
     {
         InteractionMenu* m = this;
