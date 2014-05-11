@@ -8,7 +8,7 @@
 #include "../mission/MissionClient.hpp"
 
 Journal::Journal(Hud* _hud)
-    : HudMenu(_hud)
+    : HudMenu(_hud, 0, 0, 300, 720, bit::Element::AnchorType::Right)
 {
     journalEntries = new bit::Label(10, 10, 0, 0, bit::Element::AnchorType::TopLeft);
     journalEntries->setSfFontSize(24);
@@ -47,4 +47,22 @@ void Journal::update(sf::RenderWindow &window, sf::Time &gameTime)
         journalEntries->setSfFontString(entry);
         journalEntries->opacity = opacity;
     }
+}
+
+void Journal::hide()
+{
+    isShown = false;
+    clearEffects();
+    relativePosition.x = 0;
+    immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, targetWidth, 0));
+    immediateEffect(new bit::FadeEffect(150, 0));
+}
+
+void Journal::show()
+{
+    isShown = true;
+    clearEffects();
+    relativePosition.x = targetWidth;
+    immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, -targetWidth, 0));
+    immediateEffect(new bit::FadeEffect(300, 1));
 }

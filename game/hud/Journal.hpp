@@ -19,6 +19,10 @@ public:
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
+    virtual void hide();
+
+    virtual void show();
+
 };
 
 #endif
