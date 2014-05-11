@@ -44,6 +44,10 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     modeEnter[Mode::Loot] = std::bind(&StateGamePlay::modeOnEnterLoot, this);
     modeExit[Mode::Loot] = std::bind(&StateGamePlay::modeOnExitLoot, this);
     modeUpdate[Mode::Loot] = std::bind(&StateGamePlay::modeOnUpdateLoot, this, std::placeholders::_1);
+    
+    modeEnter[Mode::Inventory] = std::bind(&StateGamePlay::modeOnEnterInventory, this);
+    modeExit[Mode::Inventory] = std::bind(&StateGamePlay::modeOnExitInventory, this);
+    modeUpdate[Mode::Inventory] = std::bind(&StateGamePlay::modeOnUpdateInventory, this, std::placeholders::_1);
 }
 
 StateGamePlay::~StateGamePlay()
@@ -173,7 +177,7 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
     // Inentory hot key
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::I))
     {
-        hud->activateInventory(true);
+        changeMode(Mode::Inventory);
     }
     // Journal hot key
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::J))
@@ -215,12 +219,38 @@ void StateGamePlay::modeOnExitLoot()
 void StateGamePlay::modeOnUpdateLoot(sf::Time &gameTime)
 {
 	// Exit
-    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
+    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape) || rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::I))
     {
         hud->lootMenu->deactivate();
         changeMode(Mode::Free);
     }
 }
+
+
+
+////////////////////////////////////////////////////////////////////////
+//                         INVENTORY MODES                            //
+////////////////////////////////////////////////////////////////////////
+
+void StateGamePlay::modeOnEnterInventory()
+{
+    hud->activateInventory(false);
+}
+
+void StateGamePlay::modeOnExitInventory()
+{
+    hud->inventory->hide();
+}
+
+void StateGamePlay::modeOnUpdateInventory(sf::Time &gameTime)
+{
+	// Exit
+    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape) || rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::I))
+    {
+        changeMode(Mode::Free);
+    }
+}
+
 
 bool StateGamePlay::handleInput(sf::Time &gameTime)
 {

@@ -27,7 +27,7 @@ OptionsBar::OptionsBar(Hud* _hud)
 
     inventory = new HudElement(192, 0, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     inventory->load(hud, std::string("optionbar_inventory"));
-    inventory->onActivate = [_hud] (Element* e) { _hud->activateInventory(true); };
+    inventory->onActivate = [_hud] (Element* e) { _hud->state->changeMode(StateGamePlay::Mode::Inventory); };
     addChild(inventory);
 
     map = new HudElement(256, 0, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));

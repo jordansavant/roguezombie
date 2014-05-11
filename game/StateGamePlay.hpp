@@ -27,6 +27,7 @@ public:
         Free,
         Combat,
         Loot,
+        Inventory,
         Trade,
         Dialog,
         _count
@@ -58,6 +59,10 @@ public:
     void modeOnEnterLoot();
     void modeOnExitLoot();
     void modeOnUpdateLoot(sf::Time &gameTime);
+    
+    void modeOnEnterInventory();
+    void modeOnExitInventory();
+    void modeOnUpdateInventory(sf::Time &gameTime);
 
     virtual bool handleInput(sf::Time &gameTime);
 
