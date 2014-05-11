@@ -14,6 +14,7 @@
 Inventory::Inventory(Hud* _hud)
     : HudMenu(_hud, 0, 0, 1300, 720, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), refreshTimer(5)
 {
+    managesOpacity = true;
     originX = 0;
     originY = 0;
 
@@ -31,53 +32,47 @@ Inventory::Inventory(Hud* _hud)
 
     // PRIMARY PANELS
     // 500 x 720
-    equipmentPanel = new bit::Container(5, 0, 490, 710, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    equipmentPanel = new Frame(hud, 5, 0, 490, 710, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    equipmentPanel->managesOpacity = true;
     addChild(equipmentPanel);
     
     // 800 x 720
-    inventoryPanel = new bit::Container(-5, 0, 790, 710, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    inventoryPanel = new Frame(hud, -5, 0, 790, 710, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    inventoryPanel->managesOpacity = true;
     addChild(inventoryPanel);
 
     // EQUIPMENT BOXES
     int topOffset = 150;
     equipmentSlotBoxes.resize(Character::EquipmentSlot::_count, NULL);
 
-    equipmentSlotBoxes[Character::EquipmentSlot::Head] = new InventoryEquipmentSlot(Character::EquipmentSlot::Head, this, 0, topOffset + 0, 200, 100, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::Head] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Head, this, 0, topOffset + 0, 200, 100, bit::Element::AnchorType::Top);
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Head]);
     
-    equipmentSlotBoxes[Character::EquipmentSlot::Chest] = new InventoryEquipmentSlot(Character::EquipmentSlot::Chest, this, 0, topOffset + 120, 160, 100, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::Chest] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Chest, this, 0, topOffset + 120, 160, 100, bit::Element::AnchorType::Top);
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Chest]);
     
-    equipmentSlotBoxes[Character::EquipmentSlot::Legs] = new InventoryEquipmentSlot(Character::EquipmentSlot::Legs, this, 0, topOffset + 240, 160, 60, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::Legs] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Legs, this, 0, topOffset + 240, 160, 60, bit::Element::AnchorType::Top);
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Legs]);
     
-    equipmentSlotBoxes[Character::EquipmentSlot::Feet] = new InventoryEquipmentSlot(Character::EquipmentSlot::Feet, this, 0, topOffset + 320, 160, 30, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::Feet] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Feet, this, 0, topOffset + 320, 160, 30, bit::Element::AnchorType::Top);
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Feet]);
     
-    equipmentSlotBoxes[Character::EquipmentSlot::Totem] = new InventoryEquipmentSlot(Character::EquipmentSlot::Totem, this, -130, topOffset + 120, 60, 60, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::Totem] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Totem, this, -130, topOffset + 120, 60, 60, bit::Element::AnchorType::Top);
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Totem]);
     
-    equipmentSlotBoxes[Character::EquipmentSlot::Hands] = new InventoryEquipmentSlot(Character::EquipmentSlot::Hands, this, -130, topOffset + 200, 60, 60, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::Hands] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Hands, this, -130, topOffset + 200, 60, 60, bit::Element::AnchorType::Top);
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Hands]);
     
-    equipmentSlotBoxes[Character::EquipmentSlot::WeaponPrimary] = new InventoryEquipmentSlot(Character::EquipmentSlot::WeaponPrimary, this, 150, topOffset + 120, 100, 100, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::WeaponPrimary] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::WeaponPrimary, this, 150, topOffset + 120, 100, 100, bit::Element::AnchorType::Top);
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::WeaponPrimary]);
     
-    equipmentSlotBoxes[Character::EquipmentSlot::WeaponSecondary] = new InventoryEquipmentSlot(Character::EquipmentSlot::WeaponSecondary, this, 150, topOffset + 240, 100, 100, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::WeaponSecondary] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::WeaponSecondary, this, 150, topOffset + 240, 100, 100, bit::Element::AnchorType::Top);
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::WeaponSecondary]);
 }
 
 void Inventory::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     HudMenu::update(window, gameTime);
-
-    equipmentPanel->opacity = opacity;
-    inventoryPanel->opacity = opacity;
-
-    for(unsigned int i=0; i < equipmentSlotBoxes.size(); i++)
-    {
-        equipmentSlotBoxes[i]->opacity = opacity;
-    }
 
     if(refreshTimer.update(gameTime))
     {
@@ -137,7 +132,7 @@ void Inventory::buildItemList(bool force)
     inventoryPanel->clearChildren();
 
     float y = 10;
-    bit::Label* title = new bit::Label(10, y, 0, 0, bit::Element::AnchorType::TopLeft);
+    bit::Label* title = new bit::Label(20, y, 0, 0, bit::Element::AnchorType::TopLeft);
     title->setSfFontSize(24);
     title->setSfFont(hud->journalFont);
     title->normalColor = sf::Color::White;
@@ -148,7 +143,7 @@ void Inventory::buildItemList(bool force)
     for(auto iterator = levelClient->playerCharacter->inventoryClient.itemClients.begin(); iterator != levelClient->playerCharacter->inventoryClient.itemClients.end(); iterator++)
     {
         ItemClient* i = &iterator->second;
-        InventoryItemLabel* option = buildItem(i, 10, y);
+        InventoryItemLabel* option = buildItem(i, 20, y);
         inventoryPanel->addChild(option);
 
         y += 30;

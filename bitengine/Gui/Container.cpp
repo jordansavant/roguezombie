@@ -5,17 +5,17 @@
 #include "../Math/Math.hpp"
 
 bit::Container::Container()
-    : Element(), childElements(), focusedChild(NULL), focusedChildIndex(-1), transferChild(NULL)
+    : Element(), childElements(), managesOpacity(false), focusedChild(NULL), focusedChildIndex(-1), transferChild(NULL)
 {
 }
 
 bit::Container::Container(float relativeX, float relativeY, float width, float height, AnchorType anchorType)
-    : Element(relativeX, relativeY, width, height, anchorType), childElements(), focusedChild(NULL), focusedChildIndex(-1), transferChild(NULL)
+    : Element(relativeX, relativeY, width, height, anchorType), childElements(), managesOpacity(false), focusedChild(NULL), focusedChildIndex(-1), transferChild(NULL)
 {
 }
 
 bit::Container::Container(float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput)
-    : Element(relativeX, relativeY, width, height, anchorType, lambdaListenToInput), childElements(), focusedChild(NULL), focusedChildIndex(-1), transferChild(NULL)
+    : Element(relativeX, relativeY, width, height, anchorType, lambdaListenToInput), childElements(), managesOpacity(false), focusedChild(NULL), focusedChildIndex(-1), transferChild(NULL)
 {
 }
 
@@ -35,6 +35,9 @@ void bit::Container::update(sf::RenderWindow &window, sf::Time &gameTime)
     {
         // Update children
         (*it)->update(window, gameTime);
+
+        if(managesOpacity)
+            (*it)->opacity = opacity;
 
         // Remove any that are requested to be removed
         if ((*it)->removeFromParent)

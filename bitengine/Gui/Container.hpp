@@ -21,6 +21,7 @@ namespace bit
         virtual ~Container();
 
         std::vector<Element*> childElements;
+        bool managesOpacity;
 
         virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 

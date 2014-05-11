@@ -10,7 +10,7 @@
 Journal::Journal(Hud* _hud)
     : HudMenu(_hud)
 {
-    journalEntries = new bit::Label(0, 0, 0, 0, bit::Element::AnchorType::TopLeft);
+    journalEntries = new bit::Label(10, 10, 0, 0, bit::Element::AnchorType::TopLeft);
     journalEntries->setSfFontSize(24);
     journalEntries->setSfFont(hud->journalFont);
     journalEntries->normalColor = sf::Color::White;
