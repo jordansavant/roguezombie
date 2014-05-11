@@ -58,7 +58,7 @@ void bit::Element::draw(sf::RenderWindow &window, sf::Time &gameTime)
     //    debugRect.setOutlineThickness(0);
     //}
     
-    window.draw(debugRect);
+    //window.draw(debugRect);
 }
 
 bit::Element* bit::Element::queueEffect(bit::Effect* effect)

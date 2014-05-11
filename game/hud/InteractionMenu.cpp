@@ -1,5 +1,6 @@
 #include "InteractionMenu.hpp"
 #include "Hud.hpp"
+#include "Frame.hpp"
 #include "../ClientRequest.hpp"
 #include "../../bitengine/Input.hpp"
 #include "../../bitengine/Network.hpp"
@@ -12,8 +13,9 @@
 #include "../TileClient.hpp"
 
 InteractionMenu::InteractionMenu(Hud* _hud)
-    : bit::Container(50, 0, 300, 400, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(_hud), isActive(true)
+    : Frame(_hud, 50, 0, 300, 300, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), isActive(false)
 {
+    opacity = 0;
 }
 
 void InteractionMenu::update(sf::RenderWindow &window, sf::Time &gameTime)
@@ -47,14 +49,14 @@ void InteractionMenu::handleInteractionTree(bit::ServerPacket &packet, unsigned 
 
     isActive = optionSize == 0 ? false : true;
 
-    int y = 0;
+    int y = 10;
     for(unsigned int i=0; i < optionSize; i++)
     {
         InteractionMenu* m = this;
         Interaction::Type it;
         bit::NetworkHelper::unpackEnum<sf::Uint32, Interaction::Type>(packet, it);
         
-        bit::Label* option = new bit::Label(0, y, 0, 0, bit::Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+        bit::Label* option = new bit::Label(0, y, 0, 0, bit::Element::AnchorType::Top, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
         option->setSfFontSize(24);
         option->setSfFont(hud->journalFont);
         option->normalColor = sf::Color::White;

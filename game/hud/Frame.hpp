@@ -15,8 +15,11 @@ public:
 
     Frame(Hud* hud);
 
+    Frame(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType);
+
+    Frame(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput);
+
     Hud* hud;
-    bool isActive;
     
     unsigned int topLeftQuadIndex;
     unsigned int topRightQuadIndex;
@@ -30,13 +33,14 @@ public:
     unsigned int rightQuadIndex;
     bit::Sprite* edgeSprite;
 
-    void load(Hud* hud);
+    unsigned int backgroundQuadIndex;
+    bit::Sprite* backgroundSprite;
 
-    void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
+    void load();
 
-    void updateReals(sf::RenderWindow &window, sf::Time &gameTime);
+    virtual void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
 
-	void draw(sf::RenderWindow &window, sf::Time &gameTime);
+    virtual void updateReals(sf::RenderWindow &window, sf::Time &gameTime);
 };
 
 #endif
