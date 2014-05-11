@@ -1,5 +1,9 @@
 trimmed_name,frame_x,frame_y,frame_width,frame_height,sprite_x,sprite_y,sprite_width,sprite_height,rotated
-minimap_mark,2,200,16,8,0,0,16,8,false
+hud_frame_background,2,228,12,12,0,0,12,12,false
+hud_frame_bottompointer,16,200,16,8,0,0,16,8,false
+hud_frame_corner,2,214,12,12,0,0,12,12,false
+hud_frame_top,2,200,12,12,0,0,12,12,false
+minimap_mark,2,242,16,8,0,0,16,8,false
 optionbar_character,134,2,64,64,0,0,64,64,false
 optionbar_inventory,68,2,64,64,0,0,64,64,false
 optionbar_journal,2,134,64,64,0,0,64,64,false

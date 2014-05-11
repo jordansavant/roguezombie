@@ -15,6 +15,7 @@ class Inventory;
 class InteractionMenu;
 class LootMenu;
 class Console;
+class Frame;
 
 class Hud : public bit::Container
 {
@@ -34,6 +35,7 @@ public:
     sf::Texture interfaceTexture;
     bit::VertexMap interfaceVertexMap;
     sf::Font journalFont;
+    Frame* frame;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 

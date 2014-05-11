@@ -6,6 +6,7 @@
 #include "InteractionMenu.hpp"
 #include "LootMenu.hpp"
 #include "Console.hpp"
+#include "Frame.hpp"
 #include "../../ResourcePath.h"
 #include "../../bitengine/Input.hpp"
 #include "../StateGamePlay.hpp"
@@ -51,6 +52,11 @@ Hud::Hud(StateGamePlay* _state)
         submenus[i]->canHaveFocus = false;
         submenus[i]->opacity = 0;
     }
+    
+    frame = new Frame(this);
+    frame->load(this);
+    addChild(frame);
+    
 }
 
 void Hud::update(sf::RenderWindow &window, sf::Time &gameTime)

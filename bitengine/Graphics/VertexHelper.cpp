@@ -104,18 +104,58 @@ void bit::VertexHelper::flipQuad(Vertex3* quad, bool horizontal, bool vertical)
     int llX = quad[3].texCoords.x;
     int llY = quad[3].texCoords.y;
 
-    if(horizontal)
+    if(horizontal && !vertical)
     {
+        // upper left to upper right
         quad[0].texCoords.x = urX;
         quad[0].texCoords.y = urY;
 
+        // upper right to upper left
         quad[1].texCoords.x = ulX;
         quad[1].texCoords.y = ulY;
 
+        // lower right to lower left
         quad[2].texCoords.x = llX;
         quad[2].texCoords.y = llY;
 
+        // lower left to lower right
         quad[3].texCoords.x = lrX;
         quad[3].texCoords.y = lrY;
+    }
+    else if(horizontal && vertical)
+    {
+        // upper left to lower right
+        quad[0].texCoords.x = lrX;
+        quad[0].texCoords.y = lrY;
+
+        // upper right to lower left
+        quad[1].texCoords.x = llX;
+        quad[1].texCoords.y = llY;
+
+        // lower right to upper left
+        quad[2].texCoords.x = ulX;
+        quad[2].texCoords.y = ulY;
+
+        // lower left to upper right
+        quad[3].texCoords.x = urX;
+        quad[3].texCoords.y = urY;
+    }
+    else if(!horizontal && vertical)
+    {
+        // upper left to lower left
+        quad[0].texCoords.x = llX;
+        quad[0].texCoords.y = llY;
+
+        // upper right to lower right
+        quad[1].texCoords.x = lrX;
+        quad[1].texCoords.y = lrY;
+
+        // lower right to upper right
+        quad[2].texCoords.x = urX;
+        quad[2].texCoords.y = urY;
+
+        // lower left to upper left
+        quad[3].texCoords.x = ulX;
+        quad[3].texCoords.y = ulY;
     }
 }
