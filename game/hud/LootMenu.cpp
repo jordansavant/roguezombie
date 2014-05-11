@@ -12,7 +12,7 @@
 #include "../TileClient.hpp"
 
 LootMenu::LootMenu(Hud* _hud)
-    : Frame(_hud, 50, 0, 300, 300, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), inventory(), isActive(false)
+    : Frame(_hud, 50, 0, 300, 720, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), inventory(), isActive(false)
 {
     managesOpacity = true;
     opacity = 0;
@@ -74,6 +74,7 @@ void LootMenu::handleInventorySnapshot(bit::ServerPacket &packet, unsigned int t
         option->setSfFontSize(24);
         option->setSfFont(hud->journalFont);
         option->normalColor = sf::Color::White;
+        option->focusedColor = sf::Color::Red;
         option->setSfFontString(std::string(Item::getTitle(i->schema.type)));
         option->canHaveFocus = true;
         option->paddingRight = 10;

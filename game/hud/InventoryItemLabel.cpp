@@ -16,9 +16,11 @@ InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, f
     setSfFontSize(24);
     setSfFont(inventory->hud->journalFont);
     normalColor = sf::Color::White;
+    focusedColor = sf::Color::Red;
     setSfFontString(std::string("- " + Item::getTitle(item->schema.type)));
     canHaveFocus = true;
     paddingRight = 10;
+    opacity = 0;
     paddingBottom = 10;
 
     makeDraggable(inventory->hud->state->rogueZombieGame->inputManager);

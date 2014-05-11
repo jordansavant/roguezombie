@@ -13,7 +13,7 @@
 #include <sstream>
 
 TileClient::TileClient()
-    : schema(), level(NULL), sprite(NULL), quadIndex(0), renderX(0), renderY(0)
+    : schema(), level(NULL), sprite(NULL), quadIndex(0), renderX(0), width(64), height(32), renderY(0), centerRenderX(0), centerRenderY(0) 
 {
 }
 
@@ -47,7 +47,9 @@ void TileClient::clientUpdate(sf::Time &gameTime)
     sf::Vector2f isoPosition = bit::VectorMath::normalToIsometric(schema.x, schema.y);
     renderX = isoPosition.x - schema.width;
     renderY = isoPosition.y;
-    bit::VertexHelper::positionQuad(quad, renderX, renderY, 0, 64, 32);
+    bit::VertexHelper::positionQuad(quad, renderX, renderY, 0, width, height);
+    centerRenderX = renderX + width / 2;
+    centerRenderY = renderY + height / 2;
 
     // Test Mouse translation
     float mx = std::floor((float)level->mousePositionInWorld.x / (float)schema.width);

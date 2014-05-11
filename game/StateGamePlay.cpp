@@ -85,7 +85,6 @@ void StateGamePlay::changeMode(Mode _mode)
 
 void StateGamePlay::modeOnEnterFree()
 {
-    hud->hideAllMenus();
 }
 
 void StateGamePlay::modeOnExitFree()
@@ -200,8 +199,6 @@ void StateGamePlay::modeOnEnterLoot()
 
 void StateGamePlay::modeOnExitLoot()
 {
-    hud->lootMenu->deactivate();
-
     serverRequest(
         [](bit::ClientPacket& packet) {
             packet << sf::Uint32(ClientRequest::CloseInventory);
@@ -209,6 +206,8 @@ void StateGamePlay::modeOnExitLoot()
         [](bit::ServerPacket& response){
         }
     );
+    hud->lootMenu->deactivate();
+    hud->deactivateInventory();
 }
 
 void StateGamePlay::modeOnUpdateLoot(sf::Time &gameTime)
@@ -264,6 +263,9 @@ void StateGamePlay::modeOnUpdateJournal(sf::Time &gameTime)
 
 
 
+////////////////////////////////////////////////////////////////////////
+//                          COMMON MODES                              //
+////////////////////////////////////////////////////////////////////////
 
 void StateGamePlay::modeOnUpdateCommonListener(sf::Time &gameTime)
 {

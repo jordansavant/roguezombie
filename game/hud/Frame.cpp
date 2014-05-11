@@ -12,19 +12,19 @@
 #include "../TileClient.hpp"
 
 Frame::Frame(Hud* _hud)
-    : bit::Container(0, 0, 160, 200, bit::Element::AnchorType::Center, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(_hud)
+    : bit::Container(0, 0, 160, 200, bit::Element::AnchorType::Center, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(_hud), useBottomPointer(false)
 {
     load();
 }
 
 Frame::Frame(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType)
-    : bit::Container(relativeX, relativeY, width, height, anchorType, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(hud)
+    : bit::Container(relativeX, relativeY, width, height, anchorType, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(hud), useBottomPointer(false)
 {
     load();
 }
 
 Frame::Frame(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput)
-    : bit::Container(relativeX, relativeY, width, height, anchorType, lambdaListenToInput), hud(hud)
+    : bit::Container(relativeX, relativeY, width, height, anchorType, lambdaListenToInput), hud(hud), useBottomPointer(false)
 {
     load();
 }
@@ -59,6 +59,11 @@ void Frame::load()
     backgroundQuadIndex = hud->interfaceVertexMap.requestVertexIndex();
     backgroundSprite = hud->state->rogueZombieGame->spriteLoader->getSprite("hud_frame_background");
     bit::VertexHelper::resetQuad(&hud->interfaceVertexMap.vertexArray[backgroundQuadIndex]);
+
+    // Bottom Pointer
+    bottomPointerQuadIndex = hud->interfaceVertexMap.requestVertexIndex();
+    bottomPointerSprite = hud->state->rogueZombieGame->spriteLoader->getSprite("hud_frame_bottompointer");
+    bit::VertexHelper::resetQuad(&hud->interfaceVertexMap.vertexArray[bottomPointerQuadIndex]);
 }
 
 void Frame::updateTargets(sf::RenderWindow &window, sf::Time &gameTime)
@@ -136,4 +141,12 @@ void Frame::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     backgroundSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[backgroundQuadIndex]);
     bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[backgroundQuadIndex], left + cornerSprite->width - 1, top + cornerSprite->height - 1, 1, width - cornerSprite->width * 2 + 2, height - cornerSprite->height * 2 + 2);
     bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[backgroundQuadIndex], color);
+
+    // Bottom Pointer
+    if(useBottomPointer)
+    {
+        bottomPointerSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[bottomPointerQuadIndex]);
+        bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[bottomPointerQuadIndex], left + width / 2 - bottomPointerSprite->width / 2, top + height - 2, 1, bottomPointerSprite->width, bottomPointerSprite->height);
+        bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[bottomPointerQuadIndex], color);
+    }
 }

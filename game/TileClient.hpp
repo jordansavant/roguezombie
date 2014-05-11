@@ -26,7 +26,9 @@ public:
     bit::Sprite* sprite;
     unsigned int quadIndex;
     unsigned int lastSnapshotId;
+    unsigned int width, height;
     float renderX, renderY;
+    float centerRenderX, centerRenderY;
 
     bool isCardinallyAdjacent(BodyClient* body);
     

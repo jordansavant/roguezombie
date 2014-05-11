@@ -35,6 +35,10 @@ public:
 
     unsigned int backgroundQuadIndex;
     bit::Sprite* backgroundSprite;
+    
+    bool useBottomPointer;
+    unsigned int bottomPointerQuadIndex;
+    bit::Sprite* bottomPointerSprite;
 
     void load();
 

@@ -13,8 +13,9 @@
 #include "../TileClient.hpp"
 
 InteractionMenu::InteractionMenu(Hud* _hud)
-    : Frame(_hud, 50, 0, 300, 300, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), isActive(false)
+    : Frame(_hud, 50, 0, 300, 200, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), isActive(false), tileId(0), tileClient(NULL)
 {
+    useBottomPointer = true;
     managesOpacity = true;
     opacity = 0;
 }
@@ -27,6 +28,7 @@ void InteractionMenu::update(sf::RenderWindow &window, sf::Time &gameTime)
     {
         opacity = 1;
         canHaveFocus = true;
+
     }
     else
     {
@@ -35,8 +37,21 @@ void InteractionMenu::update(sf::RenderWindow &window, sf::Time &gameTime)
     }
 }
 
+void InteractionMenu::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    if(tileClient)
+    {
+        sf::Vector2i mapping = window.mapCoordsToPixel(sf::Vector2f(tileClient->centerRenderX, tileClient->centerRenderY));
+        left = mapping.x - width / 2;
+        top = mapping.y - height - tileClient->height;
+    }
+    Frame::updateReals(window, gameTime);
+}
+
 void InteractionMenu::deactivate()
 {
+    tileId = 0;
+    tileClient = NULL;
     isActive = false;
     clearChildren();
 }
@@ -49,6 +64,8 @@ void InteractionMenu::handleInteractionTree(bit::ServerPacket &packet, unsigned 
     clearChildren();
 
     isActive = optionSize == 0 ? false : true;
+    this->tileId = tileId;
+    this->tileClient = hud->state->levelClient->tiles[tileId];
 
     int y = 10;
     
@@ -70,10 +87,12 @@ void InteractionMenu::handleInteractionTree(bit::ServerPacket &packet, unsigned 
         option->setSfFontSize(24);
         option->setSfFont(hud->journalFont);
         option->normalColor = sf::Color::White;
+        option->focusedColor = sf::Color::Red;
         option->setSfFontString(Interaction::getTitle(it));
         option->canHaveFocus = true;
         option->paddingRight = 10;
         option->paddingBottom = 10;
+        option->opacity = 0;
         option->onActivate = [it, m, tileId] (Element* e){
             InteractionMenu* mx = m;
             Interaction::Type itx(it);
