@@ -12,7 +12,7 @@
 #include "../TileClient.hpp"
 
 LootMenu::LootMenu(Hud* _hud)
-    : Frame(_hud, 50, 0, 300, 720, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), inventory(), isActive(false)
+    : HudMenu(_hud, 50, 0, 300, 720, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), inventory(), isActive(false)
 {
     managesOpacity = true;
     opacity = 0;
@@ -26,28 +26,39 @@ LootMenu::LootMenu(Hud* _hud)
 void LootMenu::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::Container::update(window, gameTime);
-
-    if(isActive)
-    {
-        canHaveFocus = true;
-        opacity = 1;
-    }
-    else
-    {
-        canHaveFocus = false;
-        opacity = 0;
-    }
 }
 
 void LootMenu::activate()
 {
     isActive = true;
+    show();
 }
 
 void LootMenu::deactivate()
 {
     isActive = false;
     clearChildren();
+    hide();
+}
+
+void LootMenu::hide()
+{
+    canHaveFocus = false;
+    isShown = false;
+    clearEffects();
+    relativePosition.x = 0;
+    immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, -targetWidth, 0));
+    immediateEffect(new bit::FadeEffect(150, 0));
+}
+
+void LootMenu::show()
+{
+    canHaveFocus = true;
+    isShown = true;
+    clearEffects();
+    relativePosition.x = -targetWidth;
+    immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, targetWidth, 0));
+    immediateEffect(new bit::FadeEffect(300, 1));
 }
 
 void LootMenu::handleInventorySnapshot(bit::ServerPacket &packet, unsigned int tileId)

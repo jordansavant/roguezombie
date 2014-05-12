@@ -2,7 +2,7 @@
 #ifndef RZ_LOOTMENU_H
 #define RZ_LOOTMENU_H
 
-#include "Frame.hpp"
+#include "HudMenu.hpp"
 #include "SFML/Graphics.hpp"
 #include "../../bitengine/Gui.hpp"
 #include "../../bitengine/Graphics.hpp"
@@ -11,7 +11,7 @@
 
 class Hud;
 
-class LootMenu : public Frame
+class LootMenu : public HudMenu
 {
 public:
 
@@ -26,6 +26,10 @@ public:
     void activate();
 
     void deactivate();
+
+    virtual void hide();
+
+    virtual void show();
 
     void handleInventorySnapshot(bit::ServerPacket &packet, unsigned int tileId);
 };

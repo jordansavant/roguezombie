@@ -9,15 +9,11 @@
 InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, float relativeX, float relativeY, AnchorType anchorType)
     : bit::Label(relativeX, relativeY, 0, 0, anchorType), inventory(inventory), item(item)
 {
-    if(item->schema.id < 400 || item->schema.id > 500)
-    {
-        bool crap = true;
-    }
     setSfFontSize(24);
     setSfFont(inventory->hud->journalFont);
     normalColor = sf::Color::White;
     focusedColor = sf::Color::Red;
-    setSfFontString(std::string("- " + Item::getTitle(item->schema.type)));
+    setSfFontString(std::string(Item::getTitle(item->schema.type)));
     canHaveFocus = true;
     paddingRight = 10;
     opacity = 0;

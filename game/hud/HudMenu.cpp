@@ -47,7 +47,6 @@ void HudMenu::show()
     isShown = true;
     clearEffects();
     relativePosition.x = originX;
-    immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, -400, 0));
     immediateEffect(new bit::FadeEffect(300, 1));
 }
 

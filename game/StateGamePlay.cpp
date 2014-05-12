@@ -213,11 +213,7 @@ void StateGamePlay::modeOnExitLoot()
 void StateGamePlay::modeOnUpdateLoot(sf::Time &gameTime)
 {
 	// Exit
-    if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape) || rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::I))
-    {
-        hud->lootMenu->deactivate();
-        changeMode(Mode::Free);
-    }
+    modeOnUpdateCommonListener(gameTime);
 }
 
 
@@ -275,7 +271,7 @@ void StateGamePlay::modeOnUpdateCommonListener(sf::Time &gameTime)
         changeMode(Mode::Free);
         return;
     }
-    if(mode != Mode::Inventory && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::I)))
+    if(mode != Mode::Inventory && mode != Mode::Loot && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::I)))
     {
         changeMode(Mode::Inventory);
         return;

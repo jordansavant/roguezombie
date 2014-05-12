@@ -136,9 +136,9 @@ void Inventory::buildItemList(bool force)
     title->setSfFontSize(24);
     title->setSfFont(hud->journalFont);
     title->normalColor = sf::Color::White;
-    title->setSfFontString(std::string("Inventory"));
+    title->setSfFontString(std::string("Inventory..."));
     inventoryPanel->addChild(title);
-    y += 30;
+    y += 40;
 
     for(auto iterator = levelClient->playerCharacter->inventoryClient.itemClients.begin(); iterator != levelClient->playerCharacter->inventoryClient.itemClients.end(); iterator++)
     {
