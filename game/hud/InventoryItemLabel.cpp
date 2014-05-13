@@ -7,7 +7,7 @@
 #include "../ClientRequest.hpp"
 
 InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, float relativeX, float relativeY, AnchorType anchorType)
-    : bit::Label(relativeX, relativeY, 0, 0, anchorType), inventory(inventory), item(item), currentEquipmentSlot(NULL)
+    : bit::Label(relativeX, relativeY, 0, 0, anchorType), inventory(inventory), itemId(item->schema.id), currentEquipmentSlot(NULL)
 {
     setSfFontSize(24);
     setSfFont(inventory->hud->journalFont);

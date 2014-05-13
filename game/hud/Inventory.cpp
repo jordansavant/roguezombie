@@ -100,7 +100,7 @@ void Inventory::buildEquipment()
             equipmentSlotBoxes[slot]->addItemLabel(buildItem(&levelClient->playerCharacter->equipment[slot], 0, 0));
         }
         // If the gear is present but does not match, remove it
-        else if(levelClient->playerCharacter->hasEquipment[slot] && equipmentSlotBoxes[slot]->equippedItemLabel->item->schema.id != levelClient->playerCharacter->equipment[slot].schema.id)
+        else if(levelClient->playerCharacter->hasEquipment[slot] && equipmentSlotBoxes[slot]->equippedItemLabel->itemId != levelClient->playerCharacter->equipment[slot].schema.id)
         {
             equipmentSlotBoxes[slot]->removeItemLabel();
             equipmentSlotBoxes[slot]->addItemLabel(buildItem(&levelClient->playerCharacter->equipment[slot], 0, 0));

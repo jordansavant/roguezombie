@@ -17,7 +17,7 @@ public:
     InventoryItemLabel(Inventory* inventory, ItemClient* item, float relativeX, float relativeY, AnchorType anchorType);
 
     Inventory* inventory;
-    ItemClient* item;
+    unsigned int itemId;
     InventoryEquipmentSlot* currentEquipmentSlot;
 
 };
