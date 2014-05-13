@@ -14,12 +14,17 @@ InventoryEquipmentSlot::InventoryEquipmentSlot(Hud* hud, Character::EquipmentSlo
 
 void InventoryEquipmentSlot::addItemLabel(InventoryItemLabel* label)
 {
+    label->currentEquipmentSlot = this;
     addChild(label);
 }
 
 void InventoryEquipmentSlot::removeItemLabel()
 {
-    equippedItemLabel = NULL;
+    if(equippedItemLabel)
+    {
+        equippedItemLabel->currentEquipmentSlot = NULL;
+        equippedItemLabel = NULL;
+    }
     clearChildren();
 }
 
@@ -27,17 +32,31 @@ unsigned int InventoryEquipmentSlot::addChild(Element* child)
 {
     InventoryItemLabel* label = static_cast<InventoryItemLabel*>(child);
     equippedItemLabel = label;
+    equippedItemLabel->currentEquipmentSlot = this;
     return bit::Container::addChild(child);
 }
 
 void InventoryEquipmentSlot::moveChild(Container* other, unsigned int index)
 {
     bit::Container::moveChild(other, index);
-    equippedItemLabel = NULL;
+    if(equippedItemLabel)
+    {
+        equippedItemLabel->currentEquipmentSlot = NULL;
+        equippedItemLabel = NULL;
+    }
+}
+
+void InventoryEquipmentSlot::moveChild(Container* other, Element* child)
+{
+    bit::Container::moveChild(other, child);
 }
 
 void InventoryEquipmentSlot::removeChild(unsigned int index)
 {
     bit::Container::removeChild(index);
-    equippedItemLabel = NULL;
+    if(equippedItemLabel)
+    {
+        equippedItemLabel->currentEquipmentSlot = NULL;
+        equippedItemLabel = NULL;
+    }
 }

@@ -8,6 +8,8 @@
 #include "../../bitengine/Graphics.hpp"
 #include "../items/ItemClient.hpp"
 
+class InventoryEquipmentSlot;
+
 class InventoryItemLabel : public bit::Label
 {
 public:
@@ -16,7 +18,7 @@ public:
 
     Inventory* inventory;
     ItemClient* item;
-    bit::Container* currentEquipmentSlot;
+    InventoryEquipmentSlot* currentEquipmentSlot;
 
 };
 

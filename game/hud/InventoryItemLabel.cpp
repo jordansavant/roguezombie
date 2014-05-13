@@ -7,7 +7,7 @@
 #include "../ClientRequest.hpp"
 
 InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, float relativeX, float relativeY, AnchorType anchorType)
-    : bit::Label(relativeX, relativeY, 0, 0, anchorType), inventory(inventory), item(item)
+    : bit::Label(relativeX, relativeY, 0, 0, anchorType), inventory(inventory), item(item), currentEquipmentSlot(NULL)
 {
     setSfFontSize(24);
     setSfFont(inventory->hud->journalFont);
@@ -19,18 +19,28 @@ InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, f
     opacity = 0;
     paddingBottom = 10;
 
+    InventoryItemLabel* label = this;
     makeDraggable(inventory->hud->state->rogueZombieGame->inputManager);
-    draggable->onDragStop = [inventory, item] (bit::Draggable* d, Element* e) -> bool
+    draggable->onDragStop = [inventory, item, label] (bit::Draggable* d, Element* e) -> bool
     {
         // If dropping into an equipment slot
         for(unsigned int i=0; i < inventory->equipmentPanel->childElements.size(); i++)
         {
-            // If the slot is not already equipped with the item
             InventoryEquipmentSlot* slot = static_cast<InventoryEquipmentSlot*>(inventory->equipmentPanel->childElements[i]);
+
+            // If the slot is not already equipped with the item
             if(slot->isInfocus && slot->equippedItemLabel != e)
             {
+                // If the current slot had an item, move it back to the inventory
+                if(slot->equippedItemLabel)
+                {
+                    slot->removeItemLabel();
+                }
+
+                // Move this item from my current parent to the slot
                 bit::Container* currentParent = static_cast<bit::Container*>(e->parentElement);
                 currentParent->moveChild(slot, e);
+
                 e->relativePosition.x = 0;
                 e->relativePosition.y = 0;
 
@@ -39,7 +49,7 @@ InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, f
                 inventory->hud->state->serverRequest(
                     [itemx, slot](bit::ClientPacket& requestPacket)
                     {
-                        requestPacket <<sf::Uint32(ClientRequest::EquipItem);
+                        requestPacket << sf::Uint32(ClientRequest::EquipItem);
                         requestPacket << sf::Uint32(slot->slot);
                         requestPacket << sf::Uint32(itemx->schema.id);
                     },

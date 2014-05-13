@@ -20,6 +20,9 @@ Hud::Hud(StateGamePlay* _state)
     interfaceTexture.loadFromFile(resourcePath() + "interface_01.png");
     interfaceVertexMap.load(&interfaceTexture, sf::PrimitiveType::Quads);
     journalFont.loadFromFile(resourcePath() + "homespun.ttf");
+    
+    console = new Console(this);
+    addChild(console);
 
     // Special Menus
     optionsBar = new OptionsBar(this);
@@ -30,9 +33,6 @@ Hud::Hud(StateGamePlay* _state)
     
     lootMenu = new LootMenu(this);
     addChild(lootMenu);
-    
-    console = new Console(this);
-    addChild(console);
 
     minimap.load(this);
 

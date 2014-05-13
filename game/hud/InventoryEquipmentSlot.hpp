@@ -31,6 +31,8 @@ public:
 
     virtual void moveChild(Container* other, unsigned int childIndex);
 
+    virtual void moveChild(Container* other, Element* child);
+
     virtual void removeChild(unsigned int childIndex);
 };
 
