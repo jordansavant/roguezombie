@@ -27,6 +27,10 @@ public:
 
     void deactivate();
 
+    virtual void hide();
+
+    virtual void show();
+
     void handleInteractionTree(bit::ServerPacket &packet, unsigned int tileId);
 };
 

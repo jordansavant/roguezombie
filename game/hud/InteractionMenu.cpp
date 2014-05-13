@@ -23,18 +23,6 @@ InteractionMenu::InteractionMenu(Hud* _hud)
 void InteractionMenu::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::Container::update(window, gameTime);
-
-    if(isActive)
-    {
-        opacity = 1;
-        canHaveFocus = true;
-
-    }
-    else
-    {
-        opacity = 0;
-        canHaveFocus = false;
-    }
 }
 
 void InteractionMenu::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
@@ -44,8 +32,8 @@ void InteractionMenu::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
         sf::Vector2i mapping = window.mapCoordsToPixel(sf::Vector2f(tileClient->centerRenderX, tileClient->centerRenderY));
         left = mapping.x - width / 2;
         top = mapping.y - height - tileClient->height;
+        Frame::updateReals(window, gameTime);
     }
-    Frame::updateReals(window, gameTime);
 }
 
 void InteractionMenu::deactivate()
@@ -54,6 +42,22 @@ void InteractionMenu::deactivate()
     tileClient = NULL;
     isActive = false;
     clearChildren();
+
+    hide();
+}
+
+void InteractionMenu::hide()
+{
+    canHaveFocus = false;
+    clearEffects();
+    immediateEffect(new bit::FadeEffect(150, 0));
+}
+
+void InteractionMenu::show()
+{
+    canHaveFocus = true;
+    clearEffects();
+    immediateEffect(new bit::FadeEffect(150, 1));
 }
 
 void InteractionMenu::handleInteractionTree(bit::ServerPacket &packet, unsigned int tileId)
@@ -64,6 +68,7 @@ void InteractionMenu::handleInteractionTree(bit::ServerPacket &packet, unsigned 
     clearChildren();
 
     isActive = optionSize == 0 ? false : true;
+    show();
     this->tileId = tileId;
     this->tileClient = hud->state->levelClient->tiles[tileId];
 

@@ -71,9 +71,20 @@ void Frame::updateTargets(sf::RenderWindow &window, sf::Time &gameTime)
     // Set target dimensions
     Container::updateTargets(window, gameTime);
 
-    // Update Target size
-    //targetWidth = cornerSprite->width * 2;
-    //targetHeight = cornerSprite->height * 2;
+    sf::Color color(255, 255, 255, 255 * opacity);
+    bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[topLeftQuadIndex], color);
+    bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[topRightQuadIndex], color);
+    bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[bottomLeftQuadIndex], color);
+    bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[bottomRightQuadIndex], color);
+    bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[topQuadIndex], color);
+    bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[bottomQuadIndex], color);
+    bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[leftQuadIndex], color);
+    bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[rightQuadIndex], color);
+    bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[backgroundQuadIndex], color);
+    if(useBottomPointer)
+    {
+        bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[bottomPointerQuadIndex], color);
+    }
 }
 
 void Frame::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
@@ -81,41 +92,34 @@ void Frame::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     // Update real position of label
     Container::updateReals(window, gameTime);
 
-    sf::Color color(255, 255, 255, 255 * opacity);
 
     // Top left corner
     cornerSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[topLeftQuadIndex]);
     bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[topLeftQuadIndex], left, top, 1, cornerSprite->width, cornerSprite->height);
-    bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[topLeftQuadIndex], color);
 
     // Top right corner
     cornerSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[topRightQuadIndex]);
     bit::VertexHelper::flipQuad(&hud->interfaceVertexMap.vertexArray[topRightQuadIndex], true, false);
     bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[topRightQuadIndex], left + width - cornerSprite->width, top, 1, cornerSprite->width, cornerSprite->height);
-    bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[topRightQuadIndex], color);
 
     // Bottom left corner
     cornerSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[bottomLeftQuadIndex]);
     bit::VertexHelper::flipQuad(&hud->interfaceVertexMap.vertexArray[bottomLeftQuadIndex], false, true);
     bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[bottomLeftQuadIndex], left, top + height - cornerSprite->height, 1, cornerSprite->width, cornerSprite->height);
-    bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[bottomLeftQuadIndex], color);
     
     // Bottom right corner
     cornerSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[bottomRightQuadIndex]);
     bit::VertexHelper::flipQuad(&hud->interfaceVertexMap.vertexArray[bottomRightQuadIndex], true, true);
     bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[bottomRightQuadIndex], left + width - cornerSprite->width, top + height - cornerSprite->height, 1, cornerSprite->width, cornerSprite->height);
-    bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[bottomRightQuadIndex], color);
 
     // Top
     edgeSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[topQuadIndex]);
     bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[topQuadIndex], left + cornerSprite->width - 1, top, 1, width - cornerSprite->width * 2 + 2, edgeSprite->height);
-    bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[topQuadIndex], color);
 
     // Bottom
     edgeSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[bottomQuadIndex]);
     bit::VertexHelper::flipQuad(&hud->interfaceVertexMap.vertexArray[bottomQuadIndex], false, true);
     bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[bottomQuadIndex], left + cornerSprite->width - 1, top + height - cornerSprite->height, 1, width - cornerSprite->width * 2 + 2, edgeSprite->height);
-    bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[bottomQuadIndex], color);
 
     // Left
     float leftWidth = height - edgeSprite->height * 2 + 2;
@@ -125,7 +129,6 @@ void Frame::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     edgeSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[leftQuadIndex]);
     bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[leftQuadIndex], leftX, leftY, 1, leftWidth, leftHeight);
     bit::VertexHelper::rotateQuad(&hud->interfaceVertexMap.vertexArray[leftQuadIndex], -bit::Math::PiOver2);
-    bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[leftQuadIndex], color);
 
     // Right
     float rightWidth = height - edgeSprite->height * 2 + 2;
@@ -135,18 +138,15 @@ void Frame::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     edgeSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[rightQuadIndex]);
     bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[rightQuadIndex], rightX, rightY, 1, rightWidth, rightHeight);
     bit::VertexHelper::rotateQuad(&hud->interfaceVertexMap.vertexArray[rightQuadIndex], bit::Math::PiOver2);
-    bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[rightQuadIndex], color);
 
     // Background
     backgroundSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[backgroundQuadIndex]);
     bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[backgroundQuadIndex], left + cornerSprite->width - 1, top + cornerSprite->height - 1, 1, width - cornerSprite->width * 2 + 2, height - cornerSprite->height * 2 + 2);
-    bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[backgroundQuadIndex], color);
 
     // Bottom Pointer
     if(useBottomPointer)
     {
         bottomPointerSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[bottomPointerQuadIndex]);
         bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[bottomPointerQuadIndex], left + width / 2 - bottomPointerSprite->width / 2, top + height - 2, 1, bottomPointerSprite->width, bottomPointerSprite->height);
-        bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[bottomPointerQuadIndex], color);
     }
 }

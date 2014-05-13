@@ -111,7 +111,8 @@ void bit::Container::draw(sf::RenderWindow &window, sf::Time &gameTime)
 
     for(unsigned int i = 0; i < childElements.size(); i++)
     {
-        childElements[i]->draw(window, gameTime);
+        if(childElements[i]->hasPositioned)
+            childElements[i]->draw(window, gameTime);
     }
 }
 

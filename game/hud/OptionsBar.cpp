@@ -18,7 +18,12 @@ OptionsBar::OptionsBar(Hud* _hud)
 
     journal = new HudElement(64, 0, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     journal->load(hud, std::string("optionbar_journal"));
-    journal->onActivate = [_hud] (Element* e) { _hud->state->changeMode(StateGamePlay::Mode::Journal); };
+    journal->onActivate = [_hud] (Element* e) {
+        if(_hud->state->mode == StateGamePlay::Mode::Journal)
+            _hud->state->changeMode(StateGamePlay::Mode::Free);
+        else
+            _hud->state->changeMode(StateGamePlay::Mode::Journal);
+    };
     addChild(journal);
 
     character = new HudElement(128, 0, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
@@ -27,7 +32,12 @@ OptionsBar::OptionsBar(Hud* _hud)
 
     inventory = new HudElement(192, 0, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     inventory->load(hud, std::string("optionbar_inventory"));
-    inventory->onActivate = [_hud] (Element* e) { _hud->state->changeMode(StateGamePlay::Mode::Inventory); };
+    inventory->onActivate = [_hud] (Element* e) {
+        if(_hud->state->mode == StateGamePlay::Mode::Inventory)
+            _hud->state->changeMode(StateGamePlay::Mode::Free);
+        else
+            _hud->state->changeMode(StateGamePlay::Mode::Inventory);
+    };
     addChild(inventory);
 
     map = new HudElement(256, 0, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
