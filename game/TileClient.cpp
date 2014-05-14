@@ -59,8 +59,10 @@ void TileClient::clientUpdate(sf::Time &gameTime)
 
     if(level->state->mode == StateGamePlay::Mode::Free && tx == mx && ty == my)
     {
-        sf::Color red(255, 0, 0);
-        bit::VertexHelper::colorQuad(quad, red);
+        int s = bit::Math::clamp(255 * schema.illumination * 4, 0, 255);
+        sf::Color move(s, s, s);
+        sf::Color interact(255, 0, 0);
+        bit::VertexHelper::colorQuad(quad, schema.bodyId > 0 ? interact : move);
 
         // Set me as being hovered over
         level->hoveredTile = this;

@@ -150,7 +150,7 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
                 if(t->isCardinallyAdjacent(levelClient->playerCharacter))
                     requestInteractionsForTile(t->schema.id);
                 else
-                    displayMessage(std::string("Object is too far away"));
+                    displayMessage(std::string("Too far away"));
             }
             // Else issue command to move to tile
             else
