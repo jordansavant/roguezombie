@@ -13,6 +13,7 @@
 class BaseLevelClientRunner;
 class ZombieClient;
 class OgreClient;
+class HunterClient;
 class TileClient;
 class WallClient;
 class DoorClient;
@@ -32,6 +33,7 @@ public:
     std::vector<BaseLevelClientRunner*> runners;
     std::map<unsigned int, ZombieClient*> zombies;
     std::map<unsigned int, OgreClient*> ogres;
+    std::map<unsigned int, HunterClient*> hunters;
     std::map<unsigned int, TileClient*> tiles;
     std::map<unsigned int, WallClient*> walls;
     std::map<unsigned int, DoorClient*> doors;
@@ -39,6 +41,7 @@ public:
     bit::Pool<TileClient> tilePool;
     bit::Pool<ZombieClient> zombiePool;
     bit::Pool<OgreClient> ogrePool;
+    bit::Pool<HunterClient> hunterPool;
     bit::Pool<WallClient> wallPool;
     bit::Pool<DoorClient> doorPool;
     bit::Pool<ChestClient> chestPool;

@@ -22,6 +22,7 @@ public:
         Backpack,
         HardHat,
         Magnum357,
+        Z4Rifle,
     };
 
     struct Schema
@@ -99,7 +100,7 @@ public:
 
     void prepareServerEventPacket_itemRemoved(bit::ServerPacket &packet);
 
-    static Item* create(Type type);
+    static Item* create(Type type, unsigned int id);
 
     static std::string getTitle(Type type);
 

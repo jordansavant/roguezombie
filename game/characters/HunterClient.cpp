@@ -1,5 +1,5 @@
-#include "ZombieClient.hpp"
-#include "Zombie.hpp"
+#include "HunterClient.hpp"
+#include "Hunter.hpp"
 #include "SFML/Graphics.hpp"
 #include "../LevelClient.hpp"
 #include "../StateGamePlay.hpp"
@@ -11,32 +11,32 @@
 #include "../../bitengine/Math.hpp"
 #include "../../bitengine/System.hpp"
 
-ZombieClient::ZombieClient()
+HunterClient::HunterClient()
     : CharacterClient(), sprite(40, 40, 20, 35)
 {
 }
 
-void ZombieClient::clientLoad(LevelClient* _level)
+void HunterClient::clientLoad(LevelClient* _level)
 {
     level = _level;
 
     sprite.load(this, level->state->rogueZombieGame->spriteLoader, level->vertexMap_01);
-    sprite.setBodySprites(std::string("Zombie_Head"), std::string("Zombie_FrontArm"), std::string("Zombie_Body"), std::string("Zombie_Shadow"));
+    sprite.setBodySprites(std::string("Hunter_Head"), std::string("Hunter_FrontArm"), std::string("Hunter_Body"), std::string("Hunter_Shadow"));
 }
 
-void ZombieClient::clientUpdate(sf::Time &gameTime)
+void HunterClient::clientUpdate(sf::Time &gameTime)
 {
     sprite.update(gameTime);
 }
 
-void ZombieClient::handleSnapshot(bit::ServerPacket &packet, bool full)
+void HunterClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
 	CharacterClient::handleSnapshot(packet, full);
 
     sprite.syncronizeEquipment();
 }
 
-void ZombieClient::reset()
+void HunterClient::reset()
 {
     sprite.reset();
 }

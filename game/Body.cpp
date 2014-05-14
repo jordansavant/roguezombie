@@ -29,9 +29,8 @@ void Body::load(Level* _level, unsigned int _id, Type _type, float _x, float _y,
     schema.width = _width;
     schema.height = _height;
 
-    inventory = Item::create(Item::Type::Backpack);
+    inventory = Item::create(Item::Type::Backpack, level->server->getNextItemId());
     inventory->parentBody = this;
-    inventory->schema.id = level->server->getNextItemId();
 }
 
 void Body::update(sf::Time &gameTime)

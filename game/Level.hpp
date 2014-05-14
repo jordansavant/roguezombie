@@ -15,6 +15,7 @@
 class GameplayServer;
 class Zombie;
 class Ogre;
+class Hunter;
 class Player;
 class Tile;
 class Door;
@@ -35,6 +36,7 @@ public:
 
     std::vector<Zombie*> zombies;
     std::vector<Ogre*> ogres;
+    std::vector<Hunter*> hunters;
     std::vector<Wall*> walls;
     std::vector<Door*> doors;
     std::vector<Chest*> chests;

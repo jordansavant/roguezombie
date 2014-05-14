@@ -5,6 +5,7 @@
 #include "RogueZombieGame.hpp"
 #include "characters/ZombieClient.hpp"
 #include "characters/OgreClient.hpp"
+#include "characters/HunterClient.hpp"
 #include "structures/WallClient.hpp"
 #include "structures/DoorClient.hpp"
 #include "structures/ChestClient.hpp"
@@ -17,7 +18,7 @@
 #include <map>
 
 LevelClient::LevelClient()
-    : state(NULL), tilePool(), zombiePool(), ogrePool(), doorPool(), chestPool(), hoveredTile(NULL), playerCharacter(NULL)
+    : state(NULL), tilePool(), zombiePool(), ogrePool(), hunterPool(), doorPool(), chestPool(), hoveredTile(NULL), playerCharacter(NULL)
 {
 }
 
@@ -44,6 +45,7 @@ void LevelClient::load(StateGamePlay* _state)
     runners.push_back(new LevelClientRunner<TileClient>(this, &tiles, &tilePool, 2000));
     runners.push_back(new LevelClientRunner<ZombieClient>(this, &zombies, &zombiePool, 10));
     runners.push_back(new LevelClientRunner<OgreClient>(this, &ogres, &ogrePool, 10));
+    runners.push_back(new LevelClientRunner<HunterClient>(this, &hunters, &hunterPool, 10));
     runners.push_back(new LevelClientRunner<WallClient>(this, &walls, &wallPool, 500));
     runners.push_back(new LevelClientRunner<DoorClient>(this, &doors, &doorPool, 20));
     runners.push_back(new LevelClientRunner<ChestClient>(this, &chests, &chestPool, 10));
@@ -116,6 +118,9 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
                         break;
                     case Character::Type::Ogre:
                         c = unpackNetworkEntity<OgreClient>(packet, full, ogres, ogrePool);
+                        break;
+                    case Character::Type::Hunter:
+                        c = unpackNetworkEntity<HunterClient>(packet, full, hunters, hunterPool);
                         break;
                 }
 

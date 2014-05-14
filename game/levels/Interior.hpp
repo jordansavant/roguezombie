@@ -14,6 +14,7 @@ public:
         Light = 4,
         Door = 5,
         Chest = 6,
+        Hunter = 7,
         PortalTo2 = 8,
         PortalTo1 = 9,
     };

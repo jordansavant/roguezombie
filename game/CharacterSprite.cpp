@@ -29,14 +29,14 @@ void CharacterSprite::load(CharacterClient* _character, bit::SpriteLoader* _spri
     headQuadIndex = vertexMap->requestVertexIndex();
     headQuad = &vertexMap->vertexArray[headQuadIndex];
     
-    frontarmQuadIndex = vertexMap->requestVertexIndex();
-    frontarmQuad = &vertexMap->vertexArray[frontarmQuadIndex];
-    
     for(unsigned int i=0; i < equipmentProfiles.size(); i++)
     {
         equipmentProfiles[i].quadIndex = vertexMap->requestVertexIndex();
         equipmentProfiles[i].quad = &vertexMap->vertexArray[equipmentProfiles[i].quadIndex];
     }
+    
+    frontarmQuadIndex = vertexMap->requestVertexIndex();
+    frontarmQuad = &vertexMap->vertexArray[frontarmQuadIndex];
 }
 
 void CharacterSprite::update(sf::Time &gameTime)
@@ -68,7 +68,7 @@ void CharacterSprite::update(sf::Time &gameTime)
     float levelCenterX = renderX + character->BodyClient::schema.width / 2;
     float levelCenterY = renderY + character->BodyClient::schema.height / 2;
     sf::Vector2f r = bit::VectorMath::normalToIsometric(levelCenterX, levelCenterY);
-    r.x -= spriteWidth / 2 + xFootOffset / 2;
+    r.x -= spriteWidth / 2;// + xFootOffset / 2;
     r.y -= yFootOffset;
     float z = bit::Math::calculateDrawDepth(r.y + spriteHeight);
     sf::Color color((int)(255.0f * character->BodyClient::schema.illumination), (int)(255.0f * character->BodyClient::schema.illumination), (int)(255.0f * character->BodyClient::schema.illumination));

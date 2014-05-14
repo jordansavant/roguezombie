@@ -5,6 +5,7 @@
 #include "LevelRunner.hpp"
 #include "characters/Zombie.hpp"
 #include "characters/Ogre.hpp"
+#include "characters/Hunter.hpp"
 #include "structures/Wall.hpp"
 #include "structures/Door.hpp"
 #include "structures/Chest.hpp"
@@ -48,6 +49,7 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
     runners.push_back(new LevelRunner<Tile>(this, &tiles));
     runners.push_back(new LevelRunner<Zombie>(this, &zombies));
     runners.push_back(new LevelRunner<Ogre>(this, &ogres));
+    runners.push_back(new LevelRunner<Hunter>(this, &hunters));
     runners.push_back(new LevelRunner<Wall>(this, &walls));
     runners.push_back(new LevelRunner<Door>(this, &doors));
     runners.push_back(new LevelRunner<Chest>(this, &chests));
@@ -115,6 +117,13 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
                     ogres.push_back(ogre);
                     break;
                 }
+                case Interior::Spawn::Hunter:
+                {
+                    Hunter* hunter = new Hunter();
+                    hunter->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                    hunters.push_back(hunter);
+                    break;
+                }
                 case Interior::Spawn::Light:
                 {
                     sf::Color c = sf::Color::Red;
@@ -134,7 +143,7 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
                 {
                     Chest* chest = new Chest();
                     chest->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
-                    chest->addItemToInventory(Item::create(Item::Type::HardHat));
+                    chest->addItemToInventory(Item::create(Item::Type::HardHat, server->getNextItemId()));
                     chests.push_back(chest);
 
                     break;
@@ -564,6 +573,9 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
                         break;
                     case Character::Type::Ogre:
                         packNetworkBody<Ogre, Character>(packet, full, c, b->schema.type, c->schema.type);
+                        break;
+                    case Character::Type::Hunter:
+                        packNetworkBody<Hunter, Character>(packet, full, c, b->schema.type, c->schema.type);
                         break;
                 }
                 break;

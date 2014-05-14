@@ -213,7 +213,7 @@ void Item::prepareServerEventPacket_itemRemoved(bit::ServerPacket &packet)
     prepareSnapshot(packet);
 }
 
-Item* Item::create(Type type)
+Item* Item::create(Type type, unsigned int id)
 {
     Item* i = 0;
 
@@ -244,11 +244,21 @@ Item* Item::create(Type type)
             i = new Item();
             i->schema.CategoryBase = ItemCategory::Base::BaseWeapon;
             i->schema.CategoryWeapon = ItemCategory::Weapon::WeaponRanged;
+            i->schema.weight = 1;
+
+            break;
+
+        case Type::Z4Rifle:
+
+            i = new Item();
+            i->schema.CategoryBase = ItemCategory::Base::BaseWeapon;
+            i->schema.CategoryWeapon = ItemCategory::Weapon::WeaponRanged;
             i->schema.weight = 2;
 
             break;
     }
 
+    i->schema.id = id;
     i->schema.type = type;
     return i;
 }
@@ -269,6 +279,9 @@ std::string Item::getTitle(Type type)
 
         case Type::Magnum357:
             return ".357 Magnum";
+
+        case Type::Z4Rifle:
+            return "Z4 Rifle";
     }
 }
 
@@ -288,5 +301,8 @@ std::string Item::getSpriteName(Type type)
 
         case Type::Magnum357:
             return "Magnum357";
+
+        case Type::Z4Rifle:
+            return "Z4Rifle";
     }
 }

@@ -129,12 +129,8 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
         p->character->assignMission(root);
 
         // Items
-        Item* magnum = Item::create(Item::Type::Magnum357);
-        magnum->schema.id = getNextItemId();
+        Item* magnum = Item::create(Item::Type::Magnum357, getNextItemId());
         p->character->addItemToInventory(magnum);
-        Item* hardhat = Item::create(Item::Type::HardHat);
-        hardhat->schema.id = getNextItemId();
-        p->character->addItemToInventory(hardhat);
     }
 }
 
@@ -165,12 +161,6 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
                 player->level->handlePlayerCommand(packet, client, static_cast<Command::Type>(commandType));
 				break;
             case Command::Type::PlayerSwitchLevel:
-                player->character->schema.health = 200;
-
-                Item* hardhat = Item::create(Item::Type::HardHat);
-                hardhat->schema.id = getNextItemId();
-                player->character->addItemToInventory(hardhat);
-
                 break;
 		}
 	}

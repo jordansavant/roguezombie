@@ -27,7 +27,8 @@ public:
     {
         None,
         Zombie,
-        Ogre
+        Ogre,
+        Hunter
     };
 
     enum EquipmentSlot
