@@ -46,27 +46,35 @@ Inventory::Inventory(Hud* _hud)
     equipmentSlotBoxes.resize(Character::EquipmentSlot::_count, NULL);
 
     equipmentSlotBoxes[Character::EquipmentSlot::Head] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Head, this, 0, topOffset + 0, 200, 100, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::Head]->AcceptedCategoryArmor = ItemCategory::Armor::ArmorHead;
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Head]);
     
     equipmentSlotBoxes[Character::EquipmentSlot::Chest] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Chest, this, 0, topOffset + 120, 160, 100, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::Chest]->AcceptedCategoryArmor = ItemCategory::Armor::ArmorChest;
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Chest]);
     
     equipmentSlotBoxes[Character::EquipmentSlot::Legs] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Legs, this, 0, topOffset + 240, 160, 60, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::Legs]->AcceptedCategoryArmor = ItemCategory::Armor::ArmorLeg;
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Legs]);
     
     equipmentSlotBoxes[Character::EquipmentSlot::Feet] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Feet, this, 0, topOffset + 320, 160, 30, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::Feet]->AcceptedCategoryArmor = ItemCategory::Armor::ArmorFoot;
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Feet]);
     
     equipmentSlotBoxes[Character::EquipmentSlot::Totem] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Totem, this, -130, topOffset + 120, 60, 60, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::Totem]->AcceptedCategoryJewelry = ItemCategory::Jewelry::JewelryTotem;
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Totem]);
     
     equipmentSlotBoxes[Character::EquipmentSlot::Hands] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Hands, this, -130, topOffset + 200, 60, 60, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::Hands]->AcceptedCategoryArmor = ItemCategory::Armor::ArmorHand;
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Hands]);
     
     equipmentSlotBoxes[Character::EquipmentSlot::WeaponPrimary] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::WeaponPrimary, this, 150, topOffset + 120, 100, 100, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::WeaponPrimary]->AcceptedCategoryWeapon = ItemCategory::Weapon::WeaponRanged;
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::WeaponPrimary]);
     
     equipmentSlotBoxes[Character::EquipmentSlot::WeaponSecondary] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::WeaponSecondary, this, 150, topOffset + 240, 100, 100, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::WeaponSecondary]->AcceptedCategoryWeapon = ItemCategory::Weapon::WeaponMelee;
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::WeaponSecondary]);
 }
 
@@ -100,7 +108,7 @@ void Inventory::buildEquipment()
             equipmentSlotBoxes[slot]->addItemLabel(buildItem(&levelClient->playerCharacter->equipment[slot], 0, 0));
         }
         // If the gear is present but does not match, remove it
-        else if(levelClient->playerCharacter->hasEquipment[slot] && equipmentSlotBoxes[slot]->equippedItemLabel->itemId != levelClient->playerCharacter->equipment[slot].schema.id)
+        else if(levelClient->playerCharacter->hasEquipment[slot] && equipmentSlotBoxes[slot]->equippedItemLabel->itemSchema.id != levelClient->playerCharacter->equipment[slot].schema.id)
         {
             equipmentSlotBoxes[slot]->removeItemLabel();
             equipmentSlotBoxes[slot]->addItemLabel(buildItem(&levelClient->playerCharacter->equipment[slot], 0, 0));

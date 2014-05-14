@@ -7,7 +7,8 @@
 #include "../ClientRequest.hpp"
 
 InventoryEquipmentSlot::InventoryEquipmentSlot(Hud* hud, Character::EquipmentSlot slot, Inventory* inventory, float relativeX, float relativeY, float width, float height, AnchorType anchorType)
-    : Frame(hud, relativeX, relativeY, width, height, anchorType, std::bind(&Hud::typicalContainerControl, inventory->hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), slot(slot), inventory(inventory), equippedItemLabel(NULL)
+    : Frame(hud, relativeX, relativeY, width, height, anchorType, std::bind(&Hud::typicalContainerControl, inventory->hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), slot(slot), inventory(inventory), equippedItemLabel(NULL),
+      AcceptedCategoryArmor(ItemCategory::Armor::ArmorNone), AcceptedCategoryWeapon(ItemCategory::Weapon::WeaponNone), AcceptedCategoryJewelry(ItemCategory::Jewelry::JewelryNone)
 {
     managesOpacity = true;
 }
@@ -26,6 +27,23 @@ void InventoryEquipmentSlot::removeItemLabel()
         equippedItemLabel = NULL;
     }
     clearChildren();
+}
+
+bool InventoryEquipmentSlot::acceptsLabel(InventoryItemLabel* label)
+{
+    if(bit::Math::bitwiseHasAny(AcceptedCategoryArmor, label->itemSchema.CategoryArmor))
+    {
+        return true;
+    }
+    if(bit::Math::bitwiseHasAny(AcceptedCategoryWeapon, label->itemSchema.CategoryWeapon))
+    {
+        return true;
+    }
+    if(bit::Math::bitwiseHasAny(AcceptedCategoryJewelry, label->itemSchema.CategoryJewelry))
+    {
+        return true;
+    }
+    return false;
 }
 
 unsigned int InventoryEquipmentSlot::addChild(Element* child)

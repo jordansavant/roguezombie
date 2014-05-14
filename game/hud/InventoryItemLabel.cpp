@@ -7,7 +7,7 @@
 #include "../ClientRequest.hpp"
 
 InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, float relativeX, float relativeY, AnchorType anchorType)
-    : bit::Label(relativeX, relativeY, 0, 0, anchorType), inventory(inventory), itemId(item->schema.id), currentEquipmentSlot(NULL)
+    : bit::Label(relativeX, relativeY, 0, 0, anchorType), inventory(inventory), itemSchema(item->schema), currentEquipmentSlot(NULL)
 {
     setSfFontSize(24);
     setSfFont(inventory->hud->journalFont);
@@ -28,8 +28,8 @@ InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, f
         {
             InventoryEquipmentSlot* slot = static_cast<InventoryEquipmentSlot*>(inventory->equipmentPanel->childElements[i]);
 
-            // If the slot is not already equipped with the item
-            if(slot->isInfocus && slot->equippedItemLabel != e)
+            // If the slot is not already equipped with the item and its of an acceptable type
+            if(slot->isInfocus && slot->equippedItemLabel != e && slot->acceptsLabel(label))
             {
                 // If the current slot had an item, move it back to the inventory
                 if(slot->equippedItemLabel)

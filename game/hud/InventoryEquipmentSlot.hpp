@@ -22,10 +22,15 @@ public:
     Inventory* inventory;
     InventoryItemLabel* equippedItemLabel;
     Character::EquipmentSlot slot;
+    unsigned int AcceptedCategoryArmor;
+    unsigned int AcceptedCategoryWeapon;
+    unsigned int AcceptedCategoryJewelry;
 
     void addItemLabel(InventoryItemLabel* label);
 
     void removeItemLabel();
+
+    bool acceptsLabel(InventoryItemLabel* label);
 
     virtual unsigned int addChild(Element* child);
 

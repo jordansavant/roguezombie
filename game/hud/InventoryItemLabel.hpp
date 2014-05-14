@@ -17,7 +17,7 @@ public:
     InventoryItemLabel(Inventory* inventory, ItemClient* item, float relativeX, float relativeY, AnchorType anchorType);
 
     Inventory* inventory;
-    unsigned int itemId;
+    Item::Schema itemSchema;
     InventoryEquipmentSlot* currentEquipmentSlot;
 
 };
