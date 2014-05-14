@@ -45,6 +45,10 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     modeExit[Mode::Loot] = std::bind(&StateGamePlay::modeOnExitLoot, this);
     modeUpdate[Mode::Loot] = std::bind(&StateGamePlay::modeOnUpdateLoot, this, std::placeholders::_1);
     
+    modeEnter[Mode::Interact] = std::bind(&StateGamePlay::modeOnEnterInteract, this);
+    modeExit[Mode::Interact] = std::bind(&StateGamePlay::modeOnExitInteract, this);
+    modeUpdate[Mode::Interact] = std::bind(&StateGamePlay::modeOnUpdateInteract, this, std::placeholders::_1);
+    
     modeEnter[Mode::Inventory] = std::bind(&StateGamePlay::modeOnEnterInventory, this);
     modeExit[Mode::Inventory] = std::bind(&StateGamePlay::modeOnExitInventory, this);
     modeUpdate[Mode::Inventory] = std::bind(&StateGamePlay::modeOnUpdateInventory, this, std::placeholders::_1);
@@ -89,7 +93,6 @@ void StateGamePlay::modeOnEnterFree()
 
 void StateGamePlay::modeOnExitFree()
 {
-    hud->interactionMenu->deactivate();
 }
 
 void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
@@ -219,6 +222,28 @@ void StateGamePlay::modeOnUpdateLoot(sf::Time &gameTime)
 
 
 ////////////////////////////////////////////////////////////////////////
+//                          INTERACT MODES                            //
+////////////////////////////////////////////////////////////////////////
+
+void StateGamePlay::modeOnEnterInteract()
+{
+    hud->interactionMenu->activate();
+}
+
+void StateGamePlay::modeOnExitInteract()
+{
+    hud->interactionMenu->deactivate();
+}
+
+void StateGamePlay::modeOnUpdateInteract(sf::Time &gameTime)
+{
+	// Exit
+    modeOnUpdateCommonListener(gameTime);
+}
+
+
+
+////////////////////////////////////////////////////////////////////////
 //                         INVENTORY MODES                            //
 ////////////////////////////////////////////////////////////////////////
 
@@ -291,6 +316,13 @@ void StateGamePlay::modeOnUpdateCommonListener(sf::Time &gameTime)
 
     // Loot hot key
     if(mode == Mode::Loot && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::I) || rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape)))
+    {
+        changeMode(Mode::Free);
+        return;
+    }
+
+    // Loot hot key
+    if(mode == Mode::Interact && rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
     {
         changeMode(Mode::Free);
         return;
@@ -395,6 +427,7 @@ void StateGamePlay::requestInteractionsForTile(unsigned int tileId)
         {
             bit::Output::Debug("Client request interaction options received");
             s->hud->interactionMenu->handleInteractionTree(packet, tileId);
+            s->changeMode(StateGamePlay::Mode::Interact);
         }
     );
 }

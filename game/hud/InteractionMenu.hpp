@@ -25,6 +25,8 @@ public:
 
     virtual void updateReals(sf::RenderWindow &window, sf::Time &gameTime);
 
+    void activate();
+
     void deactivate();
 
     virtual void hide();

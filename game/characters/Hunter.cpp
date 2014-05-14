@@ -26,3 +26,10 @@ void Hunter::update(sf::Time &gameTime)
 {
     Character::update(gameTime);
 }
+
+void Hunter::prepareInteractionTree(bit::ServerPacket &packet)
+{
+    // Pack tile id
+    packet << sf::Uint32(1);
+    packet << sf::Uint32(Interaction::Type::Converse);
+}

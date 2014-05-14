@@ -36,6 +36,12 @@ void InteractionMenu::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     }
 }
 
+void InteractionMenu::activate()
+{
+    isActive = true;
+    show();
+}
+
 void InteractionMenu::deactivate()
 {
     tileId = 0;
@@ -67,8 +73,6 @@ void InteractionMenu::handleInteractionTree(bit::ServerPacket &packet, unsigned 
 
     clearChildren();
 
-    isActive = optionSize == 0 ? false : true;
-    show();
     this->tileId = tileId;
     this->tileClient = hud->state->levelClient->tiles[tileId];
 

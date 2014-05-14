@@ -26,6 +26,7 @@ public:
     {
         Free,
         Combat,
+        Interact,
         Loot,
         Inventory,
         Journal,
@@ -61,6 +62,10 @@ public:
     void modeOnExitLoot();
     void modeOnUpdateLoot(sf::Time &gameTime);
     
+    void modeOnEnterInteract();
+    void modeOnExitInteract();
+    void modeOnUpdateInteract(sf::Time &gameTime);
+
     void modeOnEnterInventory();
     void modeOnExitInventory();
     void modeOnUpdateInventory(sf::Time &gameTime);

@@ -57,7 +57,7 @@ void TileClient::clientUpdate(sf::Time &gameTime)
     float tx = std::floor((float)schema.x / (float)schema.width);
     float ty = std::floor((float)schema.y / (float)schema.height);
 
-    if(tx == mx && ty == my)
+    if(level->state->mode == StateGamePlay::Mode::Free && tx == mx && ty == my)
     {
         sf::Color red(255, 0, 0);
         bit::VertexHelper::colorQuad(quad, red);

@@ -17,6 +17,8 @@ public:
     virtual void load(Level* level, unsigned int id, float x, float y);
 
     virtual void update(sf::Time &gameTime);
+
+    virtual void prepareInteractionTree(bit::ServerPacket &packet);
 };
 
 #endif
