@@ -85,9 +85,46 @@ void Character::update(sf::Time &gameTime)
 
 bool Character::equipFromInventory(EquipmentSlot slot, unsigned int itemId)
 {
-    Item* item = inventory->removeItem(itemId);
+    Item* item = inventory->findItem(itemId);
     if(item)
     {
+        switch(slot)
+        {
+            case EquipmentSlot::Head:
+                if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorHead))
+                    return false;
+                break;
+            case EquipmentSlot::Chest:
+                if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorChest))
+                    return false;
+                break;
+            case EquipmentSlot::Legs:
+                if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorLeg))
+                    return false;
+                break;
+            case EquipmentSlot::Feet:
+                if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorFoot))
+                    return false;
+                break;
+            case EquipmentSlot::Hands:
+                if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorHand))
+                    return false;
+                break;
+            case EquipmentSlot::Totem:
+                if(!bit::Math::bitwiseHasAny(item->schema.CategoryJewelry, ItemCategory::Jewelry::JewelryTotem))
+                    return false;
+                break;
+            case EquipmentSlot::WeaponPrimary:
+                if(!bit::Math::bitwiseHasAny(item->schema.CategoryWeapon, ItemCategory::Weapon::WeaponRanged))
+                    return false;
+                break;
+            case EquipmentSlot::WeaponSecondary:
+                if(!bit::Math::bitwiseHasAny(item->schema.CategoryWeapon, ItemCategory::Weapon::WeaponMelee))
+                    return false;
+                break;
+        }
+
+        inventory->removeItem(itemId);
         unequip(slot);
         return equip(slot, item);
     }

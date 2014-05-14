@@ -79,6 +79,8 @@ public:
 
     void addItem(Item* item);
 
+    Item* findItem(unsigned int itemId);
+
     Item* removeItem(unsigned int itemId);
 
     void onAddToNewParent();
