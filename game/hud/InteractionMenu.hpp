@@ -23,6 +23,8 @@ public:
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
+    virtual void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
+
     virtual void updateReals(sf::RenderWindow &window, sf::Time &gameTime);
 
     void activate();

@@ -25,6 +25,11 @@ void InteractionMenu::update(sf::RenderWindow &window, sf::Time &gameTime)
     bit::Container::update(window, gameTime);
 }
 
+void InteractionMenu::updateTargets(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    Frame::updateTargets(window, gameTime);
+}
+
 void InteractionMenu::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
 {
     if(tileClient)
@@ -56,7 +61,9 @@ void InteractionMenu::hide()
 {
     canHaveFocus = false;
     clearEffects();
-    immediateEffect(new bit::FadeEffect(150, 0));
+    immediateEffect(new bit::FadeEffect(150, 0, bit::Easing::Linear, [](bit::Element* e, bit::Effect* f){
+        bool crap = true;
+    }));
 }
 
 void InteractionMenu::show()

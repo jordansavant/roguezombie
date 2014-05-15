@@ -31,6 +31,8 @@ namespace bit
 
         virtual void update(Element* element, sf::RenderWindow &window, sf::Time &gameTime);
 
+        virtual void finish(Element* element, sf::RenderWindow &window, sf::Time &gameTime);
+
         float easing(float percentageComplete, float millisecondsSince, float startValue, float endValue, float totalDuration);
     };
 }

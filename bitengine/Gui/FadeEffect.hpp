@@ -26,6 +26,9 @@ namespace bit
         float previousOpacity;
 
         virtual void update(Element* element, sf::RenderWindow &window, sf::Time &gameTime);
+
+        virtual void finish(Element* element, sf::RenderWindow &window, sf::Time &gameTime);
+
     };
 }
 

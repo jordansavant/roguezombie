@@ -30,6 +30,8 @@ void bit::Effect::update(Element* element, sf::RenderWindow &window, sf::Time &g
     {
         isComplete = true;
 
+        finish(element, window, gameTime);
+
         if(onComplete)
         {
             onComplete(element, this);
@@ -37,6 +39,10 @@ void bit::Effect::update(Element* element, sf::RenderWindow &window, sf::Time &g
     }
 
     hasUpdated = true;
+}
+
+void bit::Effect::finish(Element* element, sf::RenderWindow &window, sf::Time &gameTime)
+{
 }
 
 float bit::Effect::easing(float percentageComplete, float millisecondsSince, float startValue, float endValue, float totalDuration)

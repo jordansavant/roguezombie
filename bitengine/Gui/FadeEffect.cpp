@@ -41,3 +41,8 @@ void bit::FadeEffect::update(Element* element, sf::RenderWindow &window, sf::Tim
 
     Effect::update(element, window, gameTime);
 }
+
+void bit::FadeEffect::finish(Element* element, sf::RenderWindow &window, sf::Time &gameTime)
+{
+    element->opacity = targetOpacity;
+}
