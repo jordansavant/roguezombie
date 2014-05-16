@@ -7,9 +7,11 @@
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
 #include "Interaction.hpp"
+#include <map>
 
 class Level;
 class Item;
+class DialogNode;
 
 class Body
 {
@@ -31,6 +33,9 @@ public:
     Item* inventory;
     Body* inventoryAccessor;
     Body* inventoryAccessee;
+    Body* conversationSpeaker;
+    std::map<unsigned int, DialogNode*> currentConversations;
+    std::map<unsigned int, DialogNode*> originConversations; // for memory management
 
 	struct Schema
 	{
@@ -79,11 +84,17 @@ public:
 
     Item* removeItemFromInventory(unsigned int itemId);
 
+    virtual DialogNode* getDefaultDialogNode();
+
+    void handleDialogResponse(Body* listener, unsigned int responseId);
+
     virtual void handleInteraction(Interaction::Type interaction, Body* interactor, bit::ServerPacket &responsePacket);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 
     virtual void prepareInteractionTree(bit::ServerPacket &packet);
+
+    virtual void prepareDialogNode(Body* listener, bit::ServerPacket &packet);
     
 };
 

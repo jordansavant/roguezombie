@@ -51,5 +51,12 @@ DialogNode* DialogNode::chooseResponse(Body* speaker, Body* listener, unsigned i
 
 void DialogNode::prepareSnapshot(bit::ServerPacket &packet)
 {
-    // TODO, dont pack responses for requirement failure etc.
+    packet << prompt;
+
+    // TODO - dont pack responses for requirement failure etc.
+    packet << sf::Uint32(responses.size());
+    for(unsigned int i=0; i < responses.size(); i++)
+    {
+        packet << responses[i].response;
+    }
 }

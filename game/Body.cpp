@@ -8,15 +8,21 @@
 #include "Tile.hpp"
 #include "Character.hpp"
 #include "items/Item.hpp"
+#include "dialog/DialogNode.hpp"
 
 Body::Body()
-    : level(NULL), blockFoV(true), schema(), inventory(NULL), inventoryAccessor(NULL), inventoryAccessee(NULL)
+    : level(NULL), blockFoV(true), schema(), inventory(NULL), inventoryAccessor(NULL), inventoryAccessee(NULL), conversationSpeaker(NULL)
 {
 }
 
 Body::~Body()
 {
     delete inventory;
+
+    for(auto itr = originConversations.begin(); itr != originConversations.end(); itr++)
+    {
+        delete itr->second;
+    }
 }
 
 void Body::load(Level* _level, unsigned int _id, Type _type, float _x, float _y, float _width, float _height)
@@ -50,6 +56,25 @@ Item* Body::removeItemFromInventory(unsigned int itemId)
         item->parentBody = NULL;
     }
     return item;
+}
+
+DialogNode* Body::getDefaultDialogNode()
+{
+    // TODO: Fill Out
+    return NULL;
+}
+
+void Body::handleDialogResponse(Body* listener, unsigned int responseId)
+{
+    DialogNode* node = currentConversations[listener->schema.id];
+    if(node)
+    {
+        DialogNode* nextNode = node->chooseResponse(this, listener, responseId);
+        if(nextNode)
+        {
+            currentConversations[listener->schema.id] = nextNode;
+        }
+    }
 }
 
 void Body::handleInteraction(Interaction::Type interaction, Body* interactor, bit::ServerPacket &responsePacket)
@@ -98,4 +123,20 @@ void Body::prepareSnapshot(bit::ServerPacket &packet, bool full)
 void Body::prepareInteractionTree(bit::ServerPacket &packet)
 {
     packet << sf::Uint32(0);
+}
+
+void Body::prepareDialogNode(Body* listener, bit::ServerPacket &packet)
+{
+    auto itr = currentConversations.find(listener->schema.id);
+    DialogNode* node = itr->second;
+    if(node == NULL)
+    {
+        node = getDefaultDialogNode();
+        originConversations[listener->schema.id] = node;
+        currentConversations[listener->schema.id] = node;
+    }
+
+    node->prepareSnapshot(packet);
+
+    // FUTURE - pack conversation modifiers such disposition etc.
 }
