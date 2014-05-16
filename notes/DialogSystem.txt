@@ -1,18 +1,18 @@
 Dialoging
-* speaker = the character containing the dialog tree and the iniatee of the conversation
-* listener = the character initiating a conversation with the speaker
+* Speaker = the character containing the dialog tree and the iniatee of the conversation
+* Listener = the character initiating a conversation with the Speaker
 
-Requirments:
+Requirements:
     Consumption
     - A character can be conversed with
     - A character can initiate a conversation with another character
-    - Upon initiation, the listeners must resume their position in their last conversation
-    - That means that every speaker must be capable of mapping the position of the other listener in their dialog tree
-    - A character can contain more than one dialog tree
+    - Upon initiation, the listeners must resume their position in their last conversation with the speaker
+    - That means that every speaker must be capable of mapping the position of the other listener in their dialog trees
+    - A character can contain more than one dialog tree*
     Dialog Direction
     - The dialog tree consists of connected dialog nodes
     - A dialog node has a dialog entry to present and zero or more choices
-    - If a dialog node has zero or more choices, their next node should be mapped directly
+    - If a dialog node has zero or more choices, their next node should be mapped directly*
     - A listener can choose a choice from their current dialog node with the speaker
     - Each choice can result in a transition to another dialog node
     - A dialog node can lead to no other nodes indicating it as an end node
@@ -27,19 +27,19 @@ Design:
     If the character has a dialog tree (or more) the interaction options will present the "Talk" interaction
     If a request for "Talk" occurs between a player character and a character they become Listener and Speaker respectively
     The Listener and Speaker enter a transaction akin to the loot transactions when accessing another body's container
-    The Speaker will search their dialog tree seeking the last position of the accessing Listener
-    If no position is found the Speaker establishes the position at the default dialog tree's first node
+    The Speaker will search their dialog tree seeking the last position of the accessing Listener*
+    If no position is found the Speaker establishes the position at the default dialog tree's first node*
     The response to the Talk request is the current Dialog node that the Listener is positioned on
     The response will be taken on the client and presented to the user in the Dialog Menu (very similar to the interaction menu)
-    The dialog menu will present the dialog prompt and each dialog choice, if there are no choices it will simply present "next"
-    The dialog choices will have activate events that fire DialogResponse requests to the server
+    The dialog menu will present the dialog prompt and each dialog choice, if there are no choices it will simply present "exit"
+    The dialog choices will have click events that fire DialogResponse requests to the server
     When a dialog choice is chosen the request to the server will contain the Dialog Response ID
     The current Listener's Speaker is located because of their transaction
-    The Speaker is told to handle the response from the client request through its ID
+    The Speaker is told to handle the response from the client request through its response ID
     The Speaker will take the response id and find the current DialogNode of the Listener
     It will tell the DialogNode of the choice and in handle a new node on return of the choice
     It will then update the current node of the listener to the new choice
-    It will then respond in the response packet with the current dialog tree
+    It will then respond in the response packet with the current dialog node
     In response the client will refresh the Dialog Menu and the cycle continues
  
  
@@ -48,14 +48,15 @@ DialogNode* getTypicalConversation()
 {
     DialogNode e = new DialogNode;
     e->prompt = new Dialog(Entry::Bye);
-
+    
     DialogNode d = new DialogNode;
     d->prompt = new Dialog(Entry::SpeakerThatsUnfortunate);
-    b->addResponse(new Dialog(Entry::ListenerOk), e);
+    d->addResponse(new Dialog(Entry::Listener_Yes), e);
     
     DialogNode c = new DialogNode;
     c->prompt = new Dialog(Entry::SpeaderThatsFortunate);
-
+    c->addResponse(new Dialog(Entry::Listener_Yes), e);
+    
     DialogNode b = new DialogNode;
     b->prompt = new Dialog(Entry::SpeakerHowAreYou);
     b->addResponse(new Dialog(Entry::ListenerIAmGood), c);
@@ -68,29 +69,31 @@ DialogNode* getTypicalConversation()
     return a;
 }
 
-JoeCharacter->addDialogGraph(getTypicalConversation());
-
 
 // OOP
 Character
 {
+    // Characters are responsible for cleaning up their conversations
     ~Character()
     {
-        foreach(dialogTrees)
+        foreach(startOfConversations as conversation)
         {
-            destruct dialogTree
+            delete conversation;
         }
     }
 
+    Character* currentSpeaker;
     std::map<unsigned int, DialogNode*> currentConversations;
-    std::vector<DialogNode*> dialogTrees;
+    std::map<unsigned int, DialogNode*> startOfConversations; // for memory management
     
-    addDialogGraph(DialogNode* node)
+    // Allows us to pick the default dialog node for a new character listener
+    DialogNode* getDefaultDialogNode()
     {
-        dialogTrees.push_back(node);
+        return getTypicalConversation();
     }
     
-    handleReponse(Character* listener, ResponseId)
+    // Takes a response packet from the player and moves to next conversation node
+    void handleResponse(Character* listener, responseId)
     {
         node = currentConversations[listener.id];
         if(node)
@@ -102,6 +105,21 @@ Character
             }
         }
     }
+    
+    // Will set the listener to the default dialog node if not assigned
+    // Will pack the dialog node to send to the listener
+    prepareDialogNode(packet)
+    {
+        If listener not in conversations
+        {
+            currentConversations[listener.id] = getDefaultDialogNode();
+            startOfConversations[listener.id] = currentConversations[listener.id];
+        }
+        
+        // Pack current node
+        
+        // FUTURE: pack friendly factor to allow for varying strings etc.
+    }
 }
 
 // Statics for entry and factories
@@ -109,15 +127,15 @@ DialogEntry
 {
     enum Entry
     {
-        SpeakerHello,
-        ListenerHello,
-        SpeakerHowAreYou,
-        ListenerIAmGood,
-        ListenerIAmBad,
-        SpeaderThatsFortunate,
-        SpeakerThatsUnfortunate,
-        ListenerOk,
-        SpeakerBye,
+        Speaker_Hello,
+        Listener_Hello,
+        Speaker_HowAreYou,
+        Listener_IAmGood,
+        Listener_IAmBad,
+        Speaker_ThatsFortunate,
+        Speaker_ThatsUnfortunate,
+        Listener_Yes,
+        Speaker_Bye,
     };
     
     static string getString(Entry);
@@ -136,9 +154,10 @@ DialogNode
     ~DialogNode
     {
         // Recurse through responses deleting all nodes
+        isDeleted = true;
         foreach(responses as response)
         {
-            if(response.next)
+            if(response.next && !response.next.isDeleted)
             {
                 delete response.next
                 response.next = NULL
@@ -146,6 +165,8 @@ DialogNode
         }
     }
 
+    // prevents infinite recursion in destructor for circular trees
+    bool isDeleted;
     Dialog prompt;
     std::vector<DialogResponse> responses;
     
@@ -171,14 +192,22 @@ DialogNode
         
         return NULL;
     }
+    
+    void preparePacket(packet)
+    {
+        // send prompt
+        // send response count
+        // send responses
+    }
 }
 
-DialogResponse
+class DialogResponse
 {
     Dialog response;
     DialogNode* next;
     
     std::vector<function<void(Character* speaker, Character* listener)>> onChoose;
+    function<bool (Character* speaker, Character* listener)> meetsRequirements;
     
     void choose(Character* speaker, Character* listener)
     {
