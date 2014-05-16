@@ -23,7 +23,7 @@ StartMainMenu::StartMainMenu(RogueZombieGame* rogueZombieGame, StateGameStart* s
     singleplayerLabel = new bit::Label(0, -600, 0, 0, bit::Element::AnchorType::Center,
         [rogueZombieGame, state] (Element* element, sf::RenderWindow* window, sf::Time* gameTime) -> bool
         {
-            if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
+            if(element->opacity == 1 && rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
             {
                 state->requestStackPush(RogueZombieGame::stateGamePlayHost);
                 return true;
@@ -38,7 +38,7 @@ StartMainMenu::StartMainMenu(RogueZombieGame* rogueZombieGame, StateGameStart* s
     multiplayerLabel = new bit::Label(0, -600, 0, 0, bit::Element::AnchorType::Center,
         [rogueZombieGame, state] (Element* element, sf::RenderWindow* window, sf::Time* gameTime) -> bool
         {
-            if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
+            if(element->opacity == 1 && rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
             {
                 state->requestStackPush(RogueZombieGame::stateGamePlayClient);
                 return true;
@@ -57,7 +57,7 @@ StartMainMenu::StartMainMenu(RogueZombieGame* rogueZombieGame, StateGameStart* s
     exitLabel = new bit::Label(0, -600, 0, 0, bit::Element::AnchorType::Center,
         [rogueZombieGame, state] (Element* element, sf::RenderWindow* window, sf::Time* gameTime) -> bool
         {
-            if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
+            if(element->opacity == 1 && rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
             {
                 state->requestStackPop();
                 return true;
