@@ -15,6 +15,7 @@
 #include "characters/ZombieClient.hpp"
 #include "hud/Hud.hpp"
 #include "hud/InteractionMenu.hpp"
+#include "hud/DialogMenu.hpp"
 #include "hud/Inventory.hpp"
 #include "hud/LootMenu.hpp"
 #include "items/ItemClient.hpp"
@@ -48,6 +49,10 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     modeEnter[Mode::Interact] = std::bind(&StateGamePlay::modeOnEnterInteract, this);
     modeExit[Mode::Interact] = std::bind(&StateGamePlay::modeOnExitInteract, this);
     modeUpdate[Mode::Interact] = std::bind(&StateGamePlay::modeOnUpdateInteract, this, std::placeholders::_1);
+    
+    modeEnter[Mode::Dialog] = std::bind(&StateGamePlay::modeOnEnterDialog, this);
+    modeExit[Mode::Dialog] = std::bind(&StateGamePlay::modeOnExitDialog, this);
+    modeUpdate[Mode::Dialog] = std::bind(&StateGamePlay::modeOnUpdateDialog, this, std::placeholders::_1);
     
     modeEnter[Mode::Inventory] = std::bind(&StateGamePlay::modeOnEnterInventory, this);
     modeExit[Mode::Inventory] = std::bind(&StateGamePlay::modeOnExitInventory, this);
@@ -244,6 +249,28 @@ void StateGamePlay::modeOnUpdateInteract(sf::Time &gameTime)
 
 
 ////////////////////////////////////////////////////////////////////////
+//                           DIALOG MODES                             //
+////////////////////////////////////////////////////////////////////////
+
+void StateGamePlay::modeOnEnterDialog()
+{
+    hud->dialogMenu->activate();
+}
+
+void StateGamePlay::modeOnExitDialog()
+{
+    hud->dialogMenu->deactivate();
+}
+
+void StateGamePlay::modeOnUpdateDialog(sf::Time &gameTime)
+{
+	// Exit
+    modeOnUpdateCommonListener(gameTime);
+}
+
+
+
+////////////////////////////////////////////////////////////////////////
 //                         INVENTORY MODES                            //
 ////////////////////////////////////////////////////////////////////////
 
@@ -321,8 +348,15 @@ void StateGamePlay::modeOnUpdateCommonListener(sf::Time &gameTime)
         return;
     }
 
-    // Loot hot key
+    // Interact hot key
     if(mode == Mode::Interact && rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
+    {
+        changeMode(Mode::Free);
+        return;
+    }
+
+    // Dialog hot key
+    if(mode == Mode::Dialog && rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
     {
         changeMode(Mode::Free);
         return;
@@ -475,6 +509,8 @@ void StateGamePlay::handleInteractionResponse(unsigned int tileId, Interaction::
         case Interaction::Type::Dialog:
         {
             displayMessage(std::string("Dialog initiated"));
+            changeMode(Mode::Dialog);
+            hud->dialogMenu->handleDialogPacket(packet, tileId);
 
             break;
         }

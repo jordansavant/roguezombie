@@ -4,6 +4,7 @@
 #include "Journal.hpp"
 #include "Inventory.hpp"
 #include "InteractionMenu.hpp"
+#include "DialogMenu.hpp"
 #include "LootMenu.hpp"
 #include "Console.hpp"
 #include "../../ResourcePath.h"
@@ -31,6 +32,9 @@ Hud::Hud(StateGamePlay* _state)
     interactionMenu = new InteractionMenu(this);
     addChild(interactionMenu);
     
+    dialogMenu = new DialogMenu(this);
+    addChild(dialogMenu);
+
     lootMenu = new LootMenu(this);
     addChild(lootMenu);
 

@@ -13,6 +13,7 @@ class OptionsBar;
 class Journal;
 class Inventory;
 class InteractionMenu;
+class DialogMenu;
 class LootMenu;
 class Console;
 
@@ -28,6 +29,7 @@ public:
     Journal* journal;
     Inventory* inventory;
     InteractionMenu* interactionMenu;
+    DialogMenu* dialogMenu;
     LootMenu* lootMenu;
     Console* console;
     Minimap minimap;

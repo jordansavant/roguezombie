@@ -27,11 +27,11 @@ public:
         Free,
         Combat,
         Interact,
+        Dialog,
         Loot,
         Inventory,
         Journal,
         Trade,
-        Dialog,
         _count
     };
 
@@ -65,6 +65,10 @@ public:
     void modeOnEnterInteract();
     void modeOnExitInteract();
     void modeOnUpdateInteract(sf::Time &gameTime);
+    
+    void modeOnEnterDialog();
+    void modeOnExitDialog();
+    void modeOnUpdateDialog(sf::Time &gameTime);
 
     void modeOnEnterInventory();
     void modeOnExitInventory();
