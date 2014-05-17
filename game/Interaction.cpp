@@ -21,7 +21,7 @@ std::string Interaction::getTitle(Type type)
             return "Open";
         case Interaction::Type::CloseInventory:
             return "Close";
-        case Interaction::Type::Converse:
-            return "Converse";
+        case Interaction::Type::Dialog:
+            return "Talk";
     }
 }

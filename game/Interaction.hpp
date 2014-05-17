@@ -16,7 +16,7 @@ public:
         UnlockWithBash,
         OpenInventory,
         CloseInventory,
-        Converse,
+        Dialog,
     };
 
     static std::string getTitle(Type type);

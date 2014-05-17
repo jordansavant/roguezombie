@@ -18,6 +18,8 @@ public:
 
     virtual void update(sf::Time &gameTime);
 
+    virtual void handleInteraction(Interaction::Type interaction, Body* interactor, bit::ServerPacket &responsePacket);
+
     virtual void prepareInteractionTree(bit::ServerPacket &packet);
 };
 

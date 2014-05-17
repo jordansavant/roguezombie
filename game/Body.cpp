@@ -61,7 +61,7 @@ Item* Body::removeItemFromInventory(unsigned int itemId)
 DialogNode* Body::getDefaultDialogNode()
 {
     // TODO: Fill Out
-    return NULL;
+    return DialogEntry::getDialogTree();
 }
 
 void Body::handleDialogResponse(Body* listener, unsigned int responseId)
@@ -127,13 +127,17 @@ void Body::prepareInteractionTree(bit::ServerPacket &packet)
 
 void Body::prepareDialogNode(Body* listener, bit::ServerPacket &packet)
 {
+    DialogNode* node = NULL;
     auto itr = currentConversations.find(listener->schema.id);
-    DialogNode* node = itr->second;
-    if(node == NULL)
+    if(itr == currentConversations.end())
     {
         node = getDefaultDialogNode();
         originConversations[listener->schema.id] = node;
         currentConversations[listener->schema.id] = node;
+    }
+    else
+    {
+        node = itr->second;
     }
 
     node->prepareSnapshot(packet);

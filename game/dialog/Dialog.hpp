@@ -10,7 +10,10 @@
 class Dialog
 {
 public:
+
     Dialog();
+
+    Dialog(unsigned int id, DialogEntry::Entry entry);
 
     unsigned int id;
     DialogEntry::Entry entry;

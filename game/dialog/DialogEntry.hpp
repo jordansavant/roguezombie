@@ -4,6 +4,8 @@
 
 #include <string>
 
+class DialogNode;
+
 class DialogEntry
 {
 public:
@@ -23,6 +25,10 @@ public:
     };
 
     static std::string getString(Entry entry);
+
+    static DialogNode* getDialogTree();
+
+    static unsigned int dialogNodeId;
 };
 
 #endif

@@ -472,6 +472,12 @@ void StateGamePlay::handleInteractionResponse(unsigned int tileId, Interaction::
 
             break;
         }
+        case Interaction::Type::Dialog:
+        {
+            displayMessage(std::string("Dialog initiated"));
+
+            break;
+        }
     }
 }
 /**

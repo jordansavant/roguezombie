@@ -27,9 +27,24 @@ void Hunter::update(sf::Time &gameTime)
     Character::update(gameTime);
 }
 
+void Hunter::handleInteraction(Interaction::Type interaction, Body* interactor, bit::ServerPacket &responsePacket)
+{
+    Character::handleInteraction(interaction, interactor, responsePacket);
+
+    switch(interaction)
+    {
+        case Interaction::Type::Dialog:
+        {
+            interactor->conversationSpeaker = this;
+            prepareDialogNode(interactor, responsePacket);
+            break;
+        }
+    }
+}
+
 void Hunter::prepareInteractionTree(bit::ServerPacket &packet)
 {
     // Pack tile id
     packet << sf::Uint32(1);
-    packet << sf::Uint32(Interaction::Type::Converse);
+    packet << sf::Uint32(Interaction::Type::Dialog);
 }
