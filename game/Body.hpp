@@ -92,7 +92,7 @@ public:
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 
-    virtual void prepareInteractionTree(bit::ServerPacket &packet);
+    virtual void getAvailableInteractions(std::vector<Interaction::Type> &fill);
 
     virtual void prepareDialogNode(Body* listener, bit::ServerPacket &packet);
     

@@ -8,6 +8,8 @@
 #include "../../bitengine/Network.hpp"
 #include "../Character.hpp"
 
+class DialogNode;
+
 class Hunter : public Character
 {
 public:
@@ -18,9 +20,11 @@ public:
 
     virtual void update(sf::Time &gameTime);
 
-    virtual void handleInteraction(Interaction::Type interaction, Body* interactor, bit::ServerPacket &responsePacket);
+    virtual DialogNode* getDefaultDialogNode();
 
-    virtual void prepareInteractionTree(bit::ServerPacket &packet);
+    virtual void handleInteraction(Interaction::Type interaction, Body* interactor, bit::ServerPacket &responsePacket);
+    
+    virtual void getAvailableInteractions(std::vector<Interaction::Type> &fill);
 };
 
 #endif

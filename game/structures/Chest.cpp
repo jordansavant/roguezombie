@@ -63,21 +63,20 @@ void Chest::prepareSnapshot(bit::ServerPacket &packet, bool full)
     packet << schema;
 }
 
-void Chest::prepareInteractionTree(bit::ServerPacket &packet)
+void Chest::getAvailableInteractions(std::vector<Interaction::Type> &fill)
 {
-    // Pack tile id
+    Structure::getAvailableInteractions(fill);
+    
     if(schema.isLocked)
     {
-        packet << sf::Uint32(3);
-        packet << sf::Uint32(Interaction::Type::UnlockWithKey);
-        packet << sf::Uint32(Interaction::Type::UnlockWithLockpick);
-        packet << sf::Uint32(Interaction::Type::UnlockWithBash);
+        fill.push_back(Interaction::Type::UnlockWithKey);
+        fill.push_back(Interaction::Type::UnlockWithLockpick);
+        fill.push_back(Interaction::Type::UnlockWithBash);
     }
     else
     {
-        packet << sf::Uint32(3);
-        packet << sf::Uint32(Interaction::Type::OpenInventory);
-        packet << sf::Uint32(Interaction::Type::LockWithKey);
-        packet << sf::Uint32(Interaction::Type::LockWithLockpick);
+        fill.push_back(Interaction::Type::OpenInventory);
+        fill.push_back(Interaction::Type::LockWithKey);
+        fill.push_back(Interaction::Type::LockWithLockpick);
     }
 }

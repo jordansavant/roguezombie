@@ -60,8 +60,7 @@ Item* Body::removeItemFromInventory(unsigned int itemId)
 
 DialogNode* Body::getDefaultDialogNode()
 {
-    // TODO: Fill Out
-    return DialogEntry::getDialogTree();
+    return NULL;
 }
 
 void Body::handleDialogResponse(Body* listener, unsigned int responseId)
@@ -120,9 +119,9 @@ void Body::prepareSnapshot(bit::ServerPacket &packet, bool full)
     }
 }
 
-void Body::prepareInteractionTree(bit::ServerPacket &packet)
+void Body::getAvailableInteractions(std::vector<Interaction::Type> &fill)
 {
-    packet << sf::Uint32(0);
+    return;
 }
 
 void Body::prepareDialogNode(Body* listener, bit::ServerPacket &packet)

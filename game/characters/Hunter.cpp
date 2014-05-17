@@ -8,6 +8,8 @@
 #include "../Level.hpp"
 #include "../Tile.hpp"
 #include "../items/Item.hpp"
+#include "../dialog/DialogEntry.hpp"
+#include "../dialog/DialogNode.hpp"
 
 Hunter::Hunter()
     : Character()
@@ -27,6 +29,11 @@ void Hunter::update(sf::Time &gameTime)
     Character::update(gameTime);
 }
 
+DialogNode* Hunter::getDefaultDialogNode()
+{
+    return DialogEntry::getDialogTree();
+}
+
 void Hunter::handleInteraction(Interaction::Type interaction, Body* interactor, bit::ServerPacket &responsePacket)
 {
     Character::handleInteraction(interaction, interactor, responsePacket);
@@ -42,9 +49,9 @@ void Hunter::handleInteraction(Interaction::Type interaction, Body* interactor, 
     }
 }
 
-void Hunter::prepareInteractionTree(bit::ServerPacket &packet)
+void Hunter::getAvailableInteractions(std::vector<Interaction::Type> &fill)
 {
-    // Pack tile id
-    packet << sf::Uint32(1);
-    packet << sf::Uint32(Interaction::Type::Dialog);
+    Character::getAvailableInteractions(fill);
+
+    fill.push_back(Interaction::Type::Dialog);
 }

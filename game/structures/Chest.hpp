@@ -42,8 +42,8 @@ public:
     virtual void handleInteraction(Interaction::Type interaction, Body* interactor, bit::ServerPacket &responsePacket);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
-
-    virtual void prepareInteractionTree(bit::ServerPacket &packet);
+    
+    virtual void getAvailableInteractions(std::vector<Interaction::Type> &fill);
 };
 
 #endif

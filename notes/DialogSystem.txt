@@ -23,24 +23,24 @@ Requirements:
     - Each trigger should support more than one event listener
 
 Design:
-    Interaction options will be requested from a character
-    If the character has a dialog tree (or more) the interaction options will present the "Talk" interaction
-    If a request for "Talk" occurs between a player character and a character they become Listener and Speaker respectively
-    The Listener and Speaker enter a transaction akin to the loot transactions when accessing another body's container
-    The Speaker will search their dialog tree seeking the last position of the accessing Listener*
-    If no position is found the Speaker establishes the position at the default dialog tree's first node*
-    The response to the Talk request is the current Dialog node that the Listener is positioned on
-    The response will be taken on the client and presented to the user in the Dialog Menu (very similar to the interaction menu)
-    The dialog menu will present the dialog prompt and each dialog choice, if there are no choices it will simply present "exit"
-    The dialog choices will have click events that fire DialogResponse requests to the server
-    When a dialog choice is chosen the request to the server will contain the Dialog Response ID
-    The current Listener's Speaker is located because of their transaction
-    The Speaker is told to handle the response from the client request through its response ID
-    The Speaker will take the response id and find the current DialogNode of the Listener
-    It will tell the DialogNode of the choice and in handle a new node on return of the choice
-    It will then update the current node of the listener to the new choice
-    It will then respond in the response packet with the current dialog node
-    In response the client will refresh the Dialog Menu and the cycle continues
+    -Interaction options will be requested from a character
+    -If the character has a dialog tree (or more) the interaction options will present the "Talk" interaction
+    -If a request for "Talk" occurs between a player character and a character they become Listener and Speaker respectively
+    -The Listener and Speaker enter a transaction akin to the loot transactions when accessing another body's container
+    -The Speaker will search their dialog tree seeking the last position of the accessing Listener*
+    -If no position is found the Speaker establishes the position at the default dialog tree's first node*
+    -The response to the Talk request is the current Dialog node that the Listener is positioned on
+    -The response will be taken on the client and presented to the user in the Dialog Menu (very similar to the interaction menu)
+    -The dialog menu will present the dialog prompt and each dialog choice, if there are no choices it will simply present "exit"
+    -The dialog choices will have click events that fire DialogResponse requests to the server
+    -When a dialog choice is chosen the request to the server will contain the Dialog Response ID
+    -The current Listener's Speaker is located because of their transaction
+    -The Speaker is told to handle the response from the client request through its response ID
+    -The Speaker will take the response id and find the current DialogNode of the Listener
+    -It will tell the DialogNode of the choice and in handle a new node on return of the choice
+    -It will then update the current node of the listener to the new choice
+    -It will then respond in the response packet with the current dialog node
+    -In response the client will refresh the Dialog Menu and the cycle continues
  
  
 // IMPLEMENTATION

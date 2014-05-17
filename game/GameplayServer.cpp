@@ -229,9 +229,19 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
             Tile* t = player->level->getTileById(tileId);
 
             if(t && t->body)
-                t->body->prepareInteractionTree(responsePacket);
+            {
+                std::vector<Interaction::Type> interactions;
+                t->body->getAvailableInteractions(interactions);
+                responsePacket << sf::Uint32(interactions.size());
+                for(unsigned int i=0; i < interactions.size(); i++)
+                {
+                    responsePacket << sf::Uint32(interactions[i]);
+                }
+            }
             else
+            {
                 responsePacket << sf::Uint32(0);
+            }
 
             break;
         }
