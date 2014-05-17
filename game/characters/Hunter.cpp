@@ -28,30 +28,3 @@ void Hunter::update(sf::Time &gameTime)
 {
     Character::update(gameTime);
 }
-
-DialogNode* Hunter::getDefaultDialogNode()
-{
-    return DialogEntry::getDialogTree();
-}
-
-void Hunter::handleInteraction(Interaction::Type interaction, Body* interactor, bit::ServerPacket &responsePacket)
-{
-    Character::handleInteraction(interaction, interactor, responsePacket);
-
-    switch(interaction)
-    {
-        case Interaction::Type::Dialog:
-        {
-            interactor->conversationSpeaker = this;
-            prepareDialogNode(interactor, responsePacket);
-            break;
-        }
-    }
-}
-
-void Hunter::getAvailableInteractions(std::vector<Interaction::Type> &fill)
-{
-    Character::getAvailableInteractions(fill);
-
-    fill.push_back(Interaction::Type::Dialog);
-}

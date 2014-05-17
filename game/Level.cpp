@@ -11,6 +11,8 @@
 #include "structures/Chest.hpp"
 #include "levels/Interior.hpp"
 #include "items/Item.hpp"
+#include "dialog/DialogEntry.hpp"
+#include "dialog/DialogNode.hpp"
 #include "GameplayServer.hpp"
 #include "SFML/Network.hpp"
 #include "../bitengine/Network.hpp"
@@ -122,6 +124,8 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
                     Hunter* hunter = new Hunter();
                     hunter->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
                     hunters.push_back(hunter);
+
+                    hunter->getStartingDialog = DialogEntry::getDialogTree;
                     break;
                 }
                 case Interior::Spawn::Light:

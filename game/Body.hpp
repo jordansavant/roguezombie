@@ -8,6 +8,7 @@
 #include "../bitengine/Network.hpp"
 #include "Interaction.hpp"
 #include <map>
+#include <functional>
 
 class Level;
 class Item;
@@ -36,6 +37,7 @@ public:
     Body* conversationSpeaker;
     std::map<unsigned int, DialogNode*> currentConversations;
     std::map<unsigned int, DialogNode*> originConversations; // for memory management
+    std::function<DialogNode*(void)> getStartingDialog;
 
 	struct Schema
 	{
@@ -83,8 +85,6 @@ public:
     void addItemToInventory(Item* item);
 
     Item* removeItemFromInventory(unsigned int itemId);
-
-    virtual DialogNode* getDefaultDialogNode();
 
     void handleDialogResponse(Body* listener, unsigned int responseId);
 

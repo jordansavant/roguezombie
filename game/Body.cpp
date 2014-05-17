@@ -11,7 +11,7 @@
 #include "dialog/DialogNode.hpp"
 
 Body::Body()
-    : level(NULL), blockFoV(true), schema(), inventory(NULL), inventoryAccessor(NULL), inventoryAccessee(NULL), conversationSpeaker(NULL)
+    : level(NULL), blockFoV(true), schema(), inventory(NULL), inventoryAccessor(NULL), inventoryAccessee(NULL), conversationSpeaker(NULL), getStartingDialog(NULL)
 {
 }
 
@@ -58,11 +58,6 @@ Item* Body::removeItemFromInventory(unsigned int itemId)
     return item;
 }
 
-DialogNode* Body::getDefaultDialogNode()
-{
-    return NULL;
-}
-
 void Body::handleDialogResponse(Body* listener, unsigned int responseId)
 {
     DialogNode* node = currentConversations[listener->schema.id];
@@ -104,6 +99,12 @@ void Body::handleInteraction(Interaction::Type interaction, Body* interactor, bi
             inventoryAccessor = NULL;
             break;
         }
+        case Interaction::Type::Dialog:
+        {
+            interactor->conversationSpeaker = this;
+            prepareDialogNode(interactor, responsePacket);
+            break;
+        }
     }
 }
 
@@ -121,7 +122,10 @@ void Body::prepareSnapshot(bit::ServerPacket &packet, bool full)
 
 void Body::getAvailableInteractions(std::vector<Interaction::Type> &fill)
 {
-    return;
+    if(getStartingDialog)
+    {
+        fill.push_back(Interaction::Type::Dialog);
+    }
 }
 
 void Body::prepareDialogNode(Body* listener, bit::ServerPacket &packet)
@@ -130,7 +134,7 @@ void Body::prepareDialogNode(Body* listener, bit::ServerPacket &packet)
     auto itr = currentConversations.find(listener->schema.id);
     if(itr == currentConversations.end())
     {
-        node = getDefaultDialogNode();
+        node = getStartingDialog();
         originConversations[listener->schema.id] = node;
         currentConversations[listener->schema.id] = node;
     }

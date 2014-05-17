@@ -228,8 +228,9 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
             packet >> tileId;
             Tile* t = player->level->getTileById(tileId);
 
-            if(t && t->body)
+            if(t && t->body && t->body->Body::schema.id != player->character->Body::schema.id)
             {
+                responsePacket << true;
                 std::vector<Interaction::Type> interactions;
                 t->body->getAvailableInteractions(interactions);
                 responsePacket << sf::Uint32(interactions.size());
@@ -240,6 +241,7 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
             }
             else
             {
+                responsePacket << false;
                 responsePacket << sf::Uint32(0);
             }
 

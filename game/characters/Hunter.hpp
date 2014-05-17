@@ -19,12 +19,6 @@ public:
     virtual void load(Level* level, unsigned int id, float x, float y);
 
     virtual void update(sf::Time &gameTime);
-
-    virtual DialogNode* getDefaultDialogNode();
-
-    virtual void handleInteraction(Interaction::Type interaction, Body* interactor, bit::ServerPacket &responsePacket);
-    
-    virtual void getAvailableInteractions(std::vector<Interaction::Type> &fill);
 };
 
 #endif

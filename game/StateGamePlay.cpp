@@ -460,8 +460,13 @@ void StateGamePlay::requestInteractionsForTile(unsigned int tileId)
         [tileId, s] (bit::ServerPacket& packet) // onComplete
         {
             bit::Output::Debug("Client request interaction options received");
-            s->hud->interactionMenu->handleInteractionTree(packet, tileId);
-            s->changeMode(StateGamePlay::Mode::Interact);
+            bool hasInteractions;
+            packet >> hasInteractions;
+            if(hasInteractions)
+            {
+                s->hud->interactionMenu->handleInteractionTree(packet, tileId);
+                s->changeMode(StateGamePlay::Mode::Interact);
+            }
         }
     );
 }
