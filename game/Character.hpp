@@ -92,6 +92,8 @@ public:
             }
             return packet;
         }
+
+        bool isDead();
 	};
 	Schema schema;
 

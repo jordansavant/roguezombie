@@ -76,7 +76,7 @@ void CharacterSprite::update(sf::Time &gameTime)
     float z = bit::Math::calculateDrawDepth(r.y + spriteHeight);
     sf::Color color((int)(255.0f * character->BodyClient::schema.illumination), (int)(255.0f * character->BodyClient::schema.illumination), (int)(255.0f * character->BodyClient::schema.illumination));
 
-    if(character->schema.health > 0)
+    if(!character->schema.isDead())
     {
         // BODY SPRITES
         bit::VertexHelper::positionQuad(headQuad, r.x, r.y, z, spriteWidth, spriteHeight);

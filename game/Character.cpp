@@ -15,7 +15,7 @@
 #include "items/Item.hpp"
 
 Character::Character()
-    : Body(), moveTimer(.75f), equipment(), schema()
+    : Body(), moveTimer(.67f), equipment(), schema()
 {
     equipment.resize(EquipmentSlot::_count, NULL);
 }
@@ -31,6 +31,11 @@ Character::~Character()
     {
         delete equipment[i];
     }
+}
+
+bool Character::Schema::isDead()
+{
+    return health <= 0;
 }
 
 void Character::load(Level* _level, unsigned int _id, Type _type, float _x, float _y, float _width, float _height)
@@ -238,6 +243,7 @@ bool Character::moveToPosition(float x, float y)
 void Character::pathToPosition(float x, float y)
 {
     path.clear();
+    moveTimer.max();
     level->getShortestPath(
         Body::schema.x,
         Body::schema.y,
