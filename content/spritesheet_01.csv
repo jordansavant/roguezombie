@@ -1,8 +1,9 @@
 trimmed_name,frame_x,frame_y,frame_width,frame_height,sprite_x,sprite_y,sprite_width,sprite_height,rotated
 Chest,216,168,20,22,0,0,20,22,false
 Door,174,68,64,64,0,0,64,64,false
-HardHat,86,280,40,40,0,0,40,40,false
-Hunter_Body,44,280,40,40,0,0,40,40,false
+HardHat,128,280,40,40,0,0,40,40,false
+Hunter_Body,86,280,40,40,0,0,40,40,false
+Hunter_Dead,44,280,40,40,0,0,40,40,false
 Hunter_FrontArm,2,280,40,40,0,0,40,40,false
 Hunter_Head,212,252,40,40,0,0,40,40,false
 Hunter_Shadow,170,252,40,40,0,0,40,40,false

@@ -18,7 +18,7 @@ std::string Interaction::getTitle(Type type)
         case Interaction::Type::UnlockWithBash:
             return "Unlock with bash";
         case Interaction::Type::OpenInventory:
-            return "Open";
+            return "Loot";
         case Interaction::Type::CloseInventory:
             return "Close";
         case Interaction::Type::Dialog:

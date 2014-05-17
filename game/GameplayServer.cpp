@@ -6,6 +6,7 @@
 #include "Player.hpp"
 #include "Interaction.hpp"
 #include "Character.hpp"
+#include "characters/Hunter.hpp"
 #include "Tile.hpp"
 #include "levels/Interior.hpp"
 #include "mission/Mission.hpp"
@@ -167,6 +168,7 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
                 player->level->handlePlayerCommand(packet, client, static_cast<Command::Type>(commandType));
 				break;
             case Command::Type::PlayerSwitchLevel:
+                player->level->hunters[0]->kill();
                 break;
 		}
 	}

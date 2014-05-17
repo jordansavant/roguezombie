@@ -64,6 +64,11 @@ public:
     unsigned int shadowQuadIndex;
     bit::Vertex3* shadowQuad;
     void setShadowSprite(std::string& spriteName);
+    
+    bit::Sprite* deathSprite;
+    unsigned int deathQuadIndex;
+    bit::Vertex3* deathQuad;
+    void setDeathSprite(std::string& spriteName);
 
     void load(CharacterClient* character, bit::SpriteLoader* spriteLoader, bit::VertexMap &vertexMap);
 

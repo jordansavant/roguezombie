@@ -99,6 +99,8 @@ public:
 
     virtual void update(sf::Time &gameTime);
 
+    virtual void kill();
+
     virtual bool equipFromInventory(EquipmentSlot slot, unsigned int itemId);
     
     virtual bool equip(EquipmentSlot slot, Item* item);
@@ -122,6 +124,8 @@ public:
     virtual bool moveToPosition(float x, float y);
 
     void assignMission(Mission* mission);
+
+    virtual void getAvailableInteractions(std::vector<Interaction::Type> &fill);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 

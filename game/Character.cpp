@@ -81,6 +81,16 @@ void Character::update(sf::Time &gameTime)
 }
 
 
+void Character::kill()
+{
+    schema.health = 0;
+
+    // move equipment to inventory
+    for(unsigned int i=0; i < equipment.size(); i++)
+    {
+        unequip(static_cast<Character::EquipmentSlot>(i));
+    }
+}
 
 
 bool Character::equipFromInventory(EquipmentSlot slot, unsigned int itemId)
@@ -285,6 +295,18 @@ void Character::checkMissions()
     for(unsigned int i=0; i < missions.size(); i++)
     {
         missions[i]->attemptCompleteMission();
+    }
+}
+
+void Character::getAvailableInteractions(std::vector<Interaction::Type> &fill)
+{
+    if(schema.health > 0)
+    {
+        Body::getAvailableInteractions(fill);
+    }
+    else
+    {
+        fill.push_back(Interaction::Type::OpenInventory);
     }
 }
 
