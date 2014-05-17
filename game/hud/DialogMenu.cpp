@@ -80,13 +80,14 @@ void DialogMenu::handleDialogPacket(bit::ServerPacket &packet, unsigned int tile
     this->tileId = tileId;
     this->tileClient = hud->state->levelClient->tiles[tileId];
 
-    int y = 10;
+    int yPrompt = 10;
+    int xPrompt = 20;
     
     // Unpack the prompt
     Dialog prompt;
     packet >> prompt;
 
-    bit::Label* promptLabel = new bit::Label(20, y, 0, 0, bit::Element::AnchorType::TopLeft);
+    bit::Label* promptLabel = new bit::Label(xPrompt, yPrompt, 0, 0, bit::Element::AnchorType::TopLeft);
     promptLabel->setSfFontSize(24);
     promptLabel->setSfFont(hud->journalFont);
     promptLabel->normalColor = sf::Color::White;
@@ -95,25 +96,45 @@ void DialogMenu::handleDialogPacket(bit::ServerPacket &packet, unsigned int tile
     promptLabel->paddingBottom = 10;
     promptLabel->opacity = 0;
     addChild(promptLabel);
-    y += 80;
 
     // Unpack the responses
     unsigned int responseSize;
     packet >> responseSize;
+    
+    int yResponse = targetHeight * 2/3 - (responseSize * 30) - 20;
+    int xResponse = 20;
+    
     for(unsigned int i=0; i < responseSize; i++)
     {
         Dialog response;
         packet >> response;
+        DialogMenu* m = this;
 
-        bit::Label* responseLabel = new bit::Label(20, y, 0, 0, bit::Element::AnchorType::TopLeft);
+        bit::Label* responseLabel = new bit::Label(xResponse, yResponse, 0, 0, bit::Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
         responseLabel->setSfFontSize(24);
         responseLabel->setSfFont(hud->journalFont);
         responseLabel->normalColor = sf::Color::White;
+        responseLabel->focusedColor = sf::Color::Red;
         responseLabel->setSfFontString("> " + DialogEntry::getString(response.entry));
         responseLabel->paddingRight = 10;
         responseLabel->paddingBottom = 10;
         responseLabel->opacity = 0;
+        responseLabel->onActivate = [response, m, tileId] (Element* e){
+            DialogMenu* m(m);
+            Dialog response(response);
+            unsigned int tileId(tileId);
+            m->hud->state->serverRequest(
+                [response, tileId, m] (bit::ClientPacket &packet) {
+                    packet << sf::Uint32(ClientRequest::DialogResponse);
+                    //packet << sf::Uint32(tileId);
+                    packet << response;
+                },
+                [response, tileId, m] (bit::ServerPacket &packet) {
+                    m->handleDialogPacket(packet, tileId);
+                }
+            );
+        };
         addChild(responseLabel);
-        y += 30;
+        yResponse += 30;
     }
 }

@@ -10,6 +10,7 @@
 #include "levels/Interior.hpp"
 #include "mission/Mission.hpp"
 #include "items/Item.hpp"
+#include "dialog/Dialog.hpp"
 
 GameplayServer::GameplayServer()
     : bit::Server(), bodyIdCounter(0), missionIdCounter(0), itemIdCounter(0)
@@ -231,6 +232,21 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
                 t->body->prepareInteractionTree(responsePacket);
             else
                 responsePacket << sf::Uint32(0);
+
+            break;
+        }
+        case ClientRequest::DialogResponse:
+        {
+            bit::Output::Debug("Server detect request dialog response");
+
+            Dialog response;
+            packet >> response;
+
+            if(player->character->conversationSpeaker)
+            {
+                player->character->conversationSpeaker->handleDialogResponse(player->character, response.id);
+                player->character->conversationSpeaker->prepareDialogNode(player->character, responsePacket);
+            }
 
             break;
         }
