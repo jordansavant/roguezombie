@@ -1,6 +1,8 @@
 #include "DialogEntry.hpp"
 #include "DialogNode.hpp"
 #include "Dialog.hpp"
+#include "../Body.hpp"
+#include "../items/Item.hpp"
 
 std::string DialogEntry::getString(DialogEntry::Entry entry)
 {
@@ -28,31 +30,4 @@ std::string DialogEntry::getString(DialogEntry::Entry entry)
         case DialogEntry::Entry::Speaker_Bye:
             return "Well, later then.";
     }
-}
-
-unsigned int DialogEntry::dialogNodeId = 0;
-
-DialogNode* DialogEntry::getDialogTree()
-{
-    DialogNode* e = new DialogNode;
-    e->prompt = Dialog(++dialogNodeId, Entry::Speaker_Bye);
-    
-    DialogNode* d = new DialogNode;
-    d->prompt = Dialog(++dialogNodeId, Entry::Speaker_ThatsUnfortunate);
-    d->addResponse(Dialog(++dialogNodeId, Entry::Listener_Yes), e);
-    
-    DialogNode* c = new DialogNode;
-    c->prompt = Dialog(++dialogNodeId, Entry::Speaker_ThatsFortunate);
-    c->addResponse(Dialog(++dialogNodeId, Entry::Listener_Yes), e);
-    
-    DialogNode* b = new DialogNode;
-    b->prompt = Dialog(++dialogNodeId, Entry::Speaker_HowAreYou);
-    b->addResponse(Dialog(++dialogNodeId, Entry::Listener_IAmGood), c);
-    b->addResponse(Dialog(++dialogNodeId, Entry::Listener_IAmBad), d);
-    
-    DialogNode* a = new DialogNode;
-    a->prompt = Dialog(++dialogNodeId, Entry::Speaker_Hello);
-    a->addResponse(Dialog(++dialogNodeId, Entry::Listener_Hello), b);
-    
-    return a;
 }

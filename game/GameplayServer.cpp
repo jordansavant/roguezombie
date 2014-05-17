@@ -13,7 +13,7 @@
 #include "dialog/Dialog.hpp"
 
 GameplayServer::GameplayServer()
-    : bit::Server(), bodyIdCounter(0), missionIdCounter(0), itemIdCounter(0)
+    : bit::Server(), bodyIdCounter(0), missionIdCounter(0), itemIdCounter(0), dialogIdCounter(0)
 {
 }
 
@@ -76,6 +76,11 @@ unsigned int GameplayServer::getNextMissionId()
 unsigned int GameplayServer::getNextItemId()
 {
     return ++itemIdCounter;
+}
+
+unsigned int GameplayServer::getNextDialogId()
+{
+    return ++dialogIdCounter;
 }
 
 void GameplayServer::movePlayerToLevel(Player* player, unsigned int fromLevelId, unsigned int toLevelId)

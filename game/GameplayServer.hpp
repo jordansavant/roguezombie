@@ -26,6 +26,8 @@ public:
 
     virtual unsigned int getNextItemId();
 
+    virtual unsigned int getNextDialogId();
+
     virtual void movePlayerToLevel(Player* player, unsigned int fromLevelId, unsigned int toLevelId);
 
 private:
@@ -43,6 +45,7 @@ private:
     unsigned int bodyIdCounter;
     unsigned int missionIdCounter;
     unsigned int itemIdCounter;
+    unsigned int dialogIdCounter;
 
     virtual void load();
 

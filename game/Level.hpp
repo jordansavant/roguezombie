@@ -53,6 +53,8 @@ public:
 
     void update(sf::Time &gameTime);
 
+    DialogNode* getDialogTree();
+
     // Player management
 
 	bool createPlayer(Player* player);
