@@ -237,19 +237,26 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
 
             if(t && t->body && t->body->Body::schema.id != player->character->Body::schema.id)
             {
-                responsePacket << true;
                 std::vector<Interaction::Type> interactions;
                 t->body->getAvailableInteractions(interactions);
-                responsePacket << sf::Uint32(interactions.size());
-                for(unsigned int i=0; i < interactions.size(); i++)
+
+                if(interactions.size() > 0)
                 {
-                    responsePacket << sf::Uint32(interactions[i]);
+                    responsePacket << true;
+                    responsePacket << sf::Uint32(interactions.size());
+                    for(unsigned int i=0; i < interactions.size(); i++)
+                    {
+                        responsePacket << sf::Uint32(interactions[i]);
+                    }
+                }
+                else
+                {
+                    responsePacket << false;
                 }
             }
             else
             {
                 responsePacket << false;
-                responsePacket << sf::Uint32(0);
             }
 
             break;
