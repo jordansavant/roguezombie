@@ -199,7 +199,6 @@ void Level::update(sf::Time &gameTime)
     }
 }
 
-
 void Level::enterCombat()
 {
     state = State::Combat;
@@ -236,29 +235,28 @@ DialogNode* Level::getDialogTree()
 
     DialogNode* e = new DialogNode;
     e->prompt = Dialog(server->getNextDialogId(), DialogEntry::Entry::Speaker_Bye);
-    
+
     DialogNode* d = new DialogNode;
     d->prompt = Dialog(server->getNextDialogId(), DialogEntry::Entry::Speaker_ThatsUnfortunate);
     d->addResponse(Dialog(server->getNextDialogId(), DialogEntry::Entry::Listener_Yes), e);
-    
+
     DialogNode* c = new DialogNode;
     c->prompt = Dialog(server->getNextDialogId(), DialogEntry::Entry::Speaker_ThatsFortunate);
     c->addResponse(Dialog(server->getNextDialogId(), DialogEntry::Entry::Listener_Yes), e);
-    
+
     DialogNode* b = new DialogNode;
     b->prompt = Dialog(server->getNextDialogId(), DialogEntry::Entry::Speaker_HowAreYou);
     b->addResponse(Dialog(server->getNextDialogId(), DialogEntry::Entry::Listener_IAmGood), c);
     b->addResponse(Dialog(server->getNextDialogId(), DialogEntry::Entry::Listener_IAmBad), d, NULL, [l] (Body* speaker, Body* listener){
         listener->addItemToInventory(Item::create(Item::Type::Magnum357, l->server->getNextItemId()));
     });
-    
+
     DialogNode* a = new DialogNode;
     a->prompt = Dialog(server->getNextDialogId(), DialogEntry::Entry::Speaker_Hello);
     a->addResponse(Dialog(server->getNextDialogId(), DialogEntry::Entry::Listener_Hello), b);
-    
+
     return a;
 }
-
 
 /*
  * Player Management

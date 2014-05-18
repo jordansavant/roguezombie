@@ -82,7 +82,7 @@ public:
 	void deletePlayer(Player* player);
 
     // Tile Positioning and Pathfinding
-    
+
     Tile* getTileById(unsigned int id);
 
     Tile* getTileAtIndices(int x, int y);

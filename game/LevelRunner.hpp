@@ -17,7 +17,6 @@ public:
     virtual ~BaseLevelRunner() { }
 
     virtual void update(sf::Time &gameTime) = 0;
-
 };
 
 template <class T>

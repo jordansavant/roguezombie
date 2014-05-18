@@ -38,7 +38,6 @@ bool Character::Schema::isDead()
     return health <= 0;
 }
 
-
 ///////////////////////////////////////////////////////
 //                  GAME LOOP                        //
 ///////////////////////////////////////////////////////
@@ -105,7 +104,7 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
     switch(combatState)
     {
         case CombatState::Waiting:
-            
+
             // Its my turn
             if(this == level->turnQueue.front())
             {
@@ -184,7 +183,6 @@ void Character::followPath(sf::Time &gameTime)
     }
 }
 
-
 void Character::chooseCombatAction(sf::Time &gameTime)
 {
     // Pick a random tile within a radius and path to it
@@ -193,7 +191,6 @@ void Character::chooseCombatAction(sf::Time &gameTime)
     combatAction = CombatAction::Move;
     schema.currentActionPoints--;
 }
-
 
 ///////////////////////////////////////////////////////
 //              CHARACTER EFFECTS                    //
@@ -209,8 +206,6 @@ void Character::kill()
         unequip(static_cast<Character::EquipmentSlot>(i));
     }
 }
-
-
 
 ///////////////////////////////////////////////////////
 //                  INVENTORY                        //
@@ -286,10 +281,6 @@ void Character::unequip(EquipmentSlot slot)
         equipment[slot] = NULL;
     }
 }
-
-
-
-
 
 ///////////////////////////////////////////////////////
 //                   MOVEMENT                        //
@@ -401,9 +392,6 @@ bool Character::isTileBlockedForPathfinding(Tile* tile)
     return false;
 }
 
-
-
-
 ///////////////////////////////////////////////////////
 //                   MISSION                         //
 ///////////////////////////////////////////////////////
@@ -430,14 +418,9 @@ void Character::checkMissions()
     }
 }
 
-
-
-
-
 ///////////////////////////////////////////////////////
 //                  MANAGEMENT                       //
 ///////////////////////////////////////////////////////
-
 
 void Character::setControllingPlayer(Player* player)
 {

@@ -143,7 +143,7 @@ public:
     // Inventory
 
     virtual bool equipFromInventory(EquipmentSlot slot, unsigned int itemId);
-    
+
     virtual bool equip(EquipmentSlot slot, Item* item);
 
     virtual void unequip(EquipmentSlot slot);
