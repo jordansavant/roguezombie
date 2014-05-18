@@ -10,9 +10,11 @@
 #include "Command.hpp"
 #include "Body.hpp"
 #include <map>
+#include <deque>
 #include <functional>
 
 class GameplayServer;
+class Character;
 class Zombie;
 class Ogre;
 class Hunter;
@@ -31,9 +33,15 @@ public:
 
     ~Level();
 
+    enum State
+    {
+        Free,
+        Combat
+    };
+
     GameplayServer* server;
     unsigned int id;
-
+    State state;
     std::vector<Zombie*> zombies;
     std::vector<Ogre*> ogres;
     std::vector<Hunter*> hunters;
@@ -44,14 +52,22 @@ public:
     std::vector<Light*> lights;
 	std::map<unsigned int, Player*> players;
     unsigned int tileWidth, tileHeight, tileRows, tileColumns, tileCount, mapWidth, mapHeight;
-
     std::vector<BaseLevelRunner*> runners;
+
+    Character* characterInTurn;
+    std::deque<Character*> turnQueue;
 
     // Game Logic
 
     void load(GameplayServer* server, unsigned int id, const int* t_array, int t_rows, int t_cols);
 
     void update(sf::Time &gameTime);
+
+    void enterCombat();
+
+    void leaveCombat();
+
+    void endTurn(Character* character);
 
     DialogNode* getDialogTree();
 

@@ -4,8 +4,10 @@
 
 #include "SFML/Graphics.hpp"
 #include <map>
+#include <deque>
 
 class Level;
+class Character;
 
 class BaseLevelRunner
 {
@@ -15,6 +17,7 @@ public:
     virtual ~BaseLevelRunner() { }
 
     virtual void update(sf::Time &gameTime) = 0;
+
 };
 
 template <class T>

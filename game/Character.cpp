@@ -15,7 +15,7 @@
 #include "items/Item.hpp"
 
 Character::Character()
-    : Body(), moveTimer(.67f), equipment(), schema()
+    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), moveTimer(.67f), equipment(), schema()
 {
     equipment.resize(EquipmentSlot::_count, NULL);
 }
@@ -38,6 +38,11 @@ bool Character::Schema::isDead()
     return health <= 0;
 }
 
+
+///////////////////////////////////////////////////////
+//                  GAME LOOP                        //
+///////////////////////////////////////////////////////
+
 void Character::load(Level* _level, unsigned int _id, Type _type, float _x, float _y, float _width, float _height)
 {
     Body::load(_level, _id, Body::Type::Character, _x, _y, _width, _height);
@@ -53,6 +58,113 @@ void Character::update(sf::Time &gameTime)
 {
     Body::update(gameTime);
 
+    if(!schema.isDead())
+    {
+        updateAlive(gameTime);
+    }
+    else
+    {
+        updateDead(gameTime);
+    }
+
+    // If I am a player character and I have a light, update it
+    if(schema.isPlayerCharacter)
+    {
+        for(unsigned int i=0; i < lights.size(); i++)
+        {
+            lights[i]->x = Body::schema.x;
+            lights[i]->y = Body::schema.y;
+        }
+    }
+
+    // See if any missions are complete // TODO: distribute into a less updated manner
+    checkMissions();
+}
+
+void Character::updateAlive(sf::Time &gameTime)
+{
+    switch(level->state)
+    {
+        case Level::State::Free:
+            updateAlive_Free(gameTime);
+            break;
+
+        case Level::State::Combat:
+            updateAlive_Combat(gameTime);
+            break;
+    }
+}
+
+void Character::updateAlive_Free(sf::Time &gameTime)
+{
+    followPath(gameTime);
+}
+
+void Character::updateAlive_Combat(sf::Time &gameTime)
+{
+    switch(combatState)
+    {
+        case CombatState::Waiting:
+            
+            // Its my turn
+            if(this == level->turnQueue.front())
+            {
+                // Refill my action points and move to decision making
+                schema.currentActionPoints = schema.maxActionPoints;
+                combatState = CombatState::DecideAction;
+            }
+
+            break;
+
+        case CombatState::DecideAction:
+
+            // If I have action points remaining
+            if(schema.currentActionPoints > 0)
+			{
+                // Make a decision in combat
+				chooseCombatAction(gameTime);
+			}
+			else
+			{
+                // If I am out of action points, then resume waiting my turn and signal my turn is over
+				level->endTurn(this);
+                combatState = CombatState::Waiting;
+			}
+            break;
+
+        case CombatState::PerformAction:
+
+            switch(combatAction)
+            {
+                case CombatAction::Move:
+
+                    // If I am moving for my combat action, follow the path as long as it exists
+                    if(path.size() > 0)
+                    {
+                        followPath(gameTime);
+                    }
+                    else
+                    {
+                        // If I have reached my destination head back to make my next decision
+                        combatState = CombatState::DecideAction;
+                    }
+
+                    break;
+
+                case CombatAction::Attack:
+                    break;
+            }
+
+            break;
+    }
+}
+
+void Character::updateDead(sf::Time &gameTime)
+{
+}
+
+void Character::followPath(sf::Time &gameTime)
+{
     // Follow designation path points
     if(path.size() > 0 && moveTimer.update(gameTime))
     {
@@ -70,21 +182,22 @@ void Character::update(sf::Time &gameTime)
             path.pop_back();
         }
     }
-
-    // If I am a player character and I have a light, update it
-    if(schema.isPlayerCharacter)
-    {
-        for(unsigned int i=0; i < lights.size(); i++)
-        {
-            lights[i]->x = Body::schema.x;
-            lights[i]->y = Body::schema.y;
-        }
-    }
-
-    // See if any missions are complete // TODO: distribute into a less updated manner
-    checkMissions();
 }
 
+
+void Character::chooseCombatAction(sf::Time &gameTime)
+{
+    // Pick a random tile within a radius and path to it
+    pathToPosition(Body::schema.x, Body::schema.y - level->tileHeight);
+    combatState = CombatState::PerformAction;
+    combatAction = CombatAction::Move;
+    schema.currentActionPoints--;
+}
+
+
+///////////////////////////////////////////////////////
+//              CHARACTER EFFECTS                    //
+///////////////////////////////////////////////////////
 
 void Character::kill()
 {
@@ -97,6 +210,11 @@ void Character::kill()
     }
 }
 
+
+
+///////////////////////////////////////////////////////
+//                  INVENTORY                        //
+///////////////////////////////////////////////////////
 
 bool Character::equipFromInventory(EquipmentSlot slot, unsigned int itemId)
 {
@@ -169,12 +287,13 @@ void Character::unequip(EquipmentSlot slot)
     }
 }
 
-void Character::setControllingPlayer(Player* player)
-{
-    schema.isPlayerCharacter = true;
-    schema.clientId = player->clientId;
-    schema.player = player;
-}
+
+
+
+
+///////////////////////////////////////////////////////
+//                   MOVEMENT                        //
+///////////////////////////////////////////////////////
 
 bool Character::moveUp()
 {
@@ -282,6 +401,13 @@ bool Character::isTileBlockedForPathfinding(Tile* tile)
     return false;
 }
 
+
+
+
+///////////////////////////////////////////////////////
+//                   MISSION                         //
+///////////////////////////////////////////////////////
+
 void Character::assignMission(Mission* mission)
 {
     missions.push_back(mission);
@@ -302,6 +428,22 @@ void Character::checkMissions()
     {
         missions[i]->attemptCompleteMission();
     }
+}
+
+
+
+
+
+///////////////////////////////////////////////////////
+//                  MANAGEMENT                       //
+///////////////////////////////////////////////////////
+
+
+void Character::setControllingPlayer(Player* player)
+{
+    schema.isPlayerCharacter = true;
+    schema.clientId = player->clientId;
+    schema.player = player;
 }
 
 void Character::getAvailableInteractions(std::vector<Interaction::Type> &fill)

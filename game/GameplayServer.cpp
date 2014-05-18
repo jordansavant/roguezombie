@@ -168,7 +168,12 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
                 player->level->handlePlayerCommand(packet, client, static_cast<Command::Type>(commandType));
 				break;
             case Command::Type::PlayerSwitchLevel:
-                player->level->hunters[0]->kill();
+                //player->level->hunters[0]->kill();
+                if(player->level->state == Level::State::Free)
+                    player->level->enterCombat();
+                else
+                    player->level->leaveCombat();
+
                 break;
 		}
 	}

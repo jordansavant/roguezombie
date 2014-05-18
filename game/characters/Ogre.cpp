@@ -17,9 +17,9 @@ void Ogre::load(Level* _level, unsigned int _id, float _x, float _y)
     Character::load(_level, _id, Character::Type::Ogre, _x, _y, _level->tileWidth * 2, _level->tileHeight * 2);
 }
 
-void Ogre::update(sf::Time &gameTime)
+void Ogre::updateAlive_Free(sf::Time &gameTime)
 {
-    Character::update(gameTime);
+    Character::updateAlive_Free(gameTime);
 
 	if(!schema.isPlayerCharacter)
 	{

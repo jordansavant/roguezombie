@@ -17,9 +17,9 @@ void Zombie::load(Level* _level, unsigned int _id, float _x, float _y)
     Character::load(_level, _id, Character::Type::Zombie, _x, _y, _level->tileWidth * 1, _level->tileHeight * 1);
 }
 
-void Zombie::update(sf::Time &gameTime)
+void Zombie::updateAlive_Free(sf::Time &gameTime)
 {
-    Character::update(gameTime);
+    Character::updateAlive_Free(gameTime);
 
 	if(!schema.isPlayerCharacter)
 	{

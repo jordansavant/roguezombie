@@ -1,0 +1,216 @@
+Turn Queue / Combat Mode
+
+- A level can be either in Free mode or in Combat mode
+- While in Free mode
+	- All npc's will roam freely, periodically running an AI routine
+	- The player will have the freedom to interact with the world at will
+- When Combat is initiated
+	- All NPC's in the level calculate an Initiative score
+	- The Initiative score determines their place in the Turn queue
+	- All NPC's are placed in the Turn Queue according to their initiative score
+	- All playing characters are placed in the Turn Queue as well
+	- The level enters Combat mode
+- While in Combat mode
+	- The turn queue is iterated, and the current iterated character runs a combat AI routine
+	- A combat action requires one Action Point, all characters have two action points
+	- When all action points have been extinguished the characters turn is over
+	- NPC's will perform actions and use Action Points using restricted AI
+	- Player Characters will perform actions and use Action Points using Client Commands
+- Combat Movement
+	- While in combat mode all movement is frozen until a characters turn
+	- During their turn they can only move within a certain radius of tiles given their Speed statistic
+	- If they utilize two action points they can double that distance performing two movement actions
+
+* Starting out we will restrict all game actions to a single action point
+	
+Action Point Chart
+Action			Points
+
+Move			1
+Fire Weapon		1
+Interact		1
+
+Design
+- It's important that the server thread is not blocked by the combat mode turns
+- So we will need to allow the combat choices for characters to run off of timers instead
+
+Level
+{
+	Mode { Free, Combat }
+	vector<Character> turnQueue
+	Character turnCharacter
+	
+	void enterCombat()
+	{
+		// Iterate across all characters in the level and put them in the turn queue
+	}
+	
+	void endTurn(Character)
+	{
+		// Move to the next character
+		Character c turnQueue.front();
+		turnQueue.pop_front();
+		turnQueue.push_back(c);
+	}
+	
+	void handlePlayerCommand(cmd)
+	{
+		if Mode == Combat
+		{
+			if(cmd is of type CombatAction && layerCharacter == turnCharacter)
+			{
+				playerCharacter->runPlayerCombatCommand(cmd);}
+			}
+		}
+		else if Mode == Free
+		{
+			//...
+		}
+	}
+	
+	void sendSnapshot()
+	{
+		// Pack Mode
+	}
+}
+
+Character
+{
+	int MaxActionPoints
+	int CurrentActionPoints
+	
+	AI { Free, Combat }
+	CombatAI { Waiting, DecideOnAction, PerformAction }
+	CombatAction { Move, Attack }
+	
+	moveTimer();
+	
+	runPlayerCombatCommand(cmd)
+	{
+		
+	}
+	
+	update()
+	{
+		if!(isDead())
+		{
+			updateAlive();
+		}
+		else
+		{
+			updateDead();
+		}
+	}
+
+	updateAlive()
+	{
+		switch(level->state)
+		{
+			case Free:
+				updateFreeMode();
+			case Combat
+				updateCombatMode();
+		}
+	}
+
+	updateCombatMode()
+	{
+		switch CombatAI
+		{
+			case Waiting:
+			
+			case DecideOnAction:
+				if(CurrentActionPoints > 0)
+				{
+					DecideCombatAction();
+				}
+				else
+				{
+					Level.endTurn(this)
+					CombatAI = Waiting;
+				}
+			
+			case PerformAction:
+				switch CombatAction
+				{
+					case Move:
+						if(!atDestination)
+						{
+							if(moveTimer())
+							{
+								// Move to next tile
+							}
+						}
+						else
+						{
+							CombatAI = DecideOnAction;
+						}
+					}
+					
+					case Attack:
+						// Attack enemy
+						CombatAI = DecideOnAction;
+					}
+				}
+		}
+	}
+
+	
+	DecideCombatAction()
+	{
+		// Some smartness to calculate closest enemy
+		// calculate chance of hit
+		// calculate movement to closest defense etc
+		// BASICALLY decide what you want to do and decrement the action counter
+		
+		MoveToPosition(fooPosition)
+		else
+		AttackEnemy(barCharacter)
+	}
+	
+	MoveToPosition(foo)
+	{
+		CombatMoveDestination = getShortestPath(foo)
+		if(CombatMoveDestination.size > 0)
+		{
+			CombatAction = Move				
+			CurrentActionPoints--;
+		}
+	}
+	
+	AttackEnemy(barCharacter)
+	{
+		
+	}
+	
+	sendSnapshot()
+	{
+		// Upgrade to support sending if we are the current character in the character queue
+		// This could be usefull for retargeting the camera etc
+	}
+}
+
+
+
+STATES
+
+Level
+	Free
+	Combat
+	
+Character
+	Alive
+		Free
+		Combat
+	Dead
+
+
+
+
+
+
+
+
+
+
+

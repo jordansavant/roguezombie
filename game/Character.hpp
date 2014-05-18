@@ -44,6 +44,21 @@ public:
         _count,
     };
 
+    enum CombatState
+    {
+        Waiting,
+        DecideAction,
+        PerformAction
+    };
+
+    enum CombatAction
+    {
+        Move,
+        Attack,
+    };
+
+    CombatState combatState;
+    CombatAction combatAction;
     std::vector<Tile*> path;
     bit::GameTimer moveTimer;
     std::vector<Light*> lights;
@@ -53,11 +68,13 @@ public:
 	struct Schema
 	{
         Schema()
-           : maxHealth(0), isPlayerCharacter(false), clientId(0), player(NULL), type(Type::None), health(0)
+           : maxActionPoints(2), currentActionPoints(2), maxHealth(0), isPlayerCharacter(false), clientId(0), player(NULL), type(Type::None), health(0)
         {
             equipmentIds.resize(EquipmentSlot::_count, 0);
         }
 
+        int maxActionPoints;
+        int currentActionPoints;
 		int maxHealth;
         bool isPlayerCharacter;
         unsigned int clientId;
@@ -68,6 +85,8 @@ public:
 
         friend sf::Packet& operator <<(sf::Packet& packet, const Schema &schema)
         {
+            packet << sf::Uint32(schema.maxActionPoints);
+            packet << sf::Uint32(schema.currentActionPoints);
             packet << sf::Uint32(schema.maxHealth);
             packet << schema.isPlayerCharacter;
             packet << sf::Uint32(schema.clientId);
@@ -81,6 +100,8 @@ public:
         }
         friend sf::Packet& operator >>(sf::Packet& packet, Schema &schema)
         {
+            packet >> schema.maxActionPoints;
+            packet >> schema.currentActionPoints;
             packet >> schema.maxHealth;
             packet >> schema.isPlayerCharacter;
             packet >> schema.clientId;
@@ -97,11 +118,29 @@ public:
 	};
 	Schema schema;
 
+    // Game Loop
+
     virtual void load(Level* level, unsigned int id, Type type, float x, float y, float width, float height);
 
     virtual void update(sf::Time &gameTime);
 
+    virtual void updateAlive(sf::Time &gameTime);
+
+    virtual void updateDead(sf::Time &gameTime);
+
+    virtual void updateAlive_Free(sf::Time &gameTime);
+
+    virtual void updateAlive_Combat(sf::Time &gameTime);
+
+    virtual void followPath(sf::Time &gameTime);
+
+    virtual void chooseCombatAction(sf::Time &gameTime);
+
+    // Character effects
+
     virtual void kill();
+
+    // Inventory
 
     virtual bool equipFromInventory(EquipmentSlot slot, unsigned int itemId);
     
@@ -109,7 +148,7 @@ public:
 
     virtual void unequip(EquipmentSlot slot);
 
-    virtual void setControllingPlayer(Player* player);
+    // Movement
 
     virtual bool moveUp();
 
@@ -125,7 +164,13 @@ public:
 
     virtual bool moveToPosition(float x, float y);
 
+    // Mission
+
     void assignMission(Mission* mission);
+
+    // Management
+
+    virtual void setControllingPlayer(Player* player);
 
     virtual void getAvailableInteractions(std::vector<Interaction::Type> &fill);
 
@@ -133,9 +178,13 @@ public:
 
 protected:
 
+    // Movement
+
     virtual bool isTileBlocked(Tile* tile);
 
     virtual bool isTileBlockedForPathfinding(Tile* tile);
+
+    // Mission
 
     void checkMissions();
 };

@@ -26,7 +26,7 @@
 #include <map>
 
 Level::Level()
-    : server(NULL), id(0), tileWidth(0), tileHeight(0), tileRows(0), tileColumns(0), tileCount(0)
+    : server(NULL), id(0), state(State::Free), tileWidth(0), tileHeight(0), tileRows(0), tileColumns(0), tileCount(0), characterInTurn(NULL)
 {
 }
 
@@ -46,6 +46,7 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
 {
     server = _server;
     id = _id;
+    state = State::Free;
 
     // Runners
     runners.push_back(new LevelRunner<Tile>(this, &tiles));
@@ -198,6 +199,36 @@ void Level::update(sf::Time &gameTime)
     }
 }
 
+
+void Level::enterCombat()
+{
+    state = State::Combat;
+
+    // Move every character into the turn queue
+    for(unsigned int i=0; i < zombies.size(); i++)
+        if(!zombies[i]->schema.isDead())
+            turnQueue.push_back(zombies[i]);
+    for(unsigned int i=0; i < ogres.size(); i++)
+        if(!ogres[i]->schema.isDead())
+            turnQueue.push_back(ogres[i]);
+    for(unsigned int i=0; i < hunters.size(); i++)
+        if(!hunters[i]->schema.isDead())
+            turnQueue.push_back(hunters[i]);
+}
+
+void Level::leaveCombat()
+{
+    state = State::Free;
+
+    turnQueue.clear();
+}
+
+void Level::endTurn(Character* character)
+{
+    Character* c = turnQueue.front();
+	turnQueue.pop_front();
+	turnQueue.push_back(c);
+}
 
 DialogNode* Level::getDialogTree()
 {
