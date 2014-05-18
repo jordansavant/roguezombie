@@ -8,6 +8,7 @@
 #include "../bitengine/Graphics.hpp"
 #include "../bitengine/Structures.hpp"
 #include "StateGamePlay.hpp"
+#include "Level.hpp"
 #include <map>
 
 class BaseLevelClientRunner;
@@ -30,6 +31,7 @@ public:
 
     StateGamePlay* state;
     unsigned int levelId;
+    Level::State levelState;
     std::vector<BaseLevelClientRunner*> runners;
     std::map<unsigned int, ZombieClient*> zombies;
     std::map<unsigned int, OgreClient*> ogres;

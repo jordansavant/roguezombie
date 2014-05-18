@@ -574,6 +574,9 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
 {
     Player* p = players[client.id];
 
+    // Current level state
+    packet << sf::Uint32(state);
+
     // Get a subset of visible tiles for the player within a radius of tiles
     std::vector<Tile*> visibles;
     Level* w = this;

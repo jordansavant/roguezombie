@@ -18,7 +18,7 @@
 #include <map>
 
 LevelClient::LevelClient()
-    : state(NULL), tilePool(), zombiePool(), ogrePool(), hunterPool(), doorPool(), chestPool(), hoveredTile(NULL), playerCharacter(NULL)
+    : state(NULL), levelState(Level::State::Free), tilePool(), zombiePool(), ogrePool(), hunterPool(), doorPool(), chestPool(), hoveredTile(NULL), playerCharacter(NULL)
 {
 }
 
@@ -92,6 +92,18 @@ void LevelClient::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
+    // Game state
+    Level::State lstate;
+    bit::NetworkHelper::unpackEnum<sf::Uint32, Level::State>(packet, lstate);
+    if(lstate != levelState)
+    {
+        if(lstate == Level::State::Free)
+            state->displayMessage(std::string("Free mode resumed"));
+        else
+            state->displayMessage(std::string("Combat mode engaged"));
+    }
+    levelState = lstate;
+
     // Update / Create all entities
     unsigned int tileCount;
     packet >> tileCount;
