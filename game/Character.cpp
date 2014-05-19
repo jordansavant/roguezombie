@@ -15,7 +15,7 @@
 #include "items/Item.hpp"
 
 Character::Character()
-    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), actionDelayTimer(1), combatDecisionAi(NULL), moveTimer(.67f), equipment(), schema()
+    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), actionDelayTimer(1), combatDecisionAi(NULL), isHostileCombatEngaged(false), moveTimer(.67f), equipment(), schema()
 {
     equipment.resize(EquipmentSlot::_count, NULL);
 }

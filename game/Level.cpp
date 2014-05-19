@@ -199,6 +199,26 @@ void Level::update(sf::Time &gameTime)
     {
         runners[i]->update(gameTime);
     }
+    
+    switch(state)
+    {
+        //  If we are in combat mode check that we leave it
+        case State::Combat:
+            bool endCombat = true;
+            for(unsigned int i=0; i < turnQueue.size(); i++)
+            {
+                Character* c = turnQueue[i];
+                if(c->isHostileCombatEngaged)
+                {
+                    endCombat = false;
+                }
+            }
+            if(endCombat)
+            {
+                leaveCombat();
+            }
+            break;
+    }
 }
 
 void Level::enterCombat()

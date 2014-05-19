@@ -170,9 +170,14 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
             case Command::Type::PlayerSwitchLevel:
                 //player->level->hunters[0]->kill();
                 if(player->level->state == Level::State::Free)
+                {
+                    player->character->isHostileCombatEngaged = true;
                     player->level->enterCombat();
+                }
                 else
-                    player->level->leaveCombat();
+                {
+                    player->character->isHostileCombatEngaged = false;
+                }
 
                 break;
 		}

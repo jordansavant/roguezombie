@@ -62,6 +62,7 @@ public:
     CombatAction combatAction;
     bit::GameTimer actionDelayTimer;
     std::function<void(Character*)> combatDecisionAi;
+    bool isHostileCombatEngaged;
     std::vector<Tile*> path;
     bit::GameTimer moveTimer;
     std::vector<Light*> lights;
