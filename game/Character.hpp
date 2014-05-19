@@ -48,7 +48,8 @@ public:
     {
         Waiting,
         DecideAction,
-        PerformAction
+        PerformAction,
+        Delay,
     };
 
     enum CombatAction
@@ -59,6 +60,7 @@ public:
 
     CombatState combatState;
     CombatAction combatAction;
+    bit::GameTimer actionDelayTimer;
     std::vector<Tile*> path;
     bit::GameTimer moveTimer;
     std::vector<Light*> lights;
@@ -132,11 +134,19 @@ public:
 
     virtual void updateAlive_Combat(sf::Time &gameTime);
 
+    virtual void combat_DecideAction(sf::Time &gameTime);
+
+    virtual void combat_DecideAction_MoveToLocation(int x, int y);
+
+    virtual void combat_PerformAction_MoveToLocation(sf::Time &gameTime);
+
+    virtual void combat_DecideAction_AttackCharacter(Character* character);
+
+    virtual void combat_PerformAction_AttackCharacter(sf::Time &gameTime);
+
+    // Character actions
+
     virtual void followPath(sf::Time &gameTime);
-
-    virtual void chooseCombatAction(sf::Time &gameTime);
-
-    // Character effects
 
     virtual void kill();
 

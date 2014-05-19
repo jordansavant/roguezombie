@@ -15,7 +15,7 @@
 #include "items/Item.hpp"
 
 Character::Character()
-    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), moveTimer(.67f), equipment(), schema()
+    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), actionDelayTimer(1), moveTimer(.67f), equipment(), schema()
 {
     equipment.resize(EquipmentSlot::_count, NULL);
 }
@@ -121,7 +121,7 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
             if(schema.currentActionPoints > 0)
 			{
                 // Make a decision in combat
-				chooseCombatAction(gameTime);
+                combat_DecideAction(gameTime);
 			}
 			else
 			{
@@ -137,21 +137,26 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
             {
                 case CombatAction::Move:
 
-                    // If I am moving for my combat action, follow the path as long as it exists
-                    if(path.size() > 0)
-                    {
-                        followPath(gameTime);
-                    }
-                    else
-                    {
-                        // If I have reached my destination head back to make my next decision
-                        combatState = CombatState::DecideAction;
-                    }
+                    combat_PerformAction_MoveToLocation(gameTime);
 
                     break;
 
                 case CombatAction::Attack:
+
+                    combat_PerformAction_AttackCharacter(gameTime);
+
                     break;
+            }
+
+            break;
+
+        case CombatState::Delay:
+
+            // Allows us to wait before next action point usage for delay between actions
+            // Helps the simulation feel natural
+            if(actionDelayTimer.update(gameTime))
+            {
+                combatState = CombatState::DecideAction;
             }
 
             break;
@@ -160,7 +165,51 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
 
 void Character::updateDead(sf::Time &gameTime)
 {
+    // Nil
 }
+
+void Character::combat_DecideAction(sf::Time &gameTime)
+{
+    combat_DecideAction_MoveToLocation(Body::schema.x, Body::schema.y - level->tileHeight);
+}
+
+void Character::combat_DecideAction_MoveToLocation(int x, int y)
+{
+    // Pick a random tile within a radius and path to it
+    pathToPosition(Body::schema.x, Body::schema.y - level->tileHeight * 2);
+    combatState = CombatState::PerformAction;
+    combatAction = CombatAction::Move;
+    schema.currentActionPoints--;
+}
+
+void Character::combat_PerformAction_MoveToLocation(sf::Time &gameTime)
+{
+    // If I am moving for my combat action, follow the path as long as it exists
+    if(path.size() > 0)
+    {
+        followPath(gameTime);
+    }
+    else
+    {
+        // If I have reached my destination head back to make my next decision
+        combatState = CombatState::Delay;
+    }
+}
+
+void Character::combat_DecideAction_AttackCharacter(Character* character)
+{
+    // TODO: do this
+}
+
+void Character::combat_PerformAction_AttackCharacter(sf::Time &gameTime)
+{
+    // TODO: do this
+    combatState = CombatState::Delay;
+}
+
+///////////////////////////////////////////////////////
+//              CHARACTER EFFECTS                    //
+///////////////////////////////////////////////////////
 
 void Character::followPath(sf::Time &gameTime)
 {
@@ -182,19 +231,6 @@ void Character::followPath(sf::Time &gameTime)
         }
     }
 }
-
-void Character::chooseCombatAction(sf::Time &gameTime)
-{
-    // Pick a random tile within a radius and path to it
-    pathToPosition(Body::schema.x, Body::schema.y - level->tileHeight);
-    combatState = CombatState::PerformAction;
-    combatAction = CombatAction::Move;
-    schema.currentActionPoints--;
-}
-
-///////////////////////////////////////////////////////
-//              CHARACTER EFFECTS                    //
-///////////////////////////////////////////////////////
 
 void Character::kill()
 {
