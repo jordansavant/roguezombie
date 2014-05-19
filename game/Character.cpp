@@ -15,7 +15,7 @@
 #include "items/Item.hpp"
 
 Character::Character()
-    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), actionDelayTimer(1), moveTimer(.67f), equipment(), schema()
+    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), actionDelayTimer(1), combatDecisionAi(NULL), moveTimer(.67f), equipment(), schema()
 {
     equipment.resize(EquipmentSlot::_count, NULL);
 }
@@ -170,7 +170,16 @@ void Character::updateDead(sf::Time &gameTime)
 
 void Character::combat_DecideAction(sf::Time &gameTime)
 {
-    combat_DecideAction_MoveToLocation(Body::schema.x, Body::schema.y - level->tileHeight);
+    if(combatDecisionAi)
+    {
+        combatDecisionAi(this);
+    }
+    else
+    {
+        // TODO: Remove? Clean? Be sane?
+        level->endTurn(this);
+        combatState = CombatState::Waiting;
+    }
 }
 
 void Character::combat_DecideAction_MoveToLocation(int x, int y)

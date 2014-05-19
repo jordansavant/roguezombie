@@ -14,6 +14,7 @@
 #include "dialog/DialogEntry.hpp"
 #include "dialog/DialogNode.hpp"
 #include "GameplayServer.hpp"
+#include "AiRoutines.hpp"
 #include "SFML/Network.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Math.hpp"
@@ -111,6 +112,7 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
                     Zombie* zombie = new Zombie();
                     zombie->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
                     zombies.push_back(zombie);
+                    zombie->combatDecisionAi = AiRoutines::Combat::DecideZombie;
                     break;
                 }
                 case Interior::Spawn::Ogre:

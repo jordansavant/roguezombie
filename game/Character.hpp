@@ -61,6 +61,7 @@ public:
     CombatState combatState;
     CombatAction combatAction;
     bit::GameTimer actionDelayTimer;
+    std::function<void(Character*)> combatDecisionAi;
     std::vector<Tile*> path;
     bit::GameTimer moveTimer;
     std::vector<Light*> lights;
@@ -120,6 +121,7 @@ public:
 	};
 	Schema schema;
 
+
     // Game Loop
 
     virtual void load(Level* level, unsigned int id, Type type, float x, float y, float width, float height);
@@ -144,11 +146,13 @@ public:
 
     virtual void combat_PerformAction_AttackCharacter(sf::Time &gameTime);
 
+
     // Character actions
 
     virtual void followPath(sf::Time &gameTime);
 
     virtual void kill();
+
 
     // Inventory
 
@@ -157,6 +161,7 @@ public:
     virtual bool equip(EquipmentSlot slot, Item* item);
 
     virtual void unequip(EquipmentSlot slot);
+
 
     // Movement
 
@@ -174,9 +179,11 @@ public:
 
     virtual bool moveToPosition(float x, float y);
 
+
     // Mission
 
     void assignMission(Mission* mission);
+
 
     // Management
 
@@ -193,6 +200,7 @@ protected:
     virtual bool isTileBlocked(Tile* tile);
 
     virtual bool isTileBlockedForPathfinding(Tile* tile);
+
 
     // Mission
 
