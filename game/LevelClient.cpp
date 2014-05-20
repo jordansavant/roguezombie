@@ -43,11 +43,11 @@ void LevelClient::load(StateGamePlay* _state)
 
     // Load game runners
     runners.push_back(new LevelClientRunner<TileClient>(this, &tiles, &tilePool, 2000));
-    runners.push_back(new LevelClientRunner<ZombieClient>(this, &zombies, &zombiePool, 10));
-    runners.push_back(new LevelClientRunner<OgreClient>(this, &ogres, &ogrePool, 10));
-    runners.push_back(new LevelClientRunner<HunterClient>(this, &hunters, &hunterPool, 10));
-    runners.push_back(new LevelClientRunner<WallClient>(this, &walls, &wallPool, 500));
-    runners.push_back(new LevelClientRunner<DoorClient>(this, &doors, &doorPool, 20));
+    runners.push_back(new LevelClientRunner<ZombieClient>(this, &zombies, &zombiePool, 1000));
+    runners.push_back(new LevelClientRunner<OgreClient>(this, &ogres, &ogrePool, 1000));
+    runners.push_back(new LevelClientRunner<HunterClient>(this, &hunters, &hunterPool, 1000));
+    runners.push_back(new LevelClientRunner<WallClient>(this, &walls, &wallPool, 200));
+    runners.push_back(new LevelClientRunner<DoorClient>(this, &doors, &doorPool, 10));
     runners.push_back(new LevelClientRunner<ChestClient>(this, &chests, &chestPool, 10));
 
     // Fill pools

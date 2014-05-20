@@ -53,7 +53,7 @@ public:
     {
         LevelClient* w = level;
         pool->factoryMethod = [w] () -> T* {
-        T* t = new T();
+            T* t = new T();
             t->clientLoad(w);
             return t;
         };

@@ -27,14 +27,13 @@ public:
     struct EquipmentProfile
     {
         EquipmentProfile()
-            : type(Item::Type::None), sprite(NULL), quadIndex(0), quad(NULL)
+            : type(Item::Type::None), sprite(NULL), quadIndex(0)
         {
         }
 
         Item::Type type;
         bit::Sprite* sprite;
         unsigned int quadIndex;
-        bit::Vertex3* quad;
     };
 
     // Equipment spriting
@@ -47,27 +46,22 @@ public:
 
     bit::Sprite* headSprite;
     unsigned int headQuadIndex;
-    bit::Vertex3* headQuad;
     void setHeadSprite(std::string& spriteName);
 
     bit::Sprite* frontarmSprite;
     unsigned int frontarmQuadIndex;
-    bit::Vertex3* frontarmQuad;
     void setFrontarmSprite(std::string& spriteName);
 
     bit::Sprite* bodySprite;
     unsigned int bodyQuadIndex;
-    bit::Vertex3* bodyQuad;
     void setBodySprite(std::string& spriteName);
 
     bit::Sprite* shadowSprite;
     unsigned int shadowQuadIndex;
-    bit::Vertex3* shadowQuad;
     void setShadowSprite(std::string& spriteName);
     
     bit::Sprite* deathSprite;
     unsigned int deathQuadIndex;
-    bit::Vertex3* deathQuad;
     void setDeathSprite(std::string& spriteName);
 
     void load(CharacterClient* character, bit::SpriteLoader* spriteLoader, bit::VertexMap &vertexMap);

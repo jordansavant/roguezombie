@@ -22,14 +22,13 @@
 #include <sstream>
 
 StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, bool isClient, bool isHost)
-    : bit::ClientServerState(stack, _game, isClient, isHost), rogueZombieGame(_game), mode(Mode::Free), fps()
+    : bit::ClientServerState(stack, _game, isClient, isHost), rogueZombieGame(_game), levelClient(NULL), mode(Mode::Free), fps()
 {
     std::string fpsFontPath(resourcePath() + "Agency.ttf");
     fps.load(fpsFontPath, 10, 10);
     fps.fpsText.setColor(sf::Color(50, 50, 50));
     createCamera(rogueZombieGame, 0, 0, 1, 1);
     cameras[0]->panSpeed = 3;
-    levelClient = new LevelClient();
 
     hud = new Hud(this);
 
@@ -72,8 +71,6 @@ StateGamePlay::~StateGamePlay()
 void StateGamePlay::load()
 {
     bit::ClientServerState::load();
-
-    levelClient->load(this);
 }
 
 void StateGamePlay::changeMode(Mode _mode)
@@ -368,6 +365,9 @@ bool StateGamePlay::handleInput(sf::Time &gameTime)
 {
     State::handleInput(gameTime);
 
+    if(levelClient == NULL)
+        return true;
+
     if(rogueZombieGame->isInFocus)
     {
         levelClient->captureInput(gameTime);
@@ -382,6 +382,9 @@ bool StateGamePlay::handleInput(sf::Time &gameTime)
 bool StateGamePlay::update(sf::Time &gameTime)
 {
     bit::ClientServerState::update(gameTime);
+
+    if(levelClient == NULL)
+        return true;
 
     fps.update(gameTime);
 
@@ -409,6 +412,9 @@ bool StateGamePlay::update(sf::Time &gameTime)
 void StateGamePlay::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::ClientServerState::draw(window, gameTime);
+    
+    if(levelClient == NULL)
+        return;
 
     hud->draw(window, gameTime);
 
@@ -417,6 +423,9 @@ void StateGamePlay::draw(sf::RenderWindow &window, sf::Time &gameTime)
 
 void StateGamePlay::drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera)
 {
+    if(levelClient == NULL)
+        return;
+
     window.draw(*levelClient);
 }
 
@@ -541,6 +550,7 @@ void StateGamePlay::handlePacket_InitializeWorld(bit::ServerPacket &packet)
 
     sf::Uint32 levelId;
     packet >> levelId;
+    levelClient = new LevelClient();
     levelClient->levelId = levelId;
     levelClient->load(this);
     levelClient->handleSnapshot(packet, true);
@@ -586,6 +596,9 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
     unsigned int eventTypeInt;
     packet >> eventTypeInt;
     ServerEvent eventType = static_cast<ServerEvent>(eventTypeInt);
+
+    if(levelClient == NULL)
+        return;
 
     if(levelClient->playerCharacter)
     {

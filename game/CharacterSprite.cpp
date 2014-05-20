@@ -21,25 +21,16 @@ void CharacterSprite::load(CharacterClient* _character, bit::SpriteLoader* _spri
     // Allocate quads in reverse order for back to front rendered graphics
     // this allows us to use the same Z and properly sort the character vertices
     deathQuadIndex = vertexMap->requestVertexIndex();
-    deathQuad = &vertexMap->vertexArray[deathQuadIndex];
-
     shadowQuadIndex = vertexMap->requestVertexIndex();
-    shadowQuad = &vertexMap->vertexArray[shadowQuadIndex];
-    
     bodyQuadIndex = vertexMap->requestVertexIndex();
-    bodyQuad = &vertexMap->vertexArray[bodyQuadIndex];
-    
     headQuadIndex = vertexMap->requestVertexIndex();
-    headQuad = &vertexMap->vertexArray[headQuadIndex];
     
     for(unsigned int i=0; i < equipmentProfiles.size(); i++)
     {
         equipmentProfiles[i].quadIndex = vertexMap->requestVertexIndex();
-        equipmentProfiles[i].quad = &vertexMap->vertexArray[equipmentProfiles[i].quadIndex];
     }
     
     frontarmQuadIndex = vertexMap->requestVertexIndex();
-    frontarmQuad = &vertexMap->vertexArray[frontarmQuadIndex];
 }
 
 void CharacterSprite::update(sf::Time &gameTime)
@@ -79,72 +70,72 @@ void CharacterSprite::update(sf::Time &gameTime)
     if(!character->schema.isDead())
     {
         // BODY SPRITES
-        bit::VertexHelper::positionQuad(headQuad, r.x, r.y, z, spriteWidth, spriteHeight);
-        bit::VertexHelper::colorQuad(headQuad, color);
-        headSprite->applyToQuad(headQuad);
-        bit::VertexHelper::flipQuad(headQuad, !facingRight, false);
+        bit::VertexHelper::positionQuad(&vertexMap->vertexArray[headQuadIndex], r.x, r.y, z, spriteWidth, spriteHeight);
+        bit::VertexHelper::colorQuad(&vertexMap->vertexArray[headQuadIndex], color);
+        headSprite->applyToQuad(&vertexMap->vertexArray[headQuadIndex]);
+        bit::VertexHelper::flipQuad(&vertexMap->vertexArray[headQuadIndex], !facingRight, false);
 
-        bit::VertexHelper::positionQuad(frontarmQuad, r.x, r.y, z, spriteWidth, spriteHeight);
-        bit::VertexHelper::colorQuad(frontarmQuad, color);
-        frontarmSprite->applyToQuad(frontarmQuad);
-        bit::VertexHelper::flipQuad(frontarmQuad, !facingRight, false);
+        bit::VertexHelper::positionQuad(&vertexMap->vertexArray[frontarmQuadIndex], r.x, r.y, z, spriteWidth, spriteHeight);
+        bit::VertexHelper::colorQuad(&vertexMap->vertexArray[frontarmQuadIndex], color);
+        frontarmSprite->applyToQuad(&vertexMap->vertexArray[frontarmQuadIndex]);
+        bit::VertexHelper::flipQuad(&vertexMap->vertexArray[frontarmQuadIndex], !facingRight, false);
 
-        bit::VertexHelper::positionQuad(bodyQuad, r.x, r.y, z, spriteWidth, spriteHeight);
-        bit::VertexHelper::colorQuad(bodyQuad, color);
-        bodySprite->applyToQuad(bodyQuad);
-        bit::VertexHelper::flipQuad(bodyQuad, !facingRight, false);
+        bit::VertexHelper::positionQuad(&vertexMap->vertexArray[bodyQuadIndex], r.x, r.y, z, spriteWidth, spriteHeight);
+        bit::VertexHelper::colorQuad(&vertexMap->vertexArray[bodyQuadIndex], color);
+        bodySprite->applyToQuad(&vertexMap->vertexArray[bodyQuadIndex]);
+        bit::VertexHelper::flipQuad(&vertexMap->vertexArray[bodyQuadIndex], !facingRight, false);
 
-        bit::VertexHelper::positionQuad(shadowQuad, r.x, r.y, z, spriteWidth, spriteHeight);
-        bit::VertexHelper::colorQuad(shadowQuad, color);
-        shadowSprite->applyToQuad(shadowQuad);
-        bit::VertexHelper::flipQuad(shadowQuad, !facingRight, false);
+        bit::VertexHelper::positionQuad(&vertexMap->vertexArray[shadowQuadIndex], r.x, r.y, z, spriteWidth, spriteHeight);
+        bit::VertexHelper::colorQuad(&vertexMap->vertexArray[shadowQuadIndex], color);
+        shadowSprite->applyToQuad(&vertexMap->vertexArray[shadowQuadIndex]);
+        bit::VertexHelper::flipQuad(&vertexMap->vertexArray[shadowQuadIndex], !facingRight, false);
 
         // EQUIPMENT SPRITES
         for(unsigned int i=0; i < equipmentProfiles.size(); i++)
         {
             if(equipmentProfiles[i].sprite)
             {
-                bit::VertexHelper::positionQuad(equipmentProfiles[i].quad, r.x, r.y, z, spriteWidth, spriteHeight);
-                bit::VertexHelper::colorQuad(equipmentProfiles[i].quad, color);
-                equipmentProfiles[i].sprite->applyToQuad(equipmentProfiles[i].quad);
-                bit::VertexHelper::flipQuad(equipmentProfiles[i].quad, !facingRight, false);
+                bit::VertexHelper::positionQuad(&vertexMap->vertexArray[equipmentProfiles[i].quadIndex], r.x, r.y, z, spriteWidth, spriteHeight);
+                bit::VertexHelper::colorQuad(&vertexMap->vertexArray[equipmentProfiles[i].quadIndex], color);
+                equipmentProfiles[i].sprite->applyToQuad(&vertexMap->vertexArray[equipmentProfiles[i].quadIndex]);
+                bit::VertexHelper::flipQuad(&vertexMap->vertexArray[equipmentProfiles[i].quadIndex], !facingRight, false);
             }
         }
 
-        bit::VertexHelper::resetQuad(deathQuad);
+        bit::VertexHelper::resetQuad(&vertexMap->vertexArray[deathQuadIndex]);
     }
     else
     {
-        bit::VertexHelper::resetQuad(headQuad);
-        bit::VertexHelper::resetQuad(frontarmQuad);
-        bit::VertexHelper::resetQuad(bodyQuad);
-        bit::VertexHelper::resetQuad(shadowQuad);
+        bit::VertexHelper::resetQuad(&vertexMap->vertexArray[headQuadIndex]);
+        bit::VertexHelper::resetQuad(&vertexMap->vertexArray[frontarmQuadIndex]);
+        bit::VertexHelper::resetQuad(&vertexMap->vertexArray[bodyQuadIndex]);
+        bit::VertexHelper::resetQuad(&vertexMap->vertexArray[shadowQuadIndex]);
         for(unsigned int i=0; i < equipmentProfiles.size(); i++)
         {
             if(equipmentProfiles[i].sprite)
             {
-                bit::VertexHelper::resetQuad(equipmentProfiles[i].quad);
+                bit::VertexHelper::resetQuad(&vertexMap->vertexArray[equipmentProfiles[i].quadIndex]);
             }
         }
 
-        bit::VertexHelper::positionQuad(deathQuad, r.x, r.y, z, spriteWidth, spriteHeight);
-        bit::VertexHelper::colorQuad(deathQuad, color);
-        deathSprite->applyToQuad(deathQuad);
+        bit::VertexHelper::positionQuad(&vertexMap->vertexArray[deathQuadIndex], r.x, r.y, z, spriteWidth, spriteHeight);
+        bit::VertexHelper::colorQuad(&vertexMap->vertexArray[deathQuadIndex], color);
+        deathSprite->applyToQuad(&vertexMap->vertexArray[deathQuadIndex]);
     }
 }
 
 void CharacterSprite::reset()
 {
     renderX = renderY = 0;
-    bit::VertexHelper::resetQuad(headQuad);
-    bit::VertexHelper::resetQuad(frontarmQuad);
-    bit::VertexHelper::resetQuad(bodyQuad);
-    bit::VertexHelper::resetQuad(shadowQuad);
-    bit::VertexHelper::resetQuad(deathQuad);
+    bit::VertexHelper::resetQuad(&vertexMap->vertexArray[headQuadIndex]);
+    bit::VertexHelper::resetQuad(&vertexMap->vertexArray[frontarmQuadIndex]);
+    bit::VertexHelper::resetQuad(&vertexMap->vertexArray[bodyQuadIndex]);
+    bit::VertexHelper::resetQuad(&vertexMap->vertexArray[shadowQuadIndex]);
+    bit::VertexHelper::resetQuad(&vertexMap->vertexArray[deathQuadIndex]);
 
     for(unsigned int i=0; i < equipmentProfiles.size(); i++)
     {
-        bit::VertexHelper::resetQuad(equipmentProfiles[i].quad);
+        bit::VertexHelper::resetQuad(&vertexMap->vertexArray[equipmentProfiles[i].quadIndex]);
     }
 }
 
@@ -177,14 +168,14 @@ void CharacterSprite::setEquipmentSprite(Character::EquipmentSlot slot, Item::Ty
 {
     equipmentProfiles[slot].type = type;
     equipmentProfiles[slot].sprite = spriteLoader->getSprite(Item::getSpriteName(type));
-    equipmentProfiles[slot].sprite->applyToQuad(equipmentProfiles[slot].quad);
+    equipmentProfiles[slot].sprite->applyToQuad(&vertexMap->vertexArray[equipmentProfiles[slot].quadIndex]);
 }
 void CharacterSprite::unsetEquipmentSprite(Character::EquipmentSlot slot)
 {
     equipmentProfiles[slot].type = Item::Type::None;
     if(equipmentProfiles[slot].sprite)
     {
-        bit::VertexHelper::resetQuad(equipmentProfiles[slot].quad);
+        bit::VertexHelper::resetQuad(&vertexMap->vertexArray[equipmentProfiles[slot].quadIndex]);
         equipmentProfiles[slot].sprite = NULL;
     }
 }
@@ -205,29 +196,29 @@ void CharacterSprite::setBodySprites(std::string& head, std::string& frontarm, s
 void CharacterSprite::setHeadSprite(std::string& spriteName)
 {
     headSprite = spriteLoader->getSprite(spriteName);
-    headSprite->applyToQuad(headQuad);
+    headSprite->applyToQuad(&vertexMap->vertexArray[headQuadIndex]);
 }
 
 void CharacterSprite::setFrontarmSprite(std::string& spriteName)
 {
     frontarmSprite = spriteLoader->getSprite(spriteName);
-    frontarmSprite->applyToQuad(frontarmQuad);
+    frontarmSprite->applyToQuad(&vertexMap->vertexArray[frontarmQuadIndex]);
 }
 
 void CharacterSprite::setBodySprite(std::string& spriteName)
 {
     bodySprite = spriteLoader->getSprite(spriteName);
-    bodySprite->applyToQuad(bodyQuad);
+    bodySprite->applyToQuad(&vertexMap->vertexArray[bodyQuadIndex]);
 }
 
 void CharacterSprite::setShadowSprite(std::string& spriteName)
 {
     shadowSprite = spriteLoader->getSprite(spriteName);
-    shadowSprite->applyToQuad(shadowQuad);
+    shadowSprite->applyToQuad(&vertexMap->vertexArray[shadowQuadIndex]);
 }
 
 void CharacterSprite::setDeathSprite(std::string& spriteName)
 {
     deathSprite = spriteLoader->getSprite(spriteName);
-    deathSprite->applyToQuad(deathQuad);
+    deathSprite->applyToQuad(&vertexMap->vertexArray[deathQuadIndex]);
 }
