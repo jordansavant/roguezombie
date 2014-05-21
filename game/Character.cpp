@@ -287,13 +287,44 @@ void Character::inspectVisibleTiles(std::function<void(Tile* t)> inspector)
                 inspector(tile);
             }
         },
-        [character] (int x, int y) -> bool {
-            Tile* t = character->level->getTileAtPosition(x * character->level->tileWidth, y * character->level->tileHeight);
-            return (t && t->body && t->body->blockFoV);
-        }
+        std::bind(&Character::inspectTileVisuallyBlocked, this, std::placeholders::_1, std::placeholders::_2)
     );
 }
 
+void Character::inspectVisibleCharacters(std::function<void(Character* character)> inspector)
+{
+    Character* character = this;
+    bit::Shadowcaster::computeFoV(Body::schema.x / level->tileWidth, Body::schema.y / level->tileHeight, level->tileColumns, level->tileRows, visionRadius,
+        [character, inspector] (int x, int y, float distance) {
+            Tile* tile = character->level->getTileAtIndices(x, y);
+            if(tile && tile->metadata_shadowcastId != bit::Shadowcaster::shadowcastId)
+            {
+                tile->metadata_shadowcastId = bit::Shadowcaster::shadowcastId;
+                Body* body = tile->body;
+                if(body && body->schema.type == Body::Type::Character)
+                {
+                    Character* occupant = static_cast<Character*>(body);
+                    if(occupant != character)
+                    {
+                        inspector(occupant);
+                    }
+                }
+            }
+        },
+        std::bind(&Character::inspectTileVisuallyBlocked, this, std::placeholders::_1, std::placeholders::_2)
+    );
+}
+
+bool Character::inspectTileVisuallyBlocked(int x, int y)
+{
+    Tile* t = level->getTileAtPosition(x * level->tileWidth, y * level->tileHeight);
+    return isTileVisuallyBlocked(t);
+}
+
+bool Character::isTileVisuallyBlocked(Tile* t)
+{
+    return (t && t->body && t->body->blockFoV);
+}
 
 ///////////////////////////////////////////////////////
 //                  INVENTORY                        //

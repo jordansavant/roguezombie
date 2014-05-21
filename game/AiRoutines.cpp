@@ -7,22 +7,12 @@
 void AiRoutines::Combat::DecideZombie(Character* character)
 {
     bool complete = false;
-    character->inspectVisibleTiles([character, &complete] (Tile* tile) {
-
+    character->inspectVisibleCharacters([character, &complete] (Character* occupant) {
         if(complete)
             return;
-
-        Body* body = tile->body;
-        if(body && body->schema.type == Body::Type::Character)
-        {
-            Character* occupant = static_cast<Character*>(body);
-            if(occupant != character)
-            {
-                // If the tile has a character that is not my own, choose them as my enemy and attack
-                character->combat_DecideAction_AttackCharacter(occupant);
-                complete = true;
-            }
-        }
+        // If the tile has a character that is not my own, choose them as my enemy and attack
+        character->combat_DecideAction_AttackCharacter(occupant);
+        complete = true;
     });
 
     // Lets decide we want to move 2 tiles north

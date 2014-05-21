@@ -165,6 +165,11 @@ public:
 
     void inspectVisibleTiles(std::function<void(Tile* t)> inspector);
 
+    void inspectVisibleCharacters(std::function<void(Character* c)> inspector);
+
+    bool inspectTileVisuallyBlocked(int x, int y);
+
+    bool isTileVisuallyBlocked(Tile* t);
 
     // Inventory
 
