@@ -291,11 +291,11 @@ void Character::inspectVisibleTiles(std::function<void(Tile* t)> inspector)
     );
 }
 
-void Character::inspectVisibleCharacters(std::function<void(Character* character)> inspector)
+void Character::inspectVisibleCharacters(std::function<void(Character* character)> inspector, bool onlyLiving)
 {
     Character* character = this;
     bit::Shadowcaster::computeFoV(Body::schema.x / level->tileWidth, Body::schema.y / level->tileHeight, level->tileColumns, level->tileRows, visionRadius,
-        [character, inspector] (int x, int y, float distance) {
+        [character, inspector, onlyLiving] (int x, int y, float distance) {
             Tile* tile = character->level->getTileAtIndices(x, y);
             if(tile && tile->metadata_shadowcastId != bit::Shadowcaster::shadowcastId)
             {
@@ -306,7 +306,10 @@ void Character::inspectVisibleCharacters(std::function<void(Character* character
                     Character* occupant = static_cast<Character*>(body);
                     if(occupant != character)
                     {
-                        inspector(occupant);
+                        if(!onlyLiving || (onlyLiving && !occupant->schema.isDead()))
+                        {
+                            inspector(occupant);
+                        }
                     }
                 }
             }
