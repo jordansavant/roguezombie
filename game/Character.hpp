@@ -64,10 +64,12 @@ public:
     std::function<void(Character*)> combatDecisionAi;
     bool isHostileCombatEngaged;
     std::vector<Tile*> path;
+    Character* targetEnemy;
     bit::GameTimer moveTimer;
     std::vector<Light*> lights;
     std::vector<Mission*> missions;
     std::vector<Item*> equipment;
+    unsigned int visionRadius;
 
 	struct Schema
 	{
@@ -153,6 +155,15 @@ public:
     virtual void followPath(sf::Time &gameTime);
 
     virtual void kill();
+
+    virtual void rangedAttack(Character* character);
+
+    virtual void harm(int damage);
+
+
+    // Inspection
+
+    void inspectVisibleTiles(std::function<void(Tile* t)> inspector);
 
 
     // Inventory

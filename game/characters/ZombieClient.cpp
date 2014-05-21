@@ -22,6 +22,7 @@ void ZombieClient::clientLoad(LevelClient* _level)
 
     sprite.load(this, level->state->rogueZombieGame->spriteLoader, level->vertexMap_01);
     sprite.setBodySprites(std::string("Zombie_Head"), std::string("Zombie_FrontArm"), std::string("Zombie_Body"), std::string("Zombie_Shadow"));
+    sprite.setDeathSprite(std::string("Zombie_Dead"));
 }
 
 void ZombieClient::clientUpdate(sf::Time &gameTime)

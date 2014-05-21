@@ -602,23 +602,9 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
 
     // Get a subset of visible tiles for the player within a radius of tiles
     std::vector<Tile*> visibles;
-    Level* w = this;
-    bit::Shadowcaster::computeFoV(p->character->Body::schema.x / tileWidth, p->character->Body::schema.y / tileHeight, tileColumns, tileRows, 30,
-        [&visibles, w] (int x, int y, float radius)
-        {
-            Tile* t = w->getTileAtIndices(x, y);
-            if(t->metadata_shadowcastId != bit::Shadowcaster::shadowcastId)
-            {
-                t->metadata_shadowcastId = bit::Shadowcaster::shadowcastId;
-                visibles.push_back(t);
-            }
-        },
-        [&visibles, w] (int x, int y) -> bool
-        {
-            Tile* t = w->getTileAtPosition(x * w->tileWidth, y * w->tileHeight);
-            return (t && t->body && t->body->blockFoV);
-        }
-    );
+    p->character->inspectVisibleTiles([&visibles] (Tile* t) {
+        visibles.push_back(t);
+    });
 
     // indicate number of tiles
     packet << sf::Uint32(visibles.size());

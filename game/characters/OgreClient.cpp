@@ -22,6 +22,7 @@ void OgreClient::clientLoad(LevelClient* _level)
 
     sprite.load(this, level->state->rogueZombieGame->spriteLoader, level->vertexMap_01);
     sprite.setBodySprites(std::string("Ogre_Head"), std::string("Ogre_FrontArm"), std::string("Ogre_Body"), std::string("Ogre_Shadow"));
+    sprite.setDeathSprite(std::string("Zombie_Dead"));
 }
 
 void OgreClient::clientUpdate(sf::Time &gameTime)

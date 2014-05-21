@@ -15,7 +15,7 @@
 #include "items/Item.hpp"
 
 Character::Character()
-    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), actionDelayTimer(1), combatDecisionAi(NULL), isHostileCombatEngaged(false), moveTimer(.67f), equipment(), schema()
+    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), actionDelayTimer(1), combatDecisionAi(NULL), isHostileCombatEngaged(false), targetEnemy(NULL), moveTimer(.67f), equipment(), schema(), visionRadius(30)
 {
     equipment.resize(EquipmentSlot::_count, NULL);
 }
@@ -208,11 +208,16 @@ void Character::combat_PerformAction_MoveToLocation(sf::Time &gameTime)
 void Character::combat_DecideAction_AttackCharacter(Character* character)
 {
     // TODO: do this
+    targetEnemy = character;
+    combatState = CombatState::PerformAction;
+    combatAction = CombatAction::Attack;
+    schema.currentActionPoints--;
 }
 
 void Character::combat_PerformAction_AttackCharacter(sf::Time &gameTime)
 {
     // TODO: do this
+    rangedAttack(targetEnemy);
     combatState = CombatState::Delay;
 }
 
@@ -251,6 +256,44 @@ void Character::kill()
         unequip(static_cast<Character::EquipmentSlot>(i));
     }
 }
+
+void Character::rangedAttack(Character* character)
+{
+    character->harm(100);
+}
+
+void Character::harm(int damage)
+{
+    schema.health = bit::Math::clamp(schema.health - damage, 0, schema.maxHealth);
+    if(schema.health == 0)
+        kill();
+}
+
+
+///////////////////////////////////////////////////////
+//                 INSPECTION                        //
+///////////////////////////////////////////////////////
+
+
+void Character::inspectVisibleTiles(std::function<void(Tile* t)> inspector)
+{
+    Character* character = this;
+    bit::Shadowcaster::computeFoV(Body::schema.x / level->tileWidth, Body::schema.y / level->tileHeight, level->tileColumns, level->tileRows, visionRadius,
+        [character, inspector] (int x, int y, float distance) {
+            Tile* tile = character->level->getTileAtIndices(x, y);
+            if(tile && tile->metadata_shadowcastId != bit::Shadowcaster::shadowcastId)
+            {
+                tile->metadata_shadowcastId = bit::Shadowcaster::shadowcastId;
+                inspector(tile);
+            }
+        },
+        [character] (int x, int y) -> bool {
+            Tile* t = character->level->getTileAtPosition(x * character->level->tileWidth, y * character->level->tileHeight);
+            return (t && t->body && t->body->blockFoV);
+        }
+    );
+}
+
 
 ///////////////////////////////////////////////////////
 //                  INVENTORY                        //
