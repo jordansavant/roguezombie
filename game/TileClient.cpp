@@ -23,8 +23,39 @@ TileClient::~TileClient()
 
 bool TileClient::isCardinallyAdjacent(BodyClient* body)
 {
-    float distance = bit::VectorMath::distance(schema.x, schema.y, body->schema.x, body->schema.y);
-    return (distance <= schema.width || distance <= schema.height);
+    int x1 = schema.x;
+    int y1 = schema.y;
+    int width1 = schema.width;
+    int height1 = schema.height;
+    int x2 = body->schema.x;
+    int y2 = body->schema.y;
+    int width2 = body->schema.width;
+    int height2 = body->schema.height;
+
+    int top1 = y1;
+    int top2 = y2;
+    int bottom1 = y1 + height1;
+    int bottom2 = y2 + height2;
+    int left1 = x1;
+    int left2 = x2;
+    int right1 = x1 + width1;
+    int right2 = x2 + width2;
+    
+    int xDiffA = std::abs(left1 - right2); // distance between my leftmost X and their rightmost X
+    int xDiffB = std::abs(right1 - left2); // distance between my rightmost X and their leftmost X
+    int xMin = std::min(xDiffA, xDiffB);
+
+    int yDiffA = std::abs(bottom1 - top2); // distance between my bottom and their top
+    int yDiffB = std::abs(top1 - bottom2); // distance between my top and their bottom
+    int yMin = std::min(yDiffA, yDiffB);
+
+    bool notInYPlane = (bottom1 <= top2 || top1 >= bottom2);
+    bool inYPlane = !notInYPlane;
+
+    bool notInXPlane = (left1 >= right2 || right1 <= left2);
+    bool inXPlane = !notInXPlane;
+
+    return (inXPlane || inYPlane) && (xMin == 0 || yMin == 0);
 }
 
 void TileClient::clientLoad(LevelClient* _level)
