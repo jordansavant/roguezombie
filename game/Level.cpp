@@ -248,8 +248,11 @@ void Level::leaveCombat()
 void Level::endTurn(Character* character)
 {
     Character* c = turnQueue.front();
-	turnQueue.pop_front();
-	turnQueue.push_back(c);
+    if(c == character)
+    {
+	    turnQueue.pop_front();
+	    turnQueue.push_back(c);
+    }
 }
 
 DialogNode* Level::getDialogTree()
@@ -546,51 +549,7 @@ void Level::raycastTiles(float startX, float startY, float endX, float endY, std
 void Level::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type commandType)
 {
 	Player* player = players[client.id];
-	sf::Vector2f d(0, 0);
-
-	switch(commandType)
-	{
-        default:
-            break;
-		case Command::Type::PlayerMoveUp:
-            player->character->moveUp();
-			break;
-		case Command::Type::PlayerMoveDown:
-            player->character->moveDown();
-			break;
-		case Command::Type::PlayerMoveLeft:
-            player->character->moveLeft();
-			break;
-		case Command::Type::PlayerMoveRight:
-            player->character->moveRight();
-			break;
-        case Command::Type::MoveToTile:
-        {
-            unsigned int tileId;
-            packet >> tileId;
-            Tile* t = tiles[tileId];
-            if(t)
-            {
-                player->character->pathToPosition(t->schema.x, t->schema.y);
-            }
-            break;
-        }
-        case Command::Type::PlayerRightClickTile:
-        {
-            unsigned int tileId;
-            packet >> tileId;
-            Tile* t = tiles[tileId];
-            Player* p = players[client.id];
-            if(t)
-            {
-                raycastTiles(t->schema.x, t->schema.y,  p->character->Body::schema.x, p->character->Body::schema.y, [] (Tile* t) -> bool {
-                    t->schema.illumination = 1.0f;
-                    return false;
-                });
-            }
-            break;
-        }
-	}
+    player->handleCommand(packet, commandType);
 }
 
 void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client, bool full)

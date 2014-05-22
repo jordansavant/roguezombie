@@ -101,6 +101,7 @@ void StateGamePlay::modeOnExitFree()
 
 void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
 {
+    // Move camera around
     if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Up))
         cameras[0]->direction.y = -1;
     if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Down))
@@ -110,11 +111,11 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
     if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Right))
         cameras[0]->direction.x = 1;
 
-    // Listen for Game Commands
+    // Debug commands to remove later on
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::X))
     {
 	    Command cmd;
-        cmd.type = Command::Type::PlayerSwitchLevel;
+        cmd.type = Command::Type::PlayerDebug;
 	    commandQueue.push_back(cmd);
     }
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::W))
@@ -141,47 +142,78 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
         cmd.type = Command::Type::PlayerMoveRight;
 	    commandQueue.push_back(cmd);
     }
-    if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
-    {
-        // See if a tile is being hovered over
-        if(levelClient->hoveredTile)
-        {
-            TileClient* t = levelClient->hoveredTile;
 
-            // If the tile has a body and it is adjacent run interactions
-            if(t->schema.bodyId > 0)
-            {
-                if(t->isCardinallyAdjacent(levelClient->playerCharacter))
-                    requestInteractionsForTile(t->schema.id);
-                else
-                    displayMessage(std::string("Too far away"));
-            }
-            // Else issue command to move to tile
-            else
-            {
-                Command cmd;
-                cmd.type = Command::Type::MoveToTile;
-                cmd.pack = [t] (sf::Packet &packet) {
-                    packet << sf::Uint32(t->schema.id);
-                };
-		        commandQueue.push_back(cmd);
-            }
-        }
-    }
-    if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Right))
+    switch(levelClient->levelState)
     {
-        // See if a tile is being hovered over
-        if(levelClient->hoveredTile)
+        case Level::State::Free:
         {
-            TileClient* t = levelClient->hoveredTile;
-            Command cmd;
-            cmd.type = Command::Type::PlayerRightClickTile;
-            cmd.pack = [t] (sf::Packet &packet) {
-                packet << sf::Uint32(t->schema.id);
-            };
-		    commandQueue.push_back(cmd);
+            // Explore Mode Commands
+            if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
+            {
+                // See if a tile is being hovered over
+                if(levelClient->hoveredTile)
+                {
+                    TileClient* t = levelClient->hoveredTile;
+
+                    // If the tile has a body and it is adjacent run interactions
+                    if(t->schema.bodyId > 0)
+                    {
+                        if(t->isCardinallyAdjacent(levelClient->playerCharacter))
+                            requestInteractionsForTile(t->schema.id);
+                        else
+                            displayMessage(std::string("Too far away"));
+                    }
+                    // Else issue command to move to tile
+                    else
+                    {
+                        Command cmd;
+                        cmd.type = Command::Type::Free_MoveToTile;
+                        cmd.pack = [t] (sf::Packet &packet) {
+                            packet << sf::Uint32(t->schema.id);
+                        };
+		                commandQueue.push_back(cmd);
+                    }
+                }
+            }
+            break;
+        }
+        case Level::State::Combat:
+        {
+            // Combat Mode Commands
+            if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
+            {
+                // See if a tile is being hovered over
+                if(levelClient->hoveredTile)
+                {
+                    TileClient* t = levelClient->hoveredTile;
+
+                    // If the tile has a body and it is adjacent run interactions
+                    if(t->schema.bodyId > 0)
+                    {
+                        displayMessage(std::string("Body detected"));
+                        if(t->isCardinallyAdjacent(levelClient->playerCharacter))
+                            requestInteractionsForTile(t->schema.id);
+                        else
+                            displayMessage(std::string("Too far away"));
+                    }
+                    // Else issue command to move to tile
+                    else
+                    {
+                        displayMessage(std::string("Body not detected, moving"));
+                        Command cmd;
+                        cmd.type = Command::Type::Combat_MoveToTile;
+                        cmd.pack = [t] (sf::Packet &packet) {
+                            packet << sf::Uint32(t->schema.id);
+                        };
+		                commandQueue.push_back(cmd);
+                    }
+                }
+            }
+            break;
         }
     }
+
+    
 
     // Menu Hot Keys
     modeOnUpdateCommonListener(gameTime);

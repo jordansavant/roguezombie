@@ -159,16 +159,10 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
 		// Determine how to handle
 		switch(commandType)
 		{
-			case Command::Type::PlayerMoveUp:
-			case Command::Type::PlayerMoveDown:
-			case Command::Type::PlayerMoveLeft:
-			case Command::Type::PlayerMoveRight:
-            case Command::Type::MoveToTile:
-            case Command::Type::PlayerRightClickTile:
+            default:
                 player->level->handlePlayerCommand(packet, client, static_cast<Command::Type>(commandType));
 				break;
-            case Command::Type::PlayerSwitchLevel:
-                //player->level->hunters[0]->kill();
+            case Command::Type::PlayerDebug:
                 if(player->level->state == Level::State::Free)
                 {
                     player->character->isHostileCombatEngaged = true;

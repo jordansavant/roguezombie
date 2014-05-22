@@ -165,7 +165,15 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
 
 void Character::updateDead(sf::Time &gameTime)
 {
-    // Nil
+    switch(level->state)
+    {
+        case Level::State::Free:
+            break;
+
+        case Level::State::Combat:
+            level->endTurn(this);
+            break;
+    }
 }
 
 void Character::combat_DecideAction(sf::Time &gameTime)
@@ -173,6 +181,10 @@ void Character::combat_DecideAction(sf::Time &gameTime)
     if(combatDecisionAi)
     {
         combatDecisionAi(this);
+    }
+    else if(schema.isPlayerCharacter)
+    {
+        // Nil, remain in this state until player command is received
     }
     else
     {
@@ -184,11 +196,11 @@ void Character::combat_DecideAction(sf::Time &gameTime)
 
 void Character::combat_DecideAction_MoveToLocation(int x, int y)
 {
+    schema.currentActionPoints--;
     // Pick a random tile within a radius and path to it
-    pathToPosition(Body::schema.x, Body::schema.y - level->tileHeight * 2);
+    pathToPosition(x, y);
     combatState = CombatState::PerformAction;
     combatAction = CombatAction::Move;
-    schema.currentActionPoints--;
 }
 
 void Character::combat_PerformAction_MoveToLocation(sf::Time &gameTime)
@@ -207,11 +219,11 @@ void Character::combat_PerformAction_MoveToLocation(sf::Time &gameTime)
 
 void Character::combat_DecideAction_AttackCharacter(Character* character)
 {
+    schema.currentActionPoints--;
     // TODO: do this
     targetEnemy = character;
     combatState = CombatState::PerformAction;
     combatAction = CombatAction::Attack;
-    schema.currentActionPoints--;
 }
 
 void Character::combat_PerformAction_AttackCharacter(sf::Time &gameTime)

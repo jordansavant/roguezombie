@@ -18,9 +18,10 @@ public:
 	    PlayerMoveDown,
 	    PlayerMoveLeft,
 	    PlayerMoveRight,
-        MoveToTile,
-        PlayerRightClickTile,
-        PlayerSwitchLevel,
+        PlayerDebug,
+        Free_MoveToTile,
+        Combat_MoveToTile,
+        Combat_AttackCharacter,
     };
     Type type;
 

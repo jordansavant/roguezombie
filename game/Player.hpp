@@ -5,6 +5,7 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
 #include "../bitengine/Network.hpp"
+#include "Command.hpp"
 
 class Level;
 class Character;
@@ -26,6 +27,8 @@ public:
     void setLevel(Level* level);
 
     void setCharacter(Character* character);
+
+    void handleCommand(bit::ClientPacket &packet, Command::Type commandType);
 };
 
 #endif
