@@ -3,6 +3,7 @@
 
 #include "Math/Math.hpp"
 #include "Math/Random.hpp"
+#include "Math/RectangleMath.hpp"
 #include "Math/VectorMath.hpp"
 
 #endif
