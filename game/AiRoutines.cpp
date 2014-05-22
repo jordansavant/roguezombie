@@ -12,6 +12,7 @@ bool AiRoutines::Combat::Zombie_DetectHostility(Character* character, Character*
 
 bool AiRoutines::Combat::Zombie_DetectCombat(Character* character)
 {
+    bit::Output::Debug(character->Body::schema.id);
     bool enemyDetected = false;
     character->inspectVisibleCharacters([character, &enemyDetected] (Character* occupant) {
         if(enemyDetected)

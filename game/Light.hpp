@@ -23,6 +23,8 @@ public:
 
     virtual void update(sf::Time &gameTime);
 
+    virtual void distributedUpdate(sf::Time &gameTime);
+
 private:
 
     virtual void setVisible(int x, int y, float distance);

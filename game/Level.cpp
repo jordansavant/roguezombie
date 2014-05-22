@@ -389,7 +389,7 @@ void Level::removePlayer(Player* player)
             lights.erase(std::remove(lights.begin(), lights.end(), player->character->lights[i]), lights.end());
         }
 
-        // Remove character from management list
+        // Remove character from management lists
         switch(player->character->schema.type)
         {
             case Character::Type::Zombie:
@@ -399,6 +399,7 @@ void Level::removePlayer(Player* player)
                 ogres.erase(std::remove(ogres.begin(), ogres.end(), static_cast<Ogre*>(player->character)), ogres.end());
                 break;
         }
+        turnQueue.erase(std::remove(turnQueue.begin(), turnQueue.end(), player->character), turnQueue.end());
 	}
 }
 

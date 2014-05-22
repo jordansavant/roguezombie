@@ -96,10 +96,6 @@ void Character::updateAlive(sf::Time &gameTime)
 
 void Character::updateAlive_Free(sf::Time &gameTime)
 {
-    // TODO: THIS NEEDS TO BE DISTRIBUTED FOR PERFORMANCE!!!
-    // Check for combatable scenario to begin
-    detectCombatEnter();
-
     followPath(gameTime);
 }
 
@@ -270,6 +266,49 @@ void Character::combat_PerformAction_AttackCharacter(sf::Time &gameTime)
     rangedAttack(targetEnemy);
     combatState = CombatState::Delay;
 }
+
+void Character::distributedUpdate(sf::Time &gameTime)
+{
+    Body::distributedUpdate(gameTime);
+
+    if(!schema.isDead())
+    {
+        distributedUpdateAlive(gameTime);
+    }
+    else
+    {
+        distributedUpdateDead(gameTime);
+    }
+}
+
+void Character::distributedUpdateAlive(sf::Time &gameTime)
+{
+    switch(level->state)
+    {
+        case Level::State::Free:
+            distributedUpdateAlive_Free(gameTime);
+            break;
+
+        case Level::State::Combat:
+            distributedUpdateAlive_Combat(gameTime);
+            break;
+    }
+}
+
+void Character::distributedUpdateAlive_Free(sf::Time &gameTime)
+{
+    // Check for combatable scenario to begin
+    detectCombatEnter();
+}
+
+void Character::distributedUpdateAlive_Combat(sf::Time &gameTime)
+{
+}
+
+void Character::distributedUpdateDead(sf::Time &gameTime)
+{
+}
+
 
 ///////////////////////////////////////////////////////
 //              CHARACTER EFFECTS                    //

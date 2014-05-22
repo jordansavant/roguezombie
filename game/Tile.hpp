@@ -90,6 +90,8 @@ public:
 
     virtual void update(sf::Time &gameTime);
 
+    virtual void distributedUpdate(sf::Time &gameTime);
+
     virtual void setOccupyingBody(Body* body);
 
     virtual void setOccupyingDoor(Body* body);

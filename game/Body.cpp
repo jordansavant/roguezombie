@@ -43,6 +43,10 @@ void Body::update(sf::Time &gameTime)
 {
 }
 
+void Body::distributedUpdate(sf::Time &gameTime)
+{
+}
+
 void Body::addItemToInventory(Item* item)
 {
     inventory->addItem(item);

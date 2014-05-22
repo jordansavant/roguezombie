@@ -51,6 +51,10 @@ void Tile::update(sf::Time &gameTime)
         door->schema.illumination = 0;
 }
 
+void Tile::distributedUpdate(sf::Time &gameTime)
+{
+}
+
 void Tile::setOccupyingBody(Body* _body)
 {
     if(!_body && body)

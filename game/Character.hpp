@@ -159,6 +159,17 @@ public:
 
     virtual void combat_PerformAction_AttackCharacter(sf::Time &gameTime);
 
+    virtual void distributedUpdate(sf::Time &gameTime);
+
+    virtual void distributedUpdateAlive(sf::Time &gameTime);
+
+    virtual void distributedUpdateDead(sf::Time &gameTime);
+
+    virtual void distributedUpdateAlive_Free(sf::Time &gameTime);
+
+    virtual void distributedUpdateAlive_Combat(sf::Time &gameTime);
+
+
     // Character actions
 
     virtual bool isHostileTowards(Character* character);

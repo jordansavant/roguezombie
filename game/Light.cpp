@@ -28,6 +28,10 @@ void Light::update(sf::Time &gameTime)
         std::bind(&Light::isBlocked, this, std::placeholders::_1, std::placeholders::_2));
 }
 
+void Light::distributedUpdate(sf::Time &gameTime)
+{
+}
+
 void Light::setVisible(int x, int y, float distance)
 {
     Tile* t = level->getTileAtIndices(x, y);

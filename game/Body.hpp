@@ -82,6 +82,8 @@ public:
 
     virtual void update(sf::Time &gameTime);
 
+    virtual void distributedUpdate(sf::Time &gameTime);
+
     void addItemToInventory(Item* item);
 
     Item* removeItemFromInventory(unsigned int itemId);
