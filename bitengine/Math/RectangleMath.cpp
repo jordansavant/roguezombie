@@ -71,3 +71,13 @@ float bit::RectangleMath::distance(float x1, float y1, float width1, float heigh
     float y = axisDistance(Axis::Y, x1, y1, width1, height1, x2, y2, width2, height2);
     return std::sqrt(x*x  + y*y);
 }
+
+bool bit::RectangleMath::isCardinallyAdjacent(float x1, float y1, float width1, float height1, float x2, float y2, float width2, float height2)
+{
+    int xDistance = axisDistance(bit::RectangleMath::Axis::X, x1, y1, width1, height1, x2, y2, width2, height2);
+    int yDistance = axisDistance(bit::RectangleMath::Axis::Y, x1, y1, width1, height1, x2, y2, width2, height2);
+    bool inYPlane = intersectsPlane(bit::RectangleMath::Axis::Y, x1, y1, width1, height1, x2, y2, width2, height2);
+    bool inXPlane = intersectsPlane(bit::RectangleMath::Axis::X, x1, y1, width1, height1, x2, y2, width2, height2);
+
+    return (inXPlane || inYPlane) && (xDistance == 0 || yDistance == 0);
+}

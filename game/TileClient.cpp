@@ -32,12 +32,7 @@ bool TileClient::isCardinallyAdjacent(BodyClient* body)
     int width2 = body->schema.width;
     int height2 = body->schema.height;
 
-    int xMin = bit::RectangleMath::axisDistance(bit::RectangleMath::Axis::X, x1, y1, width1, height1, x2, y2, width2, height2);
-    int yMin = bit::RectangleMath::axisDistance(bit::RectangleMath::Axis::Y, x1, y1, width1, height1, x2, y2, width2, height2);
-    bool inYPlane = bit::RectangleMath::intersectsPlane(bit::RectangleMath::Axis::Y, x1, y1, width1, height1, x2, y2, width2, height2);
-    bool inXPlane = bit::RectangleMath::intersectsPlane(bit::RectangleMath::Axis::X, x1, y1, width1, height1, x2, y2, width2, height2);
-
-    return (inXPlane || inYPlane) && (xMin == 0 || yMin == 0);
+    return bit::RectangleMath::isCardinallyAdjacent(x1, y1, width1, height1, x2, y2, width2, height2);
 }
 
 void TileClient::clientLoad(LevelClient* _level)
