@@ -15,7 +15,7 @@
 #include "items/Item.hpp"
 
 Character::Character()
-    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), actionDelayTimer(1), combatDecisionAi(NULL), isHostileCombatEngaged(false), targetEnemy(NULL), moveTimer(.67f), equipment(), schema(), visionRadius(30)
+    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), actionDelayTimer(1), combatDecisionAi(NULL), isHostileCombatEngaged(false), targetEnemy(NULL), combatTilesTraversed(0), moveTimer(.67f), equipment(), schema(), visionRadius(30)
 {
     equipment.resize(EquipmentSlot::_count, NULL);
 }
@@ -196,11 +196,12 @@ void Character::combat_DecideAction(sf::Time &gameTime)
 
 void Character::combat_DecideAction_MoveToLocation(int x, int y)
 {
+    // We have decided to move to a position, so we will set it up as our path
     schema.currentActionPoints--;
-    // Pick a random tile within a radius and path to it
     pathToPosition(x, y);
     combatState = CombatState::PerformAction;
     combatAction = CombatAction::Move;
+    combatTilesTraversed = 0;
 }
 
 void Character::combat_PerformAction_MoveToLocation(sf::Time &gameTime)
@@ -208,7 +209,37 @@ void Character::combat_PerformAction_MoveToLocation(sf::Time &gameTime)
     // If I am moving for my combat action, follow the path as long as it exists
     if(path.size() > 0)
     {
-        followPath(gameTime);
+        // If I have traversed the maximum number of tiles I can in this action
+        if(combatTilesTraversed >= schema.speed)
+        {
+            // Move to the delay state to end the current action
+            combatTilesTraversed = 0;
+            combatState = CombatState::Delay;
+        }
+
+        // Else if its time to move
+        else if(moveTimer.update(gameTime))
+        {
+            // Get the next tile from the movement path
+            Tile* nextTile = path.back();
+            // If that next path is not my current position
+            if(nextTile->schema.x != Body::schema.x || nextTile->schema.y != Body::schema.y)
+            {
+                // If I have successfully moved to that position
+                if(moveToTile(nextTile))
+                {
+                    // Ready the next position and increment by distance travelled
+                    path.pop_back();
+                    combatTilesTraversed++;
+                }
+            }
+            // If I am on this tile already
+            else
+            {
+                // Ready the next position but do not incremement distance travelled
+                path.pop_back();
+            }
+        }
     }
     else
     {

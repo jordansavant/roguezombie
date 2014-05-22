@@ -63,6 +63,7 @@ public:
     bit::GameTimer actionDelayTimer;
     std::function<void(Character*)> combatDecisionAi;
     bool isHostileCombatEngaged;
+    unsigned int combatTilesTraversed;
     std::vector<Tile*> path;
     Character* targetEnemy;
     bit::GameTimer moveTimer;
@@ -74,20 +75,25 @@ public:
 	struct Schema
 	{
         Schema()
-           : maxActionPoints(2), currentActionPoints(2), maxHealth(0), isPlayerCharacter(false), clientId(0), player(NULL), type(Type::None), health(0)
+           : isPlayerCharacter(false), clientId(0), player(NULL), type(Type::None),
+             maxActionPoints(2), currentActionPoints(2), maxHealth(0), health(0), speed(3)
         {
             equipmentIds.resize(EquipmentSlot::_count, 0);
         }
 
-        int maxActionPoints;
-        int currentActionPoints;
-		int maxHealth;
+        // Metadata
         bool isPlayerCharacter;
         unsigned int clientId;
         Player* player;
         Type type;
-        int health;
         std::vector<unsigned int> equipmentIds;
+
+        // Stats
+        int maxActionPoints;
+        int currentActionPoints;
+		int maxHealth;
+        int health;
+        int speed; // tiles per action point
 
         friend sf::Packet& operator <<(sf::Packet& packet, const Schema &schema)
         {
@@ -98,6 +104,7 @@ public:
             packet << sf::Uint32(schema.clientId);
             packet << sf::Uint32(schema.type);
             packet << sf::Int32(schema.health);
+            packet << sf::Int32(schema.speed);
             for(unsigned int i=0; i < schema.equipmentIds.size(); i++)
             {
                 packet << sf::Uint32(schema.equipmentIds[i]);
@@ -113,6 +120,7 @@ public:
             packet >> schema.clientId;
             bit::NetworkHelper::unpackEnum<sf::Uint32, Character::Type>(packet, schema.type);
             packet >> schema.health;
+            packet >> schema.speed;
             for(unsigned int i=0; i < Character::EquipmentSlot::_count; i++)
             {
                 packet >> schema.equipmentIds[i];
