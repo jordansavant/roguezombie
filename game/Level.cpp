@@ -113,7 +113,9 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
                     Zombie* zombie = new Zombie();
                     zombie->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
                     zombies.push_back(zombie);
-                    zombie->combatDecisionAi = AiRoutines::Combat::DecideZombie;
+                    zombie->hostilityCheckAi = AiRoutines::Combat::Zombie_DetectHostility;
+                    zombie->combatDecisionAi = AiRoutines::Combat::Zombie_DecideCombat;
+                    zombie->combatDetectionAi = AiRoutines::Combat::Zombie_DetectCombat;
                     break;
                 }
                 case Interior::Spawn::Ogre:
@@ -209,7 +211,7 @@ void Level::update(sf::Time &gameTime)
             for(unsigned int i=0; i < turnQueue.size(); i++)
             {
                 Character* c = turnQueue[i];
-                if(!c->schema.isDead() && c->isHostileCombatEngaged)
+                if(!c->schema.isDead() && c->isHostileCombatDetected)
                 {
                     endCombat = false;
                 }
@@ -224,18 +226,21 @@ void Level::update(sf::Time &gameTime)
 
 void Level::enterCombat()
 {
-    state = State::Combat;
+    if(state != State::Combat)
+    {
+        state = State::Combat;
 
-    // Move every character into the turn queue
-    for(unsigned int i=0; i < zombies.size(); i++)
-        if(!zombies[i]->schema.isDead())
-            turnQueue.push_back(zombies[i]);
-    for(unsigned int i=0; i < ogres.size(); i++)
-        if(!ogres[i]->schema.isDead())
-            turnQueue.push_back(ogres[i]);
-    for(unsigned int i=0; i < hunters.size(); i++)
-        if(!hunters[i]->schema.isDead())
-            turnQueue.push_back(hunters[i]);
+        // Move every character into the turn queue
+        for(unsigned int i=0; i < zombies.size(); i++)
+            if(!zombies[i]->schema.isDead())
+                turnQueue.push_back(zombies[i]);
+        for(unsigned int i=0; i < ogres.size(); i++)
+            if(!ogres[i]->schema.isDead())
+                turnQueue.push_back(ogres[i]);
+        for(unsigned int i=0; i < hunters.size(); i++)
+            if(!hunters[i]->schema.isDead())
+                turnQueue.push_back(hunters[i]);
+    }
 }
 
 void Level::leaveCombat()
@@ -348,6 +353,12 @@ bool Level::addPlayer(Player* player)
         removePlayer(player);
 
         return false;
+    }
+
+    // Add body to combat
+    if(state == State::Combat)
+    {
+        turnQueue.push_back(player->character);
     }
 
     return true;

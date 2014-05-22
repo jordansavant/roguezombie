@@ -5,7 +5,24 @@
 #include "../bitengine/Intelligence.hpp"
 #include "../bitengine/Math.hpp"
 
-void AiRoutines::Combat::DecideZombie(Character* character)
+bool AiRoutines::Combat::Zombie_DetectHostility(Character* character, Character* other)
+{
+    return (other->schema.type != Character::Type::Zombie);
+}
+
+bool AiRoutines::Combat::Zombie_DetectCombat(Character* character)
+{
+    bool enemyDetected = false;
+    character->inspectVisibleCharacters([character, &enemyDetected] (Character* occupant) {
+        if(enemyDetected)
+            return;
+        enemyDetected = character->isHostileTowards(occupant);
+    });
+
+    return enemyDetected;
+}
+
+void AiRoutines::Combat::Zombie_DecideCombat(Character* character)
 {
     // Find the closest enemy
     Character* closestEnemy = NULL;
@@ -22,7 +39,7 @@ void AiRoutines::Combat::DecideZombie(Character* character)
 
         // If the occupant is not adjacent to me then move towards them
         float distance = bit::RectangleMath::distance(x1, y1, width1, height1, x2, y2, width2, height2);
-        if(closestEnemy == NULL || distance < closestDistance)
+        if(character->isHostileTowards(occupant) && (closestEnemy == NULL || distance < closestDistance))
         {
             closestEnemy = occupant;
             closestDistance = distance;

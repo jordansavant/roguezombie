@@ -61,8 +61,10 @@ public:
     CombatState combatState;
     CombatAction combatAction;
     bit::GameTimer actionDelayTimer;
+    std::function<bool(Character*, Character*)> hostilityCheckAi;
+    std::function<bool(Character*)> combatDetectionAi;
     std::function<void(Character*)> combatDecisionAi;
-    bool isHostileCombatEngaged;
+    bool isHostileCombatDetected;
     unsigned int combatTilesTraversed;
     std::vector<Tile*> path;
     Character* targetEnemy;
@@ -157,8 +159,9 @@ public:
 
     virtual void combat_PerformAction_AttackCharacter(sf::Time &gameTime);
 
-
     // Character actions
+
+    virtual bool isHostileTowards(Character* character);
 
     virtual void followPath(sf::Time &gameTime);
 
@@ -168,6 +171,9 @@ public:
 
     virtual void harm(int damage);
 
+    void detectCombatEnter();
+
+    void detectCombatExit();
 
     // Inspection
 

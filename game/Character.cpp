@@ -15,7 +15,7 @@
 #include "items/Item.hpp"
 
 Character::Character()
-    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), actionDelayTimer(1), combatDecisionAi(NULL), isHostileCombatEngaged(false), targetEnemy(NULL), combatTilesTraversed(0), moveTimer(.67f), equipment(), schema(), visionRadius(30)
+    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), actionDelayTimer(1), hostilityCheckAi(NULL), combatDetectionAi(NULL), combatDecisionAi(NULL), isHostileCombatDetected(false), targetEnemy(NULL), combatTilesTraversed(0), moveTimer(.67f), equipment(), schema(), visionRadius(30)
 {
     equipment.resize(EquipmentSlot::_count, NULL);
 }
@@ -96,6 +96,10 @@ void Character::updateAlive(sf::Time &gameTime)
 
 void Character::updateAlive_Free(sf::Time &gameTime)
 {
+    // TODO: THIS NEEDS TO BE DISTRIBUTED FOR PERFORMANCE!!!
+    // Check for combatable scenario to begin
+    detectCombatEnter();
+
     followPath(gameTime);
 }
 
@@ -116,6 +120,9 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
             break;
 
         case CombatState::DecideAction:
+
+            // Check for combatable scenario to end
+            detectCombatExit();
 
             // If I have action points remaining
             if(schema.currentActionPoints > 0)
@@ -268,6 +275,11 @@ void Character::combat_PerformAction_AttackCharacter(sf::Time &gameTime)
 //              CHARACTER EFFECTS                    //
 ///////////////////////////////////////////////////////
 
+bool Character::isHostileTowards(Character* character)
+{
+    return hostilityCheckAi ? hostilityCheckAi(this, character) : false;
+}
+
 void Character::followPath(sf::Time &gameTime)
 {
     // Follow designation path points
@@ -312,6 +324,30 @@ void Character::harm(int damage)
         kill();
 }
 
+void Character::detectCombatEnter()
+{
+    isHostileCombatDetected = false;
+    if(combatDetectionAi)
+    {
+        bool currentState = isHostileCombatDetected;
+        isHostileCombatDetected = combatDetectionAi(this);
+
+        // If I was not in combat but now I am
+        if(!currentState && isHostileCombatDetected)
+        {
+            level->enterCombat();
+        }
+    }
+}
+
+void Character::detectCombatExit()
+{
+    isHostileCombatDetected = false;
+    if(combatDetectionAi)
+    {
+        isHostileCombatDetected = combatDetectionAi(this);
+    }
+}
 
 ///////////////////////////////////////////////////////
 //                 INSPECTION                        //

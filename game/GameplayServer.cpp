@@ -165,12 +165,12 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
             case Command::Type::PlayerDebug:
                 if(player->level->state == Level::State::Free)
                 {
-                    player->character->isHostileCombatEngaged = true;
+                    player->character->isHostileCombatDetected = true;
                     player->level->enterCombat();
                 }
                 else
                 {
-                    player->character->isHostileCombatEngaged = false;
+                    player->character->isHostileCombatDetected = false;
                 }
 
                 break;

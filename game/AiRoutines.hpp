@@ -19,7 +19,11 @@ public:
     {
     public:
 
-        static void DecideZombie(Character* character);
+        static bool Zombie_DetectHostility(Character* character, Character* other);
+
+        static bool Zombie_DetectCombat(Character* character);
+
+        static void Zombie_DecideCombat(Character* character);
 
     };
 };
