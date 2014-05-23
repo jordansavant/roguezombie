@@ -8,6 +8,8 @@ enum ServerEvent
     MissionCompleted,
     ItemAdded,
     ItemRemoved,
+    CombatTurnStart,
+    CombatTurnEnd,
 };
 
 #endif

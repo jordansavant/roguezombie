@@ -632,6 +632,13 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 levelClient->playerCharacter->handleServerEventPacket_itemRemoved(packet);
                 hud->inventory->buildItemList();
                 break;
+            case ServerEvent::CombatTurnStart:
+                displayMessage(std::string("Combat turn started"));
+                break;
+            
+            case ServerEvent::CombatTurnEnd:
+                displayMessage(std::string("Combat turn ended"));
+                break;
         }
     }
 }

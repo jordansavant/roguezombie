@@ -16,6 +16,7 @@ public:
     OptionsBar(Hud* hud);
 
     Hud* hud;
+    HudElement* primary;
     HudElement* options;
     HudElement* journal;
     HudElement* character;

@@ -1,0 +1,66 @@
+
+Free or Combat
+	Quick Action bar sits at the bottom
+	Game Icons in the top left
+	Health on top right
+	Console on bottom left
+	
+Combat
+	Combat Indicator -d
+	Weapon Swap -d
+	Action Point Indicator -d
+	Turn or Waiting indicator -d
+	Movement Range Indicator -d
+	Info about mouse target -d
+	Turn Queue of Visible Characters -d
+	
+	*health bar under feet, hidden unless damaged
+
+free areas
+	Top Middle
+	Bottom Right
+	Left
+	Right
+
+
+
+onPlayerDecisionStateEnterPacketEvent
+	Serverside
+		Bucket fill all non blocked tiles around player origin into list of positions
+		Send list to client as part of event packet
+	Clientside
+		unpack positions
+		for each position, fill with quad
+
+onPlayerDecisionStateLeavePacketEvent
+	Serverside
+		Send event packet
+	Client side
+		loop over quads and hide them
+		
+* Render move markers between the tiles and the characters
+* std::vector of move markers, if 25 come in, position first 25, store the 25 count 		
+  then on leave just iterate those same 25 and hide them this way its always the minimum
+
+  
+  
+  
+  
+http://en.wikipedia.org/wiki/Flood_fill
+(float)calculateDrawDepth:(CGPoint)thePosition worldLayer:(kpmWorldLayer)theWorldLayer {
+    float drawDepth = 0.0f;
+    switch (theWorldLayer) {
+        case kpmWorldLayerNone:
+        default:
+        {
+            int pointsOfBuffer = 0;
+            int zMax = VERTEX_Z_MAX - VERTEX_Z_MAX_PAD_FOR_MOBS;
+            int zMin = VERTEX_Z_MIN + VERTEX_Z_MIN_PAD_FOR_MOBS;
+            float percentDistanceUpScreen = (thePosition.y + (pointsOfBuffer / 2.0f)) / (_screenSize.height + pointsOfBuffer);
+            percentDistanceUpScreen = clampf(percentDistanceUpScreen, 0.0f, 1.0f);
+            drawDepth = zMin + fabsf(zMax - zMin) * (1 - percentDistanceUpScreen);
+        }
+            break;
+    }
+    return drawDepth;
+}

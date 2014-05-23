@@ -111,6 +111,14 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
                 // Refill my action points and move to decision making
                 schema.currentActionPoints = schema.maxActionPoints;
                 combatState = CombatState::DecideAction;
+
+                // Send game event to player for start of turn
+                if(schema.isPlayerCharacter)
+                {
+                    level->server->sendEventToClient(*schema.player->client, [](bit::ServerPacket &packet){
+                        packet << sf::Uint32(ServerEvent::CombatTurnStart);
+                    });
+                }
             }
 
             break;
@@ -131,6 +139,14 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
                 // If I am out of action points, then resume waiting my turn and signal my turn is over
 				level->endTurn(this);
                 combatState = CombatState::Waiting;
+
+                // Send game event to player for end of turn
+                if(schema.isPlayerCharacter)
+                {
+                    level->server->sendEventToClient(*schema.player->client, [](bit::ServerPacket &packet){
+                        packet << sf::Uint32(ServerEvent::CombatTurnEnd);
+                    });
+                }
 			}
             break;
 
