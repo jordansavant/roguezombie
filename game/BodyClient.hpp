@@ -17,6 +17,10 @@ public:
     ItemClient inventoryClient;
     unsigned int lastSnapshotId;
     LevelClient* level;
+    
+    virtual void clientLoad(LevelClient* level);
+
+    virtual void clientUpdate(sf::Time &gameTime);
 
     virtual void reinitialize();
 

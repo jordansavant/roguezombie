@@ -5,6 +5,15 @@ BodyClient::BodyClient()
 {
 }
 
+void BodyClient::clientLoad(LevelClient* _level)
+{
+    level = _level;
+}
+
+void BodyClient::clientUpdate(sf::Time &gameTime)
+{
+}
+
 void BodyClient::reinitialize()
 {
 }

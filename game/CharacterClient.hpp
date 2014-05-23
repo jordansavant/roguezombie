@@ -20,13 +20,17 @@ public:
 
 	Character::Schema schema;
     CharacterSprite sprite;
-
     std::vector<bool> hasEquipment;
     std::vector<ItemClient> equipment;
-    
     std::map<unsigned int, MissionClient> missionClients;
+    
+    virtual void clientLoad(LevelClient* level);
+
+    virtual void clientUpdate(sf::Time &gameTime);
 
     virtual void reinitialize();
+
+    virtual void reset();
 
     virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 

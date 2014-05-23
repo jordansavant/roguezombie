@@ -1,4 +1,7 @@
 #include "CharacterClient.hpp"
+#include "LevelClient.hpp"
+#include "StateGamePlay.hpp"
+#include "RogueZombieGame.hpp"
 
 CharacterClient::CharacterClient()
     : schema(), sprite(0, 0, 0, 0)
@@ -7,9 +10,43 @@ CharacterClient::CharacterClient()
     equipment.resize(Character::EquipmentSlot::_count);
 }
 
+void CharacterClient::clientLoad(LevelClient* _level)
+{
+    level = _level;
+
+    sprite.load(this, level->state->rogueZombieGame->spriteLoader, level->vertexMap_01);
+}
+
+void CharacterClient::clientUpdate(sf::Time &gameTime)
+{
+    sprite.update(gameTime);
+}
+
 void CharacterClient::reinitialize()
 {
+    switch(schema.type)
+    {
+        case Character::Type::Hunter:
+        case Character::Type::Zombie:
+            sprite.width = 40;
+            sprite.height = 40;
+            sprite.baseOffsetX = 20;
+            sprite.baseOffsetY = 35;
+            break;
+        case Character::Type::Ogre:
+            sprite.width = 84;
+            sprite.height = 116;
+            sprite.baseOffsetX = 30;
+            sprite.baseOffsetY = 96;
+            break;
+    }
+
     sprite.syncSprites();
+}
+
+void CharacterClient::reset()
+{
+    sprite.reset();
 }
 
 void CharacterClient::handleSnapshot(bit::ServerPacket &packet, bool full)
@@ -51,6 +88,10 @@ void CharacterClient::handleSnapshot(bit::ServerPacket &packet, bool full)
             }
         }
     }
+
+    // Sprite
+    sprite.syncronizeEquipment();
+
 }
 
 void CharacterClient::handleServerEventPacket_missionCompleted(bit::ServerPacket &packet)
