@@ -18,6 +18,8 @@ public:
     unsigned int lastSnapshotId;
     LevelClient* level;
 
+    virtual void reinitialize();
+
     virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 };
 

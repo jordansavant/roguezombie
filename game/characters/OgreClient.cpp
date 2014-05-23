@@ -12,8 +12,12 @@
 #include "../../bitengine/System.hpp"
 
 OgreClient::OgreClient()
-    : CharacterClient(), sprite(84, 116, 30, 96)
+    : CharacterClient()
 {
+    sprite.width = 84;
+    sprite.height = 116;
+    sprite.baseOffsetX = 30;
+    sprite.baseOffsetY = 96;
 }
 
 void OgreClient::clientLoad(LevelClient* _level)
@@ -21,8 +25,6 @@ void OgreClient::clientLoad(LevelClient* _level)
     level = _level;
 
     sprite.load(this, level->state->rogueZombieGame->spriteLoader, level->vertexMap_01);
-    sprite.setBodySprites(std::string("Ogre_Head"), std::string("Ogre_FrontArm"), std::string("Ogre_Body"), std::string("Ogre_Shadow"));
-    sprite.setDeathSprite(std::string("Zombie_Dead"));
 }
 
 void OgreClient::clientUpdate(sf::Time &gameTime)

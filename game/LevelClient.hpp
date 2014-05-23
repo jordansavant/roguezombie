@@ -79,15 +79,19 @@ public:
         if(itr != map.end())
         {
             entity = itr->second;
+            entity->level = this;
+            entity->lastSnapshotId = state->lastSnapshotId; // update snapshot id
+            entity->handleSnapshot(packet, full);
         }
         else
         {
             entity = pool.fetch();
             map.insert(std::pair<unsigned int, T*>(id, entity));
+            entity->level = this;
+            entity->lastSnapshotId = state->lastSnapshotId; // update snapshot id
+            entity->handleSnapshot(packet, full);
+            entity->reinitialize();
         }
-        entity->level = this;
-        entity->lastSnapshotId = state->lastSnapshotId; // update snapshot id
-        entity->handleSnapshot(packet, full);
 
         return entity;
     }

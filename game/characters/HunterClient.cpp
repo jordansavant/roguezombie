@@ -12,8 +12,12 @@
 #include "../../bitengine/System.hpp"
 
 HunterClient::HunterClient()
-    : CharacterClient(), sprite(40, 40, 20, 35)
+    : CharacterClient()
 {
+    sprite.width = 40;
+    sprite.height = 40;
+    sprite.baseOffsetX = 20;
+    sprite.baseOffsetY = 35;
 }
 
 void HunterClient::clientLoad(LevelClient* _level)
@@ -21,8 +25,6 @@ void HunterClient::clientLoad(LevelClient* _level)
     level = _level;
 
     sprite.load(this, level->state->rogueZombieGame->spriteLoader, level->vertexMap_01);
-    sprite.setBodySprites(std::string("Hunter_Head"), std::string("Hunter_FrontArm"), std::string("Hunter_Body"), std::string("Hunter_Shadow"));
-    sprite.setDeathSprite(std::string("Hunter_Dead"));
 }
 
 void HunterClient::clientUpdate(sf::Time &gameTime)

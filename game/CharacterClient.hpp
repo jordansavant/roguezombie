@@ -4,6 +4,7 @@
 
 #include "BodyClient.hpp"
 #include "Character.hpp"
+#include "CharacterSprite.hpp"
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
 #include "../bitengine/Game.hpp"
@@ -18,11 +19,14 @@ public:
     CharacterClient();
 
 	Character::Schema schema;
+    CharacterSprite sprite;
 
     std::vector<bool> hasEquipment;
     std::vector<ItemClient> equipment;
     
     std::map<unsigned int, MissionClient> missionClients;
+
+    virtual void reinitialize();
 
     virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 

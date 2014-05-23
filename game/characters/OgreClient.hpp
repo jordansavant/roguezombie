@@ -20,8 +20,6 @@ public:
 
     OgreClient();
 
-    CharacterSprite sprite;
-
     void clientLoad(LevelClient* level);
 
     void clientUpdate(sf::Time &gameTime);

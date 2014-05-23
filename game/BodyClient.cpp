@@ -5,6 +5,10 @@ BodyClient::BodyClient()
 {
 }
 
+void BodyClient::reinitialize()
+{
+}
+
 void BodyClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
     packet >> schema;

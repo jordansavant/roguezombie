@@ -12,8 +12,12 @@
 #include "../../bitengine/System.hpp"
 
 ZombieClient::ZombieClient()
-    : CharacterClient(), sprite(40, 40, 20, 35)
+    : CharacterClient()
 {
+    sprite.width = 40;
+    sprite.height = 40;
+    sprite.baseOffsetX = 20;
+    sprite.baseOffsetY = 35;
 }
 
 void ZombieClient::clientLoad(LevelClient* _level)
@@ -21,8 +25,6 @@ void ZombieClient::clientLoad(LevelClient* _level)
     level = _level;
 
     sprite.load(this, level->state->rogueZombieGame->spriteLoader, level->vertexMap_01);
-    sprite.setBodySprites(std::string("Zombie_Head"), std::string("Zombie_FrontArm"), std::string("Zombie_Body"), std::string("Zombie_Shadow"));
-    sprite.setDeathSprite(std::string("Zombie_Dead"));
 }
 
 void ZombieClient::clientUpdate(sf::Time &gameTime)

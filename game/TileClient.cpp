@@ -91,6 +91,10 @@ void TileClient::clientUpdate(sf::Time &gameTime)
     }
 }
 
+void TileClient::reinitialize()
+{
+}
+
 void TileClient::reset()
 {
     bit::VertexHelper::resetQuad(&level->vertexMap_01.vertexArray[quadIndex]);

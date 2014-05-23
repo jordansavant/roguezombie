@@ -1,10 +1,15 @@
 #include "CharacterClient.hpp"
 
 CharacterClient::CharacterClient()
-    : schema()
+    : schema(), sprite(0, 0, 0, 0)
 {
     hasEquipment.resize(Character::EquipmentSlot::_count, false);
     equipment.resize(Character::EquipmentSlot::_count);
+}
+
+void CharacterClient::reinitialize()
+{
+    sprite.syncSprites();
 }
 
 void CharacterClient::handleSnapshot(bit::ServerPacket &packet, bool full)

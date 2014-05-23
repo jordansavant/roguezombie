@@ -2,13 +2,14 @@
 #ifndef RZ_CHARACTERSPRITE_H
 #define RZ_CHARACTERSPRITE_H
 
-#include "CharacterClient.hpp"
 #include "items/Item.hpp"
+#include "Character.hpp"
 #include "SFML/Graphics.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Graphics.hpp"
 
 class LevelClient;
+class CharacterClient;
 
 class CharacterSprite
 {
@@ -72,6 +73,9 @@ public:
 
     void syncronizeEquipment();
 
+    void syncSprites();
+
+    static std::string getSpriteMoniker(Character::Type);
 
 };
 

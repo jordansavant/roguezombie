@@ -31,6 +31,8 @@ void CharacterSprite::load(CharacterClient* _character, bit::SpriteLoader* _spri
     }
     
     frontarmQuadIndex = vertexMap->requestVertexIndex();
+
+    syncSprites();
 }
 
 void CharacterSprite::update(sf::Time &gameTime)
@@ -221,4 +223,27 @@ void CharacterSprite::setDeathSprite(std::string& spriteName)
 {
     deathSprite = spriteLoader->getSprite(spriteName);
     deathSprite->applyToQuad(&vertexMap->vertexArray[deathQuadIndex]);
+}
+
+
+void CharacterSprite::syncSprites()
+{
+    std::string moniker = getSpriteMoniker(character->schema.type);
+    setBodySprites(std::string(moniker + "_Head"), std::string(moniker + "_FrontArm"), std::string(moniker + "_Body"), std::string(moniker + "_Shadow"));
+    setDeathSprite(std::string(moniker + "_Dead"));
+}
+
+std::string CharacterSprite::getSpriteMoniker(Character::Type t)
+{
+    switch(t)
+    {
+        default:
+            return "Undefined";
+        case Character::Type::Zombie:
+            return "Zombie";
+        case Character::Type::Hunter:
+            return "Hunter";
+        case Character::Type::Ogre:
+            return "Ogre";
+    }
 }
