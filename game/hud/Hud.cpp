@@ -7,6 +7,7 @@
 #include "DialogMenu.hpp"
 #include "LootMenu.hpp"
 #include "Console.hpp"
+#include "TurnQueue.hpp"
 #include "../../ResourcePath.h"
 #include "../../bitengine/Input.hpp"
 #include "../StateGamePlay.hpp"
@@ -24,6 +25,9 @@ Hud::Hud(StateGamePlay* _state)
     
     console = new Console(this);
     addChild(console);
+
+    turnQueue = new TurnQueue(this);
+    addChild(turnQueue);
 
     // Special Menus
     optionsBar = new OptionsBar(this);

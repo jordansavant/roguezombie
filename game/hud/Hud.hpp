@@ -16,6 +16,7 @@ class InteractionMenu;
 class DialogMenu;
 class LootMenu;
 class Console;
+class TurnQueue;
 
 class Hud : public bit::Container
 {
@@ -32,6 +33,7 @@ public:
     DialogMenu* dialogMenu;
     LootMenu* lootMenu;
     Console* console;
+    TurnQueue* turnQueue;
     Minimap minimap;
     sf::Texture interfaceTexture;
     bit::VertexMap interfaceVertexMap;

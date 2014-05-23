@@ -5,7 +5,6 @@
 #include "SFML/Graphics.hpp"
 #include "../../bitengine/Gui.hpp"
 #include "../../bitengine/Graphics.hpp"
-#include <deque>
 
 class Hud;
 

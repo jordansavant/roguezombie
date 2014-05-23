@@ -1,11 +1,6 @@
 #include "Console.hpp"
 #include "Hud.hpp"
 #include "../../bitengine/Input.hpp"
-#include "../StateGamePlay.hpp"
-#include "../LevelClient.hpp"
-#include "../CharacterClient.hpp"
-#include "../RogueZombieGame.hpp"
-#include "../mission/MissionClient.hpp"
 
 Console::Console(Hud* _hud)
     : bit::Container(50, -50, 500, 200, bit::Element::AnchorType::BottomLeft, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(_hud)
