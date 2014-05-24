@@ -10,6 +10,8 @@ enum ServerEvent
     ItemRemoved,
     CombatTurnStart,
     CombatTurnEnd,
+    CombatDecisionStart,
+    CombatDecisionEnd
 };
 
 #endif

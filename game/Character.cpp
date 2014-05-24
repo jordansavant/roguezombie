@@ -110,7 +110,7 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
             {
                 // Refill my action points and move to decision making
                 schema.currentActionPoints = schema.maxActionPoints;
-                combatState = CombatState::DecideAction;
+                combat_SwitchStateDecide();
 
                 // Send game event to player for start of turn
                 if(schema.isPlayerCharacter)
@@ -138,7 +138,7 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
 			{
                 // If I am out of action points, then resume waiting my turn and signal my turn is over
 				level->endTurn(this);
-                combatState = CombatState::Waiting;
+                combat_SwitchStateWaiting();
 
                 // Send game event to player for end of turn
                 if(schema.isPlayerCharacter)
@@ -175,7 +175,7 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
             // Helps the simulation feel natural
             if(actionDelayTimer.update(gameTime))
             {
-                combatState = CombatState::DecideAction;
+                combat_SwitchStateDecide();
             }
 
             break;
@@ -209,7 +209,7 @@ void Character::combat_DecideAction(sf::Time &gameTime)
     {
         // TODO: Remove? Clean? Be sane?
         level->endTurn(this);
-        combatState = CombatState::Waiting;
+        combat_SwitchStateWaiting();
     }
 }
 
@@ -218,9 +218,9 @@ void Character::combat_DecideAction_MoveToLocation(int x, int y)
     // We have decided to move to a position, so we will set it up as our path
     schema.currentActionPoints--;
     pathToPosition(x, y);
-    combatState = CombatState::PerformAction;
     combatAction = CombatAction::Move;
     combatTilesTraversed = 0;
+    combat_SwitchStatePerform();
 }
 
 void Character::combat_PerformAction_MoveToLocation(sf::Time &gameTime)
@@ -233,7 +233,7 @@ void Character::combat_PerformAction_MoveToLocation(sf::Time &gameTime)
         {
             // Move to the delay state to end the current action
             combatTilesTraversed = 0;
-            combatState = CombatState::Delay;
+            combat_SwitchStateDelay();
         }
 
         // Else if its time to move
@@ -263,7 +263,7 @@ void Character::combat_PerformAction_MoveToLocation(sf::Time &gameTime)
     else
     {
         // If I have reached my destination head back to make my next decision
-        combatState = CombatState::Delay;
+        combat_SwitchStateDelay();
     }
 }
 
@@ -272,14 +272,50 @@ void Character::combat_DecideAction_AttackCharacter(Character* character)
     schema.currentActionPoints--;
     // TODO: do this
     targetEnemy = character;
-    combatState = CombatState::PerformAction;
     combatAction = CombatAction::Attack;
+    combat_SwitchStatePerform();
 }
 
 void Character::combat_PerformAction_AttackCharacter(sf::Time &gameTime)
 {
     // TODO: do this
     rangedAttack(targetEnemy);
+    combat_SwitchStateDelay();
+}
+
+void Character::combat_SwitchStateWaiting()
+{
+    combatState = CombatState::Waiting;
+}
+
+void Character::combat_SwitchStateDecide()
+{
+    // Send game event to player for end of decision making
+    if(schema.isPlayerCharacter)
+    {
+        level->server->sendEventToClient(*schema.player->client, [](bit::ServerPacket &packet){
+            packet << sf::Uint32(ServerEvent::CombatDecisionStart);
+        });
+    }
+
+    combatState = CombatState::DecideAction;
+}
+
+void Character::combat_SwitchStatePerform()
+{
+    // Send game event to player for end of decision making
+    if(schema.isPlayerCharacter)
+    {
+        level->server->sendEventToClient(*schema.player->client, [](bit::ServerPacket &packet){
+            packet << sf::Uint32(ServerEvent::CombatDecisionEnd);
+        });
+    }
+
+    combatState = CombatState::PerformAction;
+}
+
+void Character::combat_SwitchStateDelay()
+{
     combatState = CombatState::Delay;
 }
 

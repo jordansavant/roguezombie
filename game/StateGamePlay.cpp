@@ -635,9 +635,14 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
             case ServerEvent::CombatTurnStart:
                 displayMessage(std::string("Combat turn started"));
                 break;
-            
             case ServerEvent::CombatTurnEnd:
                 displayMessage(std::string("Combat turn ended"));
+                break;
+            case ServerEvent::CombatDecisionStart:
+                displayMessage(std::string("Combat decision started"));
+                break;
+            case ServerEvent::CombatDecisionEnd:
+                displayMessage(std::string("Combat decision ended"));
                 break;
         }
     }

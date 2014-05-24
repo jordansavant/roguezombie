@@ -159,6 +159,14 @@ public:
 
     virtual void combat_PerformAction_AttackCharacter(sf::Time &gameTime);
 
+    void combat_SwitchStateWaiting();
+
+    void combat_SwitchStateDecide();
+
+    void combat_SwitchStatePerform();
+     
+    void combat_SwitchStateDelay();
+
     virtual void distributedUpdate(sf::Time &gameTime);
 
     virtual void distributedUpdateAlive(sf::Time &gameTime);

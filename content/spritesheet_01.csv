@@ -8,6 +8,7 @@ Hunter_FrontArm,128,388,40,40,0,0,40,40,false
 Hunter_Head,86,464,40,40,0,0,40,40,false
 Hunter_Shadow,86,422,40,40,0,0,40,40,false
 Magnum357,44,440,40,40,0,0,40,40,false
+MoveMarker,86,356,28,16,0,0,28,16,false
 Ogre_Body,2,238,120,116,0,0,120,116,false
 Ogre_Dead,124,120,120,116,0,0,120,116,false
 Ogre_FrontArm,2,120,120,116,0,0,120,116,false
