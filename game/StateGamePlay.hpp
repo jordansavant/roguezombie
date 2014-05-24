@@ -94,6 +94,8 @@ public:
 
     void requestInteractionsForTile(unsigned int tileId);
 
+    void requestStatisticsForBodyOnTile(unsigned int tileId);
+
     void handleInteractionResponse(unsigned int tileId, Interaction::Type interaction, bit::ServerPacket &packet);
 
 protected:

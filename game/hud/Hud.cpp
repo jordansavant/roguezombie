@@ -4,6 +4,7 @@
 #include "Journal.hpp"
 #include "Inventory.hpp"
 #include "InteractionMenu.hpp"
+#include "StatBubble.hpp"
 #include "DialogMenu.hpp"
 #include "LootMenu.hpp"
 #include "Console.hpp"
@@ -39,6 +40,9 @@ Hud::Hud(StateGamePlay* _state)
 
     interactionMenu = new InteractionMenu(this);
     addChild(interactionMenu);
+
+    statBubble = new StatBubble(this);
+    addChild(statBubble);
     
     dialogMenu = new DialogMenu(this);
     addChild(dialogMenu);

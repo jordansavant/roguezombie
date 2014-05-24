@@ -384,7 +384,7 @@ void Character::kill()
 
 void Character::rangedAttack(Character* character)
 {
-    character->harm(100);
+    character->harm(10);
 }
 
 void Character::harm(int damage)
@@ -847,5 +847,27 @@ void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
             packet << sf::Uint32(missions[i]->schema.id);
             missions[i]->prepareSnapshot(packet);
         }
+    }
+}
+
+
+
+
+///////////////////////////////////////////////////////
+//                  FACTORIES                        //
+///////////////////////////////////////////////////////
+
+std::string Character::getTitle(Character::Type type)
+{
+    switch(type)
+    {
+        default:
+            return "Undefined";
+        case Character::Type::Zombie:
+            return "Zombie";
+        case Character::Type::Ogre:
+            return "Ogre";
+        case Character::Type::Hunter:
+            return "Hunter";
     }
 }

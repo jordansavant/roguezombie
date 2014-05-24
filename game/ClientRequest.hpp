@@ -5,6 +5,7 @@
 enum ClientRequest
 {
     GetInteractionOptions,
+    GetCharacterStatistics,
     Interaction,
     DialogResponse,
     TransferItem,

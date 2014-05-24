@@ -257,6 +257,10 @@ public:
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 
+    // Factories
+
+    static std::string getTitle(Character::Type type);
+
 protected:
 
     // Movement

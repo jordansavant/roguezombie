@@ -15,6 +15,7 @@
 #include "Command.hpp"
 #include "hud/Hud.hpp"
 #include "hud/InteractionMenu.hpp"
+#include "hud/StatBubble.hpp"
 #include "hud/DialogMenu.hpp"
 #include "hud/Inventory.hpp"
 #include "hud/LootMenu.hpp"
@@ -188,18 +189,14 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
                     TileClient* t = levelClient->hoveredTile;
 
                     // If the tile has a body and it is adjacent run interactions
-                    if(t->schema.bodyId > 0)
+                    if(t->schema.bodyId > 0 && t->ifBodyThenType == Body::Type::Character && !t->ifCharacterThenIsDead)
                     {
-                        displayMessage(std::string("Body detected"));
-                        if(t->isCardinallyAdjacent(levelClient->playerCharacter))
-                            requestInteractionsForTile(t->schema.id);
-                        else
-                            displayMessage(std::string("Too far away"));
+                        displayMessage(std::string("Living character detected"));
+                        requestStatisticsForBodyOnTile(t->schema.id);
                     }
                     // Else issue command to move to tile
                     else
                     {
-                        displayMessage(std::string("Body not detected, moving"));
                         Command cmd;
                         cmd.type = Command::Type::Combat_MoveToTile;
                         cmd.pack = [t] (sf::Packet &packet) {
@@ -552,6 +549,30 @@ void StateGamePlay::handleInteractionResponse(unsigned int tileId, Interaction::
         }
     }
 }
+
+
+void StateGamePlay::requestStatisticsForBodyOnTile(unsigned int tileId)
+{
+    StateGamePlay* s = this;
+    serverRequest(
+        [tileId] (bit::ClientPacket& packet) // prepare
+        {
+            packet << sf::Uint32(ClientRequest::GetCharacterStatistics);
+            packet << sf::Uint32(tileId);
+        },
+        [tileId, s] (bit::ServerPacket& packet) // onComplete
+        {
+            bit::Output::Debug("Client request character statistics received");
+            bool hasStatistics;
+            packet >> hasStatistics;
+            if(hasStatistics)
+            {
+                s->hud->statBubble->handleStats(packet, tileId);
+            }
+        }
+    );
+}
+
 /**
  * Packet handling
  */

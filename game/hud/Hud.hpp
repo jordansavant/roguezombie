@@ -13,6 +13,7 @@ class OptionsBar;
 class Journal;
 class Inventory;
 class InteractionMenu;
+class StatBubble;
 class DialogMenu;
 class LootMenu;
 class Console;
@@ -31,6 +32,7 @@ public:
     Journal* journal;
     Inventory* inventory;
     InteractionMenu* interactionMenu;
+    StatBubble* statBubble;
     DialogMenu* dialogMenu;
     LootMenu* lootMenu;
     Console* console;

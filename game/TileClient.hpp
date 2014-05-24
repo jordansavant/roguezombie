@@ -8,6 +8,7 @@
 #include "../bitengine/Graphics.hpp"
 #include "../bitengine/Network.hpp"
 #include "Tile.hpp"
+#include "Body.hpp"
 #include <deque>
 
 class LevelClient;
@@ -29,6 +30,8 @@ public:
     unsigned int width, height;
     float renderX, renderY;
     float centerRenderX, centerRenderY;
+    Body::Type ifBodyThenType;
+    bool ifCharacterThenIsDead;
 
     bool isCardinallyAdjacent(BodyClient* body);
     

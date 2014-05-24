@@ -190,6 +190,9 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
                     playerCharacter = c;
                 }
 
+                t->ifBodyThenType = Body::Type::Character;
+                t->ifCharacterThenIsDead = c->schema.isDead();
+
                 break;
             }
             case Body::Type::Structure:
@@ -209,11 +212,17 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
                         unpackNetworkEntity<ChestClient>(packet, full, chests, chestPool);
                         break;
                 }
+
+                t->ifBodyThenType = Body::Type::Structure;
+
                 break;
             }
             default:
             case Body::Type::None:
+            {
+                t->ifBodyThenType = Body::Type::None;
                 break;
+            }
         }
 
         if(addMini)
