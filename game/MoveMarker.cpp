@@ -24,7 +24,7 @@ void MoveMarker::renderAt(int worldX, int worldY, sf::Color &color)
     sf::Vector2f isoPosition = bit::VectorMath::normalToIsometric(worldX, worldY);
     renderX = isoPosition.x - 16;//schema.width;
     renderY = isoPosition.y + 8;
-    bit::VertexHelper::positionQuad(&level->vertexMap_01.vertexArray[quadIndex], renderX, renderY, 1, sprite->width, sprite->height);
+    bit::VertexHelper::positionQuad(&level->vertexMap_01.vertexArray[quadIndex], renderX, renderY, .1f, sprite->width, sprite->height);
     bit::VertexHelper::colorQuad(&level->vertexMap_01.vertexArray[quadIndex], color);
 }
 

@@ -108,9 +108,11 @@ void LevelClient::handleCombatDecisionStart(bit::ServerPacket &packet)
         packet >> tileId >> x >> y;
 
         // Render movement marker
-        sf::Color r(255, 0, 0);
-        sf::Color w(255, 255, 255);
-        moveMarkers[i].renderAt(x, y, i == 0 ? r : w);
+        if(i > 0)
+        {
+            sf::Color w(255, 255, 255);
+            moveMarkers[i].renderAt(x, y, w);
+        }
     }
 }
 
