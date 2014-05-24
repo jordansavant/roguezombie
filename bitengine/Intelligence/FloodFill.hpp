@@ -11,8 +11,14 @@ namespace bit
     {
     public:
 
-        static void compute(unsigned int x, unsigned int y, std::function<void(int, int)> inspect, std::function<bool(int, int)> isBlocked);
+        static unsigned int floodfillId;
+
+        static void compute(int x, int y, std::function<void(int, int, int)> inspect, std::function<bool(int, int, int)> isBlocked);
+
+    private:        
         
+        static void compute(int x, int y, std::function<void(int, int, int)> inspect, std::function<bool(int, int, int)> isBlocked, int depth);
+
     };
 }
 

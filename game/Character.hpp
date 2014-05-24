@@ -237,6 +237,14 @@ public:
 
     // Management
 
+    void sendCombatTurnStart();
+
+    void sendCombatTurnEnd();
+
+    void sendCombatDecisionStart();
+
+    void sendCombatDecisionEnd();
+
     virtual void setControllingPlayer(Player* player);
 
     virtual void getAvailableInteractions(std::vector<Interaction::Type> &fill);

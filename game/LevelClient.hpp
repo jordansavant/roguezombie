@@ -9,6 +9,7 @@
 #include "../bitengine/Structures.hpp"
 #include "StateGamePlay.hpp"
 #include "Level.hpp"
+#include "MoveMarker.hpp"
 #include <map>
 
 class BaseLevelClientRunner;
@@ -45,6 +46,7 @@ public:
     bit::Pool<ChestClient> chestPool;
     TileClient* hoveredTile;
     CharacterClient* playerCharacter;
+    std::vector<MoveMarker> moveMarkers;
 
     // Spritesheet 01;
     sf::Texture texture_spritesheet_01_unsmooth;
@@ -61,6 +63,10 @@ public:
     void captureInput(sf::Time &gameTime);
 
     void update(sf::Time &gameTime);
+
+    void handleCombatDecisionStart(bit::ServerPacket &packet);
+
+    void handleCombatDecisionEnd(bit::ServerPacket &packet);
 
     void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 

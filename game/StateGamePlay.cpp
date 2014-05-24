@@ -640,9 +640,11 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 break;
             case ServerEvent::CombatDecisionStart:
                 displayMessage(std::string("Combat decision started"));
+                levelClient->handleCombatDecisionStart(packet);
                 break;
             case ServerEvent::CombatDecisionEnd:
                 displayMessage(std::string("Combat decision ended"));
+                levelClient->handleCombatDecisionEnd(packet);
                 break;
         }
     }

@@ -296,7 +296,7 @@ DialogNode* Level::getDialogTree()
 bool Level::createPlayer(Player* player)
 {
     // Create character
-    Ogre* zombie = new Ogre();
+    Zombie* zombie = new Zombie();
     zombie->load(this, server->getNextBodyId(), 0, 0);
 
     // Assign Character

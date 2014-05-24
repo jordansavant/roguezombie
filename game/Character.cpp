@@ -110,15 +110,8 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
             {
                 // Refill my action points and move to decision making
                 schema.currentActionPoints = schema.maxActionPoints;
+                sendCombatTurnStart();
                 combat_SwitchStateDecide();
-
-                // Send game event to player for start of turn
-                if(schema.isPlayerCharacter)
-                {
-                    level->server->sendEventToClient(*schema.player->client, [](bit::ServerPacket &packet){
-                        packet << sf::Uint32(ServerEvent::CombatTurnStart);
-                    });
-                }
             }
 
             break;
@@ -141,12 +134,7 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
                 combat_SwitchStateWaiting();
 
                 // Send game event to player for end of turn
-                if(schema.isPlayerCharacter)
-                {
-                    level->server->sendEventToClient(*schema.player->client, [](bit::ServerPacket &packet){
-                        packet << sf::Uint32(ServerEvent::CombatTurnEnd);
-                    });
-                }
+                sendCombatTurnEnd();
 			}
             break;
 
@@ -290,12 +278,9 @@ void Character::combat_SwitchStateWaiting()
 
 void Character::combat_SwitchStateDecide()
 {
-    // Send game event to player for end of decision making
-    if(schema.isPlayerCharacter)
+    if(combatState != CombatState::Delay || schema.currentActionPoints > 0)
     {
-        level->server->sendEventToClient(*schema.player->client, [](bit::ServerPacket &packet){
-            packet << sf::Uint32(ServerEvent::CombatDecisionStart);
-        });
+        sendCombatDecisionStart();
     }
 
     combatState = CombatState::DecideAction;
@@ -303,13 +288,7 @@ void Character::combat_SwitchStateDecide()
 
 void Character::combat_SwitchStatePerform()
 {
-    // Send game event to player for end of decision making
-    if(schema.isPlayerCharacter)
-    {
-        level->server->sendEventToClient(*schema.player->client, [](bit::ServerPacket &packet){
-            packet << sf::Uint32(ServerEvent::CombatDecisionEnd);
-        });
-    }
+    sendCombatDecisionEnd();
 
     combatState = CombatState::PerformAction;
 }
@@ -713,6 +692,84 @@ void Character::checkMissions()
 ///////////////////////////////////////////////////////
 //                  MANAGEMENT                       //
 ///////////////////////////////////////////////////////
+
+void Character::sendCombatTurnStart()
+{
+    // Send game event to player for start of turn
+    if(schema.isPlayerCharacter)
+    {
+        level->server->sendEventToClient(*schema.player->client, [](bit::ServerPacket &packet){
+            packet << sf::Uint32(ServerEvent::CombatTurnStart);
+        });
+    }
+}
+
+void Character::sendCombatTurnEnd()
+{
+    // Send game event to player for end of turn
+    if(schema.isPlayerCharacter)
+    {
+        level->server->sendEventToClient(*schema.player->client, [](bit::ServerPacket &packet){
+            packet << sf::Uint32(ServerEvent::CombatTurnEnd);
+        });
+    }
+}
+
+void Character::sendCombatDecisionStart()
+{
+    // Send game event to player for start of decision making
+
+    if(schema.isPlayerCharacter)
+    {
+        Character* character = this;
+        level->server->sendEventToClient(*schema.player->client, [character] (bit::ServerPacket &packet){
+            packet << sf::Uint32(ServerEvent::CombatDecisionStart);
+            
+            // We need to send the available movement radius, flood fill the region
+            // for traversable locations within the speed of the character
+            Character* characterX = character;
+            int originX = character->Body::schema.x / character->level->tileWidth;
+            int originY = character->Body::schema.y / character->level->tileHeight;
+            int maxDistance = character->schema.speed;
+            std::vector<Tile*> traversables;
+
+            // Flood fill
+            bit::FloodFill::compute(originX, originY,
+                [characterX, maxDistance, &traversables] (int x, int y, int depth) { // inspection
+                    Tile* t = characterX->level->getTileAtIndices(x, y);
+                    if(t && t->metadata_floodfillId != bit::FloodFill::floodfillId)
+                    {
+                        t->metadata_floodfillId = bit::FloodFill::floodfillId;
+                        traversables.push_back(t);
+                    }
+                },
+                [characterX, maxDistance] (int x, int y, int depth) { // isBlocked
+                    return depth > maxDistance || characterX->inspectTileVisuallyBlocked(x, y);
+                }
+            );
+            packet << sf::Uint32(traversables.size());
+            for(unsigned int i=0; i < traversables.size(); i++)
+            {
+                // Send basic tile information for the move markers
+                packet << sf::Uint32(traversables[i]->schema.id);
+                packet << sf::Uint32(traversables[i]->schema.x);
+                packet << sf::Uint32(traversables[i]->schema.y);
+            }
+
+        });
+    }
+}
+
+void Character::sendCombatDecisionEnd()
+{
+    // Send game event to player for end of decision making
+    if(schema.isPlayerCharacter)
+    {
+        level->server->sendEventToClient(*schema.player->client, [](bit::ServerPacket &packet){
+            packet << sf::Uint32(ServerEvent::CombatDecisionEnd);
+        });
+    }
+}
 
 void Character::setControllingPlayer(Player* player)
 {

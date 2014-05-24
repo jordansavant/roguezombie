@@ -83,6 +83,7 @@ public:
     Body* body;
     Body* door;
     unsigned int metadata_shadowcastId;
+    unsigned int metadata_floodfillId;
     std::vector<std::function<void(Tile* t, Body* body)>> onBodyEnter;
     std::vector<std::function<void(Tile* t, Body* body)>> onBodyLeave;
 

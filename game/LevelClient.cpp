@@ -14,6 +14,7 @@
 #include "../bitengine/Network.hpp"
 #include "../ResourcePath.h"
 #include "SFML/Network.hpp"
+#include "MoveMarker.hpp"
 #include <map>
 
 LevelClient::LevelClient()
@@ -52,6 +53,13 @@ void LevelClient::load(StateGamePlay* _state)
     {
         runners[i]->buildPool();
     }
+
+    // Load move markers
+    moveMarkers.resize(100);
+    for(unsigned int i=0; i < moveMarkers.size(); i++)
+    {
+        moveMarkers[i].load(this);
+    }
 }
 
 void LevelClient::captureInput(sf::Time &gameTime)
@@ -85,6 +93,33 @@ void LevelClient::draw(sf::RenderTarget& target, sf::RenderStates states) const
     target.draw(vertexMap_01.vertexArray, states);
 
     bit::VideoGame::depthTestEnd();
+}
+
+void LevelClient::handleCombatDecisionStart(bit::ServerPacket &packet)
+{
+    // unpack the move markers
+    unsigned int size;
+    packet >> size;
+    for(unsigned int i=0; i < size; i++)
+    {
+        // unpack basic tile information
+        unsigned int tileId;
+        int x, y;
+        packet >> tileId >> x >> y;
+
+        // Render movement marker
+        sf::Color r(255, 0, 0);
+        sf::Color w(255, 255, 255);
+        moveMarkers[i].renderAt(x, y, i == 0 ? r : w);
+    }
+}
+
+void LevelClient::handleCombatDecisionEnd(bit::ServerPacket &packet)
+{
+    for(unsigned int i=0; i < moveMarkers.size(); i++)
+    {
+        moveMarkers[i].hide();
+    }
 }
 
 void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
