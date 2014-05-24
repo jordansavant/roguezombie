@@ -17,6 +17,7 @@ public:
     TurnQueue(Hud* hud);
 
     Hud* hud;
+    bit::Label* currentAp;
 
     void hide();
 

@@ -576,12 +576,19 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
     {
         case State::Combat:
             // Send the turn queue of enums
+            bool first = true;
             packet << sf::Uint32(turnQueue.size());
             for(unsigned int i=0; i < turnQueue.size(); i++)
             {
                 if(!turnQueue[i]->schema.isDead())
                 {
                     packet << true;
+                    if(first)
+                    {
+                        packet << sf::Uint32(turnQueue[i]->schema.maxActionPoints);
+                        packet << sf::Uint32(turnQueue[i]->schema.currentActionPoints);
+                        first = false;
+                    }
                     packet << sf::Uint32(turnQueue[i]->schema.type);
                 }
                 else

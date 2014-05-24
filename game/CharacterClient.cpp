@@ -34,9 +34,9 @@ void CharacterClient::reinitialize()
             sprite.baseOffsetY = 35;
             break;
         case Character::Type::Ogre:
-            sprite.width = 84;
+            sprite.width = 120;
             sprite.height = 116;
-            sprite.baseOffsetX = 30;
+            sprite.baseOffsetX = 48;
             sprite.baseOffsetY = 96;
             break;
     }
