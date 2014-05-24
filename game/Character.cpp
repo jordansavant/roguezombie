@@ -15,7 +15,7 @@
 #include "items/Item.hpp"
 
 Character::Character()
-    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), actionDelayTimer(1), hostilityCheckAi(NULL), combatDetectionAi(NULL), combatDecisionAi(NULL), isHostileCombatDetected(false), targetEnemy(NULL), combatTilesTraversed(0), moveTimer(.67f), equipment(), schema(), visionRadius(30)
+    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), actionDelayTimer(.1), hostilityCheckAi(NULL), combatDetectionAi(NULL), combatDecisionAi(NULL), isHostileCombatDetected(false), targetEnemy(NULL), combatTilesTraversed(0), moveTimer(.67f), equipment(), schema(), visionRadius(30)
 {
     equipment.resize(EquipmentSlot::_count, NULL);
 }
@@ -485,7 +485,7 @@ void Character::inspectCombatReachableTiles(std::function<void(Tile* t)> inspect
             }
         },
         [character, maxDistance] (int x, int y, int depth) { // isBlocked
-            return depth > maxDistance || character->inspectTileVisuallyBlocked(x, y);
+            return depth > maxDistance || character->inspectTileMobilityBlocked(x, y);
         }
     );
 }
@@ -499,6 +499,17 @@ bool Character::inspectTileVisuallyBlocked(int x, int y)
 bool Character::isTileVisuallyBlocked(Tile* t)
 {
     return (t && t->body && t->body->blockFoV);
+}
+
+bool Character::inspectTileMobilityBlocked(int x, int y)
+{
+    Tile* t = level->getTileAtPosition(x * level->tileWidth, y * level->tileHeight);
+    return isTileMobilityBlocked(t);
+}
+
+bool Character::isTileMobilityBlocked(Tile* t)
+{
+    return isTileBlockedForPathfinding(t);
 }
 
 ///////////////////////////////////////////////////////

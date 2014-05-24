@@ -17,6 +17,7 @@ class DialogMenu;
 class LootMenu;
 class Console;
 class TurnQueue;
+class ActionBar;
 
 class Hud : public bit::Container
 {
@@ -34,6 +35,7 @@ public:
     LootMenu* lootMenu;
     Console* console;
     TurnQueue* turnQueue;
+    ActionBar* actionBar;
     Minimap minimap;
     sf::Texture interfaceTexture;
     bit::VertexMap interfaceVertexMap;
@@ -52,6 +54,10 @@ public:
     void activateInventory(bool hideIfShowing = true);
 
     void deactivateInventory();
+
+    void onEnterCombat();
+
+    void onLeaveCombat();
 
     void displayMessage(std::string &message);
 

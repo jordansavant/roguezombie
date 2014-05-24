@@ -95,6 +95,18 @@ void LevelClient::draw(sf::RenderTarget& target, sf::RenderStates states) const
     bit::VideoGame::depthTestEnd();
 }
 
+void LevelClient::onEnterCombat()
+{
+    state->displayMessage(std::string("Combat mode engaged"));
+    state->hud->onEnterCombat();
+}
+
+void LevelClient::onLeaveCombat()
+{
+    state->displayMessage(std::string("Free mode resumed"));
+    state->hud->onLeaveCombat();
+}
+
 void LevelClient::handleCombatDecisionStart(bit::ServerPacket &packet)
 {
     // unpack the move markers
@@ -133,12 +145,11 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
     {
         if(lstate == Level::State::Free)
         {
-            state->displayMessage(std::string("Free mode resumed"));
-            state->hud->turnQueue->hide();
+            onLeaveCombat();
         }
         else
         {
-            state->displayMessage(std::string("Combat mode engaged"));
+            onEnterCombat();
         }
     }
     levelState = lstate;

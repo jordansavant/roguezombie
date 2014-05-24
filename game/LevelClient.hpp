@@ -64,6 +64,10 @@ public:
 
     void update(sf::Time &gameTime);
 
+    void onEnterCombat();
+
+    void onLeaveCombat();
+
     void handleCombatDecisionStart(bit::ServerPacket &packet);
 
     void handleCombatDecisionEnd(bit::ServerPacket &packet);

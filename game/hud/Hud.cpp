@@ -8,6 +8,7 @@
 #include "LootMenu.hpp"
 #include "Console.hpp"
 #include "TurnQueue.hpp"
+#include "ActionBar.hpp"
 #include "../../ResourcePath.h"
 #include "../../bitengine/Input.hpp"
 #include "../StateGamePlay.hpp"
@@ -28,6 +29,9 @@ Hud::Hud(StateGamePlay* _state)
 
     turnQueue = new TurnQueue(this);
     addChild(turnQueue);
+
+    actionBar = new ActionBar(this);
+    addChild(actionBar);
 
     // Special Menus
     optionsBar = new OptionsBar(this);
@@ -89,6 +93,17 @@ void Hud::draw(sf::RenderWindow &window, sf::Time &gameTime)
     bit::Container::draw(window, gameTime);
 }
 
+
+void Hud::onEnterCombat()
+{
+    actionBar->show();
+}
+
+void Hud::onLeaveCombat()
+{
+    turnQueue->hide();
+    actionBar->hide();
+}
 
 void Hud::hideAllMenus(Element* except)
 {

@@ -206,6 +206,10 @@ public:
 
     bool isTileVisuallyBlocked(Tile* t);
 
+    bool inspectTileMobilityBlocked(int x, int y);
+
+    bool isTileMobilityBlocked(Tile* t);
+
     // Inventory
 
     virtual bool equipFromInventory(EquipmentSlot slot, unsigned int itemId);

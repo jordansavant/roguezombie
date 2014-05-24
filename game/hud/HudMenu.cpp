@@ -30,7 +30,7 @@ HudMenu::HudMenu(Hud* hud, float relativeX, float relativeY, float width, float 
 
 void HudMenu::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
-    bit::Container::update(window, gameTime);
+    Frame::update(window, gameTime);
 }
 
 void HudMenu::hide()
