@@ -191,7 +191,6 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
                     // If the tile has a body and it is adjacent run interactions
                     if(t->schema.bodyId > 0 && t->ifBodyThenType == Body::Type::Character && !t->ifCharacterThenIsDead)
                     {
-                        displayMessage(std::string("Living character detected"));
                         requestStatisticsForBodyOnTile(t->schema.id);
                     }
                     // Else issue command to move to tile

@@ -65,6 +65,11 @@ public:
     unsigned int deathQuadIndex;
     void setDeathSprite(std::string& spriteName);
 
+    // Stat spriting
+    bit::Sprite* whiteSprite;
+    unsigned int healthQuadIndex;
+    unsigned int antiHealthQuadIndex;
+
     void load(CharacterClient* character, bit::SpriteLoader* spriteLoader, bit::VertexMap &vertexMap);
 
     void update(sf::Time &gameTime);

@@ -14,7 +14,7 @@
 #include <sstream>
 
 StatBubble::StatBubble(Hud* _hud)
-    : Frame(_hud, 50, 0, 200, 150, bit::Element::AnchorType::Left), isActive(false), tileId(0), tileClient(NULL), refreshTimer(2), fadeTimer(3)
+    : Frame(_hud, 50, 0, 150, 115, bit::Element::AnchorType::Left), isActive(false), tileId(0), tileClient(NULL), refreshTimer(2), fadeTimer(3)
 {
     useBottomPointer = true;
     managesOpacity = true;
@@ -87,7 +87,7 @@ void StatBubble::handleStats(bit::ServerPacket &packet, unsigned int tileId)
     this->tileClient = hud->state->levelClient->tiles[tileId];
 
     int y = 10;
-    int x = 15;
+    int x = 17;
     
     // unpack info
     Character::Type type;
@@ -108,7 +108,7 @@ void StatBubble::handleStats(bit::ServerPacket &packet, unsigned int tileId)
 
     // Health
     std::stringstream ssa;
-    ssa << health << "/" << maxHealth << " HP";
+    ssa << "HP " << health << "/" << maxHealth;
     label = new bit::Label(x, y, 0, 0, bit::Element::AnchorType::TopLeft);
     label->setSfFontSize(24);
     label->setSfFont(hud->journalFont);
@@ -121,7 +121,7 @@ void StatBubble::handleStats(bit::ServerPacket &packet, unsigned int tileId)
     
     // Speed
     std::stringstream ssb;
-    ssb << speed << " Speed";
+    ssb << "Speed " << speed;
     label = new bit::Label(x, y, 0, 0, bit::Element::AnchorType::TopLeft);
     label->setSfFontSize(24);
     label->setSfFont(hud->journalFont);

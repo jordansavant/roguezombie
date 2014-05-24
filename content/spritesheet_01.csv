@@ -21,6 +21,7 @@ Undefined_Head,86,380,40,40,0,0,40,40,false
 Undefined_Shadow,86,422,40,40,0,0,40,40,false
 Wall,124,238,64,64,0,0,64,64,false
 Water,124,304,64,32,0,0,64,32,false
+White,246,2,1,1,0,0,1,1,false
 Z4Rifle,44,356,40,40,0,0,40,40,false
 Zombie,2,356,40,40,0,0,40,40,false
 Zombie_Body,208,346,40,40,0,0,40,40,false
