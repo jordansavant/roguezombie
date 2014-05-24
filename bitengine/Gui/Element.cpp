@@ -168,6 +168,8 @@ float bit::Element::calculateViewRatio()
 {
     switch(scaleStyle)
     {
+        case ScaleStyle::None:
+            return 1;
         default:
         case ScaleStyle::Smooth:
             return std::min((float)VideoGame::currentResolution.x / (float)VideoGame::targetResolution.x, (float)VideoGame::currentResolution.y / (float)VideoGame::targetResolution.y);

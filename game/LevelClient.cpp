@@ -9,6 +9,7 @@
 #include "structures/ChestClient.hpp"
 #include "hud/Hud.hpp"
 #include "hud/Minimap.hpp"
+#include "hud/TurnQueue.hpp"
 #include "../bitengine/Math.hpp"
 #include "../bitengine/Network.hpp"
 #include "../ResourcePath.h"
@@ -94,11 +95,25 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
     if(lstate != levelState)
     {
         if(lstate == Level::State::Free)
+        {
             state->displayMessage(std::string("Free mode resumed"));
+            state->hud->turnQueue->hide();
+        }
         else
+        {
             state->displayMessage(std::string("Combat mode engaged"));
+        }
     }
     levelState = lstate;
+
+    // State data
+    switch(levelState)
+    {
+        case Level::State::Combat:
+            // Send the turn queue of enums
+            state->hud->turnQueue->handleTurnQueue(packet);
+            break;
+    }
 
     // Update / Create all entities
     unsigned int tileCount;

@@ -571,6 +571,27 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
     // Current level state
     packet << sf::Uint32(state);
 
+    // State specific data
+    switch(state)
+    {
+        case State::Combat:
+            // Send the turn queue of enums
+            packet << sf::Uint32(turnQueue.size());
+            for(unsigned int i=0; i < turnQueue.size(); i++)
+            {
+                if(!turnQueue[i]->schema.isDead())
+                {
+                    packet << true;
+                    packet << sf::Uint32(turnQueue[i]->schema.type);
+                }
+                else
+                {
+                    packet << false;
+                }
+            }
+            break;
+    }
+
     // Get a subset of visible tiles for the player within a radius of tiles
     std::vector<Tile*> visibles;
     p->character->inspectVisibleTiles([&visibles] (Tile* t) {

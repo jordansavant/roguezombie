@@ -37,6 +37,7 @@ namespace bit
 
         enum ScaleStyle
         {
+            None,
             Smooth,
             PowerOfTwo,
         };

@@ -18,6 +18,8 @@ public:
 
     Hud* hud;
 
+    void hide();
+
     void handleTurnQueue(bit::ServerPacket &packet);
 };
 
