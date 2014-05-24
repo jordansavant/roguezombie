@@ -200,6 +200,8 @@ public:
 
     void inspectVisibleCharacters(std::function<void(Character* c)> inspector, bool onlyLiving = true);
 
+    void inspectCombatReachableTiles(std::function<void(Tile*)> inspector);
+
     bool inspectTileVisuallyBlocked(int x, int y);
 
     bool isTileVisuallyBlocked(Tile* t);

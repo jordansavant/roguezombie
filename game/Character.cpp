@@ -467,6 +467,29 @@ void Character::inspectVisibleCharacters(std::function<void(Character* character
     );
 }
 
+void Character::inspectCombatReachableTiles(std::function<void(Tile* t)> inspector)
+{
+    Character* character = this;
+    int originX = character->Body::schema.x / character->level->tileWidth;
+    int originY = character->Body::schema.y / character->level->tileHeight;
+    int maxDistance = character->schema.speed;
+
+    // Flood fill
+    bit::FloodFill::compute(originX, originY,
+        [character, maxDistance, inspector] (int x, int y, int depth) { // inspection
+            Tile* t = character->level->getTileAtIndices(x, y);
+            if(t && t->metadata_floodfillId != bit::FloodFill::floodfillId)
+            {
+                t->metadata_floodfillId = bit::FloodFill::floodfillId;
+                inspector(t);
+            }
+        },
+        [character, maxDistance] (int x, int y, int depth) { // isBlocked
+            return depth > maxDistance || character->inspectTileVisuallyBlocked(x, y);
+        }
+    );
+}
+
 bool Character::inspectTileVisuallyBlocked(int x, int y)
 {
     Tile* t = level->getTileAtPosition(x * level->tileWidth, y * level->tileHeight);
@@ -734,19 +757,9 @@ void Character::sendCombatDecisionStart()
             std::vector<Tile*> traversables;
 
             // Flood fill
-            bit::FloodFill::compute(originX, originY,
-                [characterX, maxDistance, &traversables] (int x, int y, int depth) { // inspection
-                    Tile* t = characterX->level->getTileAtIndices(x, y);
-                    if(t && t->metadata_floodfillId != bit::FloodFill::floodfillId)
-                    {
-                        t->metadata_floodfillId = bit::FloodFill::floodfillId;
-                        traversables.push_back(t);
-                    }
-                },
-                [characterX, maxDistance] (int x, int y, int depth) { // isBlocked
-                    return depth > maxDistance || characterX->inspectTileVisuallyBlocked(x, y);
-                }
-            );
+            character->inspectCombatReachableTiles([&traversables] (Tile* t) {
+                traversables.push_back(t);
+            });
             packet << sf::Uint32(traversables.size());
             for(unsigned int i=0; i < traversables.size(); i++)
             {
@@ -755,7 +768,6 @@ void Character::sendCombatDecisionStart()
                 packet << sf::Uint32(traversables[i]->schema.x);
                 packet << sf::Uint32(traversables[i]->schema.y);
             }
-
         });
     }
 }
