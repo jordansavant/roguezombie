@@ -49,7 +49,7 @@ OptionsBar::OptionsBar(Hud* _hud)
     inventory = new HudElement(originX, 20, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     inventory->load(hud, std::string("optionbar_inventory"));
     inventory->onActivate = [_hud] (Element* e) {
-        if(_hud->state->mode == StateGamePlay::Mode::Inventory)
+        if(_hud->state->mode == StateGamePlay::Mode::Inventory || _hud->state->mode == StateGamePlay::Mode::Loot)
             _hud->state->changeMode(StateGamePlay::Mode::Free);
         else
             _hud->state->changeMode(StateGamePlay::Mode::Inventory);

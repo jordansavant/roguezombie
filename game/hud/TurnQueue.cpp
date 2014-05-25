@@ -8,7 +8,7 @@
 #include <sstream>
 
 TurnQueue::TurnQueue(Hud* _hud)
-    : bit::Container(-40, -10, 20, 128, bit::Element::AnchorType::BottomRight, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(_hud)
+    : bit::Container(-10, -10, 20, 128, bit::Element::AnchorType::BottomRight, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(_hud)
 {
     scaleStyle = ScaleStyle::None;
     
@@ -27,6 +27,7 @@ TurnQueue::TurnQueue(Hud* _hud)
     currentAp->setSfFont(hud->journalFont);
     currentAp->normalColor = sf::Color::White;
     currentAp->scaleStyle = Element::ScaleStyle::None;
+    currentAp->opacity = 0;
     addChild(currentAp);
 
     //targetWidth = originX;
@@ -60,6 +61,7 @@ void TurnQueue::handleTurnQueue(bit::ServerPacket &packet)
                 currentAp->setSfFontString(ss.str());
                 currentAp->relativePosition.x = -40;
                 currentAp->relativePosition.y = -6;
+                currentAp->opacity = 1;
                 first = false;
             }
 
