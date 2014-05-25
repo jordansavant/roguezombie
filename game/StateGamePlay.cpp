@@ -197,9 +197,11 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
                     else
                     {
                         Command cmd;
-                        cmd.type = Command::Type::Combat_MoveToTile;
+                        cmd.type = Command::Type::CombatCommand;
                         cmd.pack = [t] (sf::Packet &packet) {
+                            packet << sf::Uint32(Command::CombatTarget::Tile);
                             packet << sf::Uint32(t->schema.id);
+                            packet << sf::Uint32(Command::TileTargetCommand::Move);
                         };
 		                commandQueue.push_back(cmd);
                     }

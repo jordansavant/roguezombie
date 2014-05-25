@@ -29,6 +29,8 @@ public:
     void setCharacter(Character* character);
 
     void handleCommand(bit::ClientPacket &packet, Command::Type commandType);
+
+    bool validateCombat();
 };
 
 #endif

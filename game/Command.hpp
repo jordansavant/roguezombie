@@ -19,10 +19,28 @@ public:
 	    PlayerMoveLeft,
 	    PlayerMoveRight,
         PlayerDebug,
+        CombatCommand,
         Free_MoveToTile,
-        Combat_MoveToTile,
         Combat_AttackCharacter,
     };
+
+    enum CombatTarget
+    {
+        Tile,
+        Character,
+        Structure
+    };
+
+    enum TileTargetCommand
+    {
+        Move
+    };
+
+    enum CharacterTargetCommand
+    {
+        Attack
+    };
+
     Type type;
 
     std::function<void(sf::Packet &packet)> pack;

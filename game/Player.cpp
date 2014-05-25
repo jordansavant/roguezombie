@@ -62,25 +62,50 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
         }
 
         // Combat Commands
-        case Command::Type::Combat_MoveToTile:
+        case Command::Type::CombatCommand:
         {
-            unsigned int tileId;
-            packet >> tileId;
+            Command::CombatTarget target;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Command::CombatTarget>(packet, target);
 
-            // If we are in combat
-            if(level->state == Level::State::Combat)
+            switch(target)
             {
-                // If it is my turn
-                if(character->combatState == Character::CombatState::DecideAction)
+                // Tile Targetted commands
+                case Command::CombatTarget::Tile:
                 {
-                    Tile* t = level->tiles[tileId];
-                    if(t)
+                    unsigned int tileId;
+                    packet >> tileId;
+                    Command::TileTargetCommand cmd;
+                    bit::NetworkHelper::unpackEnum<sf::Uint32, Command::TileTargetCommand>(packet, cmd);
+
+                    switch(cmd)
                     {
-                        character->combat_DecideAction_MoveToLocation(t->schema.x, t->schema.y);
+                        case Command::TileTargetCommand::Move:
+                        {
+                            // Ensure we are in combat
+                            if(validateCombat())
+                            {
+                                // Find the tile and issue decision to move to it
+                                Tile* t = level->tiles[tileId];
+                                if(t)
+                                {
+                                    character->combat_DecideAction_MoveToLocation(t->schema.x, t->schema.y);
+                                }
+                            }
+
+                            break;
+                        }
                     }
+
+                    break;
                 }
             }
+
             break;
         }
 	}
+}
+
+bool Player::validateCombat()
+{
+    return level->state == Level::State::Combat && character && character->combatState == Character::CombatState::DecideAction;
 }
