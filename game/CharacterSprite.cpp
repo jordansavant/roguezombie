@@ -65,6 +65,8 @@ void CharacterSprite::update(sf::Time &gameTime)
     float levelCenterX = renderX + character->BodyClient::schema.width / 2;
     float levelCenterY = renderY + character->BodyClient::schema.height / 2;
     sf::Vector2f r = bit::VectorMath::normalToIsometric(levelCenterX, levelCenterY);
+    screenX = r.x;
+    screenY = r.y;
     r.x -= spriteWidth / 2;// + xFootOffset / 2;
     r.y -= yFootOffset;
     float z = bit::Math::calculateDrawDepth(r.y + spriteHeight);

@@ -61,9 +61,7 @@ void DialogMenu::hide()
 {
     canHaveFocus = false;
     clearEffects();
-    immediateEffect(new bit::FadeEffect(150, 0, bit::Easing::Linear, [](bit::Element* e, bit::Effect* f){
-        bool crap = true;
-    }));
+    immediateEffect(new bit::FadeEffect(150, 0, bit::Easing::Linear));
 }
 
 void DialogMenu::show()

@@ -2,6 +2,7 @@
 #include "../ResourcePath.h"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Input.hpp"
+#include "../bitengine/Audio.hpp"
 #include "StateGameStart.hpp"
 #include "StateGamePlay.hpp"
 #include "StateGameError.hpp"
@@ -12,6 +13,8 @@ RogueZombieGame::RogueZombieGame()
 	: VideoGame("Rogue Zombie", 1280, 720, false), errorMessage(""), mouse(resourcePath() + "mouse.png")
 {
     Game::stateStack->pushState(stateGameStart);
+    exploreMusic = musicManager->loadMusic(resourcePath() + "RockmenExplore.ogg");
+    combatMusic = musicManager->loadMusic(resourcePath() + "RockmenCombat.ogg");
 }
 
 unsigned int RogueZombieGame::stateGameIntroduction = 1;

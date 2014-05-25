@@ -19,6 +19,7 @@ public:
 
     CharacterClient* character;
     float renderX, renderY;
+    float screenX, screenY;
     unsigned int width, height, baseOffsetX, baseOffsetY;
     bool facingRight;
     float lastRenderX, lastRenderY;

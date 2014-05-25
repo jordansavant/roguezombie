@@ -20,6 +20,8 @@ public:
 
         std::string errorMessage;
         bit::Mouse mouse;
+        unsigned int exploreMusic;
+        unsigned int combatMusic;
 
 		virtual void update(sf::Time &gameTime);
 

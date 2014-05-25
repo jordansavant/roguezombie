@@ -33,7 +33,7 @@ public:
 
     virtual void show();
 
-    void handleStats(bit::ServerPacket &packet, unsigned int tileId);
+    void handleStats(unsigned int tileId);
 };
 
 #endif

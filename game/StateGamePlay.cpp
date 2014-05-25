@@ -189,9 +189,9 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
                     TileClient* t = levelClient->hoveredTile;
 
                     // If the tile has a body and it is adjacent run interactions
-                    if(t->schema.bodyId > 0 && t->ifBodyThenType == Body::Type::Character && !t->ifCharacterThenIsDead)
+                    if(t->schema.bodyId > 0 && t->hasCharacter && !t->characterClient->schema.isDead())
                     {
-                        requestStatisticsForBodyOnTile(t->schema.id);
+                        hud->statBubble->handleStats(t->schema.id);
                     }
                     // Else issue command to move to tile
                     else
@@ -547,29 +547,6 @@ void StateGamePlay::handleInteractionResponse(unsigned int tileId, Interaction::
             break;
         }
     }
-}
-
-
-void StateGamePlay::requestStatisticsForBodyOnTile(unsigned int tileId)
-{
-    StateGamePlay* s = this;
-    serverRequest(
-        [tileId] (bit::ClientPacket& packet) // prepare
-        {
-            packet << sf::Uint32(ClientRequest::GetCharacterStatistics);
-            packet << sf::Uint32(tileId);
-        },
-        [tileId, s] (bit::ServerPacket& packet) // onComplete
-        {
-            bit::Output::Debug("Client request character statistics received");
-            bool hasStatistics;
-            packet >> hasStatistics;
-            if(hasStatistics)
-            {
-                s->hud->statBubble->handleStats(packet, tileId);
-            }
-        }
-    );
 }
 
 /**

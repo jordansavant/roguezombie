@@ -14,7 +14,7 @@
 #include <sstream>
 
 StatBubble::StatBubble(Hud* _hud)
-    : Frame(_hud, 50, 0, 150, 115, bit::Element::AnchorType::Left), isActive(false), tileId(0), tileClient(NULL), refreshTimer(2), fadeTimer(3)
+    : Frame(_hud, 50, 0, 150, 115, bit::Element::AnchorType::Left), isActive(false), tileId(0), tileClient(NULL), refreshTimer(.1), fadeTimer(3)
 {
     useBottomPointer = true;
     managesOpacity = true;
@@ -23,21 +23,23 @@ StatBubble::StatBubble(Hud* _hud)
 
 void StatBubble::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
 {
-    if(tileClient)
+    if(tileClient && tileClient->hasCharacter)
     {
-        sf::Vector2i mapping = window.mapCoordsToPixel(sf::Vector2f(tileClient->centerRenderX, tileClient->centerRenderY));
+        int x = tileClient->characterClient->sprite.screenX;
+        int y = tileClient->characterClient->sprite.screenY;
+        sf::Vector2i mapping = window.mapCoordsToPixel(sf::Vector2f(x, y));
         left = mapping.x - width / 2;
         top = mapping.y - height - tileClient->height * 1.25;
         Frame::updateReals(window, gameTime);
 
         if(isActive && refreshTimer.update(gameTime))
         {
-            hud->state->requestStatisticsForBodyOnTile(tileId);
+            handleStats(tileId);
         }
-        if(isActive && fadeTimer.update(gameTime))
-        {
-            deactivate();
-        }
+    }
+    else if(isActive)
+    {
+        deactivate();
     }
 }
 
@@ -66,9 +68,7 @@ void StatBubble::hide()
 {
     canHaveFocus = false;
     clearEffects();
-    immediateEffect(new bit::FadeEffect(150, 0, bit::Easing::Linear, [](bit::Element* e, bit::Effect* f){
-        bool crap = true;
-    }));
+    immediateEffect(new bit::FadeEffect(150, 0, bit::Easing::Linear));
 }
 
 void StatBubble::show()
@@ -78,7 +78,7 @@ void StatBubble::show()
     immediateEffect(new bit::FadeEffect(150, 1));
 }
 
-void StatBubble::handleStats(bit::ServerPacket &packet, unsigned int tileId)
+void StatBubble::handleStats(unsigned int tileId)
 {
     clearChildren();
     activate();
@@ -89,11 +89,11 @@ void StatBubble::handleStats(bit::ServerPacket &packet, unsigned int tileId)
     int y = 10;
     int x = 17;
     
-    // unpack info
-    Character::Type type;
-    int health, maxHealth, speed;
-    bit::NetworkHelper::unpackEnum<sf::Uint32, Character::Type>(packet, type);
-    packet >> health >> maxHealth >> speed;
+    // Get info
+    Character::Type type = tileClient->characterClient->schema.type;
+    int health = tileClient->characterClient->schema.health;
+    int maxHealth = tileClient->characterClient->schema.maxHealth;
+    int speed = tileClient->characterClient->schema.speed;
 
     // Title
     bit::Label* label = new bit::Label(x, y, 0, 0, bit::Element::AnchorType::TopLeft);

@@ -265,38 +265,6 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
 
             break;
         }
-        case ClientRequest::GetCharacterStatistics:
-        {
-            bit::Output::Debug("Server detect request character statistics");
-
-            unsigned int tileId;
-            packet >> tileId;
-            Tile* t = player->level->getTileById(tileId);
-
-            if(t && t->body && t->body->Body::schema.id != player->character->Body::schema.id && t->body->schema.type == Body::Type::Character)
-            {
-                Character* c = static_cast<Character*>(t->body);
-
-                if(!c->schema.isDead())
-                {
-                    responsePacket << true;
-                    responsePacket << sf::Uint32(c->schema.type);
-                    responsePacket << sf::Uint32(c->schema.health);
-                    responsePacket << sf::Uint32(c->schema.maxHealth);
-                    responsePacket << sf::Uint32(c->schema.speed);
-                }
-                else
-                {
-                    responsePacket << false;
-                }
-            }
-            else
-            {
-                responsePacket << false;
-            }
-
-            break;
-        }
         case ClientRequest::DialogResponse:
         {
             bit::Output::Debug("Server detect request dialog response");

@@ -13,6 +13,8 @@
 
 class LevelClient;
 class BodyClient;
+class CharacterClient;
+class StructureClient;
 
 class TileClient
 {
@@ -30,8 +32,12 @@ public:
     unsigned int width, height;
     float renderX, renderY;
     float centerRenderX, centerRenderY;
-    Body::Type ifBodyThenType;
-    bool ifCharacterThenIsDead;
+    bool hasBody;
+    bool hasCharacter;
+    bool hasStructure;
+    BodyClient* bodyClient;
+    CharacterClient* characterClient;
+    StructureClient* structureClient;
 
     bool isCardinallyAdjacent(BodyClient* body);
     

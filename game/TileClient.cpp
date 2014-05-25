@@ -13,7 +13,8 @@
 #include <sstream>
 
 TileClient::TileClient()
-    : schema(), level(NULL), sprite(NULL), quadIndex(0), renderX(0), width(64), height(32), renderY(0), centerRenderX(0), centerRenderY(0), ifBodyThenType(Body::Type::None), ifCharacterThenIsDead(false)
+    : schema(), level(NULL), sprite(NULL), quadIndex(0), renderX(0), width(64), height(32), renderY(0), centerRenderX(0), centerRenderY(0),
+    hasBody(false), hasCharacter(false), hasStructure(false), bodyClient(NULL), characterClient(NULL), structureClient(NULL)
 {
 }
 

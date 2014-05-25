@@ -190,37 +190,46 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
                     playerCharacter = c;
                 }
 
-                t->ifBodyThenType = Body::Type::Character;
-                t->ifCharacterThenIsDead = c->schema.isDead();
+                t->hasBody = true;
+                t->hasCharacter = true;
+                t->bodyClient = c;
+                t->characterClient = c;
 
                 break;
             }
             case Body::Type::Structure:
             {
+                StructureClient* s;
+
                 unsigned int structureType;
                 packet >> structureType;
                 switch(static_cast<Structure::Type>(structureType))
                 {
                     case Structure::Type::Wall:
-                        unpackNetworkEntity<WallClient>(packet, full, walls, wallPool);
+                        s = unpackNetworkEntity<WallClient>(packet, full, walls, wallPool);
                         addMini = false;
                         break;
                     case Structure::Type::Door:
-                        unpackNetworkEntity<DoorClient>(packet, full, doors, doorPool);
+                        s = unpackNetworkEntity<DoorClient>(packet, full, doors, doorPool);
                         break;
                     case Structure::Type::Chest:
-                        unpackNetworkEntity<ChestClient>(packet, full, chests, chestPool);
+                        s = unpackNetworkEntity<ChestClient>(packet, full, chests, chestPool);
                         break;
                 }
 
-                t->ifBodyThenType = Body::Type::Structure;
+                t->hasBody = true;
+                t->hasStructure = false;
+                t->bodyClient = s;
+                t->structureClient = s;
 
                 break;
             }
             default:
             case Body::Type::None:
             {
-                t->ifBodyThenType = Body::Type::None;
+                t->hasBody = false;
+                t->hasCharacter = false;
+                t->hasStructure = false;
                 break;
             }
         }
