@@ -21,11 +21,12 @@ TurnQueue::TurnQueue(Hud* _hud)
         addChild(he);
     }
 
-    currentAp = new bit::Label(-60, -8, 0, 0, bit::Element::AnchorType::Bottom);
-    currentAp->setSfFontSize(21);
+    currentAp = new bit::Label(-40, -6, 0, 0, bit::Element::AnchorType::Bottom);
+    currentAp->setSfFontSize(14);
     currentAp->setSfFontString(std::string("1/2 AP"));
     currentAp->setSfFont(hud->journalFont);
     currentAp->normalColor = sf::Color::White;
+    currentAp->scaleStyle = Element::ScaleStyle::None;
     addChild(currentAp);
 
     //targetWidth = originX;
@@ -57,8 +58,8 @@ void TurnQueue::handleTurnQueue(bit::ServerPacket &packet)
                 std::stringstream ss;
                 ss << curAp << "/" << maxAp << " AP";
                 currentAp->setSfFontString(ss.str());
-                currentAp->relativePosition.x = -60;
-                currentAp->relativePosition.y = -8;
+                currentAp->relativePosition.x = -40;
+                currentAp->relativePosition.y = -6;
                 first = false;
             }
 

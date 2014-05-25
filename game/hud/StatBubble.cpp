@@ -27,7 +27,7 @@ void StatBubble::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     {
         sf::Vector2i mapping = window.mapCoordsToPixel(sf::Vector2f(tileClient->centerRenderX, tileClient->centerRenderY));
         left = mapping.x - width / 2;
-        top = mapping.y - height - tileClient->height;
+        top = mapping.y - height - tileClient->height * 1.25;
         Frame::updateReals(window, gameTime);
 
         if(isActive && refreshTimer.update(gameTime))
