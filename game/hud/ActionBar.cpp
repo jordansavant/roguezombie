@@ -1,6 +1,8 @@
 #include "ActionBar.hpp"
 #include "Hud.hpp"
 #include "HudElement.hpp"
+#include "../Command.hpp"
+#include "../StateGamePlay.hpp"
 
 ActionBar::ActionBar(Hud* hud)
     : Frame(hud, 0, 200, 1100, 200, bit::Element::AnchorType::Bottom, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3))
@@ -11,18 +13,26 @@ ActionBar::ActionBar(Hud* hud)
     int originY = 10;
     int xpadding = 2;
 
+    wait = new HudElement(originX, originY, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    wait->load(hud, std::string("optionbar_character"));
+    wait->onActivate = [hud] (Element* e) {
+        // Skip Command
+        Command cmd;
+        cmd.type = Command::Type::CombatCommand;
+        cmd.pack = [] (sf::Packet &packet) {
+            packet << sf::Uint32(Command::Target::NoTarget);
+            packet << sf::Uint32(Command::NonTargetCommand::Skip);
+        };
+        hud->state->issueCommand(cmd);
+    };
+    addChild(wait);
+    originX += wait->sprite->width + xpadding;
+
     attack = new HudElement(originX, originY, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     attack->load(hud, std::string("optionbar_options"));
     attack->onActivate = [hud] (Element* e) {
     };
     addChild(attack);
-    originX += attack->sprite->width + xpadding;
-
-    move = new HudElement(originX, originY, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
-    move->load(hud, std::string("optionbar_character"));
-    move->onActivate = [hud] (Element* e) {
-    };
-    addChild(move);
     originX += attack->sprite->width + xpadding;
 }
 

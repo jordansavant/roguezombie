@@ -56,6 +56,7 @@ public:
     {
         Move,
         Attack,
+        Skip,
     };
 
     CombatState combatState;
@@ -158,6 +159,10 @@ public:
     virtual void combat_DecideAction_AttackCharacter(Character* character);
 
     virtual void combat_PerformAction_AttackCharacter(sf::Time &gameTime);
+
+    virtual void combat_DecideAction_Skip();
+
+    virtual void combat_PerformAction_Skip(sf::Time &gameTime);
 
     void combat_SwitchStateWaiting();
 

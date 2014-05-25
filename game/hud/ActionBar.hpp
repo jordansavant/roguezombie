@@ -19,8 +19,8 @@ public:
     ActionBar(Hud* hud);
 
     float originX, originY;
+    HudElement* wait;
     HudElement* attack;
-    HudElement* move;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 

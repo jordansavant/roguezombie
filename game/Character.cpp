@@ -153,6 +153,12 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
                     combat_PerformAction_AttackCharacter(gameTime);
 
                     break;
+
+                case CombatAction::Skip:
+
+                    combat_PerformAction_Skip(gameTime);
+
+                    break;
             }
 
             break;
@@ -268,6 +274,18 @@ void Character::combat_PerformAction_AttackCharacter(sf::Time &gameTime)
 {
     // TODO: do this
     rangedAttack(targetEnemy);
+    combat_SwitchStateDelay();
+}
+
+void Character::combat_DecideAction_Skip()
+{
+    schema.currentActionPoints--;
+    combatAction = CombatAction::Skip;
+    combat_SwitchStatePerform();
+}
+
+void Character::combat_PerformAction_Skip(sf::Time &gameTime)
+{
     combat_SwitchStateDelay();
 }
 

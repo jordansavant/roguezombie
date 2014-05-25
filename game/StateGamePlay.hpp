@@ -80,6 +80,8 @@ public:
 
     void modeOnUpdateCommonListener(sf::Time &gameTime);
 
+    void issueCommand(Command cmd);
+
     virtual bool handleInput(sf::Time &gameTime);
 
     virtual bool update(sf::Time &gameTime);

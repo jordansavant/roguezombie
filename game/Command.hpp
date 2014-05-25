@@ -26,9 +26,15 @@ public:
 
     enum Target
     {
+        NoTarget,
         Tile,
         Character,
         Structure
+    };
+
+    enum NonTargetCommand
+    {
+        Skip
     };
 
     enum TargetTileCommand

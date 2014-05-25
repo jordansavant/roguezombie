@@ -92,6 +92,26 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
 
             switch(target)
             {
+                case Command::Target::NoTarget:
+                {
+                    Command::NonTargetCommand cmd;
+                    bit::NetworkHelper::unpackEnum<sf::Uint32, Command::NonTargetCommand>(packet, cmd);
+                    switch(cmd)
+                    {
+                        case Command::NonTargetCommand::Skip:
+                        {
+                            if(validateCombat())
+                            {
+                                character->combat_DecideAction_Skip();
+                            }
+
+                            break;
+                        }
+                    }
+
+                    break;
+                }
+
                 // Tile Targetted commands
                 case Command::Target::Tile:
                 {

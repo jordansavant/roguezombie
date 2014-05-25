@@ -394,6 +394,10 @@ void StateGamePlay::modeOnUpdateCommonListener(sf::Time &gameTime)
     }
 }
 
+void StateGamePlay::issueCommand(Command cmd)
+{
+	commandQueue.push_back(cmd);
+}
 
 bool StateGamePlay::handleInput(sf::Time &gameTime)
 {

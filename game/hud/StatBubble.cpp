@@ -83,8 +83,15 @@ void StatBubble::handleStats(unsigned int tileId)
     clearChildren();
     activate();
 
+    auto itr = hud->state->levelClient->tiles.find(tileId);
+    if(itr == hud->state->levelClient->tiles.end())
+    {
+        deactivate();
+        return;
+    }
+
     this->tileId = tileId;
-    this->tileClient = hud->state->levelClient->tiles[tileId];
+    this->tileClient = itr->second;
 
     int y = 10;
     int x = 17;
