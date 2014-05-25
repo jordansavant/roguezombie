@@ -14,7 +14,7 @@ ActionBar::ActionBar(Hud* hud)
     int xpadding = 2;
 
     wait = new HudElement(originX, originY, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
-    wait->load(hud, std::string("optionbar_character"));
+    wait->load(hud, std::string("optionbar_hourglass"));
     wait->onActivate = [hud] (Element* e) {
         // Skip Command
         Command cmd;
