@@ -45,41 +45,64 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
 			break;
 
         // Free Mode Commands
-        case Command::Type::Free_MoveToTile:
+        case Command::Type::FreeCommand:
         {
-            unsigned int tileId;
-            packet >> tileId;
+            Command::Target target;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Command::Target>(packet, target);
 
-            if(level->state == Level::State::Free)
+            switch(target)
             {
-                Tile* t = level->tiles[tileId];
-                if(t)
+                // Tile Targetted commands
+                case Command::Target::Tile:
                 {
-                    character->pathToPosition(t->schema.x, t->schema.y);
+                    unsigned int tileId;
+                    packet >> tileId;
+                    Command::TargetTileCommand cmd;
+                    bit::NetworkHelper::unpackEnum<sf::Uint32, Command::TargetTileCommand>(packet, cmd);
+
+                    switch(cmd)
+                    {
+                        case Command::TargetTileCommand::Move:
+                        {
+                            // Ensure we are in free mode
+                            if(validateFree())
+                            {
+                                // Find the tile and issue decision to move to it
+                                Tile* t = level->tiles[tileId];
+                                if(t)
+                                {
+                                    character->pathToPosition(t->schema.x, t->schema.y);
+                                }
+                            }
+
+                            break;
+                        }
+                    }
+
+                    break;
                 }
             }
-            break;
         }
 
         // Combat Commands
         case Command::Type::CombatCommand:
         {
-            Command::CombatTarget target;
-            bit::NetworkHelper::unpackEnum<sf::Uint32, Command::CombatTarget>(packet, target);
+            Command::Target target;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Command::Target>(packet, target);
 
             switch(target)
             {
                 // Tile Targetted commands
-                case Command::CombatTarget::Tile:
+                case Command::Target::Tile:
                 {
                     unsigned int tileId;
                     packet >> tileId;
-                    Command::TileTargetCommand cmd;
-                    bit::NetworkHelper::unpackEnum<sf::Uint32, Command::TileTargetCommand>(packet, cmd);
+                    Command::TargetTileCommand cmd;
+                    bit::NetworkHelper::unpackEnum<sf::Uint32, Command::TargetTileCommand>(packet, cmd);
 
                     switch(cmd)
                     {
-                        case Command::TileTargetCommand::Move:
+                        case Command::TargetTileCommand::Move:
                         {
                             // Ensure we are in combat
                             if(validateCombat())
@@ -103,6 +126,11 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
             break;
         }
 	}
+}
+
+bool Player::validateFree()
+{
+    return level->state == Level::State::Free && character;
 }
 
 bool Player::validateCombat()

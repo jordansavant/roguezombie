@@ -20,23 +20,23 @@ public:
 	    PlayerMoveRight,
         PlayerDebug,
         CombatCommand,
-        Free_MoveToTile,
+        FreeCommand,
         Combat_AttackCharacter,
     };
 
-    enum CombatTarget
+    enum Target
     {
         Tile,
         Character,
         Structure
     };
 
-    enum TileTargetCommand
+    enum TargetTileCommand
     {
         Move
     };
 
-    enum CharacterTargetCommand
+    enum TargetCharacterCommand
     {
         Attack
     };

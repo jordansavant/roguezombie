@@ -30,6 +30,8 @@ public:
 
     void handleCommand(bit::ClientPacket &packet, Command::Type commandType);
 
+    bool validateFree();
+
     bool validateCombat();
 };
 
