@@ -141,6 +141,37 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
 
                     break;
                 }
+
+                // Character Targetted commands
+                case Command::Target::Character:
+                {
+                    unsigned int tileId;
+                    packet >> tileId;
+                    Command::TargetCharacterCommand cmd;
+                    bit::NetworkHelper::unpackEnum<sf::Uint32, Command::TargetCharacterCommand>(packet, cmd);
+
+                    switch(cmd)
+                    {
+                        case Command::TargetCharacterCommand::Attack:
+                        {
+                            // Ensure we are in combat
+                            if(validateCombat())
+                            {
+                                // Find the tile and issue decision to move to it
+                                Tile* t = level->tiles[tileId];
+                                if(t && t->body && t->body->schema.type == Body::Type::Character)
+                                {
+                                    Character* target = static_cast<Character*>(t->body);
+                                    character->combat_DecideAction_AttackCharacter(target);
+                                }
+                            }
+
+                            break;
+                        }
+                    }
+
+                    break;
+                }
             }
 
             break;

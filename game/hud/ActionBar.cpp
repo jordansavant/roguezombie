@@ -37,10 +37,12 @@ ActionBar::ActionBar(Hud* hud)
     attack->load(hud, std::string("optionbar_options"));
     attack->onActivate = [hud] (Element* e) {
         // Attack Command
+        Hud* hudx = hud;
         Command cmd;
         cmd.type = Command::Type::CombatCommand;
-        cmd.pack = [] (sf::Packet &packet) {
+        cmd.pack = [hudx] (sf::Packet &packet) {
             packet << sf::Uint32(Command::Target::Character);
+            packet << sf::Uint32(hudx->state->combatTargettedTileId);
             packet << sf::Uint32(Command::TargetCharacterCommand::Attack);
         };
         hud->state->issueCommand(cmd);

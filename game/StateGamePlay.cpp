@@ -23,7 +23,8 @@
 #include <sstream>
 
 StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, bool isClient, bool isHost)
-    : bit::ClientServerState(stack, _game, isClient, isHost), rogueZombieGame(_game), levelClient(NULL), mode(Mode::Free), fps()
+    : bit::ClientServerState(stack, _game, isClient, isHost), rogueZombieGame(_game), levelClient(NULL), mode(Mode::Free), fps(),
+      combatTargettedTileId(0)
 {
     levelClient = new LevelClient();
     std::string fpsFontPath(resourcePath() + "Agency.ttf");
@@ -193,6 +194,7 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
                     // If the tile has a body and it is adjacent run interactions
                     if(t->schema.bodyId > 0 && t->hasCharacter && !t->characterClient->schema.isDead())
                     {
+                        combatTargettedTileId = t->schema.id;
                         hud->statBubble->handleStats(t->schema.id);
                     }
                     // Else issue command to move to tile
@@ -224,6 +226,22 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
         disconnect();
     }
 }
+
+
+void StateGamePlay::onEnterCombat()
+{
+    displayMessage(std::string("Combat mode engaged"));
+    hud->onEnterCombat();
+    combatTargettedTileId = 0;
+}
+
+void StateGamePlay::onLeaveCombat()
+{
+    displayMessage(std::string("Free mode resumed"));
+    hud->onLeaveCombat();
+    combatTargettedTileId = 0;
+}
+
 
 
 ////////////////////////////////////////////////////////////////////////

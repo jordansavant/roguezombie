@@ -23,7 +23,7 @@ StatBubble::StatBubble(Hud* _hud)
 
 void StatBubble::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
 {
-    if(tileClient && tileClient->hasCharacter)
+    if(tileClient && tileClient->hasCharacter && !tileClient->characterClient->schema.isDead())
     {
         int x = tileClient->characterClient->sprite.screenX;
         int y = tileClient->characterClient->sprite.screenY;

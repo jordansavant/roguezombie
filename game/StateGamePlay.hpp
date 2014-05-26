@@ -44,6 +44,7 @@ public:
 	std::vector<Command> commandQueue;
     sf::Vector2f mousePositionInLevel;
     bit::FrameTimer fps;
+    unsigned int combatTargettedTileId;
 
     // Test Gui
     Hud* hud;
@@ -79,6 +80,9 @@ public:
     void modeOnUpdateJournal(sf::Time &gameTime);
 
     void modeOnUpdateCommonListener(sf::Time &gameTime);
+
+    void onEnterCombat();
+    void onLeaveCombat();
 
     void issueCommand(Command cmd);
 

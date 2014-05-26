@@ -64,6 +64,8 @@ public:
 
     void update(sf::Time &gameTime);
 
+    void clearMoveMarkers();
+
     void onEnterCombat();
 
     void onLeaveCombat();

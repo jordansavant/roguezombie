@@ -95,16 +95,23 @@ void LevelClient::draw(sf::RenderTarget& target, sf::RenderStates states) const
     bit::VideoGame::depthTestEnd();
 }
 
+void LevelClient::clearMoveMarkers()
+{
+    for(unsigned int i=0; i < moveMarkers.size(); i++)
+    {
+        moveMarkers[i].hide();
+    }
+}
+
 void LevelClient::onEnterCombat()
 {
-    state->displayMessage(std::string("Combat mode engaged"));
-    state->hud->onEnterCombat();
+    state->onEnterCombat();
 }
 
 void LevelClient::onLeaveCombat()
 {
-    state->displayMessage(std::string("Free mode resumed"));
-    state->hud->onLeaveCombat();
+    state->onLeaveCombat();
+    clearMoveMarkers();
 }
 
 void LevelClient::handleCombatDecisionStart(bit::ServerPacket &packet)
@@ -130,10 +137,7 @@ void LevelClient::handleCombatDecisionStart(bit::ServerPacket &packet)
 
 void LevelClient::handleCombatDecisionEnd(bit::ServerPacket &packet)
 {
-    for(unsigned int i=0; i < moveMarkers.size(); i++)
-    {
-        moveMarkers[i].hide();
-    }
+    clearMoveMarkers();
 }
 
 void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
