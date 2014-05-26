@@ -31,6 +31,14 @@ ActionBar::ActionBar(Hud* hud)
     attack = new HudElement(originX, originY, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     attack->load(hud, std::string("optionbar_options"));
     attack->onActivate = [hud] (Element* e) {
+        // Attack Command
+        Command cmd;
+        cmd.type = Command::Type::CombatCommand;
+        cmd.pack = [] (sf::Packet &packet) {
+            packet << sf::Uint32(Command::Target::Character);
+            packet << sf::Uint32(Command::TargetCharacterCommand::Attack);
+        };
+        hud->state->issueCommand(cmd);
     };
     addChild(attack);
     originX += attack->sprite->width + xpadding;
