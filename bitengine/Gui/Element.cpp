@@ -5,23 +5,24 @@
 #include <functional>
 #include "Effect.hpp"
 #include "Draggable.hpp"
+#include "Hoverable.hpp"
 #include "../Game/VideoGame.hpp"
 #include "../Math/Math.hpp"
 
 bit::Element::Element()
-    : sf::FloatRect(), parentElement(NULL), relativePosition(), anchorType(AnchorType::Center), scaleStyle(ScaleStyle::Smooth), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL), onAfterUpdate(NULL), onActivate(NULL), hasPositioned(false), removeFromParent(false), transitFromParent(false), draggable(NULL)
+    : sf::FloatRect(), parentElement(NULL), relativePosition(), anchorType(AnchorType::Center), scaleStyle(ScaleStyle::Smooth), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL), onAfterUpdate(NULL), onActivate(NULL), hasPositioned(false), removeFromParent(false), transitFromParent(false), draggable(NULL), hoverable(NULL)
 {
 }
 
 bit::Element::Element(float relativeX, float relativeY, float width, float height, AnchorType anchorType)
-    : sf::FloatRect(0, 0, width, height), parentElement(NULL), relativePosition(relativeX, relativeY), anchorType(anchorType), scaleStyle(ScaleStyle::Smooth), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL), onAfterUpdate(NULL), onActivate(NULL), hasPositioned(false), removeFromParent(false), transitFromParent(false), draggable(NULL)
+    : sf::FloatRect(0, 0, width, height), parentElement(NULL), relativePosition(relativeX, relativeY), anchorType(anchorType), scaleStyle(ScaleStyle::Smooth), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL), onAfterUpdate(NULL), onActivate(NULL), hasPositioned(false), removeFromParent(false), transitFromParent(false), draggable(NULL), hoverable(NULL)
 {
     targetWidth = width;
     targetHeight = height;
 }
 
 bit::Element::Element(float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput)
-    : sf::FloatRect(0, 0, width, height), parentElement(NULL), relativePosition(relativeX, relativeY), anchorType(anchorType), scaleStyle(ScaleStyle::Smooth), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(true), lambdaListenToInput(lambdaListenToInput), onAfterUpdate(NULL), onActivate(NULL), hasPositioned(false), removeFromParent(false), transitFromParent(false), draggable(NULL)
+    : sf::FloatRect(0, 0, width, height), parentElement(NULL), relativePosition(relativeX, relativeY), anchorType(anchorType), scaleStyle(ScaleStyle::Smooth), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(true), lambdaListenToInput(lambdaListenToInput), onAfterUpdate(NULL), onActivate(NULL), hasPositioned(false), removeFromParent(false), transitFromParent(false), draggable(NULL), hoverable(NULL)
 {
     targetWidth = width;
     targetHeight = height;
@@ -129,6 +130,12 @@ void bit::Element::update(sf::RenderWindow &window, sf::Time &gameTime)
     if(draggable)
     {
         draggable->update(this, window, gameTime);
+    }
+
+    // Hoverable
+    if(hoverable)
+    {
+        hoverable->update(this, window, gameTime);
     }
 
     // Custom updater
@@ -260,10 +267,22 @@ sf::Vector2f bit::Element::calculateAnchor(sf::RenderWindow &window)
     }
 }
 
-void bit::Element::makeDraggable(bit::InputManager* inputManager)
+void bit::Element::makeDraggable(bit::InputManager* inputManager, std::function<void(Draggable*, bit::Element*)> onDragStart, std::function<bool(Draggable*, bit::Element*)> onDragStop)
 {
     if(draggable == NULL)
     {
         draggable = new Draggable(inputManager);
+        draggable->onDragStart = onDragStart;
+        draggable->onDragStop = onDragStop;
+    }
+}
+
+void bit::Element::makeHoverable(bit::InputManager* inputManager, std::function<void(Hoverable*, bit::Element*)> onHoverEnter, std::function<void(Hoverable*, bit::Element*)> onHoverLeave)
+{
+    if(hoverable == NULL)
+    {
+        hoverable = new Hoverable(inputManager);
+        hoverable->onHoverEnter = onHoverEnter;
+        hoverable->onHoverLeave = onHoverLeave;
     }
 }

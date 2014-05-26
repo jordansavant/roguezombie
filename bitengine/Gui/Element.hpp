@@ -12,6 +12,7 @@
 namespace bit
 {
     class Draggable;
+    class Hoverable;
     class InputManager;
 
     class Element : public sf::FloatRect
@@ -69,6 +70,7 @@ namespace bit
         bool removeFromParent;
         bool transitFromParent;
         Draggable* draggable;
+        Hoverable* hoverable;
 
         virtual void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
 
@@ -94,7 +96,9 @@ namespace bit
 
         sf::Vector2f calculateAnchor(sf::RenderWindow &window);
 
-        void makeDraggable(InputManager*);
+        void makeDraggable(InputManager*, std::function<void(Draggable*, bit::Element*)> onDragStart = NULL, std::function<bool(Draggable*, bit::Element*)> onDragStop = NULL);
+
+        void makeHoverable(InputManager*, std::function<void(Hoverable*, bit::Element*)> onHoverEnter = NULL, std::function<void(Hoverable*, bit::Element*)> onHoverLeave = NULL);
     };
 }
 #endif

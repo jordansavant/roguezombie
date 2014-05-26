@@ -10,6 +10,7 @@
 #include "Console.hpp"
 #include "TurnQueue.hpp"
 #include "ActionBar.hpp"
+#include "Tooltip.hpp"
 #include "../../ResourcePath.h"
 #include "../../bitengine/Input.hpp"
 #include "../StateGamePlay.hpp"
@@ -30,7 +31,7 @@ Hud::Hud(StateGamePlay* _state)
 
     turnQueue = new TurnQueue(this);
     addChild(turnQueue);
-
+    
     actionBar = new ActionBar(this);
     addChild(actionBar);
 
@@ -67,6 +68,9 @@ Hud::Hud(StateGamePlay* _state)
         submenus[i]->canHaveFocus = false;
         submenus[i]->opacity = 0;
     }
+
+    tooltip = new Tooltip(this);
+    addChild(tooltip);
 }
 
 void Hud::update(sf::RenderWindow &window, sf::Time &gameTime)
@@ -165,6 +169,11 @@ void Hud::deactivateInventory()
 void Hud::displayMessage(std::string &message)
 {
     console->print(message);
+}
+
+void Hud::displayTooltipAt(std::string &info, int screenX, int screenY)
+{
+    tooltip->displayAt(info, screenX, screenY);
 }
 
 bool Hud::typicalContainerControl(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime)

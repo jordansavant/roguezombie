@@ -5,9 +5,6 @@ bit::Draggable::Draggable(bit::InputManager* inputManager)
 {
 }
 
-bit::Element* bit::Draggable::draggingElement = NULL;
-bit::Draggable* bit::Draggable::draggingDraggable = NULL;
-
 void bit::Draggable::update(bit::Element* element, sf::RenderWindow &window, sf::Time &gameTime)
 {
     sf::Vector2i mousePositionInScreen = sf::Mouse::getPosition(window);
@@ -28,9 +25,6 @@ void bit::Draggable::update(bit::Element* element, sf::RenderWindow &window, sf:
 
                 elementOriginX = element->relativePosition.x;
                 elementOriginY = element->relativePosition.y;
-
-                draggingElement = element;
-                draggingDraggable = this;
 
                 if(onDragStart)
                 {
@@ -63,9 +57,6 @@ void bit::Draggable::update(bit::Element* element, sf::RenderWindow &window, sf:
                 element->relativePosition.x = elementOriginX;
                 element->relativePosition.y = elementOriginY;
             }
-
-            draggingElement = NULL;
-            draggingDraggable = NULL;
         }
     }
 }

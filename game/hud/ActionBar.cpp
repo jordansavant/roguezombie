@@ -3,6 +3,7 @@
 #include "HudElement.hpp"
 #include "../Command.hpp"
 #include "../StateGamePlay.hpp"
+#include "../RogueZombieGame.hpp"
 
 ActionBar::ActionBar(Hud* hud)
     : Frame(hud, 0, 200, 1100, 200, bit::Element::AnchorType::Bottom, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3))
@@ -17,6 +18,7 @@ ActionBar::ActionBar(Hud* hud)
     wait->load(hud, std::string("optionbar_hourglass"));
     wait->onActivate = [hud] (Element* e) {
         // Skip Command
+        hud->displayMessage(std::string("Player skips action"));
         Command cmd;
         cmd.type = Command::Type::CombatCommand;
         cmd.pack = [] (sf::Packet &packet) {
@@ -25,6 +27,9 @@ ActionBar::ActionBar(Hud* hud)
         };
         hud->state->issueCommand(cmd);
     };
+    wait->makeHoverable(hud->state->rogueZombieGame->inputManager, [hud](bit::Hoverable* h, bit::Element* me) {
+        hud->displayTooltipAt(std::string("Skip...\nGo to next action"), me->left + me->width / 2, me->top - 5);
+    });
     addChild(wait);
     originX += wait->sprite->width + xpadding;
 
@@ -40,6 +45,9 @@ ActionBar::ActionBar(Hud* hud)
         };
         hud->state->issueCommand(cmd);
     };
+    attack->makeHoverable(hud->state->rogueZombieGame->inputManager, [hud](bit::Hoverable* h, bit::Element* me) {
+        hud->displayTooltipAt(std::string("Attack...\nMust target enemy"), me->left + me->width / 2, me->top - 5);
+    });
     addChild(attack);
     originX += attack->sprite->width + xpadding;
 }

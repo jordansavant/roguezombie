@@ -19,6 +19,7 @@ class LootMenu;
 class Console;
 class TurnQueue;
 class ActionBar;
+class Tooltip;
 
 class Hud : public bit::Container
 {
@@ -38,6 +39,7 @@ public:
     Console* console;
     TurnQueue* turnQueue;
     ActionBar* actionBar;
+    Tooltip* tooltip;
     Minimap minimap;
     sf::Texture interfaceTexture;
     bit::VertexMap interfaceVertexMap;
@@ -62,6 +64,8 @@ public:
     void onLeaveCombat();
 
     void displayMessage(std::string &message);
+
+    void displayTooltipAt(std::string &info, int screenX, int screenY);
 
     bool typicalContainerControl(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime);
 

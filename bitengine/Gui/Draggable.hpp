@@ -22,9 +22,6 @@ namespace bit
         std::function<void(Draggable*, bit::Element*)> onDragStart;
         std::function<bool(Draggable*, bit::Element*)> onDragStop;
 
-        static bit::Element* draggingElement;
-        static Draggable* draggingDraggable;
-	
         void update(bit::Element* element, sf::RenderWindow &window, sf::Time &gameTime);
     };
 }

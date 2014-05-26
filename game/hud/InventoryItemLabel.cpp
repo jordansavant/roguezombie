@@ -20,8 +20,7 @@ InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, f
     paddingBottom = 10;
 
     InventoryItemLabel* label = this;
-    makeDraggable(inventory->hud->state->rogueZombieGame->inputManager);
-    draggable->onDragStop = [inventory, item, label] (bit::Draggable* d, Element* e) -> bool
+    makeDraggable(inventory->hud->state->rogueZombieGame->inputManager, NULL, [inventory, item, label] (bit::Draggable* d, Element* e) -> bool
     {
         // If dropping into an equipment slot
         for(unsigned int i=0; i < inventory->equipmentPanel->childElements.size(); i++)
@@ -94,5 +93,5 @@ InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, f
         }
 
         return false;
-    };
+    });
 }
