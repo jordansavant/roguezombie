@@ -12,19 +12,19 @@
 #include "../TileClient.hpp"
 
 Frame::Frame(Hud* _hud)
-    : bit::Container(0, 0, 160, 200, bit::Element::AnchorType::Center, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(_hud), useBottomPointer(false)
+    : bit::Container(0, 0, 160, 200, bit::Element::AnchorType::Center, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(_hud), useBottomPointer(false), color(sf::Color::White)
 {
     load();
 }
 
 Frame::Frame(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType)
-    : bit::Container(relativeX, relativeY, width, height, anchorType, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(hud), useBottomPointer(false)
+    : bit::Container(relativeX, relativeY, width, height, anchorType, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(hud), useBottomPointer(false), color(sf::Color::White)
 {
     load();
 }
 
 Frame::Frame(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput)
-    : bit::Container(relativeX, relativeY, width, height, anchorType, lambdaListenToInput), hud(hud), useBottomPointer(false)
+    : bit::Container(relativeX, relativeY, width, height, anchorType, lambdaListenToInput), hud(hud), useBottomPointer(false), color(sf::Color::White)
 {
     load();
 }
@@ -71,7 +71,7 @@ void Frame::updateTargets(sf::RenderWindow &window, sf::Time &gameTime)
     // Set target dimensions
     Container::updateTargets(window, gameTime);
 
-    sf::Color color(255, 255, 255, 255 * opacity);
+    color.a = 255 * opacity;
     bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[topLeftQuadIndex], color);
     bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[topRightQuadIndex], color);
     bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[bottomLeftQuadIndex], color);

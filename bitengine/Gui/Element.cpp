@@ -33,6 +33,7 @@ bit::Element::~Element()
     clearEffects();
 
     delete draggable;
+    delete hoverable;
 }
 
 void bit::Element::updateTargets(sf::RenderWindow &window, sf::Time &gameTime)

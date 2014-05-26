@@ -20,6 +20,7 @@ public:
     Frame(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput);
 
     Hud* hud;
+    sf::Color color;
     
     unsigned int topLeftQuadIndex;
     unsigned int topRightQuadIndex;

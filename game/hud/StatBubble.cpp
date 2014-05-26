@@ -92,6 +92,7 @@ void StatBubble::handleStats(unsigned int tileId)
 
     this->tileId = tileId;
     this->tileClient = itr->second;
+    Hud* hudx = hud;
 
     int y = 10;
     int x = 17;
