@@ -18,7 +18,7 @@
 #include <map>
 
 LevelClient::LevelClient()
-    : state(NULL), levelState(Level::State::Free), tilePool(), characterPool(), doorPool(), chestPool(), hoveredTile(NULL), playerCharacter(NULL)
+    : state(NULL), levelState(Level::State::Free), tilePool(), characterPool(), doorPool(), chestPool(), hoveredTile(NULL), playerCharacter(NULL), isPlayerDecisionMode(false)
 {
 }
 
@@ -116,6 +116,7 @@ void LevelClient::onLeaveCombat()
 
 void LevelClient::handleCombatDecisionStart(bit::ServerPacket &packet)
 {
+    isPlayerDecisionMode = true;
     // unpack the move markers
     unsigned int size;
     packet >> size;
@@ -137,6 +138,7 @@ void LevelClient::handleCombatDecisionStart(bit::ServerPacket &packet)
 
 void LevelClient::handleCombatDecisionEnd(bit::ServerPacket &packet)
 {
+    isPlayerDecisionMode = false;
     clearMoveMarkers();
 }
 

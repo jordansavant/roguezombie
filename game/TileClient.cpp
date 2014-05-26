@@ -100,7 +100,7 @@ void TileClient::clientUpdate(sf::Time &gameTime)
             }
         }
         // If we are playing in combat mode
-        else if(level->levelState == Level::State::Combat)
+        else if(level->levelState == Level::State::Combat && level->isPlayerDecisionMode)
         {
             // If I am the currently targetted tile, highlight me
             if(level->state->combatTargettedTileId == schema.id)

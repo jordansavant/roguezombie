@@ -18,13 +18,13 @@ ActionBar::ActionBar(Hud* hud)
     wait->load(hud, std::string("optionbar_hourglass"));
     wait->onActivate = [hud] (Element* e) {
         // Skip Command
-        hud->displayMessage(std::string("Player skips action"));
         Command cmd;
         cmd.type = Command::Type::CombatCommand;
         cmd.pack = [] (sf::Packet &packet) {
             packet << sf::Uint32(Command::Target::NoTarget);
             packet << sf::Uint32(Command::NonTargetCommand::Skip);
         };
+        hud->displayMessage(std::string("Player skips action"));
         hud->state->issueCommand(cmd);
     };
     wait->makeHoverable(hud->state->rogueZombieGame->inputManager, [hud](bit::Hoverable* h, bit::Element* me) {
@@ -45,6 +45,7 @@ ActionBar::ActionBar(Hud* hud)
             packet << sf::Uint32(hudx->state->combatTargettedTileId);
             packet << sf::Uint32(Command::TargetCharacterCommand::Attack);
         };
+        hud->displayMessage(std::string("Player attacks"));
         hud->state->issueCommand(cmd);
     };
     attack->makeHoverable(hud->state->rogueZombieGame->inputManager, [hud](bit::Hoverable* h, bit::Element* me) {

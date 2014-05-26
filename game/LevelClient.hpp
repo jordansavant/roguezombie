@@ -47,6 +47,7 @@ public:
     TileClient* hoveredTile;
     CharacterClient* playerCharacter;
     std::vector<MoveMarker> moveMarkers;
+    bool isPlayerDecisionMode;
 
     // Spritesheet 01;
     sf::Texture texture_spritesheet_01_unsmooth;

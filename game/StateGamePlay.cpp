@@ -118,31 +118,31 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
     {
 	    Command cmd;
         cmd.type = Command::Type::PlayerDebug;
-	    commandQueue.push_back(cmd);
+        issueCommand(cmd);
     }
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::W))
     {
         Command cmd;
         cmd.type = Command::Type::PlayerMoveUp;
-	    commandQueue.push_back(cmd);
+        issueCommand(cmd);
     }
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::S))
     {
 	    Command cmd;
         cmd.type = Command::Type::PlayerMoveDown;
-	    commandQueue.push_back(cmd);
+        issueCommand(cmd);
     }
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::A))
     {
 	    Command cmd;
         cmd.type = Command::Type::PlayerMoveLeft;
-	    commandQueue.push_back(cmd);
+        issueCommand(cmd);
     }
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::D))
     {
 	    Command cmd;
         cmd.type = Command::Type::PlayerMoveRight;
-	    commandQueue.push_back(cmd);
+        issueCommand(cmd);
     }
 
     switch(levelClient->levelState)
@@ -175,7 +175,7 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
                             packet << sf::Uint32(t->schema.id);
                             packet << sf::Uint32(Command::TargetTileCommand::Move);
                         };
-		                commandQueue.push_back(cmd);
+                        issueCommand(cmd);
                     }
                 }
             }
@@ -207,7 +207,8 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
                             packet << sf::Uint32(t->schema.id);
                             packet << sf::Uint32(Command::TargetTileCommand::Move);
                         };
-		                commandQueue.push_back(cmd);
+                        displayMessage(std::string("Player moves"));
+                        issueCommand(cmd);
                     }
                 }
             }
@@ -656,17 +657,15 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 hud->inventory->buildItemList();
                 break;
             case ServerEvent::CombatTurnStart:
-                displayMessage(std::string("Combat turn started"));
+                displayMessage(std::string("Turn begins"));
                 break;
             case ServerEvent::CombatTurnEnd:
-                displayMessage(std::string("Combat turn ended"));
+                displayMessage(std::string("Turn complete"));
                 break;
             case ServerEvent::CombatDecisionStart:
-                displayMessage(std::string("Combat decision started"));
                 levelClient->handleCombatDecisionStart(packet);
                 break;
             case ServerEvent::CombatDecisionEnd:
-                displayMessage(std::string("Combat decision ended"));
                 levelClient->handleCombatDecisionEnd(packet);
                 break;
         }
