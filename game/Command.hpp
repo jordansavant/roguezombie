@@ -34,7 +34,8 @@ public:
 
     enum NonTargetCommand
     {
-        Skip
+        Skip,
+        SwapWeapon
     };
 
     enum TargetTileCommand

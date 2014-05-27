@@ -21,6 +21,7 @@ public:
     float originX, originY;
     HudElement* wait;
     HudElement* attack;
+    HudElement* swap;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 

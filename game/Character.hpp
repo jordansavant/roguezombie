@@ -74,12 +74,11 @@ public:
     std::vector<Mission*> missions;
     std::vector<Item*> equipment;
     unsigned int visionRadius;
-    sf::Vector2f lastPosition;
 
 	struct Schema
 	{
         Schema()
-            : isPlayerCharacter(false), clientId(0), player(NULL), type(Type::None), directionX(0), directionY(0),
+            : isPlayerCharacter(false), clientId(0), player(NULL), type(Type::None), direction(0, 0),
              maxActionPoints(2), currentActionPoints(2), maxHealth(0), health(0), speed(3)
         {
             equipmentIds.resize(EquipmentSlot::_count, 0);
@@ -91,7 +90,7 @@ public:
         Player* player;
         Type type;
         std::vector<unsigned int> equipmentIds;
-        float directionX, directionY;
+        sf::Vector2f direction;
 
         // Stats
         int maxActionPoints;
@@ -108,8 +107,8 @@ public:
             packet << schema.isPlayerCharacter;
             packet << sf::Uint32(schema.clientId);
             packet << sf::Uint32(schema.type);
-            packet << schema.directionX;
-            packet << schema.directionY;
+            packet << schema.direction.x;
+            packet << schema.direction.y;
             packet << sf::Int32(schema.health);
             packet << sf::Int32(schema.speed);
             for(unsigned int i=0; i < schema.equipmentIds.size(); i++)
@@ -126,8 +125,8 @@ public:
             packet >> schema.isPlayerCharacter;
             packet >> schema.clientId;
             bit::NetworkHelper::unpackEnum<sf::Uint32, Character::Type>(packet, schema.type);
-            packet >> schema.directionX;
-            packet >> schema.directionY;
+            packet >> schema.direction.x;
+            packet >> schema.direction.y;
             packet >> schema.health;
             packet >> schema.speed;
             for(unsigned int i=0; i < Character::EquipmentSlot::_count; i++)
@@ -229,6 +228,7 @@ public:
 
     virtual void unequip(EquipmentSlot slot);
 
+    virtual void swapWeapons();
 
     // Movement
 

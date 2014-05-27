@@ -92,6 +92,7 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
 
             switch(target)
             {
+                // Commands without a target
                 case Command::Target::NoTarget:
                 {
                     Command::NonTargetCommand cmd;
@@ -103,6 +104,15 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
                             if(validateCombat())
                             {
                                 character->combat_DecideAction_Skip();
+                            }
+
+                            break;
+                        }
+                        case Command::NonTargetCommand::SwapWeapon:
+                        {
+                            if(validateCombat())
+                            {
+                                character->swapWeapons();
                             }
 
                             break;

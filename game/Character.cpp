@@ -270,6 +270,11 @@ void Character::combat_PerformAction_AttackCharacter(sf::Time &gameTime)
     // TODO: do this
     rangedAttack(targetEnemy);
     combat_SwitchStateDelay();
+
+    // Set the direction
+    sf::Vector2f dir = bit::VectorMath::directionToVector(Body::schema.x, Body::schema.y, targetEnemy->Body::schema.x, targetEnemy->Body::schema.y);
+    schema.direction.x = dir.x;
+    schema.direction.y = dir.y;
 }
 
 void Character::combat_DecideAction_Skip()
@@ -561,11 +566,11 @@ bool Character::equipFromInventory(EquipmentSlot slot, unsigned int itemId)
                     return false;
                 break;
             case EquipmentSlot::WeaponPrimary:
-                if(!bit::Math::bitwiseHasAny(item->schema.CategoryWeapon, ItemCategory::Weapon::WeaponRanged))
+                if(!bit::Math::bitwiseHasAny(item->schema.CategoryWeapon, ItemCategory::Weapon::WeaponRanged | ItemCategory::Weapon::WeaponMelee))
                     return false;
                 break;
             case EquipmentSlot::WeaponSecondary:
-                if(!bit::Math::bitwiseHasAny(item->schema.CategoryWeapon, ItemCategory::Weapon::WeaponMelee))
+                if(!bit::Math::bitwiseHasAny(item->schema.CategoryWeapon, ItemCategory::Weapon::WeaponRanged | ItemCategory::Weapon::WeaponMelee))
                     return false;
                 break;
         }
@@ -598,6 +603,15 @@ void Character::unequip(EquipmentSlot slot)
         schema.equipmentIds[slot] = 0;
         equipment[slot] = NULL;
     }
+}
+
+void Character::swapWeapons()
+{
+    // Haha its nullsafe!
+    Item* primary = equipment[Character::EquipmentSlot::WeaponPrimary];
+    Item* secondary = equipment[Character::EquipmentSlot::WeaponSecondary];
+    equipment[Character::EquipmentSlot::WeaponPrimary] = secondary;
+    equipment[Character::EquipmentSlot::WeaponSecondary] = primary;
 }
 
 ///////////////////////////////////////////////////////
@@ -662,8 +676,8 @@ bool Character::moveToPosition(float x, float y)
         }
 
         sf::Vector2f dir = bit::VectorMath::normalize(x - Body::schema.x, y - Body::schema.y);
-        schema.directionX = dir.x;
-        schema.directionY = dir.y;
+        schema.direction.x = dir.x;
+        schema.direction.y = dir.y;
 
         Body::schema.x = x;
         Body::schema.y = y;

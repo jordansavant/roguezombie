@@ -53,6 +53,26 @@ ActionBar::ActionBar(Hud* hud)
     });
     addChild(attack);
     originX += attack->sprite->width + xpadding;
+
+    swap = new HudElement(originX, originY, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    swap->load(hud, std::string("optionbar_options"));
+    swap->onActivate = [hud] (Element* e) {
+        // Attack Command
+        Hud* hudx = hud;
+        Command cmd;
+        cmd.type = Command::Type::CombatCommand;
+        cmd.pack = [hudx] (sf::Packet &packet) {
+            packet << sf::Uint32(Command::Target::NoTarget);
+            packet << sf::Uint32(Command::NonTargetCommand::SwapWeapon);
+        };
+        hud->displayMessage(std::string("Player swaps weapon"));
+        hud->state->issueCommand(cmd);
+    };
+    swap->makeHoverable(hud->state->rogueZombieGame->inputManager, [hud](bit::Hoverable* h, bit::Element* me) {
+        hud->displayTooltipAt(std::string("Swap primary and secondary weapon"), me->left + me->width / 2, me->top - 5);
+    });
+    addChild(swap);
+    originX += swap->sprite->width + xpadding;
 }
 
 void ActionBar::update(sf::RenderWindow &window, sf::Time &gameTime)

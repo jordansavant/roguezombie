@@ -52,7 +52,7 @@ void CharacterSprite::update(sf::Time &gameTime)
     {
         bit::VectorMath::incrementTowards(renderX, renderY, character->BodyClient::schema.x, character->BodyClient::schema.y, 4, 4);
     }
-    facingRight = character->schema.directionX > 0 || character->schema.directionY < 0;
+    facingRight = character->schema.direction.x > 0 || character->schema.direction.y < 0;
 
     // Calculate render position given sprite information and the isometric rendering
     float spriteWidth = (float)width;
@@ -95,7 +95,7 @@ void CharacterSprite::update(sf::Time &gameTime)
         // EQUIPMENT SPRITES
         for(unsigned int i=0; i < equipmentProfiles.size(); i++)
         {
-            if(equipmentProfiles[i].sprite)
+            if(equipmentProfiles[i].sprite && i != Character::EquipmentSlot::WeaponSecondary)
             {
                 bit::VertexHelper::positionQuad(&vertexMap->vertexArray[equipmentProfiles[i].quadIndex], r.x, r.y, z, spriteWidth, spriteHeight);
                 bit::VertexHelper::colorQuad(&vertexMap->vertexArray[equipmentProfiles[i].quadIndex], color);
