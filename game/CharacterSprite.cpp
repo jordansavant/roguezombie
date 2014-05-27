@@ -52,10 +52,7 @@ void CharacterSprite::update(sf::Time &gameTime)
     {
         bit::VectorMath::incrementTowards(renderX, renderY, character->BodyClient::schema.x, character->BodyClient::schema.y, 4, 4);
     }
-    if(lastRenderX != renderX || lastRenderY != renderY)
-    {
-        facingRight = lastRenderX < renderX || lastRenderY > renderY;
-    }
+    facingRight = character->schema.directionX > 0 || character->schema.directionY < 0;
 
     // Calculate render position given sprite information and the isometric rendering
     float spriteWidth = (float)width;

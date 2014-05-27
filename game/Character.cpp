@@ -66,14 +66,11 @@ void Character::update(sf::Time &gameTime)
         updateDead(gameTime);
     }
 
-    // If I am a player character and I have a light, update it
-    if(schema.isPlayerCharacter)
+    // If I have a light, update it
+    for(unsigned int i=0; i < lights.size(); i++)
     {
-        for(unsigned int i=0; i < lights.size(); i++)
-        {
-            lights[i]->x = Body::schema.x;
-            lights[i]->y = Body::schema.y;
-        }
+        lights[i]->x = Body::schema.x;
+        lights[i]->y = Body::schema.y;
     }
 
     // See if any missions are complete // TODO: distribute into a less updated manner
@@ -663,6 +660,10 @@ bool Character::moveToPosition(float x, float y)
         {
             newTiles[i]->setOccupyingBody(this);
         }
+
+        sf::Vector2f dir = bit::VectorMath::normalize(x - Body::schema.x, y - Body::schema.y);
+        schema.directionX = dir.x;
+        schema.directionY = dir.y;
 
         Body::schema.x = x;
         Body::schema.y = y;
