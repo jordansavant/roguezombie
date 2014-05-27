@@ -2,6 +2,7 @@
 #include "Tile.hpp"
 #include "LevelClient.hpp"
 #include "BodyClient.hpp"
+#include "CharacterClient.hpp"
 #include "StateGamePlay.hpp"
 #include "RogueZombieGame.hpp"
 #include "SFML/Graphics.hpp"
@@ -112,6 +113,11 @@ void TileClient::clientUpdate(sf::Time &gameTime)
             {
                 int s = bit::Math::clamp(255 * schema.illumination * 4, 0, 255);
                 c = sf::Color(s, s, s);
+            }
+            else if(level->hoveredTile == this && level->hoveredTile->hasCharacter && !level->hoveredTile->characterClient->schema.isDead())
+            {
+                int s = bit::Math::clamp(255 * schema.illumination * 4, 0, 255);
+                c = sf::Color(s, 0, 0);
             }
         }
     }

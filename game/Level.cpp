@@ -130,6 +130,9 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
                     Hunter* hunter = new Hunter();
                     hunter->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
                     hunters.push_back(hunter);
+                    hunter->hostilityCheckAi = AiRoutines::Combat::Hunter_DetectHostility;
+                    hunter->combatDecisionAi = AiRoutines::Combat::Hunter_DecideCombat;
+                    hunter->combatDetectionAi = AiRoutines::Combat::Zombie_DetectCombat;
 
                     hunter->getStartingDialog = std::bind(&Level::getDialogTree, this);
                     break;
