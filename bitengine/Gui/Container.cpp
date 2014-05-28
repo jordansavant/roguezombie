@@ -2,20 +2,21 @@
 #include "SFML/Graphics.hpp"
 #include "Element.hpp"
 #include "../Game/Game.hpp"
+#include "../Game/VideoGame.hpp"
 #include "../Math/Math.hpp"
 
 bit::Container::Container()
-    : Element(), childElements(), managesOpacity(false), focusedChild(NULL), focusedChildIndex(-1), transferChild(NULL)
+    : Element(), childElements(), managesOpacity(false), focusedChild(NULL), focusedChildIndex(-1), transferChild(NULL), fullscreen(false)
 {
 }
 
 bit::Container::Container(float relativeX, float relativeY, float width, float height, AnchorType anchorType)
-    : Element(relativeX, relativeY, width, height, anchorType), childElements(), managesOpacity(false), focusedChild(NULL), focusedChildIndex(-1), transferChild(NULL)
+    : Element(relativeX, relativeY, width, height, anchorType), childElements(), managesOpacity(false), focusedChild(NULL), focusedChildIndex(-1), transferChild(NULL), fullscreen(false)
 {
 }
 
 bit::Container::Container(float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput)
-    : Element(relativeX, relativeY, width, height, anchorType, lambdaListenToInput), childElements(), managesOpacity(false), focusedChild(NULL), focusedChildIndex(-1), transferChild(NULL)
+    : Element(relativeX, relativeY, width, height, anchorType, lambdaListenToInput), childElements(), managesOpacity(false), focusedChild(NULL), focusedChildIndex(-1), transferChild(NULL), fullscreen(false)
 {
 }
 
@@ -26,6 +27,25 @@ bit::Container::~Container()
     if(transferChild)
         delete transferChild;
 }
+
+void bit::Container::updateTargets(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    if(fullscreen)
+    {
+        targetWidth = bit::VideoGame::targetResolution.x;
+        targetHeight = bit::VideoGame::targetResolution.y;
+    }
+}
+
+void bit::Container::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    if(fullscreen)
+    {
+        width = window.getSize().x;
+        height = window.getSize().y;
+    }
+}
+
 
 void bit::Container::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
@@ -94,19 +114,12 @@ void bit::Container::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
     //debugRect.setPosition(left, top);
     //debugRect.setFillColor(sf::Color(230, 0, 255, bit::Math::clamp(255 * opacity, 0, 80)));
-    //debugRect.setSize(sf::Vector2f(targetWidth, targetHeight));
+    //debugRect.setSize(sf::Vector2f(width, height));
     //debugRect.setOutlineColor(sf::Color(255, 255, 255, bit::Math::clamp(255 * opacity, 0, 80)));
-    //debugRect.setScale(elementScale, elementScale);
-    //
     //if(isInfocus)
-    //{
     //    debugRect.setOutlineThickness(2);
-    //}
     //else
-    //{
     //    debugRect.setOutlineThickness(0);
-    //}
-    //
     //window.draw(debugRect);
 
     for(unsigned int i = 0; i < childElements.size(); i++)

@@ -20,6 +20,8 @@
 Hud::Hud(StateGamePlay* _state)
     : bit::Container(0, 0, _state->rogueZombieGame->targetResolution.x, _state->rogueZombieGame->targetResolution.y, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, this, std::placeholders::_1, std::placeholders::_2,  std::placeholders::_3)), state(_state)
 {
+    fullscreen = true;
+
     // Assets
     state->rogueZombieGame->spriteLoader->loadSprites(resourcePath() + "interface_01.csv");
     interfaceTexture.loadFromFile(resourcePath() + "interface_01.png");

@@ -22,6 +22,11 @@ namespace bit
 
         std::vector<Element*> childElements;
         bool managesOpacity;
+        bool fullscreen;
+
+        virtual void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
+
+        virtual void updateReals(sf::RenderWindow &window, sf::Time &gameTime);
 
         virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
