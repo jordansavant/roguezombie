@@ -456,8 +456,28 @@ void Character::detectCombatExit()
     }
 }
 
+/*
+    Diablo II: Chance To Hit = 200% * {AR / (AR + DR)} * {Alvl / (Alvl + Dlvl)}
+        AR = Attacker's Attack Rating
+        DR = Defender's Defense rating
+        Alvl = Attacker's level
+        Dlvl = Defender's level
+        Chance to hit is capped such that it can not be lower than 5% or higher than 95%.
+        Defense Rating:
+            Each equipment increases a flat armor rating
+            Your dexterity attribute also increases your defense,
+             multiplying across the total armor value, and thus
+             adding to your dexterity will add to your defense
+        Dexterity:
+            A multiplier for your attack rating calculation
+             as well as your defense rating calculation
+
+    XCOM: Chance To Hit = Aim (unit stat + modifiers) - Defence (unit stat + modifiers) = total (clamped to 1%, if negative) + range modifier = final result
+ */
 float Character::calculateChanceOfHit(Character* other)
 {
+    //
+
     return .75;
 }
 

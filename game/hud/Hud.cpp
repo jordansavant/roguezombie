@@ -17,6 +17,8 @@
 #include "../LevelClient.hpp"
 #include "../RogueZombieGame.hpp"
 
+float Hud::hoverlessOpacity = .5;
+
 Hud::Hud(StateGamePlay* _state)
     : bit::Container(0, 0, _state->rogueZombieGame->targetResolution.x, _state->rogueZombieGame->targetResolution.y, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, this, std::placeholders::_1, std::placeholders::_2,  std::placeholders::_3)), state(_state)
 {
@@ -95,8 +97,8 @@ void Hud::draw(sf::RenderWindow &window, sf::Time &gameTime)
     window.draw(interfaceVertexMap.vertexArray, states);
 
     // Minimap
-    states.transform *= minimap.getTransform();
-    window.draw(minimap.vertexMap.vertexArray, states);
+    //states.transform *= minimap.getTransform();
+    //window.draw(minimap.vertexMap.vertexArray, states);
 
     state->rogueZombieGame->depthTestEnd();
 

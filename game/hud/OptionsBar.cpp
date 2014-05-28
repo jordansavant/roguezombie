@@ -11,6 +11,17 @@ OptionsBar::OptionsBar(Hud* _hud)
     : bit::Container(50, 50, 320, 64, bit::Element::AnchorType::TopLeft, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(_hud)
 {
     scaleStyle = ScaleStyle::PowerOfTwo;
+    managesOpacity = true;
+    opacity = Hud::hoverlessOpacity;
+
+    makeHoverable(hud->state->rogueZombieGame->inputManager,
+        [](bit::Hoverable* h, bit::Element* e){
+            e->immediateEffect(new bit::FadeEffect(200, 1));
+        },
+        [](bit::Hoverable* h, bit::Element* e){
+            e->immediateEffect(new bit::FadeEffect(200, Hud::hoverlessOpacity));
+        }
+    );
     
     int originX = 0;
     int xpadding = 2;

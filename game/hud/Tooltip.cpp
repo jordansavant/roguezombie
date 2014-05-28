@@ -60,7 +60,7 @@ void Tooltip::show()
 {
     canHaveFocus = true;
     clearEffects();
-    immediateEffect(new bit::FadeEffect(150, 1));
+    queueEffect(new bit::Effect(500))->queueEffect(new bit::FadeEffect(150, 1));
 }
 
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {

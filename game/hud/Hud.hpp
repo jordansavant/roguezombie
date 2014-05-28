@@ -44,6 +44,7 @@ public:
     sf::Texture interfaceTexture;
     bit::VertexMap interfaceVertexMap;
     sf::Font journalFont;
+    static float hoverlessOpacity;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 

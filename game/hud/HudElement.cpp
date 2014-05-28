@@ -43,7 +43,8 @@ void HudElement::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     // Update real position of label
     Element::updateReals(window, gameTime);
 
-    sf::Color color(isInfocus ? sf::Color(200, 0, 0) : sf::Color::White);
+    sf::Color color(isInfocus ? sf::Color::White : sf::Color(150, 150, 150));
+    color.a = 255 * opacity;
 
     // Set Sprites details
     sprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[quadIndex]);
