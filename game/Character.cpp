@@ -456,6 +456,11 @@ void Character::detectCombatExit()
     }
 }
 
+float Character::calculateChanceOfHit(Character* other)
+{
+    return .75;
+}
+
 ///////////////////////////////////////////////////////
 //                 INSPECTION                        //
 ///////////////////////////////////////////////////////
@@ -829,6 +834,20 @@ void Character::sendCombatDecisionStart()
                 packet << sf::Uint32(traversables[i]->schema.x);
                 packet << sf::Uint32(traversables[i]->schema.y);
             }
+
+            // Calculate chance of hit for local enemies
+            std::vector<Character*> characters;
+            character->inspectVisibleCharacters([&characters](Character* c){
+                characters.push_back(c);
+            });
+            packet << sf::Uint32(characters.size());
+            for(unsigned int i=0; i < characters.size(); i++)
+            {
+                // Send basic tile information for the move markers
+                packet << sf::Uint32(characters[i]->Body::schema.id);
+                packet << character->calculateChanceOfHit(characters[i]);
+            }
+
         });
     }
 }

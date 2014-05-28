@@ -209,6 +209,8 @@ public:
 
     void detectCombatExit();
 
+    float calculateChanceOfHit(Character* character);
+
     // Inspection
 
     void inspectVisibleTiles(std::function<void(Tile* t)> inspector);

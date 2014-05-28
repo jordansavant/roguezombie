@@ -14,7 +14,7 @@
 #include <sstream>
 
 StatBubble::StatBubble(Hud* _hud)
-    : Frame(_hud, 50, 0, 150, 115, bit::Element::AnchorType::Left), isActive(false), tileId(0), tileClient(NULL), refreshTimer(.1), fadeTimer(3)
+    : Frame(_hud, 50, 0, 150, 145, bit::Element::AnchorType::Left), isActive(false), tileId(0), tileClient(NULL), refreshTimer(.1), fadeTimer(3)
 {
     useBottomPointer = true;
     managesOpacity = true;
@@ -96,9 +96,11 @@ void StatBubble::handleStats(unsigned int tileId)
 
     int y = 10;
     int x = 17;
+    int th = 25 - y;
     
     // Get info
     Character::Type type = tileClient->characterClient->schema.type;
+    float chanceOfHit = tileClient->characterClient->chanceOfHit;
     int health = tileClient->characterClient->schema.health;
     int maxHealth = tileClient->characterClient->schema.maxHealth;
     int speed = tileClient->characterClient->schema.speed;
@@ -113,6 +115,22 @@ void StatBubble::handleStats(unsigned int tileId)
     label->paddingBottom = 10;
     addChild(label);
     y += 30;
+
+    // CoH
+    if(tileClient->level->isPlayerDecisionMode)
+    {
+        std::stringstream ssc;
+        ssc << "CoH " << chanceOfHit * 100 << "%";
+        label = new bit::Label(x, y, 0, 0, bit::Element::AnchorType::TopLeft);
+        label->setSfFontSize(24);
+        label->setSfFont(hud->journalFont);
+        label->normalColor = sf::Color::White;
+        label->setSfFontString(ssc.str());
+        label->paddingRight = 10;
+        label->paddingBottom = 10;
+        addChild(label);
+        y += 30;
+    }
 
     // Health
     std::stringstream ssa;
@@ -140,4 +158,5 @@ void StatBubble::handleStats(unsigned int tileId)
     addChild(label);
     y += 30;
 
+    targetHeight = th + y;
 }

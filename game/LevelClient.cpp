@@ -134,6 +134,23 @@ void LevelClient::handleCombatDecisionStart(bit::ServerPacket &packet)
             moveMarkers[i].renderAt(x, y, w);
         }
     }
+
+    // unpack the chance of hit
+    unsigned int characterSize;
+    packet >> characterSize;
+    for(unsigned int i=0; i < characterSize; i++)
+    {
+        float coh;
+        unsigned int characterId;
+        packet >> characterId >> coh;
+
+        auto itr = characters.find(characterId);
+        if(itr != characters.end())
+        {
+            CharacterClient* cc = itr->second;
+            cc->chanceOfHit = coh;
+        }
+    }
 }
 
 void LevelClient::handleCombatDecisionEnd(bit::ServerPacket &packet)
