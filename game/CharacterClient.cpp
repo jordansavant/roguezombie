@@ -4,7 +4,7 @@
 #include "RogueZombieGame.hpp"
 
 CharacterClient::CharacterClient()
-    : schema(), sprite(0, 0, 0, 0)
+    : schema(), sprite(0, 0, 0, 0), chanceOfHit(0)
 {
     hasEquipment.resize(Character::EquipmentSlot::_count, false);
     equipment.resize(Character::EquipmentSlot::_count);

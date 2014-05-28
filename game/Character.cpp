@@ -156,6 +156,12 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
                     combat_PerformAction_Skip(gameTime);
 
                     break;
+
+                case CombatAction::SwapWeapon:
+
+                    combat_PerformAction_SwapWeapon(gameTime);
+
+                    break;
             }
 
             break;
@@ -286,6 +292,19 @@ void Character::combat_DecideAction_Skip()
 
 void Character::combat_PerformAction_Skip(sf::Time &gameTime)
 {
+    combat_SwitchStateDelay();
+}
+
+void Character::combat_DecideAction_SwapWeapon()
+{
+    // costless
+    combatAction = CombatAction::SwapWeapon;
+    combat_SwitchStatePerform();
+}
+
+void Character::combat_PerformAction_SwapWeapon(sf::Time &gameTime)
+{
+    swapWeapons();
     combat_SwitchStateDelay();
 }
 

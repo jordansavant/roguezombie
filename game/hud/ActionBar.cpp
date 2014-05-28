@@ -13,28 +13,9 @@ ActionBar::ActionBar(Hud* hud)
     int originX = 20;
     int originY = 10;
     int xpadding = 2;
-
-    wait = new HudElement(originX, originY, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
-    wait->load(hud, std::string("optionbar_hourglass"));
-    wait->onActivate = [hud] (Element* e) {
-        // Skip Command
-        Command cmd;
-        cmd.type = Command::Type::CombatCommand;
-        cmd.pack = [] (sf::Packet &packet) {
-            packet << sf::Uint32(Command::Target::NoTarget);
-            packet << sf::Uint32(Command::NonTargetCommand::Skip);
-        };
-        hud->displayMessage(std::string("Player skips action"));
-        hud->state->issueCommand(cmd);
-    };
-    wait->makeHoverable(hud->state->rogueZombieGame->inputManager, [hud](bit::Hoverable* h, bit::Element* me) {
-        hud->displayTooltipAt(std::string("Skip to next action"), me->left + me->width / 2, me->top - 5);
-    });
-    addChild(wait);
-    originX += wait->sprite->width + xpadding;
-
+    
     attack = new HudElement(originX, originY, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
-    attack->load(hud, std::string("optionbar_options"));
+    attack->load(hud, std::string("optionbar_crosshair"));
     attack->onActivate = [hud] (Element* e) {
         // Attack Command
         Hud* hudx = hud;
@@ -53,9 +34,28 @@ ActionBar::ActionBar(Hud* hud)
     });
     addChild(attack);
     originX += attack->sprite->width + xpadding;
-
+    
+    wait = new HudElement(originX, originY, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    wait->load(hud, std::string("optionbar_hourglass"));
+    wait->onActivate = [hud] (Element* e) {
+        // Skip Command
+        Command cmd;
+        cmd.type = Command::Type::CombatCommand;
+        cmd.pack = [] (sf::Packet &packet) {
+            packet << sf::Uint32(Command::Target::NoTarget);
+            packet << sf::Uint32(Command::NonTargetCommand::Skip);
+        };
+        hud->displayMessage(std::string("Player skips action"));
+        hud->state->issueCommand(cmd);
+    };
+    wait->makeHoverable(hud->state->rogueZombieGame->inputManager, [hud](bit::Hoverable* h, bit::Element* me) {
+        hud->displayTooltipAt(std::string("Skip to next action"), me->left + me->width / 2, me->top - 5);
+    });
+    addChild(wait);
+    originX += wait->sprite->width + xpadding;
+    
     swap = new HudElement(originX, originY, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
-    swap->load(hud, std::string("optionbar_options"));
+    swap->load(hud, std::string("optionbar_swap"));
     swap->onActivate = [hud] (Element* e) {
         // Attack Command
         Hud* hudx = hud;

@@ -112,7 +112,7 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
                         {
                             if(validateCombat())
                             {
-                                character->swapWeapons();
+                                character->combat_DecideAction_SwapWeapon();
                             }
 
                             break;

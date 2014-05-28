@@ -23,6 +23,7 @@ public:
     std::vector<bool> hasEquipment;
     std::vector<ItemClient> equipment;
     std::map<unsigned int, MissionClient> missionClients;
+    float chanceOfHit;
     
     virtual void clientLoad(LevelClient* level);
 

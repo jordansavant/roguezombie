@@ -57,6 +57,7 @@ public:
         Move,
         Attack,
         Skip,
+        SwapWeapon
     };
 
     CombatState combatState;
@@ -168,6 +169,10 @@ public:
     virtual void combat_DecideAction_Skip();
 
     virtual void combat_PerformAction_Skip(sf::Time &gameTime);
+
+    virtual void combat_DecideAction_SwapWeapon();
+
+    virtual void combat_PerformAction_SwapWeapon(sf::Time &gameTime);
 
     void combat_SwitchStateWaiting();
 
