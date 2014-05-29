@@ -211,15 +211,15 @@ public:
 
     float calculateChanceOfHit(Character* character);
 
-    float calculateRangedChanceOfHit(Character* character);
+    float calculateRangedChanceOfHit(Item* weapon, Character* character);
 
-    float calculateMeleeChanceOfHit(Character* character);
+    float calculateMeleeChanceOfHit(Item* weapon, Character* character);
 
     float calculateUnarmedChanceOfHit(Character* character);
 
     float calculateObstructionPenalty(Character* character);
 
-    float calculateRangeFactor(Character* character);
+    float calculateRangeFactor(Item* weapon, Character* character);
 
     float calculateDexterityFactor();
 

@@ -28,7 +28,7 @@ public:
     struct Schema
     {
         Schema()
-            : id(0), CategoryBase(0), CategoryArmor(0), CategoryWeapon(0), CategoryJewelry(0), CategoryContainer(0), type(Type::None), weight(0), canContainItems(false), itemLimit(0)
+            : id(0), CategoryBase(0), CategoryArmor(0), CategoryWeapon(0), CategoryJewelry(0), CategoryContainer(0), type(Type::None), weight(0), effectiveRangeInTiles(1), canContainItems(false), itemLimit(0)
         {
         }
 
@@ -40,6 +40,7 @@ public:
         unsigned int CategoryContainer;
         Type type;
         float weight;
+        unsigned int effectiveRangeInTiles;
         bool canContainItems;
         unsigned int itemLimit;
 
@@ -53,6 +54,7 @@ public:
             packet << sf::Uint32(schema.CategoryContainer);
             packet << sf::Uint32(schema.type);
             packet << schema.weight;
+            packet << sf::Uint32(schema.effectiveRangeInTiles);
             return packet;
         }
 
@@ -66,6 +68,7 @@ public:
             packet >> schema.CategoryContainer;
             bit::NetworkHelper::unpackEnum<sf::Uint32, Item::Type>(packet, schema.type);
             packet >> schema.weight;
+            packet >> schema.effectiveRangeInTiles;
             return packet;
         }
     };

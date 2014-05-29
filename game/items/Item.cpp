@@ -270,6 +270,7 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.CategoryBase = ItemCategory::Base::BaseWeapon;
             i->schema.CategoryWeapon = ItemCategory::Weapon::WeaponRanged;
             i->schema.weight = 1;
+            i->schema.effectiveRangeInTiles = 5;
 
             break;
 
@@ -279,6 +280,7 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.CategoryBase = ItemCategory::Base::BaseWeapon;
             i->schema.CategoryWeapon = ItemCategory::Weapon::WeaponRanged;
             i->schema.weight = 2;
+            i->schema.effectiveRangeInTiles = 15;
 
             break;
     }

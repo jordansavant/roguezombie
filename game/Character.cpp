@@ -468,13 +468,13 @@ float Character::calculateChanceOfHit(Character* other)
         // If it is ranged
         if(weapon->isOfWeaponType(ItemCategory::Weapon::WeaponRanged))
         {
-            return calculateRangedChanceOfHit(other);
+            return calculateRangedChanceOfHit(weapon, other);
         }
         
         // If it is melee
         if(weapon->isOfWeaponType(ItemCategory::Weapon::WeaponMelee))
         {
-            return calculateMeleeChanceOfHit(other);
+            return calculateMeleeChanceOfHit(weapon, other);
         }
     }
 
@@ -484,12 +484,12 @@ float Character::calculateChanceOfHit(Character* other)
 
 // RANGED CHANCE OF HIT
 // Ranged CoH = (1 - ObstructionPenalty) * RangeFactor * DexFactor
-float Character::calculateRangedChanceOfHit(Character* other)
+float Character::calculateRangedChanceOfHit(Item* weapon, Character* other)
 {
-    return (1 - calculateObstructionPenalty(other)) * calculateRangeFactor(other) * calculateDexterityFactor();
+    return (1 - calculateObstructionPenalty(other)) * calculateRangeFactor(weapon, other) * calculateDexterityFactor();
 }
 
-float Character::calculateMeleeChanceOfHit(Character* other)
+float Character::calculateMeleeChanceOfHit(Item* weapon, Character* other)
 {
     return .5;
 }
@@ -521,9 +521,13 @@ float Character::calculateObstructionPenalty(Character* other)
 // (ER / (ER + D))
 // ER = Weapon Effect Range Stat (measured in distance of tiles)
 // D = Distance to target (in tiles)
-float Character::calculateRangeFactor(Character* other)
+float Character::calculateRangeFactor(Item* weapon, Character* other)
 {
-    return .8;
+    float ER = weapon->schema.effectiveRangeInTiles;
+    float D = bit::VectorMath::distance(Body::schema.x, Body::schema.y, other->Body::schema.x, other->Body::schema.y) / level->tileWidth;
+    if(ER == 0 && D == 0)
+        return 0;
+    return (ER / (ER + D));
 }
 
 float Character::calculateDexterityFactor()
