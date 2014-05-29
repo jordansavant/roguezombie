@@ -12,6 +12,7 @@
 #include "../Interaction.hpp"
 #include "../TileClient.hpp"
 #include <sstream>
+#include <iomanip>
 
 StatBubble::StatBubble(Hud* _hud)
     : Frame(_hud, 50, 0, 150, 145, bit::Element::AnchorType::Left), isActive(false), tileId(0), tileClient(NULL), refreshTimer(.1), fadeTimer(3)
@@ -120,7 +121,7 @@ void StatBubble::handleStats(unsigned int tileId)
     if(tileClient->level->isPlayerDecisionMode)
     {
         std::stringstream ssc;
-        ssc << "CoH " << chanceOfHit * 100 << "%";
+        ssc << "CoH " << std::setprecision(4) << chanceOfHit * 100 << "%";
         label = new bit::Label(x, y, 0, 0, bit::Element::AnchorType::TopLeft);
         label->setSfFontSize(24);
         label->setSfFont(hud->journalFont);

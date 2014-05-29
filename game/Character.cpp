@@ -532,7 +532,7 @@ float Character::calculateRangeFactor(Item* weapon, Character* other)
 
 float Character::calculateDexterityFactor()
 {
-    return 1.25;
+    return 1;
 }
 
 ///////////////////////////////////////////////////////
