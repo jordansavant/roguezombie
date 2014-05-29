@@ -40,6 +40,8 @@ public:
     StructureClient* structureClient;
 
     bool isCardinallyAdjacent(BodyClient* body);
+
+    bool hasTargetableCharacter();
     
     void clientLoad(LevelClient* level);
 

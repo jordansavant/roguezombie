@@ -23,6 +23,11 @@ TileClient::~TileClient()
 {
 }
 
+bool TileClient::hasTargetableCharacter()
+{
+    return (hasCharacter && !characterClient->schema.isDead() && characterClient != level->playerCharacter);
+}
+
 bool TileClient::isCardinallyAdjacent(BodyClient* body)
 {
     int x1 = schema.x;
@@ -114,7 +119,7 @@ void TileClient::clientUpdate(sf::Time &gameTime)
                 int s = bit::Math::clamp(255 * schema.illumination * 4, 0, 255);
                 c = sf::Color(s, s, s);
             }
-            else if(level->hoveredTile == this && level->hoveredTile->hasCharacter && !level->hoveredTile->characterClient->schema.isDead())
+            else if(level->hoveredTile == this && hasTargetableCharacter())
             {
                 int s = bit::Math::clamp(255 * schema.illumination * 4, 0, 255);
                 c = sf::Color(s, 0, 0);

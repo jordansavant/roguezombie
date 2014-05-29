@@ -30,19 +30,26 @@ ActionBar::ActionBar(Hud* hud)
     attack->load(hud, std::string("optionbar_crosshair"));
     attack->onActivate = [hud] (Element* e) {
         // Attack Command
-        Hud* hudx = hud;
-        Command cmd;
-        cmd.type = Command::Type::CombatCommand;
-        cmd.pack = [hudx] (sf::Packet &packet) {
-            packet << sf::Uint32(Command::Target::Character);
-            packet << sf::Uint32(hudx->state->combatTargettedTileId);
-            packet << sf::Uint32(Command::TargetCharacterCommand::Attack);
-        };
-        hud->displayMessage(std::string("Player attacks"));
-        hud->state->issueCommand(cmd);
+        if(hud->state->combatTargettedTileId > 0)
+        {
+            Hud* hudx = hud;
+            Command cmd;
+            cmd.type = Command::Type::CombatCommand;
+            cmd.pack = [hudx] (sf::Packet &packet) {
+                packet << sf::Uint32(Command::Target::Character);
+                packet << sf::Uint32(hudx->state->combatTargettedTileId);
+                packet << sf::Uint32(Command::TargetCharacterCommand::Attack);
+            };
+            hud->displayMessage(std::string("Player attacks"));
+            hud->state->issueCommand(cmd);
+        }
+        else
+        {
+            hud->displayMessage(std::string("No target"));
+        }
     };
     attack->makeHoverable(hud->state->rogueZombieGame->inputManager, [hud](bit::Hoverable* h, bit::Element* me) {
-        hud->displayTooltipAt(std::string("Attack targetted enemy"), me->left + me->width / 2, me->top - 5);
+        hud->displayTooltipAt(std::string("Attack enemy\nrequires target"), me->left + me->width / 2, me->top - 5);
     });
     addChild(attack);
     originX += attack->sprite->width + xpadding;

@@ -192,10 +192,13 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
                     TileClient* t = levelClient->hoveredTile;
 
                     // If the tile has a body and it is adjacent run interactions
-                    if(t->schema.bodyId > 0 && t->hasCharacter && !t->characterClient->schema.isDead())
+                    if(t->schema.bodyId > 0)
                     {
-                        combatTargettedTileId = t->schema.id;
-                        hud->statBubble->handleStats(t->schema.id);
+                        if(t->hasTargetableCharacter())
+                        {
+                            combatTargettedTileId = t->schema.id;
+                            hud->statBubble->handleStats(t->schema.id);
+                        }
                     }
                     // Else issue command to move to tile
                     else
@@ -658,9 +661,11 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 break;
             case ServerEvent::CombatTurnStart:
                 displayMessage(std::string("Turn begins"));
+                combatTargettedTileId = 0;
                 break;
             case ServerEvent::CombatTurnEnd:
                 displayMessage(std::string("Turn complete"));
+                combatTargettedTileId = 0;
                 break;
             case ServerEvent::CombatDecisionStart:
                 levelClient->handleCombatDecisionStart(packet);

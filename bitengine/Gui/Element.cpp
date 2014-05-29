@@ -283,7 +283,7 @@ void bit::Element::makeHoverable(bit::InputManager* inputManager, std::function<
     if(hoverable == NULL)
     {
         hoverable = new Hoverable(inputManager);
-        hoverable->onHoverEnter = onHoverEnter;
-        hoverable->onHoverLeave = onHoverLeave;
     }
+    hoverable->onHoverEnter = onHoverEnter;
+    hoverable->onHoverLeave = onHoverLeave;
 }

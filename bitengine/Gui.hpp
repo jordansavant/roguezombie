@@ -8,6 +8,7 @@
 #include "Gui/Effect.hpp"
 #include "Gui/Element.hpp"
 #include "Gui/FadeEffect.hpp"
+#include "Gui/Hoverable.hpp"
 #include "Gui/Label.hpp"
 #include "Gui/Mouse.hpp"
 #include "Gui/MoveEffect.hpp"
