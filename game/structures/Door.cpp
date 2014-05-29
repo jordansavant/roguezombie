@@ -31,6 +31,7 @@ void Door::load(Level* _level, unsigned int _id, float _x, float _y)
 
     schema.isOpen = false;
     schema.isLocked = false;
+    Body::schema.obstructionRatio = 1;
 }
 
 void Door::update(sf::Time &gameTime)

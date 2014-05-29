@@ -42,7 +42,7 @@ public:
 	struct Schema
 	{
         Schema()
-            : id(0), type(Type::None), x(0), y(0), width(0), height(0), illumination(0)
+            : id(0), type(Type::None), x(0), y(0), width(0), height(0), illumination(0), obstructionRatio(0)
         {
         }
 
@@ -51,6 +51,7 @@ public:
 		float x, y;
         float width, height;
         float illumination;
+        float obstructionRatio;
 
         friend sf::Packet& operator <<(sf::Packet& packet, const Schema &schema)
         {
@@ -61,6 +62,7 @@ public:
             packet << schema.width;
             packet << schema.height;
             packet << schema.illumination;
+            packet << schema.obstructionRatio;
             return packet;
         }
 
@@ -73,6 +75,7 @@ public:
             packet >> schema.width;
             packet >> schema.height;
             packet >> schema.illumination;
+            packet >> schema.obstructionRatio;
             return packet;
         }
 	};

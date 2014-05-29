@@ -19,6 +19,7 @@ void Chest::load(Level* _level, unsigned int _id, float _x, float _y)
 
     blockFoV = false;
     schema.isLocked = true;
+    Body::schema.obstructionRatio = .1;
 }
 
 void Chest::update(sf::Time &gameTime)

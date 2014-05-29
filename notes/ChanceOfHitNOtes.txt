@@ -1,0 +1,47 @@
+
+Diablo II: Chance To Hit = 200% * {AR / (AR + DR)} * {Alvl / (Alvl + Dlvl)}
+	AR = Attacker's Attack Rating
+	DR = Defender's Defense rating
+	Alvl = Attacker's level
+	Dlvl = Defender's level
+	Chance to hit is capped such that it can not be lower than 5% or higher than 95%.
+	Defense Rating:
+		Each equipment increases a flat armor rating
+		Your dexterity attribute also increases your defense,
+		 multiplying across the total armor value, and thus
+		 adding to your dexterity will add to your defense
+	Dexterity:
+		A multiplier for your attack rating calculation
+		 as well as your defense rating calculation
+
+XCOM: Chance To Hit = Aim (unit stat + modifiers) - Defence (unit stat + modifiers) = total (clamped to 1%, if negative) + range modifier = final result
+
+Chance of Hit
+- Effected by the distance in combat
+- Effected by any obstacles obstructing the attack and how obstructive they are
+- Effected by the character's skill in using the weapon
+- Effected by the character's stat for Dexterity
+- Slightly effected by the Luck stat
+
+
+RangedChanceOfHit = (1 - ObstructionPenalty) * RangeFactor * DexFactor;
+
+obstruction penalty
+- all bodies contain a 0-1 obstruction percentage
+	- Defined by how much of a 1x1x1 object would be blocked by this object
+- take the max score of all bodies in the LoS
+
+range factor
+(ER / (ER + D))
+ER = Weapon Effect Range Stat (measured in distance of tiles)
+D  = Distance to target (in tiles)
+(10 / (10 + 1)) = .9 => 90%
+(10 / (10 + 10)) = .5 => 50%
+(10 / (10 + 30)) = .25 => 25%
+(10 / (10 + 300)) = .03 => 3%
+
+dex factor
+Dex / AvgDex
+
+
+

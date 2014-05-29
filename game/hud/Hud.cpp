@@ -180,6 +180,11 @@ void Hud::displayTooltipAt(std::string &info, int screenX, int screenY)
     tooltip->displayAt(info, screenX, screenY);
 }
 
+void Hud::hideTooltip()
+{
+    tooltip->deactivate();
+}
+
 bool Hud::typicalContainerControl(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime)
 {
     bit::Container* container = static_cast<bit::Container*>(element);

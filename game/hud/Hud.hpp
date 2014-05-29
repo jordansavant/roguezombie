@@ -68,6 +68,8 @@ public:
 
     void displayTooltipAt(std::string &info, int screenX, int screenY);
 
+    void hideTooltip();
+
     bool typicalContainerControl(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime);
 
     bool typicalElementControl(Element* element, sf::RenderWindow* window, sf::Time* gameTime);

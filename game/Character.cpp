@@ -49,6 +49,7 @@ void Character::load(Level* _level, unsigned int _id, Type _type, float _x, floa
     schema.type = _type;
     schema.maxHealth = 100;
 	schema.health = 100;
+    Body::schema.obstructionRatio = .25;
 
     moveToPosition(_x, _y);
 }
@@ -456,29 +457,78 @@ void Character::detectCombatExit()
     }
 }
 
-/*
-    Diablo II: Chance To Hit = 200% * {AR / (AR + DR)} * {Alvl / (Alvl + Dlvl)}
-        AR = Attacker's Attack Rating
-        DR = Defender's Defense rating
-        Alvl = Attacker's level
-        Dlvl = Defender's level
-        Chance to hit is capped such that it can not be lower than 5% or higher than 95%.
-        Defense Rating:
-            Each equipment increases a flat armor rating
-            Your dexterity attribute also increases your defense,
-             multiplying across the total armor value, and thus
-             adding to your dexterity will add to your defense
-        Dexterity:
-            A multiplier for your attack rating calculation
-             as well as your defense rating calculation
-
-    XCOM: Chance To Hit = Aim (unit stat + modifiers) - Defence (unit stat + modifiers) = total (clamped to 1%, if negative) + range modifier = final result
- */
+// CHANCE OF HIT
+// - Subdivided into three routines: ranged, melee and unarmed
 float Character::calculateChanceOfHit(Character* other)
 {
-    //
+    // If we have a weapon equipped
+    Item* weapon = equipment[EquipmentSlot::WeaponPrimary];
+    if(weapon)
+    {
+        // If it is ranged
+        if(weapon->isOfWeaponType(ItemCategory::Weapon::WeaponRanged))
+        {
+            return calculateRangedChanceOfHit(other);
+        }
+        
+        // If it is melee
+        if(weapon->isOfWeaponType(ItemCategory::Weapon::WeaponMelee))
+        {
+            return calculateMeleeChanceOfHit(other);
+        }
+    }
 
-    return .75;
+    // If we are unarmed
+    return calculateUnarmedChanceOfHit(other);
+}
+
+// RANGED CHANCE OF HIT
+// Ranged CoH = (1 - ObstructionPenalty) * RangeFactor * DexFactor
+float Character::calculateRangedChanceOfHit(Character* other)
+{
+    return (1 - calculateObstructionPenalty(other)) * calculateRangeFactor(other) * calculateDexterityFactor();
+}
+
+float Character::calculateMeleeChanceOfHit(Character* other)
+{
+    return .5;
+}
+
+float Character::calculateUnarmedChanceOfHit(Character* other)
+{
+    return .1;
+}
+
+
+// OBSTRUCTION PENALTY
+// Brief: The largest obstruction in the line of sight, always between 0 - 1
+// - all bodies contain a 0-1 obstruction percentage
+// 	 (Defined by how much of a 1x1x1 object would be blocked by this object)
+// - take the max score of all bodies in the LoS
+float Character::calculateObstructionPenalty(Character* other)
+{
+    float maximum = 0;
+    inspectLineOfSightBodies(other->Body::schema.x, other->Body::schema.y, [other, &maximum] (Body* b) {
+        // Do not add the obstruction value of our target
+        if(b != other && b->schema.obstructionRatio > maximum)
+            maximum = b->schema.obstructionRatio;
+    });
+    return maximum;
+}
+
+// RANGE FACTOR
+// Brief: 100% chance to hit at 0 distance, 50% at effective range of weapon
+// (ER / (ER + D))
+// ER = Weapon Effect Range Stat (measured in distance of tiles)
+// D = Distance to target (in tiles)
+float Character::calculateRangeFactor(Character* other)
+{
+    return .8;
+}
+
+float Character::calculateDexterityFactor()
+{
+    return 1.25;
 }
 
 ///////////////////////////////////////////////////////
@@ -572,6 +622,39 @@ bool Character::inspectTileMobilityBlocked(int x, int y)
 bool Character::isTileMobilityBlocked(Tile* t)
 {
     return isTileBlockedForPathfinding(t);
+}
+
+void Character::inspectLineOfSightTiles(int endX, int endY, std::function<void(Tile* t)> inspector)
+{
+    Character* character = this;
+    level->raycastTiles(Body::schema.x, Body::schema.y, endX, endY, [character, &inspector] (Tile* t) -> bool {
+        // Inspect all tiles that at minimum do not contain myself
+        if(t->body != character)
+            inspector(t);
+        // Stop the raycase if we hit a body that stops vision such as a wall
+        return (t->body && t->body->blockFoV);
+    });
+}
+
+void Character::inspectLineOfSightBodies(int endX, int endY, std::function<void(Body* b)> inspector)
+{
+    Character* character = this;
+    inspectLineOfSightTiles(endX, endY, [character, &inspector] (Tile* t) {
+        if(t->body)
+            inspector(t->body);
+    });
+}
+
+void Character::inspectLineOfSightCharacters(int endX, int endY, std::function<void(Character* c)> inspector, bool onlyLiving)
+{
+    Character* character = this;
+    inspectLineOfSightBodies(endX, endY, [character, &inspector] (Body* b) {
+        if(b->schema.type == Body::Character)
+        {
+            Character* occupant = static_cast<Character*>(b);
+            inspector(occupant);
+        }
+    });
 }
 
 ///////////////////////////////////////////////////////

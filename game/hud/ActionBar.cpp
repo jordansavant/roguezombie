@@ -107,5 +107,5 @@ void ActionBar::show()
     clearEffects();
     relativePosition.y = targetHeight;
     immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, 0, -targetHeight + 120));
-    immediateEffect(new bit::FadeEffect(300, .25));
+    immediateEffect(new bit::FadeEffect(300, Hud::hoverlessOpacity));
 }

@@ -32,6 +32,31 @@ bool Item::hasAll(unsigned int attribute, unsigned int filter)
     return bit::Math::bitwiseHasAll(attribute, filter);
 }
 
+bool Item::isOfBaseType(ItemCategory::Base category)
+{
+    return hasAny(schema.CategoryBase, category);
+}
+
+bool Item::isOfWeaponType(ItemCategory::Weapon category)
+{
+    return hasAny(schema.CategoryWeapon, category);
+}
+
+bool Item::isOfArmorType(ItemCategory::Armor category)
+{
+    return hasAny(schema.CategoryArmor, category);
+}
+    
+bool Item::isOfJewelryType(ItemCategory::Jewelry category)
+{
+    return hasAny(schema.CategoryJewelry, category);
+}
+    
+bool Item::isOfContainerType(ItemCategory::Container category)
+{
+    return hasAny(schema.CategoryContainer, category);
+}
+
 void Item::addItem(Item* item)
 {
     if(schema.canContainItems && items.size() + 1 <= schema.itemLimit)

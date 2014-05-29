@@ -78,6 +78,16 @@ public:
 
     bool hasAll(unsigned int currentValue, unsigned int filter);
 
+    bool isOfBaseType(ItemCategory::Base);
+
+    bool isOfWeaponType(ItemCategory::Weapon);
+
+    bool isOfArmorType(ItemCategory::Armor);
+    
+    bool isOfJewelryType(ItemCategory::Jewelry);
+    
+    bool isOfContainerType(ItemCategory::Container);
+
     void addItem(Item* item);
 
     Item* findItem(unsigned int itemId);

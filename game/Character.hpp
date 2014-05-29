@@ -211,6 +211,18 @@ public:
 
     float calculateChanceOfHit(Character* character);
 
+    float calculateRangedChanceOfHit(Character* character);
+
+    float calculateMeleeChanceOfHit(Character* character);
+
+    float calculateUnarmedChanceOfHit(Character* character);
+
+    float calculateObstructionPenalty(Character* character);
+
+    float calculateRangeFactor(Character* character);
+
+    float calculateDexterityFactor();
+
     // Inspection
 
     void inspectVisibleTiles(std::function<void(Tile* t)> inspector);
@@ -226,6 +238,12 @@ public:
     bool inspectTileMobilityBlocked(int x, int y);
 
     bool isTileMobilityBlocked(Tile* t);
+
+    void inspectLineOfSightTiles(int endX, int endY, std::function<void(Tile* t)> inspector);
+
+    void inspectLineOfSightBodies(int endX, int endY, std::function<void(Body* b)> inspector);
+
+    void inspectLineOfSightCharacters(int endX, int endY, std::function<void(Character* c)> inspector, bool onlyLiving = true);
 
     // Inventory
 
