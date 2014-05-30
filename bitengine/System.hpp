@@ -4,5 +4,6 @@
 #include "System/PlatformDefinitions.hpp"
 #include "System/FileSystem.hpp"
 #include "System/Output.hpp"
+#include "System/String.hpp"
 
 #endif

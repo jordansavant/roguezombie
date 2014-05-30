@@ -2,6 +2,7 @@
 #include "Hud.hpp"
 #include "Frame.hpp"
 #include "../../bitengine/Input.hpp"
+#include "../../bitengine/System.hpp"
 #include "../StateGamePlay.hpp"
 #include <sstream>
 #include <iostream>
@@ -63,27 +64,11 @@ void Tooltip::show()
     queueEffect(new bit::Effect(500))->queueEffect(new bit::FadeEffect(150, 1));
 }
 
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-    std::stringstream ss(s);
-    std::string item;
-    while (std::getline(ss, item, delim)) {
-        elems.push_back(item);
-    }
-    return elems;
-}
-
-
-std::vector<std::string> split(const std::string &s, char delim) {
-    std::vector<std::string> elems;
-    split(s, delim, elems);
-    return elems;
-}
-
 void Tooltip::displayAt(std::string &info, int screenX, int screenY)
 {
     // change tooltip size based on occurences
     int w = 1;
-    std::vector<std::string> tokens = split(info, '\n');
+    std::vector<std::string> tokens = bit::String::split(info, '\n');
     int n = tokens.size();
     for(unsigned int i=0; i < n; i++)
     {
