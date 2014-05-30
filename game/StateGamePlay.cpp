@@ -651,6 +651,7 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
             case ServerEvent::MissionCompleted:
                 levelClient->playerCharacter->handleServerEventPacket_missionCompleted(packet);
                 break;
+
             case ServerEvent::ItemAdded:
                 levelClient->playerCharacter->handleServerEventPacket_itemAdded(packet);
                 hud->inventory->buildItemList();
@@ -659,6 +660,7 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 levelClient->playerCharacter->handleServerEventPacket_itemRemoved(packet);
                 hud->inventory->buildItemList();
                 break;
+
             case ServerEvent::CombatTurnStart:
                 displayMessage(std::string("Turn begins"));
                 combatTargettedTileId = 0;
@@ -673,6 +675,47 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
             case ServerEvent::CombatDecisionEnd:
                 levelClient->handleCombatDecisionEnd(packet);
                 break;
+
+            case ServerEvent::CharacterAttacksPlayer:
+            {
+                Character::Type ct;
+                int amount;
+                bit::NetworkHelper::unpackEnum<sf::Uint32, Character::Type>(packet, ct);
+                packet >> amount;
+                std::stringstream ss;
+                ss << Character::getTitle(ct) << " attacks player for " << amount;
+                displayMessage(ss.str());
+                break;
+            }
+            case ServerEvent::PlayerAttacksCharacter:
+            {
+                Character::Type ct;
+                int amount;
+                bit::NetworkHelper::unpackEnum<sf::Uint32, Character::Type>(packet, ct);
+                packet >> amount;
+                std::stringstream ss;
+                ss << "Player attacks " << Character::getTitle(ct) << " for " << amount;
+                displayMessage(ss.str());
+                break;
+            }
+            case ServerEvent::CharacterMissesPlayer:
+            {
+                Character::Type ct;
+                bit::NetworkHelper::unpackEnum<sf::Uint32, Character::Type>(packet, ct);
+                std::stringstream ss;
+                ss << Character::getTitle(ct) << " attacks player and misses";
+                displayMessage(ss.str());
+                break;
+            }
+            case ServerEvent::PlayerMissesCharacter:
+            {
+                Character::Type ct;
+                bit::NetworkHelper::unpackEnum<sf::Uint32, Character::Type>(packet, ct);
+                std::stringstream ss;
+                ss << "Player attacks " << Character::getTitle(ct) << " and misses";
+                displayMessage(ss.str());
+                break;
+            }
         }
     }
 }

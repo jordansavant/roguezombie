@@ -6,12 +6,19 @@ enum ServerEvent
 {
     MissionAssigned,
     MissionCompleted,
+    
     ItemAdded,
     ItemRemoved,
+    
     CombatTurnStart,
     CombatTurnEnd,
     CombatDecisionStart,
-    CombatDecisionEnd
+    CombatDecisionEnd,
+
+    CharacterAttacksPlayer,
+    CharacterMissesPlayer,
+    PlayerAttacksCharacter,
+    PlayerMissesCharacter,
 };
 
 #endif

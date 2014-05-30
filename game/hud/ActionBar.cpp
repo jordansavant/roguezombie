@@ -40,12 +40,11 @@ ActionBar::ActionBar(Hud* hud)
                 packet << sf::Uint32(hudx->state->combatTargettedTileId);
                 packet << sf::Uint32(Command::TargetCharacterCommand::Attack);
             };
-            hud->displayMessage(std::string("Player attacks"));
             hud->state->issueCommand(cmd);
         }
         else
         {
-            hud->displayMessage(std::string("No target"));
+            hud->displayMessage(std::string("No target to attack"));
         }
     };
     attack->makeHoverable(hud->state->rogueZombieGame->inputManager, [hud](bit::Hoverable* h, bit::Element* me) {

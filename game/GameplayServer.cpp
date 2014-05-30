@@ -140,6 +140,7 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
         p->character->addItemToInventory(magnum);
         Item* rifle = Item::create(Item::Type::Z4Rifle, getNextItemId());
         p->character->addItemToInventory(rifle);
+        p->character->equipFromInventory(Character::EquipmentSlot::WeaponPrimary, magnum->schema.id);
     }
 }
 

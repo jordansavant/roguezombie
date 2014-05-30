@@ -422,7 +422,52 @@ void Character::kill()
 
 void Character::rangedAttack(Character* character)
 {
-    character->harm(10);
+    float CoH = calculateChanceOfHit(character);
+
+    if(bit::Math::randomFloat() < CoH)
+    {
+        character->harm(10);
+
+        // Game Event
+        if(schema.isPlayerCharacter)
+        {
+            Character* me = this;
+            level->server->sendEventToClient(*schema.player->client, [me, character](bit::ServerPacket &packet){
+                packet << sf::Uint32(ServerEvent::PlayerAttacksCharacter);
+                packet << sf::Uint32(character->schema.type);
+                packet << sf::Uint32(10);
+            });
+        }
+        else if(character->schema.isPlayerCharacter)
+        {
+            Character* me = this;
+            level->server->sendEventToClient(*character->schema.player->client, [me, character](bit::ServerPacket &packet){
+                packet << sf::Uint32(ServerEvent::CharacterAttacksPlayer);
+                packet << sf::Uint32(me->schema.type);
+                packet << sf::Uint32(10);
+            });
+        }
+    }
+    else
+    {
+        // Game Event
+        if(schema.isPlayerCharacter)
+        {
+            Character* me = this;
+            level->server->sendEventToClient(*schema.player->client, [me, character](bit::ServerPacket &packet){
+                packet << sf::Uint32(ServerEvent::PlayerMissesCharacter);
+                packet << sf::Uint32(character->schema.type);
+            });
+        }
+        else if(character->schema.isPlayerCharacter)
+        {
+            Character* me = this;
+            level->server->sendEventToClient(*character->schema.player->client, [me, character](bit::ServerPacket &packet){
+                packet << sf::Uint32(ServerEvent::CharacterMissesPlayer);
+                packet << sf::Uint32(me->schema.type);
+            });
+        }
+    }
 }
 
 void Character::harm(int damage)
