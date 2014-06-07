@@ -534,8 +534,16 @@ float Character::calculateRangedChanceOfHit(Item* weapon, Character* other)
     return (1 - calculateObstructionPenalty(other)) * calculateRangeFactor(weapon, other) * calculateDexterityFactor();
 }
 
+// MELEE CHANCE OF HIT
+// Melee CoH = 
 float Character::calculateMeleeChanceOfHit(Item* weapon, Character* other)
 {
+    float ER = weapon->schema.effectiveRangeInTiles;
+    float D = bit::VectorMath::distance(Body::schema.x, Body::schema.y, other->Body::schema.x, other->Body::schema.y) / level->tileWidth;
+
+    if(D > ER)
+        return 0;
+
     return .5;
 }
 
@@ -553,10 +561,26 @@ float Character::calculateUnarmedChanceOfHit(Character* other)
 float Character::calculateObstructionPenalty(Character* other)
 {
     float maximum = 0;
-    inspectLineOfSightBodies(other->Body::schema.x, other->Body::schema.y, [other, &maximum] (Body* b) {
+    bool first = true;
+    inspectLineOfSightTiles(other->Body::schema.x, other->Body::schema.y, [other, &maximum, &first] (Tile* t) {
+        // If we ever hit a full obstruction max it
+        if(t->body && t->body != other && t->body->schema.obstructionRatio == 1)
+        {
+            maximum = 1;
+        }
+
+        // Do not add the obstruction value of any adjacent body so it will be cover
+        if(first)
+        {
+            first = false;
+            return;
+        }
+
         // Do not add the obstruction value of our target
-        if(b != other && b->schema.obstructionRatio > maximum)
-            maximum = b->schema.obstructionRatio;
+        if(t->body && t->body != other && t->body->schema.obstructionRatio > maximum)
+        {
+            maximum = t->body->schema.obstructionRatio;
+        }
     });
     return maximum;
 }

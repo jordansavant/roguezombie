@@ -80,7 +80,7 @@ public:
 	{
         Schema()
             : isPlayerCharacter(false), clientId(0), player(NULL), type(Type::None), direction(0, 0),
-             maxActionPoints(2), currentActionPoints(2), maxHealth(0), health(0), speed(3)
+              maxActionPoints(2), currentActionPoints(2), maxHealth(0), health(0), speed(3), intelligence(1), dexterity(1), strength(1)
         {
             equipmentIds.resize(EquipmentSlot::_count, 0);
         }
@@ -99,40 +99,61 @@ public:
 		int maxHealth;
         int health;
         int speed; // tiles per action point
+        int intelligence;
+        int dexterity;
+        int strength;
 
         friend sf::Packet& operator <<(sf::Packet& packet, const Schema &schema)
         {
-            packet << sf::Uint32(schema.maxActionPoints);
-            packet << sf::Uint32(schema.currentActionPoints);
-            packet << sf::Uint32(schema.maxHealth);
+            // Metadata
             packet << schema.isPlayerCharacter;
             packet << sf::Uint32(schema.clientId);
             packet << sf::Uint32(schema.type);
-            packet << schema.direction.x;
-            packet << schema.direction.y;
-            packet << sf::Int32(schema.health);
-            packet << sf::Int32(schema.speed);
             for(unsigned int i=0; i < schema.equipmentIds.size(); i++)
             {
                 packet << sf::Uint32(schema.equipmentIds[i]);
+            }
+            packet << schema.direction.x;
+            packet << schema.direction.y;
+
+            // Stats
+            packet << sf::Uint32(schema.maxActionPoints);
+            packet << sf::Uint32(schema.currentActionPoints);
+            packet << sf::Uint32(schema.maxHealth);
+            packet << sf::Int32(schema.health);
+            packet << sf::Int32(schema.speed);
+            if(schema.isPlayerCharacter)
+            {
+                packet << sf::Int32(schema.intelligence);
+                packet << sf::Int32(schema.dexterity);
+                packet << sf::Int32(schema.strength);
             }
             return packet;
         }
         friend sf::Packet& operator >>(sf::Packet& packet, Schema &schema)
         {
-            packet >> schema.maxActionPoints;
-            packet >> schema.currentActionPoints;
-            packet >> schema.maxHealth;
+            // Metadata
             packet >> schema.isPlayerCharacter;
             packet >> schema.clientId;
             bit::NetworkHelper::unpackEnum<sf::Uint32, Character::Type>(packet, schema.type);
-            packet >> schema.direction.x;
-            packet >> schema.direction.y;
-            packet >> schema.health;
-            packet >> schema.speed;
             for(unsigned int i=0; i < Character::EquipmentSlot::_count; i++)
             {
                 packet >> schema.equipmentIds[i];
+            }
+            packet >> schema.direction.x;
+            packet >> schema.direction.y;
+
+            // Stats
+            packet >> schema.maxActionPoints;
+            packet >> schema.currentActionPoints;
+            packet >> schema.maxHealth;
+            packet >> schema.health;
+            packet >> schema.speed;
+            if(schema.isPlayerCharacter)
+            {
+                packet >> schema.intelligence;
+                packet >> schema.dexterity;
+                packet >> schema.strength;
             }
             return packet;
         }

@@ -1,0 +1,64 @@
+Stats
+
+Dexterity
+	Combat
+		Effects ranged combat chance of hit - Influences the stable nature of holding a gun and eye hand coordination of targetting
+		Effects chance of melee critical hit - Better accuracy in placing the attack in specific positions
+	Free
+		Effects chance of hand based skills in lockpicking etc.
+
+Strength
+	Combat
+		Effects damage output of melee weapons - Hit harder, hurt harder
+		Effects the amount of health you have - More size is more health
+		Effects the chance of block - Hold harder, hurt lesser
+	Free
+		Effects amount of inventory that can be carried
+		
+Agility
+	Combat
+		Effects chance of dodge
+		Effects initiative
+		
+Speed
+	Combat
+		Effects distance of tiles that can be travelled within an action
+	Free
+		Slightly effects the movement timer (to make moving a faster for easier navigation and faster looting)
+	
+Luck
+	Combat
+		Effects chance of critical hit
+		Effects the chance to missed by clumsy opponents
+	Free
+		Effects all worldly chances of bonus in lockpicking, rewards, loots etc.
+		
+Intelligence
+	Free
+		Effects ability to interact with the world
+		
+		
+Dodge, Attack Rating
+
+Dodging Melee
+	Generally a stat like dex or agility would influence dodge
+	A stat like strength would influence block
+	
+Dodging Ranged
+	Kind of stupid and not reasonable to implement
+
+Attack Rating
+	My ability to overcome a dodge and a block
+	A dodge plus a block is a parry and opens up a chance of counterattack
+	
+If an assailant attacks they must overcome both the dodge and block of a defender
+If the defender both dodges and blocks successfully then the attack is considered a "Parry" and a countermelee is immediately affected
+If the defender dodges xor blocks then the attack is a miss
+
+Dodge is weighed against the speed/accuracy of the attack - speed/accuracy vs speed/accuracy
+Block is weighed against the strength of the attack - strength vs strength
+
+calculateMeleeDodge()
+{
+	dexfactor;
+}

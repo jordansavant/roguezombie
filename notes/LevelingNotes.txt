@@ -1,0 +1,91 @@
+
+Leveling System
+
+Levels
+- In an RPG a character will acrue experience points for performing actions
+	- Some games reward experience points for winning combat scenarios (kill a troll = 100 xp etc)
+	- Some games for completing quests
+	- Some games for individual successfull actions
+- Morrowind games have both an overall level system and a level system for the passive skills
+	- Heavy Armor increases in levels, each time you are struck with heavy armor the Heavy Armor skill increases in XP until the next level is reached
+	- The overal level usually allows for unlocking new abilities and perks
+- An overall level system allows for defining the rough power of a character and helps to tailor content to players of a certain experience
+	- Dungeons can be dynamic with their enemies generated at the time the dungeon is entered at the same lvl + 10% of the player
+	- Loot finds can be roughly equivalent to the players level as well
+- Levels also allow for tying gear to characters making high level gear unusable until you reach those levels
+	- This is problematic and unrealistic IMO
+- Most games institute a level cap for sanity and to balance the game
+
+Statistics
+- Tangible ints that represent physical and mental attributes
+- When a new level is reached, points can be allocated into a statistic
+- Most stat systems in RPG's allow for X number of stat points to be assigned per level
+- Raising stats often have an increasing requirement
+	- E.g. going from 4 to 5 may cost one stat point, whereas going from 9 to 10 may cost 2
+	- These systems usually display stats in meters or slots because raising an int one point with two points is illogical
+- RPG's tend to use a statistic to effect actions
+	- E.g. higher strength increases melee damage, dex = accuracy and intelligence = spell power
+	- In dice games, the player can roll a dice equivalent to the typical stat level, if the roll is under the stat then its a success
+		- problems here include:
+		   the dice is constant i.e. d20
+		   the result is a boolean, not a factor
+	- Some games use the stat and compare it to a target int to get a floating point ratio, this is used to affect success of an action
+		- e.g dex target is 20, character dex is 25, dex factor is 1.25
+		- this lends itself well to helping or hurting a success roll and works well with other ratio based factors like environment
+		- The problem here is still the "target" value of a stat, and balancing how hard that is to reach
+	- The float based stat usage is most ideal for a videogame because its more flexible and the math is done by the machine anyway
+	- Samuel's concept of a perfection / penalty is interesting, treating the target value as a perfect score and an asymptote
+	- Problem though is that it is not rewarding for the player to grind toward imperfection, and deciding on a perfect value is the same problem
+	
+Skills
+- Skills can represent active and tangible actions or passive influences
+- An active skill is an action that ends in direct action from a character
+	- Example: Sweep attack, Eat enemy, Disappear etc.
+- A passive influence skill is not an action, but effects the outcome of actions by specialized influences not covered by the broader stat
+	- Example: rifle mastery (increase CoH with rifles), Toxification (reduce time it takes for enemies to turn)
+- RPGs generally lay out skills in a tree format, requiring minimum basic skills to reach more advanced skills
+- The trees tend to create a character "build"
+- Skills generally allow for Skill Points to be assigned to them to some maximum
+	- Action skills like Bash may require 1 skill point to simply unlock and has no upgrades
+	- Investing more points into an action skill may unlock upgrades that directly inprove that action
+	- Passive skills like combat mastery may allow for many skill points to be invested to slowly improve the effect
+- Table top RPGs tend to allow for subexperience system in skills where you invest points into skills and they become harder to upgrade
+	- Some systems use a scaling formula like Fibonacci meaning 1 pt for lvl 1, 3 pt for lvl 2 etc.
+	- Again these systems are simpler since the math is done manually
+- It has become common in recent RPGs to allow a player to respec, meaning reallocate all Stat Points and Skill points
+	- This allows a player to correct mistakes or change undesirable builds
+	- Not as common in permadeath roguelikes that try to mimic real life and put heavy emphasis permanent decisions
+//// RZ IMPLEMENTATION ////
+	Skills could be a combination of points and experience levels
+	- Skill points could be used to unlock abilities
+	- Using abilities would increase their XP and their upgrades would come on their own
+	- Pros
+		- Better feel of character progression where the player can grow stronger over time without grinding to a magical level up
+		- Better models real life where a skill only gets better with use
+		- Can still have specific levels of upgrades and caps
+		- Can make expanding the skill tree less time consuming so that builds are created naturally and not by player decision
+			- I mean, instead of it takine 50 levels to unlock one tree, it could take 50 levels to unlock all tree nodes
+			  then using skills determines the builds as they grow stronger only through use
+		- Mitigates stupidity where the player kills 700 orcs with a sword an puts points in his rifle skill
+	- Cons
+		- Makes respeccing impossible (not a common roguelike element anyway)
+		- Tracking experience becomes a little more of a pain (not really)
+	- Skill trees are still designed by us
+
+Perks
+- The fallout games made wonderful use of Perks that were provided every other level
+- Perks were very similar to passive skills as they did not open up direct action abilities
+- Perks were much more affective of the environment and gameplace
+	- Explorer perk revealed more map
+	- Risky Dingo increased chance of being seen in sneak but offered better loot overall
+- Some perks also directly effected dialog
+- Perks were also level capped to prevent them from being unlocked to quickly
+
+
+
+
+
+
+
+
+

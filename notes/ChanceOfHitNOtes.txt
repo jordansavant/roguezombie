@@ -24,24 +24,45 @@ Chance of Hit
 - Slightly effected by the Luck stat
 
 
-RangedChanceOfHit = (1 - ObstructionPenalty) * RangeFactor * DexFactor;
+RANGED
 
-obstruction penalty
-- all bodies contain a 0-1 obstruction percentage
-	- Defined by how much of a 1x1x1 object would be blocked by this object
-- take the max score of all bodies in the LoS
+	RangedChanceOfHit = (1 - ObstructionPenalty) * RangeFactor * DexFactor;
 
-range factor
-(ER / (ER + D))
-ER = Weapon Effect Range Stat (measured in distance of tiles)
-D  = Distance to target (in tiles)
-(10 / (10 + 1)) = .9 => 90%
-(10 / (10 + 10)) = .5 => 50%
-(10 / (10 + 30)) = .25 => 25%
-(10 / (10 + 300)) = .03 => 3%
+	obstruction penalty
+	- all bodies contain a 0-1 obstruction percentage
+		- Defined by how much of a 1x1x1 object would be blocked by this object
+	- take the max score of all bodies in the LoS
 
-dex factor
-Dex / AvgDex
+	range factor
+	(ER / (ER + D))
+	ER = Weapon Effect Range Stat (measured in distance of tiles)
+	D = Distance to target (in tiles)
+	(10 / (10 + 1)) = .9 => 90%
+	(10 / (10 + 10)) = .5 => 50%
+	(10 / (10 + 30)) = .25 => 25%
+	(10 / (10 + 300)) = .03 => 3%
 
+	dex factor
+	Dex / AvgDex
 
+Melee
+
+	Obstruction factor, should be a nonissue because of melee
+	Range factor, if the target is outside of the effective range then the chance of hit is 0, constantly
+	
+	If I swing at an object and want to hit it there are two primary reason it fails:
+		1. I am inefficient at wielding it (to weak or clumsy)
+		2. The target has a high melee dodge
+	
+	Modifying the D2 approach:
+		200% * (AttackRating / AttackRating + DodgeRating)
+		
+	AttackRating
+		Dexterity controls effectiveness at combat range
+		Strength effects damage at melee range
+		A combination of Strength and Dexterity is a good option
+	
+	DodgeRating
+	
+		
 
