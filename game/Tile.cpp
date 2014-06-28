@@ -4,16 +4,12 @@
 #include "../bitengine/Math.hpp"
 
 Tile::Tile()
-    : bit::NodeContainer(), level(NULL), body(NULL), door(NULL), metadata_shadowcastId(0), metadata_floodfillId(0), schema()
+    : bit::Node(0, 0), level(NULL), body(NULL), door(NULL), metadata_shadowcastId(0), metadata_floodfillId(0), schema()
 {
 }
 
 Tile::~Tile()
 {
-    if(node)
-    {
-        delete node;
-    }
 }
 
 void Tile::load(Level* _level, unsigned int _id, Type _type, int _x, int _y, int _width, int _height)
@@ -31,7 +27,8 @@ void Tile::load(Level* _level, unsigned int _id, Type _type, int _x, int _y, int
     schema.gshade = 0;
     schema.bshade = 0;
 
-    this->node = new bit::Node(_x, _y, this);
+    aStarX = _x;
+    aStarY = _y;
 }
 
 void Tile::update(sf::Time &gameTime)

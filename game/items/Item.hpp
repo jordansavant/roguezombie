@@ -23,6 +23,7 @@ public:
         HardHat,
         Magnum357,
         Z4Rifle,
+        Crowbar,
     };
 
     struct Schema

@@ -2,18 +2,18 @@
 #include "SFML/System.hpp"
 
 bit::Node::Node()
-    : aStarID(0), fCost(0), gCost(0), hCost(0), x(0), y(0), aStarParent(NULL), parentContainer(NULL)
+    : aStarID(0), aStarFCost(0), aStarGCost(0), aStarHCost(0), aStarX(0), aStarY(0), aStarParent(NULL)
 {
 }
 
-bit::Node::Node(int x, int y, NodeContainer* parentContainer)
-    : aStarID(0), fCost(0), gCost(0), hCost(0), x(x), y(y), aStarParent(NULL), parentContainer(parentContainer)
+bit::Node::Node(int x, int y)
+    : aStarID(0), aStarFCost(0), aStarGCost(0), aStarHCost(0), aStarX(x), aStarY(y), aStarParent(NULL)
 {
 }
 
 bool bit::Node::equals(Node* compareNode)
 {
-    return (x == compareNode->x && y == compareNode->y);
+    return (aStarX == compareNode->aStarX && aStarY == compareNode->aStarY);
 }
 
 void bit::Node::cleanAstar(unsigned int aStarID)
@@ -31,10 +31,10 @@ void bit::Node::cleanAstar(unsigned int aStarID)
 
 void bit::Node::resetAstar()
 {
-    gCost = 0;
-    hCost = 0;
-    fCost = 0;
-    opened = false;
-    closed = false;
+    aStarGCost = 0;
+    aStarHCost = 0;
+    aStarFCost = 0;
+    aStarOpened = false;
+    aStarClosed = false;
     aStarParent = NULL;
 }

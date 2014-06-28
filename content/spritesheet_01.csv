@@ -1,5 +1,6 @@
 trimmed_name,frame_x,frame_y,frame_width,frame_height,sprite_x,sprite_y,sprite_width,sprite_height,rotated
 Chest,232,304,20,22,0,0,20,22,false
+Crowbar,170,430,40,40,0,0,40,40,false
 Door,190,238,64,64,0,0,64,64,false
 HardHat,212,388,40,40,0,0,40,40,false
 Hunter_Body,170,388,40,40,0,0,40,40,false

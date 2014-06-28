@@ -502,6 +502,17 @@ void Character::detectCombatExit()
     }
 }
 
+
+bool Character::canDodge()
+{
+    return true;
+}
+
+bool Character::canBlock()
+{
+    return (equipment[EquipmentSlot::WeaponPrimary] && equipment[EquipmentSlot::WeaponPrimary]->isOfWeaponType(ItemCategory::Weapon::WeaponMelee));
+}
+
 // CHANCE OF HIT
 // - Subdivided into three routines: ranged, melee and unarmed
 float Character::calculateChanceOfHit(Character* other)
@@ -535,21 +546,67 @@ float Character::calculateRangedChanceOfHit(Item* weapon, Character* other)
 }
 
 // MELEE CHANCE OF HIT
-// Melee CoH = 
+// Melee CoH = 2 * ((DCD ? (ADB / (ADB + DDR)) : 1) * (DCB ? (ABB / (ABB + DBR)) : 1))
+// ADB = Attacker Dodge Bypass
+// DDR = Defender Dodge Rating
+// ABB = Attacker Block Bypass
+// DBR = Defender Block Rating
+// DCD = Defender Can Dodge
+// DBD = Defender Can Block
+// If the defender can dodge, its his dodgerating versus my dodge bypass
+// If the defender can block, its his blockrating versus my block bypass
+// If the defender can do both, its his dodge and his block versus mine
 float Character::calculateMeleeChanceOfHit(Item* weapon, Character* other)
 {
+    // Ensure we are within effective range
     float ER = weapon->schema.effectiveRangeInTiles;
     float D = bit::VectorMath::distance(Body::schema.x, Body::schema.y, other->Body::schema.x, other->Body::schema.y) / level->tileWidth;
-
     if(D > ER)
         return 0;
 
-    return .5;
+    return calculateCoreMeleeChanceOfHit(other);
 }
 
+// UNARMGED CHANCE OF HIT
+// See melee but capped at one tile
 float Character::calculateUnarmedChanceOfHit(Character* other)
 {
-    return .1;
+    float D = bit::VectorMath::distance(Body::schema.x, Body::schema.y, other->Body::schema.x, other->Body::schema.y) / level->tileWidth;
+    if(D > 1)
+        return 0;
+    
+    return calculateCoreMeleeChanceOfHit(other);
+}
+
+float Character::calculateCoreMeleeChanceOfHit(Character* other)
+{
+    // miss: 5% always
+    // lucky strike: 5% always
+    // if enemy is 8/10 level master at defending and I am 8/10 master at attacking
+    //  i would have a 50% of hitting ~= 50%
+    // if enemy is 9/10 and I am 8/10
+    //  40 - 45% chance of hit ~= 47%
+    // if enemy is 3/10 and I am 8/10
+    //  70ish % chance of hit  ~= 72%
+
+    bool defenderCanDodge = other->canDodge();
+    bool defenderCanBlock = other->canBlock();
+    
+    float defenderDodgeRating = defenderCanDodge ? other->calculateDodgeRating() : 0;
+    float defenderBlockRating = defenderCanBlock ? other->calculateBlockRating() : 0;
+    
+    float offenderDodgeBypass = calculateDodgeBypass();
+    float offenderBlockBypass = calculateBlockBypass();
+
+    //float cohBlock = offenderBlockAttackRating / (offenderBlockAttackRating + defenderBlockRating);
+    //float cohDodge = offenderDodgeAttackRating / (offenderDodgeAttackRating + defenderDodgeRating);
+
+    float defenseRating = defenderDodgeRating + defenderBlockRating;
+    float attackRating = offenderDodgeBypass + offenderBlockBypass;
+
+    float coh = attackRating / (attackRating + defenseRating);
+    
+    return bit::Math::clamp(coh, .05f, .95f);
 }
 
 
@@ -599,10 +656,44 @@ float Character::calculateRangeFactor(Item* weapon, Character* other)
     return (ER / (ER + D));
 }
 
+float Character::calculateDodgeBypass()
+{
+    return calculateDexterityFactor();
+}
+
+float Character::calculateBlockBypass()
+{
+    return calculateStrengthFactor();
+}
+
+float Character::calculateDodgeRating()
+{
+    return calculateDexterityFactor();
+}
+
+float Character::calculateBlockRating()
+{
+    return calculateStrengthFactor();
+}
+
+// DEXTERITY FACTOR
+// Brief: Floating point representing current dexterity against the target master dexterity
+// CurrentDexterity / MasterDexterity
+// Can result in 0-1 values for most, exceeding 1 for masters
 float Character::calculateDexterityFactor()
 {
-    return 1;
+    return (float)schema.dexterity / (float)schema.masterDexterity;
 }
+
+// STRENGTH FACTOR
+// Brief: Floating point representing current strength against the target master strength
+// CurrentStrength / MasterStrength
+// Can result in 0-1 values for most, exceeding 1 for masters
+float Character::calculateStrengthFactor()
+{
+    return (float)schema.strength / (float)schema.masterStrength;
+}
+
 
 ///////////////////////////////////////////////////////
 //                 INSPECTION                        //

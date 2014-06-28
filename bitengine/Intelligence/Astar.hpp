@@ -22,8 +22,8 @@ namespace bit
         {
             aStarID++;
 
-            startNodeContainer->node->cleanAstar(aStarID);
-            endNodeContainer->node->cleanAstar(aStarID);
+            startNodeContainer->cleanAstar(aStarID);
+            endNodeContainer->cleanAstar(aStarID);
 
             std::list<T*> OpenList;
             std::list<T*> ClosedList;
@@ -32,14 +32,14 @@ namespace bit
             T* currentNodeContainer = startNodeContainer;
 
             ClosedList.push_back(currentNodeContainer);
-            currentNodeContainer->node->closed = true;
+            currentNodeContainer->aStarClosed = true;
 
             // This was gone and made a massive memory leak before, it is vital!
             OpenList.push_back(currentNodeContainer);
-            currentNodeContainer->node->opened = true;
+            currentNodeContainer->aStarOpened = true;
 
             // Perform the path search
-            while (!currentNodeContainer->node->equals(endNodeContainer->node))
+            while (!currentNodeContainer->equals(endNodeContainer))
             {
                 // Mechanism for comparing neighbors
                 std::vector<T*> surrounding;
@@ -49,7 +49,7 @@ namespace bit
                 for (unsigned int i = 0; i < surrounding.size(); i++)
                 {
                     T* checkNodeContainer = surrounding[i];
-                    checkNodeContainer->node->cleanAstar(aStarID);
+                    checkNodeContainer->cleanAstar(aStarID);
 
                     int xdiff;
                     int ydiff;
@@ -57,15 +57,15 @@ namespace bit
                     int hcost;
 
                     // G cost for this node
-                    if (checkNodeContainer->node->gCost == 0)
+                    if (checkNodeContainer->aStarGCost == 0)
                     {
                         // G = Cost to move from current active node to this node
                         //     If this is a locked down grid, you can treat horizontal neighbors
                         //     as a straight 10 and diagonal neighbors as a 14
                         //     If this is node mapping is not a locked down grid, perhaps a web
                         //     or something else, then calculate the distance realistically.
-                        xdiff = std::abs(checkNodeContainer->node->x - currentNodeContainer->node->x);
-                        ydiff = std::abs(checkNodeContainer->node->y - currentNodeContainer->node->y);
+                        xdiff = std::abs(checkNodeContainer->aStarX - currentNodeContainer->aStarX);
+                        ydiff = std::abs(checkNodeContainer->aStarY - currentNodeContainer->aStarY);
                         gcost = 0;
                         // If diagonal
                         if (ydiff > 0 && xdiff > 0)
@@ -81,45 +81,45 @@ namespace bit
                             gcost = xdiff + ydiff; // one has to be zero so it is the length of one side
                         }
 
-                        checkNodeContainer->node->gCost = gcost;
+                        checkNodeContainer->aStarGCost = gcost;
                     }
 
                     // H cost for this node
-                    if (checkNodeContainer->node->hCost == 0)
+                    if (checkNodeContainer->aStarHCost == 0)
                     {
                         // H = Cost to move from this node to the destination node.
                         //     Use manhattan distance (total x distance + total y distance)
                         //     Or use real distance squareRoot( x distance ^ 2, y distance ^ 2)
                         //     Or some other heuristic if you are brave
-                        xdiff = checkNodeContainer->node->x - endNodeContainer->node->x;
-                        ydiff = checkNodeContainer->node->y - endNodeContainer->node->y;
+                        xdiff = checkNodeContainer->aStarX - endNodeContainer->aStarX;
+                        ydiff = checkNodeContainer->aStarY - endNodeContainer->aStarY;
                         if(manhattan)
                             hcost = xdiff + ydiff;
                         else
                             hcost = (int)std::sqrt((float)(xdiff * xdiff) + (float)(ydiff * ydiff));
-                        checkNodeContainer->node->hCost = hcost;
+                        checkNodeContainer->aStarHCost = hcost;
                     }
 
                     // F cost for this node
-                    if (checkNodeContainer->node->fCost == 0)
+                    if (checkNodeContainer->aStarFCost == 0)
                     {
                         // F = G + H
                         // F = Cost to move from current active node to this node
                         //     plus the cost for this mode to travel to the final node
                         //     (calculated by manhattan distance or real distance etc.)
-                        checkNodeContainer->node->fCost = checkNodeContainer->node->gCost + checkNodeContainer->node->hCost;
+                        checkNodeContainer->aStarFCost = checkNodeContainer->aStarGCost + checkNodeContainer->aStarHCost;
                     }
 
                     // Skip nodes that are blocked or already closed
-                    if (!isBlocked(checkNodeContainer) && !checkNodeContainer->node->closed)
+                    if (!isBlocked(checkNodeContainer) && !checkNodeContainer->aStarClosed)
                     {
                         // If the connected node is not in the open list, add it to the open list
                         // and set its parent to our current active node
-                        if (!checkNodeContainer->node->opened)
+                        if (!checkNodeContainer->aStarOpened)
                         {
-                            checkNodeContainer->node->aStarParent = currentNodeContainer->node;
+                            checkNodeContainer->aStarParent = currentNodeContainer;
                             OpenList.push_back(checkNodeContainer);
-                            checkNodeContainer->node->opened = true;
+                            checkNodeContainer->aStarOpened = true;
                         }
 
                         // If the connected node is already in the open list, check to see if
@@ -128,13 +128,13 @@ namespace bit
                         else
                         {
                             // Check to see if its current G cost is less than the new G cost of the parent and the old G cost
-                            gcost = checkNodeContainer->node->gCost + currentNodeContainer->node->gCost;
-                            if (gcost < checkNodeContainer->node->gCost)
+                            gcost = checkNodeContainer->aStarGCost + currentNodeContainer->aStarGCost;
+                            if (gcost < checkNodeContainer->aStarGCost)
                             {
                                 // If so, make the current node its new parent and recalculate the gcost, and fcost
-                                checkNodeContainer->node->aStarParent = currentNodeContainer->node;
-                                checkNodeContainer->node->gCost = gcost;
-                                checkNodeContainer->node->fCost = checkNodeContainer->node->gCost + checkNodeContainer->node->hCost;
+                                checkNodeContainer->aStarParent = currentNodeContainer;
+                                checkNodeContainer->aStarGCost = gcost;
+                                checkNodeContainer->aStarFCost = checkNodeContainer->aStarGCost + checkNodeContainer->aStarHCost;
                             }
                         }
                     }
@@ -156,7 +156,7 @@ namespace bit
                         continue;
                     }
 
-                    if ((*i)->node->fCost < cheapOpenNode->node->fCost)
+                    if ((*i)->aStarFCost < cheapOpenNode->aStarFCost)
                     {
                         // we found a cheaper open list node
                         cheapOpenNode = (*i);
@@ -172,10 +172,10 @@ namespace bit
                 // Now we have the node from the open list that has the cheapest F cost
                 // move it to the closed list and set it as the current node
                 OpenList.remove(cheapOpenNode);
-                cheapOpenNode->node->opened = false;
+                cheapOpenNode->aStarOpened = false;
 
                 ClosedList.push_back(cheapOpenNode);
-                cheapOpenNode->node->closed = true;
+                cheapOpenNode->aStarClosed = true;
 
                 currentNodeContainer = cheapOpenNode;
             } // A* Complete
@@ -187,7 +187,7 @@ namespace bit
             while (true)
             {
                 // If I have traversed back to the beginning of the linked path
-                if (workingNodeContainer->node->aStarParent == NULL)
+                if (workingNodeContainer->aStarParent == NULL)
                 {
                     // Push the final game object
                     fill.push_back(workingNodeContainer);
@@ -200,7 +200,7 @@ namespace bit
                     fill.push_back(workingNodeContainer);
 
                     // Update my working object to my next parent
-                    workingNodeContainer = static_cast<T*>(workingNodeContainer->node->aStarParent->parentContainer);
+                    workingNodeContainer = static_cast<T*>(workingNodeContainer->aStarParent);
                 }
             }
 

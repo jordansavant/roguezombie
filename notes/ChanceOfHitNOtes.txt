@@ -55,14 +55,31 @@ Melee
 		2. The target has a high melee dodge
 	
 	Modifying the D2 approach:
-		200% * (AttackRating / AttackRating + DodgeRating)
+		200% * (myAttackRating / myAttackRating + myDodgeRating)
 		
+	
 	AttackRating
 		Dexterity controls effectiveness at combat range
 		Strength effects damage at melee range
 		A combination of Strength and Dexterity is a good option
 	
 	DodgeRating
+		Return 0-1-* value indicating ability to dodge
+		CurrentDexterity / MasterDexterity
+		
+	BlockRating
+		Strength / MasterStrength	
 	
 		
-
+	Strength
+		Directly effects melee damage
+		Directly effects melee block
+		
+	Dexterity
+		Directly effects melee CoH
+		Directly effects melee dodge
+	
+		
+		
+		
+		

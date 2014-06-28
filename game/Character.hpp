@@ -80,7 +80,9 @@ public:
 	{
         Schema()
             : isPlayerCharacter(false), clientId(0), player(NULL), type(Type::None), direction(0, 0),
-              maxActionPoints(2), currentActionPoints(2), maxHealth(0), health(0), speed(3), intelligence(1), dexterity(1), strength(1)
+              maxActionPoints(2), currentActionPoints(2), maxHealth(0), health(0), speed(3),
+              intelligence(1), dexterity(1), strength(1),
+              masterIntelligence(2), masterDexterity(2), masterStrength(2)
         {
             equipmentIds.resize(EquipmentSlot::_count, 0);
         }
@@ -100,8 +102,11 @@ public:
         int health;
         int speed; // tiles per action point
         int intelligence;
-        int dexterity;
+        int masterStrength;
         int strength;
+        int masterIntelligence;
+        int masterDexterity;
+        int dexterity;
 
         friend sf::Packet& operator <<(sf::Packet& packet, const Schema &schema)
         {
@@ -230,6 +235,10 @@ public:
 
     void detectCombatExit();
 
+    virtual bool canDodge();
+
+    virtual bool canBlock();
+
     float calculateChanceOfHit(Character* character);
 
     float calculateRangedChanceOfHit(Item* weapon, Character* character);
@@ -238,11 +247,23 @@ public:
 
     float calculateUnarmedChanceOfHit(Character* character);
 
+    float calculateCoreMeleeChanceOfHit(Character* character);
+
     float calculateObstructionPenalty(Character* character);
 
     float calculateRangeFactor(Item* weapon, Character* character);
 
+    float calculateDodgeBypass();
+
+    float calculateBlockBypass();
+
+    float calculateDodgeRating();
+
+    float calculateBlockRating();
+
     float calculateDexterityFactor();
+
+    float calculateStrengthFactor();
 
     // Inspection
 

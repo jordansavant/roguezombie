@@ -4,26 +4,23 @@
 
 namespace bit
 {
-    class NodeContainer;
-
     class Node
     {
     public:
 
         Node();
 
-        Node(int x, int y, NodeContainer* parentContainer);
+        Node(int x, int y);
 
         unsigned int aStarID;
-        bool closed;
-        bool opened;
-        int fCost;
-        int gCost;
-        int hCost;
-        int x;
-        int y;
+        bool aStarClosed;
+        bool aStarOpened;
+        int aStarFCost;
+        int aStarGCost;
+        int aStarHCost;
+        int aStarX;
+        int aStarY;
         Node* aStarParent;
-        NodeContainer* parentContainer;
 
         bool equals(Node* compareNode);
 

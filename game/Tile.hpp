@@ -10,7 +10,7 @@
 class Level;
 class Body;
 
-class Tile : public bit::NodeContainer
+class Tile : public bit::Node
 {
 public:
 

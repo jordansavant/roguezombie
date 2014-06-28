@@ -4,7 +4,7 @@
 
 #include "mtrand.hpp"
 
-#define BIT_RANDOM_MAX 2147483647 // int 32
+#define BIT_RANDOM_MAX 4294967295 // unsigned int 32 (2147483647 = int 32)
 
 namespace bit
 {

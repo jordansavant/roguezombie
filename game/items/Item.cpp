@@ -283,6 +283,16 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.effectiveRangeInTiles = 15;
 
             break;
+
+        case Type::Crowbar:
+
+            i = new Item();
+            i->schema.CategoryBase = ItemCategory::Base::BaseWeapon;
+            i->schema.CategoryWeapon = ItemCategory::Weapon::WeaponMelee;
+            i->schema.weight = 3;
+            i->schema.effectiveRangeInTiles = 1;
+
+            break;
     }
 
     i->schema.id = id;
@@ -309,6 +319,9 @@ std::string Item::getTitle(Type type)
 
         case Type::Z4Rifle:
             return "Z4 Rifle";
+
+        case Type::Crowbar:
+            return "Crowbar";
     }
 }
 
@@ -331,5 +344,8 @@ std::string Item::getSpriteName(Type type)
 
         case Type::Z4Rifle:
             return "Z4Rifle";
+
+        case Type::Crowbar:
+            return "Crowbar";
     }
 }
