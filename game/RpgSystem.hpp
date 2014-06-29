@@ -20,13 +20,23 @@ public:
     static int masterDexterity;
     static int masterStrength;
 
+    static int masterArmorSignificanceHead;
+    static int masterArmorSignificanceChest;
+    static int masterArmorSignificanceLegs;
+    static int masterArmorSignificanceHands;
+    static int masterArmorSignificanceFeet;
+
     static float calculateDexterityFactor(Character* character);
 
     static float calculateStrengthFactor(Character* character);
 
+    static int calculateMasterArmorSignificanceTotal();
+
     class Combat
     {
     public:
+
+        // Chance of Hit
 
         static float calculateChanceOfHit(Character* attacker, Character* defender);
 
@@ -50,6 +60,8 @@ public:
 
         static float calculateBlockRating(Character* defender);
 
+        // Damage
+
         static float calculateAttackDamage(Character* attacker, Character* defender);
 
         static float calculateRangedAttackDamage(Item* attackerWeapon, Character* attacker, Character* defender);
@@ -57,6 +69,8 @@ public:
         static float calculateMeleeAttackDamage(Item* attackerWeapon, Character* attacker, Character* defender);
 
         static float calculateUnarmedAttackDamage(Character* attacker, Character* defender);
+
+        static float calculateDamageMitigation(Character* attacker, Character* defender, float damage);
 
     };
 

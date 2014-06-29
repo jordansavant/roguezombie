@@ -10,6 +10,12 @@ int RpgSystem::masterSpeed = 2;
 int RpgSystem::masterDexterity = 2;
 int RpgSystem::masterStrength = 2;
 
+int RpgSystem::masterArmorSignificanceHead = 2;
+int RpgSystem::masterArmorSignificanceChest = 5;
+int RpgSystem::masterArmorSignificanceLegs = 4;
+int RpgSystem::masterArmorSignificanceHands = 1;
+int RpgSystem::masterArmorSignificanceFeet = 1;
+
 // DEXTERITY FACTOR
 // Brief: Floating point representing current dexterity against the target master dexterity
 // CurrentDexterity / MasterDexterity
@@ -28,6 +34,12 @@ float RpgSystem::calculateStrengthFactor(Character* character)
     return (float)character->schema.strength / (float)masterStrength;
 }
 
+// The total maximum effectiveness of the perfect set of armor
+// which mitigates all damage
+int RpgSystem::calculateMasterArmorSignificanceTotal()
+{
+    return masterArmorSignificanceHead + masterArmorSignificanceChest + masterArmorSignificanceLegs + masterArmorSignificanceHands + masterArmorSignificanceFeet;
+}
 
 
 // CHANCE OF HIT
@@ -226,4 +238,48 @@ float RpgSystem::Combat::calculateMeleeAttackDamage(Item* weapon, Character* att
 float RpgSystem::Combat::calculateUnarmedAttackDamage(Character* attacker, Character* defender)
 {
     return 5.0f * calculateStrengthFactor(attacker) * 2.0f;
+}
+
+// DAMAGE MITIGATION
+// DMG = DMG - (DMG * ( ( HAE * HAS + CAE * CAS + LAE * LAS + NAE * NAS + FAE * FAS ) / TA ) )
+// DMG = damage
+// HAE = Head Armor Effectiveness
+// HAS = Head Armor Significance
+// CAE = Chest Armor Effectiveness
+// CAS = Chest Armor Significance
+// LAE = Leg Armor Effectivness
+// LAS = Leg Armor Significance
+// NAE = Hand Armor Effectiveness
+// NAS = Hand Armor Significance
+// FAE = Feet Armor Effectiveness
+// FAS = Feet Armor Significance
+// TA = Total Armor Significance
+// Each armor has a damageMitigation float between 0 - 1
+// As well, some armors are more useful than others, i.e. chest coverage is better than hands
+// Each armor therefore can have an effectiveness (0-1) float and a significance
+// Combining all armor effectiveness with their significance and dividing over the total max significance
+// results in a percentage of damage it can mitigate
+// Subtract the mitigated value from the damage to reduce it
+float RpgSystem::Combat::calculateDamageMitigation(Character* attacker, Character* defender, float damage)
+{
+    // Get armors
+    Item* headArmor = defender->equipment[Character::EquipmentSlot::Head];
+    Item* chestArmor = defender->equipment[Character::EquipmentSlot::Chest];
+    Item* legsArmor = defender->equipment[Character::EquipmentSlot::Legs];
+    Item* handsArmor = defender->equipment[Character::EquipmentSlot::Hands];
+    Item* feetArmor = defender->equipment[Character::EquipmentSlot::Feet];
+
+    // Get the armor effectiveness against their target master values
+    float effectiveness = 0.0f;
+    effectiveness += headArmor ? headArmor->schema.armorEffectiveness * masterArmorSignificanceHead : 0;
+    effectiveness += chestArmor ? chestArmor->schema.armorEffectiveness * masterArmorSignificanceChest : 0;
+    effectiveness += legsArmor ? legsArmor->schema.armorEffectiveness * masterArmorSignificanceLegs : 0;
+    effectiveness += handsArmor ? handsArmor->schema.armorEffectiveness * masterArmorSignificanceHands : 0;
+    effectiveness += feetArmor ? feetArmor->schema.armorEffectiveness * masterArmorSignificanceFeet : 0;
+    
+    // Calculate the total effectiveness of armor
+    effectiveness = effectiveness / (float)calculateMasterArmorSignificanceTotal();
+
+    // subtract effectiveness from the incoming damage
+    return damage - (damage * effectiveness);
 }

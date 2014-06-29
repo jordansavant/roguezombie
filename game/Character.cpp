@@ -426,26 +426,27 @@ void Character::attack(Character* character)
 
     if(bit::Math::randomFloat() < CoH)
     {
-        unsigned int damage = RpgSystem::Combat::calculateAttackDamage(this, character);
-        character->harm(damage);
+        float damage = RpgSystem::Combat::calculateAttackDamage(this, character);
+        unsigned int mitigatedDamage = RpgSystem::Combat::calculateDamageMitigation(this, character, damage);
+        character->harm(mitigatedDamage);
 
         // Game Event
         if(schema.isPlayerCharacter)
         {
             Character* me = this;
-            level->server->sendEventToClient(*schema.player->client, [me, character, damage](bit::ServerPacket &packet){
+            level->server->sendEventToClient(*schema.player->client, [me, character, mitigatedDamage](bit::ServerPacket &packet){
                 packet << sf::Uint32(ServerEvent::PlayerAttacksCharacter);
                 packet << sf::Uint32(character->schema.type);
-                packet << sf::Uint32(damage);
+                packet << sf::Uint32(mitigatedDamage);
             });
         }
         else if(character->schema.isPlayerCharacter)
         {
             Character* me = this;
-            level->server->sendEventToClient(*character->schema.player->client, [me, character, damage](bit::ServerPacket &packet){
+            level->server->sendEventToClient(*character->schema.player->client, [me, character, mitigatedDamage](bit::ServerPacket &packet){
                 packet << sf::Uint32(ServerEvent::CharacterAttacksPlayer);
                 packet << sf::Uint32(me->schema.type);
-                packet << sf::Uint32(damage);
+                packet << sf::Uint32(mitigatedDamage);
             });
         }
     }

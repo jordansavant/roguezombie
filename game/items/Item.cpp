@@ -261,6 +261,7 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.CategoryBase = ItemCategory::Base::BaseArmor;
             i->schema.CategoryArmor = ItemCategory::Armor::ArmorHead;
             i->schema.weight = 1.5;
+            i->schema.armorEffectiveness = .3f;
 
             break;
 

@@ -78,7 +78,6 @@ void AiRoutines::Combat::Zombie_DecideCombat(Character* character)
 
 bool AiRoutines::Combat::Hunter_DetectHostility(Character* character, Character* other)
 {
-    return false;
     return (other->schema.type != Character::Type::Hunter);
 }
 
