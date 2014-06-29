@@ -546,16 +546,7 @@ float Character::calculateRangedChanceOfHit(Item* weapon, Character* other)
 }
 
 // MELEE CHANCE OF HIT
-// Melee CoH = 2 * ((DCD ? (ADB / (ADB + DDR)) : 1) * (DCB ? (ABB / (ABB + DBR)) : 1))
-// ADB = Attacker Dodge Bypass
-// DDR = Defender Dodge Rating
-// ABB = Attacker Block Bypass
-// DBR = Defender Block Rating
-// DCD = Defender Can Dodge
-// DBD = Defender Can Block
-// If the defender can dodge, its his dodgerating versus my dodge bypass
-// If the defender can block, its his blockrating versus my block bypass
-// If the defender can do both, its his dodge and his block versus mine
+// See core melee but capped at effective range of weapon
 float Character::calculateMeleeChanceOfHit(Item* weapon, Character* other)
 {
     // Ensure we are within effective range
@@ -568,7 +559,7 @@ float Character::calculateMeleeChanceOfHit(Item* weapon, Character* other)
 }
 
 // UNARMGED CHANCE OF HIT
-// See melee but capped at one tile
+// See core melee but capped at one tile
 float Character::calculateUnarmedChanceOfHit(Character* other)
 {
     float D = bit::VectorMath::distance(Body::schema.x, Body::schema.y, other->Body::schema.x, other->Body::schema.y) / level->tileWidth;
@@ -578,32 +569,23 @@ float Character::calculateUnarmedChanceOfHit(Character* other)
     return calculateCoreMeleeChanceOfHit(other);
 }
 
+// CORE MELEE CHANCE OF HIT
+// ADB = Attacker Dodge Bypass
+// DDR = Defender Dodge Rating
+// ABB = Attacker Block Bypass
+// DBR = Defender Block Rating
+// DCD = Defender Can Dodge
+// DBD = Defender Can Block
+// AR = Attack Rating
+// DR = Defense Rating
+// Formula:
+// AR = ADB + ABB
+// DR = DCD ? DDR : 0 + DCB ? DBR : 0
+// COH = AR / (AR + DR)
 float Character::calculateCoreMeleeChanceOfHit(Character* other)
 {
-    // miss: 5% always
-    // lucky strike: 5% always
-    // if enemy is 8/10 level master at defending and I am 8/10 master at attacking
-    //  i would have a 50% of hitting ~= 50%
-    // if enemy is 9/10 and I am 8/10
-    //  40 - 45% chance of hit ~= 47%
-    // if enemy is 3/10 and I am 8/10
-    //  70ish % chance of hit  ~= 72%
-
-    bool defenderCanDodge = other->canDodge();
-    bool defenderCanBlock = other->canBlock();
-    
-    float defenderDodgeRating = defenderCanDodge ? other->calculateDodgeRating() : 0;
-    float defenderBlockRating = defenderCanBlock ? other->calculateBlockRating() : 0;
-    
-    float offenderDodgeBypass = calculateDodgeBypass();
-    float offenderBlockBypass = calculateBlockBypass();
-
-    //float cohBlock = offenderBlockAttackRating / (offenderBlockAttackRating + defenderBlockRating);
-    //float cohDodge = offenderDodgeAttackRating / (offenderDodgeAttackRating + defenderDodgeRating);
-
-    float defenseRating = defenderDodgeRating + defenderBlockRating;
-    float attackRating = offenderDodgeBypass + offenderBlockBypass;
-
+    float defenseRating = other->calculateDodgeRating() + other->calculateBlockRating();
+    float attackRating = calculateDodgeBypass() + calculateBlockBypass();
     float coh = attackRating / (attackRating + defenseRating);
     
     return bit::Math::clamp(coh, .05f, .95f);
@@ -668,12 +650,12 @@ float Character::calculateBlockBypass()
 
 float Character::calculateDodgeRating()
 {
-    return calculateDexterityFactor();
+    return canDodge() ? calculateDexterityFactor() : 0;
 }
 
 float Character::calculateBlockRating()
 {
-    return calculateStrengthFactor();
+    return canBlock() ? calculateStrengthFactor() : 0;
 }
 
 // DEXTERITY FACTOR
