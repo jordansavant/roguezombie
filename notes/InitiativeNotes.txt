@@ -1,0 +1,12 @@
+Initiative
+	
+	Speed and Intelligence
+	How fast someone can react and how smart they are to detect the hostility
+	(will be effected by skills in the future)
+	
+	2 * SpeedFactor * IntelligenceFactor
+	
+	2 * 1.25 * .3 = 0.75
+	2 * 1 * 1 = 2
+	2 * .5 * .5 = .5
+	2 * .67 * .67 = .8978

@@ -6,15 +6,9 @@
 #include "../bitengine/Math.hpp"
 
 int RpgSystem::masterIntelligence = 2;
-int RpgSystem::masterSpeed = 2;
+int RpgSystem::masterSpeed = 3;
 int RpgSystem::masterDexterity = 2;
 int RpgSystem::masterStrength = 2;
-
-int RpgSystem::masterArmorSignificanceHead = 2;
-int RpgSystem::masterArmorSignificanceChest = 5;
-int RpgSystem::masterArmorSignificanceLegs = 4;
-int RpgSystem::masterArmorSignificanceHands = 1;
-int RpgSystem::masterArmorSignificanceFeet = 1;
 
 // DEXTERITY FACTOR
 // Brief: Floating point representing current dexterity against the target master dexterity
@@ -34,11 +28,46 @@ float RpgSystem::calculateStrengthFactor(Character* character)
     return (float)character->schema.strength / (float)masterStrength;
 }
 
+// SPEED FACTOR
+// Brief: Floating point representing current speed against the target master speed
+// CurrentSpeed / MasterSpeed
+// Can result in 0-1 values for most, exceeding 1 for masters
+float RpgSystem::calculateSpeedFactor(Character* character)
+{
+    return (float)character->schema.speed / (float)masterSpeed;
+}
+
+// INTELLIGENCE FACTOR
+// Brief: Floating point representing current intelligence against the target master intelligence
+// CurrentIntelligence / MasterIntelligence
+// Can result in 0-1 values for most, exceeding 1 for masters
+float RpgSystem::calculateIntelligenceFactor(Character* character)
+{
+    return (float)character->schema.intelligence / (float)masterIntelligence;
+}
+
+
+int RpgSystem::masterArmorSignificanceHead = 2;
+int RpgSystem::masterArmorSignificanceChest = 5;
+int RpgSystem::masterArmorSignificanceLegs = 4;
+int RpgSystem::masterArmorSignificanceHands = 1;
+int RpgSystem::masterArmorSignificanceFeet = 1;
+
+
 // The total maximum effectiveness of the perfect set of armor
 // which mitigates all damage
 int RpgSystem::calculateMasterArmorSignificanceTotal()
 {
     return masterArmorSignificanceHead + masterArmorSignificanceChest + masterArmorSignificanceLegs + masterArmorSignificanceHands + masterArmorSignificanceFeet;
+}
+
+
+// INITIATIVE
+// How fast someone can react and how smart they are to detect the hostility
+// INIT = 2 * SpeedFactor * IntelligenceFactor
+float RpgSystem::Combat::calculateInitiative(Character* character)
+{
+    return 2.0f * calculateSpeedFactor(character) * calculateIntelligenceFactor(character);
 }
 
 

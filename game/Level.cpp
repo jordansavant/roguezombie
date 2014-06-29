@@ -15,6 +15,7 @@
 #include "dialog/DialogNode.hpp"
 #include "GameplayServer.hpp"
 #include "AiRoutines.hpp"
+#include "RpgSystem.hpp"
 #include "SFML/Network.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Math.hpp"
@@ -243,6 +244,13 @@ void Level::enterCombat()
         for(unsigned int i=0; i < hunters.size(); i++)
             if(!hunters[i]->schema.isDead())
                 turnQueue.push_back(hunters[i]);
+
+        // Sort the turn queue by initiative
+        std::sort(turnQueue.begin(), turnQueue.end(), [] (Character* characterFirst, Character* characterSecond) -> bool {
+            float a = RpgSystem::Combat::calculateInitiative(characterFirst);
+            float b = RpgSystem::Combat::calculateInitiative(characterSecond);
+            return b < a;
+        });
     }
 }
 

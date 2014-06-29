@@ -20,21 +20,27 @@ public:
     static int masterDexterity;
     static int masterStrength;
 
+    static float calculateDexterityFactor(Character* character);
+
+    static float calculateStrengthFactor(Character* character);
+
+    static float calculateSpeedFactor(Character* character);
+    
+    static float calculateIntelligenceFactor(Character* character);
+
     static int masterArmorSignificanceHead;
     static int masterArmorSignificanceChest;
     static int masterArmorSignificanceLegs;
     static int masterArmorSignificanceHands;
     static int masterArmorSignificanceFeet;
 
-    static float calculateDexterityFactor(Character* character);
-
-    static float calculateStrengthFactor(Character* character);
-
     static int calculateMasterArmorSignificanceTotal();
 
     class Combat
     {
     public:
+
+        static float calculateInitiative(Character* character);
 
         // Chance of Hit
 

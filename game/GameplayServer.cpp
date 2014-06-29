@@ -151,6 +151,8 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
         p->character->equipFromInventory(Character::EquipmentSlot::WeaponPrimary, magnum->schema.id);
         p->character->equipFromInventory(Character::EquipmentSlot::WeaponSecondary, crowbar->schema.id);
         p->character->equipFromInventory(Character::EquipmentSlot::Head, hardhat->schema.id);
+
+        p->character->schema.intelligence = 2;
     }
 }
 

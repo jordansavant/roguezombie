@@ -1,0 +1,54 @@
+Damage
+
+Ranged Damage
+
+	Ranged damage should be completely dependent on the weapon
+		(round damage is nice and all but the prototype is not needing this)
+	
+	Weapon Damage range: 12 - 16
+	rand(12, 16)
+	
+	Ranged damage suffers from static damages and can only be bolstered by critical hits
+	
+Melee Damage
+	
+	Melee damage should be based on the weapons damage, effected by the strength factor of the attacker
+	
+	Weapon Damage range: 12 - 16
+	Strength Factor .4
+	base = rand(12, 16) // 13
+	dmg = base * SF * 2 // 10.4
+	
+	SF = .8
+	base = rand(12, 16) // 13
+	dmg = base * SF * 2 // 20.8
+
+
+Damage Mitigation
+
+	Bullets and melee strikes can have their damage mitigated by armors
+	
+	Currently there are the following pieces of armor:
+		Head	= 2 effectiveness
+		Chest	= 5 effectiveness
+		Legs	= 4 effectiveness
+		Feet	= 1 effectiveness
+		Hands	= 1 effectiveness
+		
+		Total	= 13
+	
+	Each armor has a damageMitigation float between 0 - 1
+	Total armor rating is 13 for each armor type
+	Multiply the effectiveness of the armor against its type max effectiveness, add them up
+	and divide over their total max effectiveness
+	e.g
+		head = .3, chest = .5, legs = .3, feet = .6, hands = 0
+		.3 * 2 + .5 * 5 + .3 * 4 + .6 * 1 + 0 * 1
+		= 4.9
+		4.9 / 13
+		= 0.377
+		If the damage was 10, it would be
+		10 - (10 * .377)
+		= 6.23 mitigation
+	
+Critical Hit
