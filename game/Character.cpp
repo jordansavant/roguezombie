@@ -13,6 +13,7 @@
 #include "mission/Mission.hpp"
 #include "mission/MissionClient.hpp"
 #include "items/Item.hpp"
+#include "RpgSystem.hpp"
 
 Character::Character()
     : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), actionDelayTimer(1), hostilityCheckAi(NULL), combatDetectionAi(NULL), combatDecisionAi(NULL), isHostileCombatDetected(false), targetEnemy(NULL), combatTilesTraversed(0), moveTimer(.67f), equipment(), schema(), visionRadius(30)
@@ -422,7 +423,7 @@ void Character::kill()
 
 void Character::rangedAttack(Character* character)
 {
-    float CoH = calculateChanceOfHit(character);
+    float CoH = RpgSystem::Combat::calculateChanceOfHit(this, character);
 
     if(bit::Math::randomFloat() < CoH)
     {
@@ -511,169 +512,6 @@ bool Character::canDodge()
 bool Character::canBlock()
 {
     return (equipment[EquipmentSlot::WeaponPrimary] && equipment[EquipmentSlot::WeaponPrimary]->isOfWeaponType(ItemCategory::Weapon::WeaponMelee));
-}
-
-// CHANCE OF HIT
-// - Subdivided into three routines: ranged, melee and unarmed
-float Character::calculateChanceOfHit(Character* other)
-{
-    // If we have a weapon equipped
-    Item* weapon = equipment[EquipmentSlot::WeaponPrimary];
-    if(weapon)
-    {
-        // If it is ranged
-        if(weapon->isOfWeaponType(ItemCategory::Weapon::WeaponRanged))
-        {
-            return calculateRangedChanceOfHit(weapon, other);
-        }
-        
-        // If it is melee
-        if(weapon->isOfWeaponType(ItemCategory::Weapon::WeaponMelee))
-        {
-            return calculateMeleeChanceOfHit(weapon, other);
-        }
-    }
-
-    // If we are unarmed
-    return calculateUnarmedChanceOfHit(other);
-}
-
-// RANGED CHANCE OF HIT
-// Ranged CoH = (1 - ObstructionPenalty) * RangeFactor * DexFactor
-float Character::calculateRangedChanceOfHit(Item* weapon, Character* other)
-{
-    return (1 - calculateObstructionPenalty(other)) * calculateRangeFactor(weapon, other) * calculateDexterityFactor();
-}
-
-// MELEE CHANCE OF HIT
-// See core melee but capped at effective range of weapon
-float Character::calculateMeleeChanceOfHit(Item* weapon, Character* other)
-{
-    // Ensure we are within effective range
-    float ER = weapon->schema.effectiveRangeInTiles;
-    float D = bit::VectorMath::distance(Body::schema.x, Body::schema.y, other->Body::schema.x, other->Body::schema.y) / level->tileWidth;
-    if(D > ER)
-        return 0;
-
-    return calculateCoreMeleeChanceOfHit(other);
-}
-
-// UNARMGED CHANCE OF HIT
-// See core melee but capped at one tile
-float Character::calculateUnarmedChanceOfHit(Character* other)
-{
-    float D = bit::VectorMath::distance(Body::schema.x, Body::schema.y, other->Body::schema.x, other->Body::schema.y) / level->tileWidth;
-    if(D > 1)
-        return 0;
-    
-    return calculateCoreMeleeChanceOfHit(other);
-}
-
-// CORE MELEE CHANCE OF HIT
-// ADB = Attacker Dodge Bypass
-// DDR = Defender Dodge Rating
-// ABB = Attacker Block Bypass
-// DBR = Defender Block Rating
-// DCD = Defender Can Dodge
-// DBD = Defender Can Block
-// AR = Attack Rating
-// DR = Defense Rating
-// Formula:
-// AR = ADB + ABB
-// DR = DCD ? DDR : 0 + DCB ? DBR : 0
-// COH = AR / (AR + DR)
-float Character::calculateCoreMeleeChanceOfHit(Character* other)
-{
-    float defenseRating = other->calculateDodgeRating() + other->calculateBlockRating();
-    float attackRating = calculateDodgeBypass() + calculateBlockBypass();
-    float coh = attackRating / (attackRating + defenseRating);
-    
-    return bit::Math::clamp(coh, .05f, .95f);
-}
-
-
-// OBSTRUCTION PENALTY
-// Brief: The largest obstruction in the line of sight, always between 0 - 1
-// - all bodies contain a 0-1 obstruction percentage
-// 	 (Defined by how much of a 1x1x1 object would be blocked by this object)
-// - take the max score of all bodies in the LoS
-float Character::calculateObstructionPenalty(Character* other)
-{
-    float maximum = 0;
-    bool first = true;
-    inspectLineOfSightTiles(other->Body::schema.x, other->Body::schema.y, [other, &maximum, &first] (Tile* t) {
-        // If we ever hit a full obstruction max it
-        if(t->body && t->body != other && t->body->schema.obstructionRatio == 1)
-        {
-            maximum = 1;
-        }
-
-        // Do not add the obstruction value of any adjacent body so it will be cover
-        if(first)
-        {
-            first = false;
-            return;
-        }
-
-        // Do not add the obstruction value of our target
-        if(t->body && t->body != other && t->body->schema.obstructionRatio > maximum)
-        {
-            maximum = t->body->schema.obstructionRatio;
-        }
-    });
-    return maximum;
-}
-
-// RANGE FACTOR
-// Brief: 100% chance to hit at 0 distance, 50% at effective range of weapon
-// (ER / (ER + D))
-// ER = Weapon Effect Range Stat (measured in distance of tiles)
-// D = Distance to target (in tiles)
-float Character::calculateRangeFactor(Item* weapon, Character* other)
-{
-    float ER = weapon->schema.effectiveRangeInTiles;
-    float D = bit::VectorMath::distance(Body::schema.x, Body::schema.y, other->Body::schema.x, other->Body::schema.y) / level->tileWidth;
-    if(ER == 0 && D == 0)
-        return 0;
-    return (ER / (ER + D));
-}
-
-float Character::calculateDodgeBypass()
-{
-    return calculateDexterityFactor();
-}
-
-float Character::calculateBlockBypass()
-{
-    return calculateStrengthFactor();
-}
-
-float Character::calculateDodgeRating()
-{
-    return canDodge() ? calculateDexterityFactor() : 0;
-}
-
-float Character::calculateBlockRating()
-{
-    return canBlock() ? calculateStrengthFactor() : 0;
-}
-
-// DEXTERITY FACTOR
-// Brief: Floating point representing current dexterity against the target master dexterity
-// CurrentDexterity / MasterDexterity
-// Can result in 0-1 values for most, exceeding 1 for masters
-float Character::calculateDexterityFactor()
-{
-    return (float)schema.dexterity / (float)schema.masterDexterity;
-}
-
-// STRENGTH FACTOR
-// Brief: Floating point representing current strength against the target master strength
-// CurrentStrength / MasterStrength
-// Can result in 0-1 values for most, exceeding 1 for masters
-float Character::calculateStrengthFactor()
-{
-    return (float)schema.strength / (float)schema.masterStrength;
 }
 
 
@@ -1094,7 +932,7 @@ void Character::sendCombatDecisionStart()
             {
                 // Send basic tile information for the move markers
                 packet << sf::Uint32(characters[i]->Body::schema.id);
-                packet << character->calculateChanceOfHit(characters[i]);
+                packet << RpgSystem::Combat::calculateChanceOfHit(character, characters[i]);
             }
 
         });
