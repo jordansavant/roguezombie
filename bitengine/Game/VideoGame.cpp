@@ -34,7 +34,7 @@ bit::VideoGame::VideoGame(std::string gameTitle, int width, int height, bool ful
 
     changeResolution(width, height, false);
     isFullscreen = fullscreen;
-    renderWindow = new sf::RenderWindow(sf::VideoMode(currentResolution.x, currentResolution.y, 32), title, (isFullscreen ? sf::Style::Fullscreen : sf::Style::Default), settings);
+    renderWindow = new sf::RenderWindow(sf::VideoMode(currentResolution.x, currentResolution.y, 32), title, (isFullscreen ? sf::Style::Fullscreen : sf::Style::Titlebar), settings);
 	renderWindow->setVerticalSyncEnabled(verticalSync = false);
     configureOpenGL();
 }

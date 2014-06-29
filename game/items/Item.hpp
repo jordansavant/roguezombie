@@ -29,7 +29,8 @@ public:
     struct Schema
     {
         Schema()
-            : id(0), CategoryBase(0), CategoryArmor(0), CategoryWeapon(0), CategoryJewelry(0), CategoryContainer(0), type(Type::None), weight(0), effectiveRangeInTiles(1), canContainItems(false), itemLimit(0)
+            : id(0), CategoryBase(0), CategoryArmor(0), CategoryWeapon(0), CategoryJewelry(0), CategoryContainer(0),
+              type(Type::None), weight(0), minimumDamage(0), maximumDamage(0), effectiveRangeInTiles(1), canContainItems(false), itemLimit(0)
         {
         }
 
@@ -42,6 +43,7 @@ public:
         Type type;
         float weight;
         unsigned int effectiveRangeInTiles;
+        unsigned int minimumDamage, maximumDamage;
         bool canContainItems;
         unsigned int itemLimit;
 

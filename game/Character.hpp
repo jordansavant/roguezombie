@@ -223,7 +223,7 @@ public:
 
     virtual void kill();
 
-    virtual void rangedAttack(Character* character);
+    virtual void attack(Character* character);
 
     virtual void harm(int damage);
 

@@ -275,8 +275,7 @@ void Character::combat_DecideAction_AttackCharacter(Character* character)
 
 void Character::combat_PerformAction_AttackCharacter(sf::Time &gameTime)
 {
-    // TODO: do this
-    rangedAttack(targetEnemy);
+    attack(targetEnemy);
     combat_SwitchStateDelay();
 
     // Set the direction
@@ -421,31 +420,32 @@ void Character::kill()
     }
 }
 
-void Character::rangedAttack(Character* character)
+void Character::attack(Character* character)
 {
     float CoH = RpgSystem::Combat::calculateChanceOfHit(this, character);
 
     if(bit::Math::randomFloat() < CoH)
     {
-        character->harm(10);
+        unsigned int damage = RpgSystem::Combat::calculateAttackDamage(this, character);
+        character->harm(damage);
 
         // Game Event
         if(schema.isPlayerCharacter)
         {
             Character* me = this;
-            level->server->sendEventToClient(*schema.player->client, [me, character](bit::ServerPacket &packet){
+            level->server->sendEventToClient(*schema.player->client, [me, character, damage](bit::ServerPacket &packet){
                 packet << sf::Uint32(ServerEvent::PlayerAttacksCharacter);
                 packet << sf::Uint32(character->schema.type);
-                packet << sf::Uint32(10);
+                packet << sf::Uint32(damage);
             });
         }
         else if(character->schema.isPlayerCharacter)
         {
             Character* me = this;
-            level->server->sendEventToClient(*character->schema.player->client, [me, character](bit::ServerPacket &packet){
+            level->server->sendEventToClient(*character->schema.player->client, [me, character, damage](bit::ServerPacket &packet){
                 packet << sf::Uint32(ServerEvent::CharacterAttacksPlayer);
                 packet << sf::Uint32(me->schema.type);
-                packet << sf::Uint32(10);
+                packet << sf::Uint32(damage);
             });
         }
     }

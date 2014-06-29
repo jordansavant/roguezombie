@@ -168,7 +168,7 @@ void bit::Server::handleIncomingPackets()
                 // Handle incoming packet from client
                 handlePacket(packet, *client);
 
-                // Packet received, updatet the ping timer
+                // Packet received, update the ping timer
                 client->lastPacketTime = now();
                 packet.clear();
             }

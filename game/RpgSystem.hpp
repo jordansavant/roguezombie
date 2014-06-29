@@ -30,13 +30,13 @@ public:
 
         static float calculateChanceOfHit(Character* attacker, Character* defender);
 
-        static float calculateRangedChanceOfHit(Item* weapon, Character* attacker, Character* defender);
+        static float calculateRangedChanceOfHit(Item* attackerWeapon, Character* attacker, Character* defender);
 
         static float calculateRangedObstructionPenalty(Character* attacker, Character* defender);
 
-        static float calculateRangedDistanceFactor(Item* weapon, Character* attacker, Character* defender);
+        static float calculateRangedDistanceFactor(Item* attackerWeapon, Character* attacker, Character* defender);
 
-        static float calculateMeleeChanceOfHit(Item* weapon, Character* attacker, Character* defender);
+        static float calculateMeleeChanceOfHit(Item* attackerWeapon, Character* attacker, Character* defender);
 
         static float calculateUnarmedChanceOfHit(Character* attacker, Character* defender);
 
@@ -49,6 +49,14 @@ public:
         static float calculateDodgeRating(Character* defender);
 
         static float calculateBlockRating(Character* defender);
+
+        static float calculateAttackDamage(Character* attacker, Character* defender);
+
+        static float calculateRangedAttackDamage(Item* attackerWeapon, Character* attacker, Character* defender);
+
+        static float calculateMeleeAttackDamage(Item* attackerWeapon, Character* attacker, Character* defender);
+
+        static float calculateUnarmedAttackDamage(Character* attacker, Character* defender);
 
     };
 

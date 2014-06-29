@@ -174,3 +174,56 @@ float RpgSystem::Combat::calculateBlockRating(Character* defender)
 {
     return defender->canBlock() ? calculateStrengthFactor(defender) : 0;
 }
+
+float RpgSystem::Combat::calculateAttackDamage(Character* attacker, Character* defender)
+{
+    // If we have a weapon equipped
+    Item* weapon = attacker->equipment[Character::EquipmentSlot::WeaponPrimary];
+    if(weapon)
+    {
+        // If it is ranged
+        if(weapon->isOfWeaponType(ItemCategory::Weapon::WeaponRanged))
+        {
+            return calculateRangedAttackDamage(weapon, attacker, defender);
+        }
+        
+        // If it is melee
+        if(weapon->isOfWeaponType(ItemCategory::Weapon::WeaponMelee))
+        {
+            return calculateMeleeAttackDamage(weapon, attacker, defender);
+        }
+    }
+
+    // If we are unarmed
+    return calculateUnarmedAttackDamage(attacker, defender);
+}
+
+// RANGED DAMAGE
+// Purely based off of weapon damage
+// DMG = rand(MinD, MaxD)
+// MinD = weapon minimum damage
+// MaxD = weapon maximum damage
+float RpgSystem::Combat::calculateRangedAttackDamage(Item* weapon, Character* attacker, Character* defender)
+{
+    return bit::Math::random(weapon->schema.minimumDamage, weapon->schema.maximumDamage);
+}
+
+// MELEE DAMAGE
+// Weapon damage time strength factor times 2
+// DMG = rand(MinD, MaxD) * SF * 2
+// MinD = weapon minimum damage
+// MaxD = weapon maximum damage
+// SF = attaker strength factor
+float RpgSystem::Combat::calculateMeleeAttackDamage(Item* weapon, Character* attacker, Character* defender)
+{
+    return bit::Math::random(weapon->schema.minimumDamage, weapon->schema.maximumDamage) * calculateStrengthFactor(attacker) * 2.0f;
+}
+
+// UNARMED DAMAGE
+// Static damage of 5 times strength factor times 2
+// DMG = 5 * SF * 2
+// SF = attaker strength factor
+float RpgSystem::Combat::calculateUnarmedAttackDamage(Character* attacker, Character* defender)
+{
+    return 5.0f * calculateStrengthFactor(attacker) * 2.0f;
+}

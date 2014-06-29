@@ -270,6 +270,8 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.CategoryBase = ItemCategory::Base::BaseWeapon;
             i->schema.CategoryWeapon = ItemCategory::Weapon::WeaponRanged;
             i->schema.weight = 1;
+            i->schema.minimumDamage = 6;
+            i->schema.maximumDamage = 9;
             i->schema.effectiveRangeInTiles = 5;
 
             break;
@@ -280,6 +282,8 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.CategoryBase = ItemCategory::Base::BaseWeapon;
             i->schema.CategoryWeapon = ItemCategory::Weapon::WeaponRanged;
             i->schema.weight = 2;
+            i->schema.minimumDamage = 4;
+            i->schema.maximumDamage = 15;
             i->schema.effectiveRangeInTiles = 15;
 
             break;
@@ -290,6 +294,8 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.CategoryBase = ItemCategory::Base::BaseWeapon;
             i->schema.CategoryWeapon = ItemCategory::Weapon::WeaponMelee;
             i->schema.weight = 3;
+            i->schema.minimumDamage = 4;
+            i->schema.maximumDamage = 6;
             i->schema.effectiveRangeInTiles = 1;
 
             break;
