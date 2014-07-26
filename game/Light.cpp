@@ -99,6 +99,13 @@ void Light::setVisible(int x, int y, float distance)
         t->schema.rshade = r;
         t->schema.gshade = g;
         t->schema.bshade = b;
+
+        if(t->body)
+        {
+            t->body->schema.rshade = r;
+            t->body->schema.gshade = g;
+            t->body->schema.bshade = b;
+        }
     }
 }
 

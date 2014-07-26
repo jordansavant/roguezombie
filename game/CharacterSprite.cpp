@@ -67,7 +67,12 @@ void CharacterSprite::update(sf::Time &gameTime)
     r.x -= spriteWidth / 2;// + xFootOffset / 2;
     r.y -= yFootOffset;
     float z = bit::Math::calculateDrawDepth(r.y + spriteHeight);
-    sf::Color color((int)(255.0f * character->BodyClient::schema.illumination), (int)(255.0f * character->BodyClient::schema.illumination), (int)(255.0f * character->BodyClient::schema.illumination));
+
+    // Color and luminence
+    int rr = character->BodyClient::schema.rshade * character->BodyClient::schema.illumination;
+    int gg = character->BodyClient::schema.gshade * character->BodyClient::schema.illumination;
+    int bb = character->BodyClient::schema.bshade * character->BodyClient::schema.illumination;
+    sf::Color color(rr, gg, bb);
 
     if(!character->schema.isDead())
     {

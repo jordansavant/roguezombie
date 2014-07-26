@@ -34,6 +34,10 @@ void Body::load(Level* _level, unsigned int _id, Type _type, float _x, float _y,
     schema.y = _y;
     schema.width = _width;
     schema.height = _height;
+    schema.illumination = 0;
+    schema.rshade = 0;
+    schema.gshade = 0;
+    schema.bshade = 0;
 
     inventory = Item::create(Item::Type::Backpack, level->server->getNextItemId());
     inventory->parentBody = this;
@@ -41,6 +45,13 @@ void Body::load(Level* _level, unsigned int _id, Type _type, float _x, float _y,
 
 void Body::update(sf::Time &gameTime)
 {
+    // Reset brightness to none
+    schema.illumination = 0.0f;
+
+    // Reset color to black
+    schema.rshade = 0;
+    schema.gshade = 0;
+    schema.bshade = 0;
 }
 
 void Body::distributedUpdate(sf::Time &gameTime)

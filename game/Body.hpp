@@ -50,7 +50,8 @@ public:
         Type type;
 		float x, y;
         float width, height;
-        float illumination;
+        float illumination; // how illuminated this body is
+        unsigned char rshade, gshade, bshade; // color of light
         float obstructionRatio;
 
         friend sf::Packet& operator <<(sf::Packet& packet, const Schema &schema)
@@ -62,6 +63,9 @@ public:
             packet << schema.width;
             packet << schema.height;
             packet << schema.illumination;
+            packet << schema.rshade;
+            packet << schema.gshade;
+            packet << schema.bshade;
             packet << schema.obstructionRatio;
             return packet;
         }
@@ -75,6 +79,9 @@ public:
             packet >> schema.width;
             packet >> schema.height;
             packet >> schema.illumination;
+            packet >> schema.rshade;
+            packet >> schema.gshade;
+            packet >> schema.bshade;
             packet >> schema.obstructionRatio;
             return packet;
         }

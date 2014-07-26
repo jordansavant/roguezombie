@@ -48,7 +48,7 @@ void TileClient::clientLoad(LevelClient* _level)
 
     // Game quad
     quadIndex = level->vertexMap_01.requestVertexIndex();
-    sprite = level->state->rogueZombieGame->spriteLoader->getSprite("Water");
+    sprite = level->state->rogueZombieGame->spriteLoader->getSprite("Ground");
     sprite->applyToQuad(&level->vertexMap_01.vertexArray[quadIndex]);
 }
 
