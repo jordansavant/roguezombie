@@ -1,6 +1,6 @@
 #include "bitengine/System.hpp"
-#include "game/RogueZombieGame.hpp"
-#include "game/RogueZombieServer.hpp"
+#include "client/RogueZombieGame.hpp"
+#include "server/RogueZombieServer.hpp"
 
 int main(int argc, char* argv[])
 {
