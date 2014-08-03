@@ -4,6 +4,11 @@ uniform sampler2D texture;
 
 void main()
 {
+	// lol nicer looking
+	gl_FragDepth = 0;
+	gl_FragColor = texture2D(texture, vec2(gl_TexCoord[0].s, gl_TexCoord[0].t));
+	return;
+
     float radius = 0.00175;
     vec4 accum = vec4(0.0);
     vec4 normal = vec4(0.0);
