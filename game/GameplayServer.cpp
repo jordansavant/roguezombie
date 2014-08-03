@@ -246,6 +246,7 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
 
             break;
         }
+
         case ClientRequest::GetInteractionOptions:
         {
             bit::Output::Debug("Server detect request interaction options");
@@ -280,6 +281,7 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
 
             break;
         }
+
         case ClientRequest::DialogResponse:
         {
             bit::Output::Debug("Server detect request dialog response");
@@ -295,6 +297,7 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
 
             break;
         }
+
         case ClientRequest::TransferItem:
         {
             bit::Output::Debug("Server detect request transfer item");
@@ -323,11 +326,12 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
 
             break;
         }
+
         case ClientRequest::CloseInventory:
         {
             bit::Output::Debug("Server detect request close inventory");
 
-            unsigned int itemId;
+            unsigned int itemId; // TODD: WHAT!? WHY IS THIS HERE?
             packet >> itemId;
 
             if(player->character->inventoryAccessee)
@@ -338,6 +342,7 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
 
             break;
         }
+
         case ClientRequest::EquipItem:
         {
             bit::Output::Debug("Server detect request equip item request");
@@ -351,6 +356,7 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
 
             break;
         }
+
         case ClientRequest::UnequipItem:
         {
             bit::Output::Debug("Server detect request unequip item request");

@@ -140,7 +140,7 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
                 }
                 case Interior::Spawn::Light:
                 {
-                    sf::Color c = sf::Color::Red;
+                    sf::Color c(61, 255, 239);// = // sf::Color::Red;
                     Light* light = new Light();
                     light->load(this, t->schema.x, t->schema.y, 4, c, .66);
                     lights.push_back(light);

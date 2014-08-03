@@ -48,12 +48,13 @@ void WallClient::clientUpdate(sf::Time &gameTime)
     float z = bit::Math::calculateDrawDepth(renderY + spriteHeight);
     bit::Vertex3* quad = &level->vertexMap_01.vertexArray[quadIndex];
     bit::VertexHelper::positionQuad(quad, renderX, renderY, z, spriteWidth, spriteHeight);
-
+    
     // Color and luminence
     int r = BodyClient::schema.rshade * BodyClient::schema.illumination;
     int g = BodyClient::schema.gshade * BodyClient::schema.illumination;
     int b = BodyClient::schema.bshade * BodyClient::schema.illumination;
     sf::Color color(r, g, b);
+
     bit::VertexHelper::colorQuad(quad, color);
 }
 
