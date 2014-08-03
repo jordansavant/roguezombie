@@ -32,8 +32,8 @@ public:
     Level* level;
     bool blockFoV;
     Item* inventory;
-    Body* inventoryAccessor;
-    Body* inventoryAccessee;
+    Body* inventoryGuest; // Who is accessing my inventory
+    Body* inventoryHost; // Whose inventory I am accessing
     Body* conversationSpeaker;
     std::map<unsigned int, DialogNode*> currentConversations;
     std::map<unsigned int, DialogNode*> originConversations; // for memory management
@@ -97,6 +97,14 @@ public:
     void addItemToInventory(Item* item);
 
     Item* removeItemFromInventory(unsigned int itemId);
+
+    void openInventoryForGuest(Body* guest);
+
+    void closeInventoryForGuest();
+
+    void openInventoryOfHost(Body* host);
+    
+    void closeInventoryOfHost();
 
     void handleDialogResponse(Body* listener, unsigned int responseId);
 

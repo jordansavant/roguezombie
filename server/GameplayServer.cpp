@@ -305,10 +305,10 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
             unsigned int itemId;
             packet >> itemId;
 
-            if(player->character->inventoryAccessee)
+            if(player->character->inventoryHost)
             {
                 // Remove the item from the current accessee and then add it to the player
-                Item* item = player->character->inventoryAccessee->removeItemFromInventory(itemId);
+                Item* item = player->character->inventoryHost->removeItemFromInventory(itemId);
                 if(item)
                 {
                     player->character->addItemToInventory(item);
@@ -331,14 +331,7 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
         {
             bit::Output::Debug("Server detect request close inventory");
 
-            unsigned int itemId; // TODD: WHAT!? WHY IS THIS HERE?
-            packet >> itemId;
-
-            if(player->character->inventoryAccessee)
-            {
-                player->character->inventoryAccessee->inventoryAccessor = NULL;
-                player->character->inventoryAccessee = NULL;
-            }
+            player->character->closeInventoryOfHost();
 
             break;
         }

@@ -11,7 +11,7 @@
 #include "dialog/DialogNode.hpp"
 
 Body::Body()
-    : level(NULL), blockFoV(true), schema(), inventory(NULL), inventoryAccessor(NULL), inventoryAccessee(NULL), conversationSpeaker(NULL), getStartingDialog(NULL)
+    : level(NULL), blockFoV(true), schema(), inventory(NULL), inventoryGuest(NULL), inventoryHost(NULL), conversationSpeaker(NULL), getStartingDialog(NULL)
 {
 }
 
@@ -73,6 +73,50 @@ Item* Body::removeItemFromInventory(unsigned int itemId)
     return item;
 }
 
+void Body::openInventoryForGuest(Body* guest)
+{
+    // Set the guest in my inventory
+    inventoryGuest = guest;
+
+    // Tell the guest I am his host
+    guest->inventoryHost = this;
+}
+
+void Body::closeInventoryForGuest()
+{
+    // If I have a guest
+    if(inventoryGuest)
+    {
+        // Tell the guest I am not hosting
+        inventoryGuest->inventoryHost = NULL;
+
+        // Tell myself my guest is gone
+        inventoryGuest = NULL;
+    }
+}
+
+void Body::openInventoryOfHost(Body* host)
+{
+    // Set the host as my host
+    inventoryHost = host;
+
+    // Tell the host I am his guest
+    host->inventoryGuest = this;
+}
+
+void Body::closeInventoryOfHost()
+{
+    // If I have a host
+    if(inventoryHost)
+    {
+        // Tell the host I am leaving
+        inventoryHost->inventoryGuest = NULL;
+
+        // Tell myself I have no host
+        inventoryHost = NULL;
+    }
+}
+
 void Body::handleDialogResponse(Body* listener, unsigned int responseId)
 {
     DialogNode* node = currentConversations[listener->schema.id];
@@ -93,14 +137,13 @@ void Body::handleInteraction(Interaction::Type interaction, Body* interactor, bi
         case Interaction::Type::OpenInventory:
         {
             // If someone else is already accessing my inventory, deny
-            if(inventoryAccessor && inventoryAccessor != interactor)
+            if(inventoryGuest && inventoryGuest != interactor)
             {
                 responsePacket << false;
             }
             else
             {
-                inventoryAccessor = interactor;
-                interactor->inventoryAccessee = this;
+                openInventoryForGuest(interactor);
                 responsePacket << true;
                 inventory->prepareSnapshot(responsePacket);
             }
@@ -109,9 +152,9 @@ void Body::handleInteraction(Interaction::Type interaction, Body* interactor, bi
         case Interaction::Type::CloseInventory:
         {
             // Unset myself from their access perspective
-            if(inventoryAccessor)
-                inventoryAccessor->inventoryAccessee = NULL;
-            inventoryAccessor = NULL;
+            if(inventoryGuest)
+                inventoryGuest->inventoryHost = NULL;
+            inventoryGuest = NULL;
             break;
         }
         case Interaction::Type::Dialog:
