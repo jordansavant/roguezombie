@@ -23,7 +23,8 @@ public:
     unsigned int width, height, baseOffsetX, baseOffsetY;
     bool facingRight;
     float lastRenderX, lastRenderY;
-    bit::VertexMap* vertexMap;
+    bit::VertexMap* highlightMap;
+    bit::VertexMap* normalMap;
     bit::SpriteLoader* spriteLoader;
 
     struct EquipmentProfile
@@ -71,7 +72,7 @@ public:
     unsigned int healthQuadIndex;
     unsigned int antiHealthQuadIndex;
 
-    void load(CharacterClient* character, bit::SpriteLoader* spriteLoader, bit::VertexMap &vertexMap);
+    void load(CharacterClient* character, bit::SpriteLoader* spriteLoader, bit::VertexMap &highlightMap, bit::VertexMap &normalMap);
 
     void update(sf::Time &gameTime);
     

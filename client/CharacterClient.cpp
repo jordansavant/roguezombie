@@ -14,7 +14,7 @@ void CharacterClient::clientLoad(LevelClient* _level)
 {
     level = _level;
 
-    sprite.load(this, level->state->rogueZombieGame->spriteLoader, level->vertexMapCharacters);
+    sprite.load(this, level->state->rogueZombieGame->spriteLoader, level->vertexMapCharacters, level->vertexMap_01);
 }
 
 void CharacterClient::clientUpdate(sf::Time &gameTime)
