@@ -123,7 +123,7 @@ void DialogMenu::handleDialogPacket(bit::ServerPacket &packet, unsigned int tile
             unsigned int tileId(tileId);
             m->hud->state->serverRequest(
                 [response, tileId, m] (bit::ClientPacket &packet) {
-                    packet << sf::Uint32(ClientRequest::DialogResponse);
+                    packet << sf::Uint32(ClientRequest::RespondToDialog);
                     //packet << sf::Uint32(tileId);
                     packet << response;
                 },

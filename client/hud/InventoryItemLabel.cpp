@@ -48,7 +48,7 @@ InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, f
                 inventory->hud->state->serverRequest(
                     [itemx, slot](bit::ClientPacket& requestPacket)
                     {
-                        requestPacket << sf::Uint32(ClientRequest::EquipItem);
+                        requestPacket << sf::Uint32(ClientRequest::EquipItemFromInventoryToSlot);
                         requestPacket << sf::Uint32(slot->slot);
                         requestPacket << sf::Uint32(itemx->schema.id);
                     },
@@ -76,7 +76,7 @@ InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, f
                     inventory->hud->state->serverRequest(
                         [slot](bit::ClientPacket& requestPacket)
                         {
-                            requestPacket <<sf::Uint32(ClientRequest::UnequipItem);
+                            requestPacket <<sf::Uint32(ClientRequest::UnequipItemFromSlotToInventory);
                             requestPacket << sf::Uint32(slot->slot);
                         },
                         [](bit::ServerPacket& responsePacket)

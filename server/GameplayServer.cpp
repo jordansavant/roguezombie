@@ -230,7 +230,7 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
     bit::NetworkHelper::unpackEnum<sf::Uint32, ClientRequest>(packet, request);
     switch(request)
     {
-        case ClientRequest::Interaction:
+        case ClientRequest::ProcessInteractionForBodyOnTile:
         {
             bit::Output::Debug("Server detect request interaction");
 
@@ -247,7 +247,7 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
             break;
         }
 
-        case ClientRequest::GetInteractionOptions:
+        case ClientRequest::GetAvailableInteractionsForBodyOnTile:
         {
             bit::Output::Debug("Server detect request interaction options");
 
@@ -282,7 +282,7 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
             break;
         }
 
-        case ClientRequest::DialogResponse:
+        case ClientRequest::RespondToDialog:
         {
             bit::Output::Debug("Server detect request dialog response");
 
@@ -298,7 +298,7 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
             break;
         }
 
-        case ClientRequest::TransferItem:
+        case ClientRequest::TransferItemFromCounterpartyToParty:
         {
             bit::Output::Debug("Server detect request transfer item");
 
@@ -327,7 +327,7 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
             break;
         }
 
-        case ClientRequest::CloseInventory:
+        case ClientRequest::CloseItemTransaction:
         {
             bit::Output::Debug("Server detect request close inventory");
 
@@ -343,7 +343,7 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
             break;
         }
 
-        case ClientRequest::EquipItem:
+        case ClientRequest::EquipItemFromInventoryToSlot:
         {
             bit::Output::Debug("Server detect request equip item request");
 
@@ -357,7 +357,7 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
             break;
         }
 
-        case ClientRequest::UnequipItem:
+        case ClientRequest::UnequipItemFromSlotToInventory:
         {
             bit::Output::Debug("Server detect request unequip item request");
 

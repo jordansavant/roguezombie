@@ -101,7 +101,7 @@ void LootMenu::handleInventorySnapshot(bit::ServerPacket &packet, unsigned int t
 
                 [mx, ix, tileIdx] (bit::ClientPacket &packet)
                 {
-                    packet << sf::Uint32(ClientRequest::TransferItem);
+                    packet << sf::Uint32(ClientRequest::TransferItemFromCounterpartyToParty);
                     packet << sf::Uint32(ix->schema.id);
                 },
 
@@ -119,7 +119,7 @@ void LootMenu::handleInventorySnapshot(bit::ServerPacket &packet, unsigned int t
 
                         [tileIdxy, mxy] (bit::ClientPacket &packet)
                         {
-                            packet << sf::Uint32(ClientRequest::Interaction);
+                            packet << sf::Uint32(ClientRequest::ProcessInteractionForBodyOnTile);
                             packet << sf::Uint32(Interaction::Type::OpenInventory);
                             packet << sf::Uint32(tileIdxy);
                         },

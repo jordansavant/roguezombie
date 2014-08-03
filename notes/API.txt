@@ -1,4 +1,53 @@
 
+Server
+{
+	RequestResponse
+	{
+		GetAvailableInteractionsForBodyOnTile(clientId, tileId)
+		
+		ProcessInteractionForBodyOnTile(clientId, tileId, interactionType)
+		
+		TransferItemFromCounterpartyToParty(clientId, itemId)
+		
+		TransferItemFromPartyToCounterparty(clientId, itemId)
+		
+		CloseItemTransaction(clientId)
+		
+		EquipItemFromInventoryToSlot(clientId, slot, itemId)
+		
+		UnequipItemFromSlotToInventory(clientId, slot)
+	}
+	
+	Event
+	{
+		MissionAssigned
+		
+		MissionCompleted
+		
+		ItemAddedToInventory
+		
+		ItemRemovedFromInventory
+		
+		CombatTurnStarted
+		
+		CombatTurnEnded
+		
+		CombatDecisionStarted
+		
+		CombatDecisionEnded
+		
+		CharacterAttacksPlayer
+		
+		CharacterMissesPlayer
+		
+		PlayerAttacksCharacter
+		
+		PlayerMissesCharacter
+	}
+}
+
+
+
 API	Requests
 
 	// Takes a tile ID and an Interaction enum and if the tile has a body, tells that body
@@ -31,6 +80,8 @@ API	Requests
 	// as a response for available options
 	// If there is no tile, or no options the response is false
 	GetInteractionOptions(tileId);
+	
+	GetInteractionOptionsForBodyOnTile(tileId, responsePacket)
 	
 	// Prereq: needs a dialog transaction between the player and a character
 	// Takes the dialog and lets the other party handle it

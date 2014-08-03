@@ -262,7 +262,7 @@ void StateGamePlay::modeOnExitLoot()
 {
     serverRequest(
         [](bit::ClientPacket& packet) {
-            packet << sf::Uint32(ClientRequest::CloseInventory);
+            packet << sf::Uint32(ClientRequest::CloseItemTransaction);
         },
         [](bit::ServerPacket& response){
         }
@@ -511,7 +511,7 @@ void StateGamePlay::requestInteractionsForTile(unsigned int tileId)
     serverRequest(
         [tileId] (bit::ClientPacket& packet) // prepare
         {
-            packet << sf::Uint32(ClientRequest::GetInteractionOptions);
+            packet << sf::Uint32(ClientRequest::GetAvailableInteractionsForBodyOnTile);
             packet << sf::Uint32(tileId);
         },
         [tileId, s] (bit::ServerPacket& packet) // onComplete
