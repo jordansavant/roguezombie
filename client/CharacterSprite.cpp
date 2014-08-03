@@ -24,8 +24,6 @@ void CharacterSprite::load(CharacterClient* _character, bit::SpriteLoader* _spri
     shadowQuadIndex = vertexMap->requestVertexIndex();
     bodyQuadIndex = vertexMap->requestVertexIndex();
     headQuadIndex = vertexMap->requestVertexIndex();
-    healthQuadIndex = vertexMap->requestVertexIndex();
-    antiHealthQuadIndex = vertexMap->requestVertexIndex();
     for(unsigned int i=0; i < equipmentProfiles.size(); i++)
         equipmentProfiles[i].quadIndex = vertexMap->requestVertexIndex();
     frontarmQuadIndex = vertexMap->requestVertexIndex();
@@ -111,7 +109,7 @@ void CharacterSprite::update(sf::Time &gameTime)
 
         bit::VertexHelper::resetQuad(&vertexMap->vertexArray[deathQuadIndex]);
 
-        if(character->level->levelState == Level::State::Combat && character->schema.health < character->schema.maxHealth)
+        if(true || character->level->levelState == Level::State::Combat && character->schema.health < character->schema.maxHealth)
         {
             // HEALTHBAR
             float ratio = (float)character->schema.health / (float)character->schema.maxHealth;

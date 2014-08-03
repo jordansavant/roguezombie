@@ -53,6 +53,8 @@ public:
     sf::Texture texture_spritesheet_01_unsmooth;
     sf::Texture texture_spritesheet_01_smooth;
     bit::VertexMap vertexMap_01;
+    bit::VertexMap vertexMapCharacters;
+    sf::Shader shader;
 
     // Input
     sf::Vector2i mousePositionInScreen;

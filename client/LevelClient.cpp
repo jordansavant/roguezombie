@@ -40,6 +40,8 @@ void LevelClient::load(StateGamePlay* _state)
     texture_spritesheet_01_smooth.loadFromFile(resourcePath() + "spritesheet_01.png");
     texture_spritesheet_01_smooth.setSmooth(true);
     vertexMap_01.load(&texture_spritesheet_01_unsmooth, sf::PrimitiveType::Quads);
+    vertexMapCharacters.load(&texture_spritesheet_01_unsmooth, sf::PrimitiveType::Quads);
+    shader.loadFromFile(resourcePath() + "ShaderOutline.frag", sf::Shader::Fragment);
 
     // Load game runners
     runners.push_back(new LevelClientRunner<TileClient>(this, &tiles, &tilePool, 2000));
@@ -86,11 +88,17 @@ void LevelClient::draw(sf::RenderTarget& target, sf::RenderStates states) const
     // apply the transform
     states.transform *= getTransform();
 
-    // apply the tileset texture
+    // non-characters
     states.texture = vertexMap_01.texture;
-
-    // draw the vertex arrays z-sorted
     target.draw(vertexMap_01.vertexArray, states);
+    
+    // characters with shader
+    states.texture = vertexMapCharacters.texture;
+    if(state->rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::LAlt))
+    {
+        states.shader = &shader;
+    }
+    target.draw(vertexMapCharacters.vertexArray, states);
 
     bit::VideoGame::depthTestEnd();
 }
