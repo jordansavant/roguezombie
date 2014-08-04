@@ -19,6 +19,10 @@ public:
         PortalTo1 = 9,
     };
 
+    static int level_00_rows;
+    static int level_00_cols;
+    static int level_00[];
+
     static int level_01_rows;
     static int level_01_cols;
     static int level_01[];

@@ -1,0 +1,108 @@
+Format:
+	- JSON encoded object
+	{
+		level: {
+			rows,
+			columns,
+			tileMap: [][], // 2dimensional array
+			structureMap: [][],
+			characterMap: [][],
+			lightMap: [][],
+		}
+		tiles: [], // array of tiles
+		structures: [],
+		characters: [],
+		lights: [],
+ 	}
+
+
+Level Definition
+{
+	Rows - Number of rows in the map
+	Columns - Number of columns in the map
+	Tile Map
+		- A 2-dimensional array in rows and columns size
+		- Each element is an integer that corresponds to the tile definition id
+		- 0 represents a void tile
+	Structure Map
+		- A 2-dimensional array in rows and columns size
+		- Each element is an integer that corresponds to the structure definition id
+		- 0 represents no structure
+	Character Map
+		- A 2-dimensional array in rows and columns size
+		- Each element is an integer that corresponds to the character definition id
+		- 0 represents no character
+	Light Map
+		- A 2-dimensional array in rows and columns size
+		- Each element is an integer that corresponds to the light definiton id
+		- 0 represents no light
+}
+	
+Tile Definition
+{
+	Type - The type of ground tile this is, e.g. water or concrete
+}
+
+Structure Definition
+{
+	Type - The type of structure tile
+  // States, a union of all states used by structures
+	IsLocked
+	IsOpened
+  // Inventory and Lights, see corresponding definitions
+	HasInventory
+	Inventory
+	HasLights
+	LightCollection
+}
+
+
+Character Definition
+{
+	Type - The type of character
+  // Inventory and Lights, see corresponding definitions
+	HasInventory
+	Inventory
+	HasLights
+	LightCollection
+  // Item definitions for equipped items
+	HeadItem
+	ChestItem
+	LegItem
+	FeetItem
+	HandsItem
+	TotemItem
+  // Stats and are factory built
+}
+
+
+Item Definition
+{
+	Type - The type of item, e.g. Hardhat
+  // Categories and stats are factory built
+}
+Inventory Definition
+{
+  // A collection of items and a corresponding inventory position
+	{
+		Position
+		Item
+	},
+	...
+}
+
+Light Definition
+{
+	Radius - Number of tiles that the light will radiate
+	Red - unsigned char of red attribute
+	Green
+	Blue
+	Brightness - 0-1 range of luminescence the light has
+}
+LightCollection Definition
+{
+	{
+		Light
+	},
+	...
+}
