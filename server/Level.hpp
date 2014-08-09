@@ -61,6 +61,10 @@ public:
 
     void load(GameplayServer* server, unsigned int id, const int* t_array, int t_rows, int t_cols);
 
+    void loadLevelPack();
+
+    void loadIdString(const char* text, std::vector<unsigned int> &fill);
+
     void update(sf::Time &gameTime);
 
     void enterCombat();

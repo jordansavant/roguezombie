@@ -8,10 +8,11 @@ int main(int argc, char* argv[])
 {
     // test tinyxml
     tinyxml2::XMLDocument doc;
-    tinyxml2::XMLError err = doc.LoadFile((resourcePath() + "Test.xml").c_str());
-    tinyxml2::XMLElement* itemElement = doc.FirstChildElement( "item" );
-    tinyxml2::XMLElement* nameElement = itemElement->FirstChildElement( "name" );
+    tinyxml2::XMLError err = doc.LoadFile((resourcePath() + "RZ2.xml").c_str());
+    tinyxml2::XMLElement* lp = doc.FirstChildElement( "levelpack" );
+    tinyxml2::XMLElement* nameElement = lp->FirstChildElement( "name" );
 	const char* title = nameElement->GetText();
+    bit::Output::Debug(std::string(title));
 
     bit::Output::Debug(argc);
     srand(time(NULL));

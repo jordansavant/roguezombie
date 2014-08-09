@@ -16,12 +16,15 @@
 #include "GameplayServer.hpp"
 #include "AiRoutines.hpp"
 #include "RpgSystem.hpp"
+#include "LevelLoader.hpp"
 #include "SFML/Network.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Math.hpp"
 #include "../bitengine/System.hpp"
 #include "../bitengine/Intelligence.hpp"
 #include "../bitengine/Intelligence/Shadowcaster.hpp"
+#include "../bitengine/System.hpp"
+#include "../bitengine/System/tinyxml2.h"
 #include "../ResourcePath.h"
 #include <functional>
 #include <sstream>
@@ -45,6 +48,121 @@ Level::~Level()
  * Game Logic
  */
 
+void Level::loadLevelPack()
+{
+    tinyxml2::XMLDocument doc;
+    tinyxml2::XMLError err = doc.LoadFile((resourcePath() + "RZ2.xml").c_str());
+    tinyxml2::XMLElement* levelPack = doc.FirstChildElement( "levelpack" );
+    tinyxml2::XMLElement* levels = levelPack->FirstChildElement( "levels" );
+    tinyxml2::XMLElement* level = levels->FirstChildElement("level");
+
+    // Get level dimensions
+    unsigned int rows;
+    level->FirstChildElement("rows")->QueryUnsignedText(&rows);
+
+    unsigned int columns;
+    level->FirstChildElement("columns")->QueryUnsignedText(&columns);
+
+    unsigned int size = rows * columns;
+
+    // Parse id maps into linear arrays
+    std::vector<unsigned int> tileIdMap;
+    std::vector<unsigned int> structureIdMap;
+    std::vector<unsigned int> characterIdMap;
+    loadIdString(level->FirstChildElement("tileMap")->GetText(), tileIdMap);
+    loadIdString(level->FirstChildElement("structureMap")->GetText(), structureIdMap);
+    loadIdString(level->FirstChildElement("characterMap")->GetText(), characterIdMap);
+
+    // Load definitions
+
+    // Tiles
+    std::vector<LevelLoader::Tile> tileDefs;
+    tinyxml2::XMLElement* tiles = level->FirstChildElement("tiles");
+    for (tinyxml2::XMLElement* child = tiles->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
+    {
+        LevelLoader::Tile tileDef;
+        child->FirstChildElement("id")->QueryUnsignedText(&tileDef.id);
+        child->FirstChildElement("type")->QueryUnsignedText(&tileDef.type);
+        tileDefs.push_back(tileDef);
+    }
+
+    // Structures
+    std::vector<LevelLoader::Structure> structureDefs;
+    tinyxml2::XMLElement* structures = level->FirstChildElement("structures");
+    for (tinyxml2::XMLElement* child = structures->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
+    {
+        LevelLoader::Structure structureDef;
+        child->FirstChildElement("id")->QueryUnsignedText(&structureDef.id);
+        child->FirstChildElement("type")->QueryUnsignedText(&structureDef.type);
+        child->FirstChildElement("isOpen")->QueryBoolText(&structureDef.isOpen);
+        child->FirstChildElement("isLocked")->QueryBoolText(&structureDef.isLocked);
+
+        // Items in structure
+        tinyxml2::XMLElement* items = child->FirstChildElement("items");
+        for (tinyxml2::XMLElement* child = items->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
+        {
+            LevelLoader::Item itemDef;
+            child->FirstChildElement("id")->QueryUnsignedText(&itemDef.id);
+            child->FirstChildElement("type")->QueryUnsignedText(&itemDef.type);
+            child->FirstChildElement("slot")->QueryUnsignedText(&itemDef.slot);
+            child->FirstChildElement("position")->QueryUnsignedText(&itemDef.position);
+            structureDef.items.push_back(itemDef);
+        }
+
+        structureDefs.push_back(structureDef);
+    }
+    std::vector<LevelLoader::Character> characterDefs;
+    tinyxml2::XMLElement* characters = level->FirstChildElement("characters");
+    for (tinyxml2::XMLElement* child = characters->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
+    {
+        LevelLoader::Character characterDef;
+        child->FirstChildElement("id")->QueryUnsignedText(&characterDef.id);
+        child->FirstChildElement("type")->QueryUnsignedText(&characterDef.type);
+        characterDefs.push_back(characterDef);
+
+        // Items in structure
+        tinyxml2::XMLElement* items = child->FirstChildElement("items");
+        for (tinyxml2::XMLElement* child = items->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
+        {
+            LevelLoader::Item itemDef;
+            child->FirstChildElement("id")->QueryUnsignedText(&itemDef.id);
+            child->FirstChildElement("type")->QueryUnsignedText(&itemDef.type);
+            child->FirstChildElement("slot")->QueryUnsignedText(&itemDef.slot);
+            child->FirstChildElement("position")->QueryUnsignedText(&itemDef.position);
+            characterDef.items.push_back(itemDef);
+        }
+
+        // Lights in structure
+        tinyxml2::XMLElement* lights = child->FirstChildElement("lights");
+        for (tinyxml2::XMLElement* child = lights->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
+        {
+            LevelLoader::Light lightDef;
+            child->FirstChildElement("id")->QueryUnsignedText(&lightDef.id);
+            child->FirstChildElement("radius")->QueryUnsignedText(&lightDef.radius);
+            child->FirstChildElement("red")->QueryUnsignedText(&lightDef.red);
+            child->FirstChildElement("green")->QueryUnsignedText(&lightDef.green);
+            child->FirstChildElement("blue")->QueryUnsignedText(&lightDef.blue);
+            child->FirstChildElement("brightness")->QueryFloatText(&lightDef.brightness);
+            characterDef.lights.push_back(lightDef);
+        }
+    }
+
+    bool crap = true;
+}
+
+void Level::loadIdString(const char* text, std::vector<unsigned int> &fill)
+{
+    std::string s(text);
+    std::vector<std::string> vs;
+    bit::String::split(s, ',', vs);
+    for(unsigned int i=0; i < vs.size(); i++)
+    {
+        unsigned int id;
+        std::istringstream(vs[i]) >> id;
+        fill.push_back(id);
+    }
+}
+
 void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, int t_rows, int t_cols)
 {
     server = _server;
@@ -60,6 +178,8 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
     runners.push_back(new LevelRunner<Door>(this, &doors));
     runners.push_back(new LevelRunner<Chest>(this, &chests));
     runners.push_back(new LevelRunner<Light>(this, &lights));
+
+    this->loadLevelPack();
 
     // Map
     tileRows = t_rows;
