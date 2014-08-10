@@ -156,6 +156,20 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
             structureDef.items.push_back(itemDef);
         }
 
+        // Lights in structure
+        tinyxml2::XMLElement* lights = child->FirstChildElement("lights");
+        for (tinyxml2::XMLElement* child = lights->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
+        {
+            LevelLoader::Light lightDef;
+            child->FirstChildElement("id")->QueryUnsignedText(&lightDef.id);
+            child->FirstChildElement("radius")->QueryUnsignedText(&lightDef.radius);
+            child->FirstChildElement("red")->QueryUnsignedText(&lightDef.red);
+            child->FirstChildElement("green")->QueryUnsignedText(&lightDef.green);
+            child->FirstChildElement("blue")->QueryUnsignedText(&lightDef.blue);
+            child->FirstChildElement("brightness")->QueryFloatText(&lightDef.brightness);
+            structureDef.lights.push_back(lightDef);
+        }
+
         structureDefs.push_back(structureDef);
     }
     std::vector<LevelLoader::Character> characterDefs;
@@ -165,9 +179,8 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
         LevelLoader::Character characterDef;
         child->FirstChildElement("id")->QueryUnsignedText(&characterDef.id);
         child->FirstChildElement("type")->QueryUnsignedText(&characterDef.type);
-        characterDefs.push_back(characterDef);
 
-        // Items in structure
+        // Items in character
         tinyxml2::XMLElement* items = child->FirstChildElement("items");
         for (tinyxml2::XMLElement* child = items->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
         {
@@ -179,7 +192,7 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
             characterDef.items.push_back(itemDef);
         }
 
-        // Lights in structure
+        // Lights in character
         tinyxml2::XMLElement* lights = child->FirstChildElement("lights");
         for (tinyxml2::XMLElement* child = lights->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
         {
@@ -192,6 +205,8 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
             child->FirstChildElement("brightness")->QueryFloatText(&lightDef.brightness);
             characterDef.lights.push_back(lightDef);
         }
+
+        characterDefs.push_back(characterDef);
     }
 
 
@@ -241,6 +256,7 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
             {
                 LevelLoader::Structure structureDef = getStructureDefById(structureDefs, structureId);
                 Structure::Type type = static_cast<Structure::Type>(structureDef.type);
+                Structure* s = NULL;
                 switch(type)
                 {
                     case Structure::Type::Wall:
@@ -248,6 +264,7 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
                         Wall* wall = new Wall();
                         wall->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
                         walls.push_back(wall);
+                        s = wall;
                         break;
                     }
                     case Structure::Type::Door:
@@ -256,6 +273,7 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
                         door->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
                         door->schema.isOpen = structureDef.isOpen;
                         doors.push_back(door);
+                        s = door;
                         break;
                     }
                     case Structure::Type::Chest:
@@ -263,20 +281,36 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
                         Chest* chest = new Chest();
                         chest->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
                         chest->schema.isLocked = structureDef.isLocked;
-                        for(unsigned int i=0; i < structureDef.items.size(); i++)
-                        {
-                            Item::Type itemType = static_cast<Item::Type>(structureDef.items[i].type);
-                            chest->addItemToInventory(Item::create(itemType, server->getNextItemId()));
-                        }
                         chests.push_back(chest);
+                        s = chest;
                         break;
                     }
+                }
+
+                // Structure inventory
+                if(s)
+                {
+                    for(unsigned int i=0; i < structureDef.items.size(); i++)
+                    {
+                        Item::Type itemType = static_cast<Item::Type>(structureDef.items[i].type);
+                        s->addItemToInventory(Item::create(itemType, server->getNextItemId()));
+                    }
+                }
+                // Structure Lights
+                for(unsigned int i=0; i < structureDef.lights.size(); i++)
+                {
+                    LevelLoader::Light lightDef = structureDef.lights[i];
+                    Light* light = new Light();
+                    light->load(this, s->Body::schema.x, s->Body::schema.y, lightDef.radius, sf::Color(lightDef.red, lightDef.green, lightDef.blue), lightDef.brightness);
+                    s->lights.push_back(light);
+                    lights.push_back(light);
                 }
             }
             else if(characterId != 0)
             {
                 LevelLoader::Character characterDef = getCharacterDefById(characterDefs, characterId);
                 Character::Type type = static_cast<Character::Type>(characterDef.type);
+                Character* c = NULL;
                 switch(type)
                 {
                     case Character::Type::Zombie:
@@ -287,6 +321,7 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
                         zombie->hostilityCheckAi = AiRoutines::Combat::Zombie_DetectHostility;
                         zombie->combatDecisionAi = AiRoutines::Combat::Zombie_DecideCombat;
                         zombie->combatDetectionAi = AiRoutines::Combat::Zombie_DetectCombat;
+                        c = zombie;
                         break;
                     }
                     case Character::Type::Ogre:
@@ -294,6 +329,7 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
                         Ogre* ogre = new Ogre();
                         ogre->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
                         ogres.push_back(ogre);
+                        c = ogre;
                         break;
                     }
                     case Character::Type::Hunter:
@@ -305,7 +341,27 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
                         hunter->combatDecisionAi = AiRoutines::Combat::Hunter_DecideCombat;
                         hunter->combatDetectionAi = AiRoutines::Combat::Zombie_DetectCombat;
                         hunter->getStartingDialog = std::bind(&Level::getDialogTree, this);
+                        c = hunter;
                         break;
+                    }
+                }
+
+                if(c)
+                {
+                    // Character Inventory
+                    for(unsigned int i=0; i < characterDef.items.size(); i++)
+                    {
+                        Item::Type itemType = static_cast<Item::Type>(characterDef.items[i].type);
+                        c->addItemToInventory(Item::create(itemType, server->getNextItemId()));
+                    }
+                    // Character Lights
+                    for(unsigned int i=0; i < characterDef.lights.size(); i++)
+                    {
+                        LevelLoader::Light lightDef = characterDef.lights[i];
+                        Light* light = new Light();
+                        light->load(this, c->Body::schema.x, c->Body::schema.y, lightDef.radius, sf::Color(lightDef.red, lightDef.green, lightDef.blue), lightDef.brightness);
+                        c->lights.push_back(light);
+                        lights.push_back(light);
                     }
                 }
             }

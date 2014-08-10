@@ -10,7 +10,6 @@
 
 class Level;
 class Player;
-class Light;
 class Tile;
 class Mission;
 class Item;
@@ -71,7 +70,6 @@ public:
     std::vector<Tile*> path;
     Character* targetEnemy;
     bit::GameTimer moveTimer;
-    std::vector<Light*> lights;
     std::vector<Mission*> missions;
     std::vector<Item*> equipment;
     unsigned int visionRadius;

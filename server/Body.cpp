@@ -7,6 +7,7 @@
 #include "Level.hpp"
 #include "Tile.hpp"
 #include "Character.hpp"
+#include "Light.hpp"
 #include "items/Item.hpp"
 #include "dialog/DialogNode.hpp"
 
@@ -52,6 +53,13 @@ void Body::update(sf::Time &gameTime)
     schema.rshade = 0;
     schema.gshade = 0;
     schema.bshade = 0;
+
+    // If I have a light, update it
+    for(unsigned int i=0; i < lights.size(); i++)
+    {
+        lights[i]->x = Body::schema.x;
+        lights[i]->y = Body::schema.y;
+    }
 }
 
 void Body::distributedUpdate(sf::Time &gameTime)

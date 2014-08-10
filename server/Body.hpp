@@ -13,6 +13,7 @@
 class Level;
 class Item;
 class DialogNode;
+class Light;
 
 class Body
 {
@@ -34,6 +35,7 @@ public:
     Item* inventory;
     Body* inventoryGuest; // Who is accessing my inventory
     Body* inventoryHost; // Whose inventory I am accessing
+    std::vector<Light*> lights;
     Body* conversationSpeaker;
     std::map<unsigned int, DialogNode*> currentConversations;
     std::map<unsigned int, DialogNode*> originConversations; // for memory management

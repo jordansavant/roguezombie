@@ -8,7 +8,6 @@
 #include "Level.hpp"
 #include "Body.hpp"
 #include "Tile.hpp"
-#include "Light.hpp"
 #include "Player.hpp"
 #include "mission/Mission.hpp"
 #include "items/Item.hpp"
@@ -65,13 +64,6 @@ void Character::update(sf::Time &gameTime)
     else
     {
         updateDead(gameTime);
-    }
-
-    // If I have a light, update it
-    for(unsigned int i=0; i < lights.size(); i++)
-    {
-        lights[i]->x = Body::schema.x;
-        lights[i]->y = Body::schema.y;
     }
 
     // See if any missions are complete // TODO: distribute into a less updated manner
