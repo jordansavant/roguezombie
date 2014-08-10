@@ -48,20 +48,67 @@ Level::~Level()
  * Game Logic
  */
 
-void Level::loadLevelPack()
+void Level::loadIdString(const char* text, std::vector<unsigned int> &fill)
 {
+    std::string s(text);
+    std::vector<std::string> vs;
+    bit::String::split(s, ',', vs);
+    for(unsigned int i=0; i < vs.size(); i++)
+    {
+        unsigned int id;
+        std::istringstream(vs[i]) >> id;
+        fill.push_back(id);
+    }
+}
+
+LevelLoader::Tile Level::getTileDefById(std::vector<LevelLoader::Tile> &defs, unsigned int id)
+{
+    for(unsigned int i=0; i < defs.size(); i++)
+        if(defs[i].id == id)
+            return defs[i];
+}
+LevelLoader::Structure Level::getStructureDefById(std::vector<LevelLoader::Structure> &defs, unsigned int id)
+{
+    for(unsigned int i=0; i < defs.size(); i++)
+        if(defs[i].id == id)
+            return defs[i];
+}
+LevelLoader::Character Level::getCharacterDefById(std::vector<LevelLoader::Character> &defs, unsigned int id)
+{
+    for(unsigned int i=0; i < defs.size(); i++)
+        if(defs[i].id == id)
+            return defs[i];
+}
+
+void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
+{
+    server = _server;
+    id = _id;
+    state = State::Free;
+
+    // Runners
+    runners.push_back(new LevelRunner<Tile>(this, &tiles));
+    runners.push_back(new LevelRunner<Zombie>(this, &zombies));
+    runners.push_back(new LevelRunner<Ogre>(this, &ogres));
+    runners.push_back(new LevelRunner<Hunter>(this, &hunters));
+    runners.push_back(new LevelRunner<Wall>(this, &walls));
+    runners.push_back(new LevelRunner<Door>(this, &doors));
+    runners.push_back(new LevelRunner<Chest>(this, &chests));
+    runners.push_back(new LevelRunner<Light>(this, &lights));
+
+
     tinyxml2::XMLDocument doc;
-    tinyxml2::XMLError err = doc.LoadFile((resourcePath() + "RZ2.xml").c_str());
-    tinyxml2::XMLElement* levelPack = doc.FirstChildElement( "levelpack" );
-    tinyxml2::XMLElement* levels = levelPack->FirstChildElement( "levels" );
-    tinyxml2::XMLElement* level = levels->FirstChildElement("level");
+    tinyxml2::XMLError err = doc.LoadFile((resourcePath() + file).c_str());
+    tinyxml2::XMLElement* levelPackNode = doc.FirstChildElement( "levelpack" );
+    tinyxml2::XMLElement* levelsNode = levelPackNode->FirstChildElement( "levels" );
+    tinyxml2::XMLElement* levelNode = levelsNode->FirstChildElement("level");
 
     // Get level dimensions
     unsigned int rows;
-    level->FirstChildElement("rows")->QueryUnsignedText(&rows);
+    levelNode->FirstChildElement("rows")->QueryUnsignedText(&rows);
 
     unsigned int columns;
-    level->FirstChildElement("columns")->QueryUnsignedText(&columns);
+    levelNode->FirstChildElement("columns")->QueryUnsignedText(&columns);
 
     unsigned int size = rows * columns;
 
@@ -69,16 +116,16 @@ void Level::loadLevelPack()
     std::vector<unsigned int> tileIdMap;
     std::vector<unsigned int> structureIdMap;
     std::vector<unsigned int> characterIdMap;
-    loadIdString(level->FirstChildElement("tileMap")->GetText(), tileIdMap);
-    loadIdString(level->FirstChildElement("structureMap")->GetText(), structureIdMap);
-    loadIdString(level->FirstChildElement("characterMap")->GetText(), characterIdMap);
+    loadIdString(levelNode->FirstChildElement("tileMap")->GetText(), tileIdMap);
+    loadIdString(levelNode->FirstChildElement("structureMap")->GetText(), structureIdMap);
+    loadIdString(levelNode->FirstChildElement("characterMap")->GetText(), characterIdMap);
 
     // Load definitions
 
     // Tiles
     std::vector<LevelLoader::Tile> tileDefs;
-    tinyxml2::XMLElement* tiles = level->FirstChildElement("tiles");
-    for (tinyxml2::XMLElement* child = tiles->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
+    tinyxml2::XMLElement* tilesNode = levelNode->FirstChildElement("tiles");
+    for (tinyxml2::XMLElement* child = tilesNode->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
     {
         LevelLoader::Tile tileDef;
         child->FirstChildElement("id")->QueryUnsignedText(&tileDef.id);
@@ -88,8 +135,8 @@ void Level::loadLevelPack()
 
     // Structures
     std::vector<LevelLoader::Structure> structureDefs;
-    tinyxml2::XMLElement* structures = level->FirstChildElement("structures");
-    for (tinyxml2::XMLElement* child = structures->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
+    tinyxml2::XMLElement* structuresNode = levelNode->FirstChildElement("structures");
+    for (tinyxml2::XMLElement* child = structuresNode->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
     {
         LevelLoader::Structure structureDef;
         child->FirstChildElement("id")->QueryUnsignedText(&structureDef.id);
@@ -112,8 +159,8 @@ void Level::loadLevelPack()
         structureDefs.push_back(structureDef);
     }
     std::vector<LevelLoader::Character> characterDefs;
-    tinyxml2::XMLElement* characters = level->FirstChildElement("characters");
-    for (tinyxml2::XMLElement* child = characters->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
+    tinyxml2::XMLElement* charactersNode = levelNode->FirstChildElement("characters");
+    for (tinyxml2::XMLElement* child = charactersNode->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
     {
         LevelLoader::Character characterDef;
         child->FirstChildElement("id")->QueryUnsignedText(&characterDef.id);
@@ -147,43 +194,10 @@ void Level::loadLevelPack()
         }
     }
 
-    bool crap = true;
-}
-
-void Level::loadIdString(const char* text, std::vector<unsigned int> &fill)
-{
-    std::string s(text);
-    std::vector<std::string> vs;
-    bit::String::split(s, ',', vs);
-    for(unsigned int i=0; i < vs.size(); i++)
-    {
-        unsigned int id;
-        std::istringstream(vs[i]) >> id;
-        fill.push_back(id);
-    }
-}
-
-void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, int t_rows, int t_cols)
-{
-    server = _server;
-    id = _id;
-    state = State::Free;
-
-    // Runners
-    runners.push_back(new LevelRunner<Tile>(this, &tiles));
-    runners.push_back(new LevelRunner<Zombie>(this, &zombies));
-    runners.push_back(new LevelRunner<Ogre>(this, &ogres));
-    runners.push_back(new LevelRunner<Hunter>(this, &hunters));
-    runners.push_back(new LevelRunner<Wall>(this, &walls));
-    runners.push_back(new LevelRunner<Door>(this, &doors));
-    runners.push_back(new LevelRunner<Chest>(this, &chests));
-    runners.push_back(new LevelRunner<Light>(this, &lights));
-
-    this->loadLevelPack();
 
     // Map
-    tileRows = t_rows;
-    tileColumns = t_cols;
+    tileRows = rows;
+    tileColumns = columns;
     tileCount = tileRows * tileColumns;
     tileWidth = 32;
     tileHeight = 32;
@@ -198,9 +212,11 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
         {
             // get the current tile information
             int index = i + j * tileColumns;
-            Tile::Type tileType = Tile::Type::Ground;
+            unsigned int tileId = tileIdMap[index];
+            LevelLoader::Tile tileDef = getTileDefById(tileDefs, tileId);
+            Tile::Type tileType = Tile::Type::Ground; // TODO cast this out
 
-            // build the quad and its position on the map
+            // Its position on the map
             float originX = i * tileWidth;
             float originY = j * tileHeight;
 
@@ -217,106 +233,152 @@ void Level::load(GameplayServer* _server, unsigned int _id, const int* t_array, 
         for (unsigned int i = 0; i < tileColumns; ++i)
         {
             int index = i + j * tileColumns;
-            int logic = t_array[index];
             Tile* t = tiles[index];
 
-            switch(logic)
+            unsigned int structureId = structureIdMap[index];
+            unsigned int characterId = characterIdMap[index];
+            if(structureId != 0)
             {
-                case Interior::Spawn::Wall:
+                LevelLoader::Structure structureDef = getStructureDefById(structureDefs, structureId);
+                Structure::Type type = static_cast<Structure::Type>(structureDef.type);
+                switch(type)
                 {
-                    Wall* wall = new Wall();
-                    wall->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
-                    walls.push_back(wall);
-                    break;
-                }
-                case Interior::Spawn::Zombie:
-                {
-                    Zombie* zombie = new Zombie();
-                    zombie->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
-                    zombies.push_back(zombie);
-                    zombie->hostilityCheckAi = AiRoutines::Combat::Zombie_DetectHostility;
-                    zombie->combatDecisionAi = AiRoutines::Combat::Zombie_DecideCombat;
-                    zombie->combatDetectionAi = AiRoutines::Combat::Zombie_DetectCombat;
-                    break;
-                }
-                case Interior::Spawn::Ogre:
-                {
-                    Ogre* ogre = new Ogre();
-                    ogre->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
-                    ogres.push_back(ogre);
-                    break;
-                }
-                case Interior::Spawn::Hunter:
-                {
-                    Hunter* hunter = new Hunter();
-                    hunter->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
-                    hunters.push_back(hunter);
-                    hunter->hostilityCheckAi = AiRoutines::Combat::Hunter_DetectHostility;
-                    hunter->combatDecisionAi = AiRoutines::Combat::Hunter_DecideCombat;
-                    hunter->combatDetectionAi = AiRoutines::Combat::Zombie_DetectCombat;
-
-                    hunter->getStartingDialog = std::bind(&Level::getDialogTree, this);
-                    break;
-                }
-                case Interior::Spawn::Light:
-                {
-                    sf::Color c(61, 255, 239);// = // sf::Color::Red;
-                    Light* light = new Light();
-                    light->load(this, t->schema.x, t->schema.y, 4, c, .66);
-                    lights.push_back(light);
-                    break;
-                }
-                case Interior::Spawn::Door:
-                {
-                    Door* door = new Door();
-                    door->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
-                    doors.push_back(door);
-                    break;
-                }
-                case Interior::Spawn::Chest:
-                {
-                    Chest* chest = new Chest();
-                    chest->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
-                    chest->addItemToInventory(Item::create(Item::Type::HardHat, server->getNextItemId()));
-                    chests.push_back(chest);
-
-                    break;
-                }
-                case Interior::Spawn::PortalTo2:
-                {
-                    Level* l = this;
-                    t->onBodyEnter.push_back([l] (Tile* t, Body* b){
-                        if(b->schema.type == Body::Type::Character)
+                    case Structure::Type::Wall:
+                    {
+                        Wall* wall = new Wall();
+                        wall->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                        walls.push_back(wall);
+                        break;
+                    }
+                    case Structure::Type::Door:
+                    {
+                        Door* door = new Door();
+                        door->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                        door->schema.isOpen = structureDef.isOpen;
+                        doors.push_back(door);
+                        break;
+                    }
+                    case Structure::Type::Chest:
+                    {
+                        Chest* chest = new Chest();
+                        chest->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                        chest->schema.isLocked = structureDef.isLocked;
+                        for(unsigned int i=0; i < structureDef.items.size(); i++)
                         {
-                            Character* c = static_cast<Character*>(b);
-                            if(c->schema.isPlayerCharacter)
-                            {
-                                Player* p = l->players[c->schema.clientId];
-                                l->server->movePlayerToLevel(p, l->id, 1);
-                            }
+                            Item::Type itemType = static_cast<Item::Type>(structureDef.items[i].type);
+                            chest->addItemToInventory(Item::create(itemType, server->getNextItemId()));
                         }
-                    });
-                    break;
-                }
-                case Interior::Spawn::PortalTo1:
-                {
-                    Level* l = this;
-                    t->onBodyEnter.push_back([l] (Tile* t, Body* b){
-                        if(b->schema.type == Body::Type::Character)
-                        {
-                            Character* c = static_cast<Character*>(b);
-                            if(c->schema.isPlayerCharacter)
-                            {
-                                Player* p = l->players[c->schema.clientId];
-                                l->server->movePlayerToLevel(p, l->id, 0);
-                            }
-                        }
-                    });
-                    break;
+                        chests.push_back(chest);
+                        break;
+                    }
                 }
             }
+            else if(characterId != 0)
+            {
+                LevelLoader::Character characterDef = getCharacterDefById(characterDefs, characterId);
+                Character::Type type = static_cast<Character::Type>(characterDef.type);
+                switch(type)
+                {
+                    case Character::Type::Zombie:
+                    {
+                        Zombie* zombie = new Zombie();
+                        zombie->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                        zombies.push_back(zombie);
+                        zombie->hostilityCheckAi = AiRoutines::Combat::Zombie_DetectHostility;
+                        zombie->combatDecisionAi = AiRoutines::Combat::Zombie_DecideCombat;
+                        zombie->combatDetectionAi = AiRoutines::Combat::Zombie_DetectCombat;
+                        break;
+                    }
+                    case Character::Type::Ogre:
+                    {
+                        Ogre* ogre = new Ogre();
+                        ogre->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                        ogres.push_back(ogre);
+                        break;
+                    }
+                    case Character::Type::Hunter:
+                    {
+                        Hunter* hunter = new Hunter();
+                        hunter->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                        hunters.push_back(hunter);
+                        hunter->hostilityCheckAi = AiRoutines::Combat::Hunter_DetectHostility;
+                        hunter->combatDecisionAi = AiRoutines::Combat::Hunter_DecideCombat;
+                        hunter->combatDetectionAi = AiRoutines::Combat::Zombie_DetectCombat;
+                        hunter->getStartingDialog = std::bind(&Level::getDialogTree, this);
+                        break;
+                    }
+                }
+            }
+            //switch(0)
+            //{
+            //    case Interior::Spawn::Wall:
+            //    {
+            //        break;
+            //    }
+            //    case Interior::Spawn::Zombie:
+            //    {
+            //        break;
+            //    }
+            //    case Interior::Spawn::Ogre:
+            //    {
+            //        break;
+            //    }
+            //    case Interior::Spawn::Hunter:
+            //    {
+            //        break;
+            //    }
+            //    case Interior::Spawn::Light:
+            //    {
+            //        sf::Color c(61, 255, 239);// = // sf::Color::Red;
+            //        Light* light = new Light();
+            //        light->load(this, t->schema.x, t->schema.y, 4, c, .66);
+            //        lights.push_back(light);
+            //        break;
+            //    }
+            //    case Interior::Spawn::Door:
+            //    {
+            //        break;
+            //    }
+            //    case Interior::Spawn::Chest:
+            //    {
+            //        break;
+            //    }
+            //    case Interior::Spawn::PortalTo2:
+            //    {
+            //        Level* l = this;
+            //        t->onBodyEnter.push_back([l] (Tile* t, Body* b){
+            //            if(b->schema.type == Body::Type::Character)
+            //            {
+            //                Character* c = static_cast<Character*>(b);
+            //                if(c->schema.isPlayerCharacter)
+            //                {
+            //                    Player* p = l->players[c->schema.clientId];
+            //                    l->server->movePlayerToLevel(p, l->id, 1);
+            //                }
+            //            }
+            //        });
+            //        break;
+            //    }
+            //    case Interior::Spawn::PortalTo1:
+            //    {
+            //        Level* l = this;
+            //        t->onBodyEnter.push_back([l] (Tile* t, Body* b){
+            //            if(b->schema.type == Body::Type::Character)
+            //            {
+            //                Character* c = static_cast<Character*>(b);
+            //                if(c->schema.isPlayerCharacter)
+            //                {
+            //                    Player* p = l->players[c->schema.clientId];
+            //                    l->server->movePlayerToLevel(p, l->id, 0);
+            //                }
+            //            }
+            //        });
+            //        break;
+            //    }
+            //}
         }
     }
+    bool crap = false;
 }
 
 void Level::update(sf::Time &gameTime)

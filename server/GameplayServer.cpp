@@ -31,19 +31,7 @@ void GameplayServer::load()
     levels.resize(2);
     for(unsigned int i=0; i < levels.size(); i++)
     {
-        switch(i)
-        {
-            case 0:
-            {
-                levels[i].load(this, i, Interior::level_01, Interior::level_01_rows, Interior::level_01_cols);
-                break;
-            }
-            case 1:
-            {
-                levels[i].load(this, i, Interior::level_02, Interior::level_02_rows, Interior::level_02_cols);
-                break;
-            }
-        }
+        levels[i].load(this, i, "RZ2.xml");
     }
 }
 

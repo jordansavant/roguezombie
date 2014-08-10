@@ -9,6 +9,7 @@
 #include "LevelRunner.hpp"
 #include "Command.hpp"
 #include "Body.hpp"
+#include "LevelLoader.hpp"
 #include <map>
 #include <deque>
 #include <functional>
@@ -59,11 +60,13 @@ public:
 
     // Game Logic
 
-    void load(GameplayServer* server, unsigned int id, const int* t_array, int t_rows, int t_cols);
-
-    void loadLevelPack();
+    void load(GameplayServer* server, unsigned int id, std::string file);
 
     void loadIdString(const char* text, std::vector<unsigned int> &fill);
+
+    LevelLoader::Tile getTileDefById(std::vector<LevelLoader::Tile>&, unsigned int id);
+    LevelLoader::Structure getStructureDefById(std::vector<LevelLoader::Structure>&, unsigned int id);
+    LevelLoader::Character getCharacterDefById(std::vector<LevelLoader::Character>&, unsigned int id);
 
     void update(sf::Time &gameTime);
 
