@@ -780,6 +780,7 @@
           <type>1</type>
           <items/>
           <lights/>
+          <equipment/>
         </character>
         <character>
           <id>2</id>
@@ -792,15 +793,30 @@
               <red>156</red>
               <green>240</green>
               <blue>156</blue>
-              <brightness>.5</brightness>
+              <brightness>0.5</brightness>
             </light>
           </lights>
+          <equipment>
+            <item>
+              <id>1</id>
+              <type>2</type>
+              <slot>0</slot>
+              <position>0</position>
+            </item>
+            <item>
+              <id>2</id>
+              <type>3</type>
+              <slot>6</slot>
+              <position>0</position>
+            </item>
+          </equipment>
         </character>
         <character>
           <id>3</id>
           <type>1</type>
           <items/>
           <lights/>
+          <equipment/>
         </character>
       </characters>
       <lights>

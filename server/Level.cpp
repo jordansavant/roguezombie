@@ -227,6 +227,14 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
                         c->lights.push_back(light);
                         lights.push_back(light);
                     }
+                    // Character Equipment
+                    for(unsigned int i=0; i < characterDef.equipment.size(); i++)
+                    {
+                        Item::Type itemType = static_cast<Item::Type>(characterDef.equipment[i].type);
+                        Character::EquipmentSlot slot = static_cast<Character::EquipmentSlot>(characterDef.equipment[i].slot);
+                        Item* item = Item::create(itemType, server->getNextItemId());
+                        c->equip(slot, item);
+                    }
                 }
             }
 

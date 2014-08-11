@@ -58,6 +58,7 @@ public:
         unsigned int type;
         std::vector<Item> items;
         std::vector<Light> lights;
+        std::vector<Item> equipment;
 
         void unpack(tinyxml2::XMLElement* node);
     };

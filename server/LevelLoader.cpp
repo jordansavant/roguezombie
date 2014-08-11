@@ -58,7 +58,15 @@ void LevelLoader::Character::unpack(tinyxml2::XMLElement* node)
         lightDef.unpack(child);
         lights.push_back(lightDef);
     }
-
+    
+    // Special equipment on character
+    tinyxml2::XMLElement* equipmentNodes = node->FirstChildElement("equipment");
+    for (tinyxml2::XMLElement* child = equipmentNodes->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
+    {
+        LevelLoader::Item itemDef;
+        itemDef.unpack(child);
+        equipment.push_back(itemDef);
+    }
 }
 
 void LevelLoader::Item::unpack(tinyxml2::XMLElement* node)
