@@ -48,37 +48,6 @@ Level::~Level()
  * Game Logic
  */
 
-void Level::loadIdString(const char* text, std::vector<unsigned int> &fill)
-{
-    std::string s(text);
-    std::vector<std::string> vs;
-    bit::String::split(s, ',', vs);
-    for(unsigned int i=0; i < vs.size(); i++)
-    {
-        unsigned int id;
-        std::istringstream(vs[i]) >> id;
-        fill.push_back(id);
-    }
-}
-
-LevelLoader::Tile Level::getTileDefById(std::vector<LevelLoader::Tile> &defs, unsigned int id)
-{
-    for(unsigned int i=0; i < defs.size(); i++)
-        if(defs[i].id == id)
-            return defs[i];
-}
-LevelLoader::Structure Level::getStructureDefById(std::vector<LevelLoader::Structure> &defs, unsigned int id)
-{
-    for(unsigned int i=0; i < defs.size(); i++)
-        if(defs[i].id == id)
-            return defs[i];
-}
-LevelLoader::Character Level::getCharacterDefById(std::vector<LevelLoader::Character> &defs, unsigned int id)
-{
-    for(unsigned int i=0; i < defs.size(); i++)
-        if(defs[i].id == id)
-            return defs[i];
-}
 
 void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
 {
@@ -96,124 +65,14 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
     runners.push_back(new LevelRunner<Chest>(this, &chests));
     runners.push_back(new LevelRunner<Light>(this, &lights));
 
-
-    tinyxml2::XMLDocument doc;
-    tinyxml2::XMLError err = doc.LoadFile((resourcePath() + file).c_str());
-    tinyxml2::XMLElement* levelPackNode = doc.FirstChildElement( "levelpack" );
-    tinyxml2::XMLElement* levelsNode = levelPackNode->FirstChildElement( "levels" );
-    tinyxml2::XMLElement* levelNode = levelsNode->FirstChildElement("level");
-
-    // Get level dimensions
-    unsigned int rows;
-    levelNode->FirstChildElement("rows")->QueryUnsignedText(&rows);
-
-    unsigned int columns;
-    levelNode->FirstChildElement("columns")->QueryUnsignedText(&columns);
-
-    unsigned int size = rows * columns;
-
-    // Parse id maps into linear arrays
-    std::vector<unsigned int> tileIdMap;
-    std::vector<unsigned int> structureIdMap;
-    std::vector<unsigned int> characterIdMap;
-    loadIdString(levelNode->FirstChildElement("tileMap")->GetText(), tileIdMap);
-    loadIdString(levelNode->FirstChildElement("structureMap")->GetText(), structureIdMap);
-    loadIdString(levelNode->FirstChildElement("characterMap")->GetText(), characterIdMap);
-
-    // Load definitions
-
-    // Tiles
-    std::vector<LevelLoader::Tile> tileDefs;
-    tinyxml2::XMLElement* tilesNode = levelNode->FirstChildElement("tiles");
-    for (tinyxml2::XMLElement* child = tilesNode->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
-    {
-        LevelLoader::Tile tileDef;
-        child->FirstChildElement("id")->QueryUnsignedText(&tileDef.id);
-        child->FirstChildElement("type")->QueryUnsignedText(&tileDef.type);
-        tileDefs.push_back(tileDef);
-    }
-
-    // Structures
-    std::vector<LevelLoader::Structure> structureDefs;
-    tinyxml2::XMLElement* structuresNode = levelNode->FirstChildElement("structures");
-    for (tinyxml2::XMLElement* child = structuresNode->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
-    {
-        LevelLoader::Structure structureDef;
-        child->FirstChildElement("id")->QueryUnsignedText(&structureDef.id);
-        child->FirstChildElement("type")->QueryUnsignedText(&structureDef.type);
-        child->FirstChildElement("isOpen")->QueryBoolText(&structureDef.isOpen);
-        child->FirstChildElement("isLocked")->QueryBoolText(&structureDef.isLocked);
-
-        // Items in structure
-        tinyxml2::XMLElement* items = child->FirstChildElement("items");
-        for (tinyxml2::XMLElement* child = items->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
-        {
-            LevelLoader::Item itemDef;
-            child->FirstChildElement("id")->QueryUnsignedText(&itemDef.id);
-            child->FirstChildElement("type")->QueryUnsignedText(&itemDef.type);
-            child->FirstChildElement("slot")->QueryUnsignedText(&itemDef.slot);
-            child->FirstChildElement("position")->QueryUnsignedText(&itemDef.position);
-            structureDef.items.push_back(itemDef);
-        }
-
-        // Lights in structure
-        tinyxml2::XMLElement* lights = child->FirstChildElement("lights");
-        for (tinyxml2::XMLElement* child = lights->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
-        {
-            LevelLoader::Light lightDef;
-            child->FirstChildElement("id")->QueryUnsignedText(&lightDef.id);
-            child->FirstChildElement("radius")->QueryUnsignedText(&lightDef.radius);
-            child->FirstChildElement("red")->QueryUnsignedText(&lightDef.red);
-            child->FirstChildElement("green")->QueryUnsignedText(&lightDef.green);
-            child->FirstChildElement("blue")->QueryUnsignedText(&lightDef.blue);
-            child->FirstChildElement("brightness")->QueryFloatText(&lightDef.brightness);
-            structureDef.lights.push_back(lightDef);
-        }
-
-        structureDefs.push_back(structureDef);
-    }
-    std::vector<LevelLoader::Character> characterDefs;
-    tinyxml2::XMLElement* charactersNode = levelNode->FirstChildElement("characters");
-    for (tinyxml2::XMLElement* child = charactersNode->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
-    {
-        LevelLoader::Character characterDef;
-        child->FirstChildElement("id")->QueryUnsignedText(&characterDef.id);
-        child->FirstChildElement("type")->QueryUnsignedText(&characterDef.type);
-
-        // Items in character
-        tinyxml2::XMLElement* items = child->FirstChildElement("items");
-        for (tinyxml2::XMLElement* child = items->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
-        {
-            LevelLoader::Item itemDef;
-            child->FirstChildElement("id")->QueryUnsignedText(&itemDef.id);
-            child->FirstChildElement("type")->QueryUnsignedText(&itemDef.type);
-            child->FirstChildElement("slot")->QueryUnsignedText(&itemDef.slot);
-            child->FirstChildElement("position")->QueryUnsignedText(&itemDef.position);
-            characterDef.items.push_back(itemDef);
-        }
-
-        // Lights in character
-        tinyxml2::XMLElement* lights = child->FirstChildElement("lights");
-        for (tinyxml2::XMLElement* child = lights->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
-        {
-            LevelLoader::Light lightDef;
-            child->FirstChildElement("id")->QueryUnsignedText(&lightDef.id);
-            child->FirstChildElement("radius")->QueryUnsignedText(&lightDef.radius);
-            child->FirstChildElement("red")->QueryUnsignedText(&lightDef.red);
-            child->FirstChildElement("green")->QueryUnsignedText(&lightDef.green);
-            child->FirstChildElement("blue")->QueryUnsignedText(&lightDef.blue);
-            child->FirstChildElement("brightness")->QueryFloatText(&lightDef.brightness);
-            characterDef.lights.push_back(lightDef);
-        }
-
-        characterDefs.push_back(characterDef);
-    }
+    LevelLoader levelLoader;
+    levelLoader.load(file, 0);
 
 
     // Map
-    tileRows = rows;
-    tileColumns = columns;
-    tileCount = tileRows * tileColumns;
+    tileRows = levelLoader.rows;
+    tileColumns = levelLoader.columns;
+    tileCount = levelLoader.size;
     tileWidth = 32;
     tileHeight = 32;
     mapWidth = tileWidth * tileColumns;
@@ -227,8 +86,7 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
         {
             // get the current tile information
             int index = i + j * tileColumns;
-            unsigned int tileId = tileIdMap[index];
-            LevelLoader::Tile tileDef = getTileDefById(tileDefs, tileId);
+            LevelLoader::Tile tileDef = levelLoader.getTileByIndex(index);
             Tile::Type tileType = Tile::Type::Ground; // TODO cast this out
 
             // Its position on the map
@@ -250,11 +108,11 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
             int index = i + j * tileColumns;
             Tile* t = tiles[index];
 
-            unsigned int structureId = structureIdMap[index];
-            unsigned int characterId = characterIdMap[index];
+            unsigned int structureId = levelLoader.structureIdMap[index];
+            unsigned int characterId = levelLoader.characterIdMap[index];
             if(structureId != 0)
             {
-                LevelLoader::Structure structureDef = getStructureDefById(structureDefs, structureId);
+                LevelLoader::Structure structureDef = levelLoader.getStructureDefById(structureId);
                 Structure::Type type = static_cast<Structure::Type>(structureDef.type);
                 Structure* s = NULL;
                 switch(type)
@@ -308,7 +166,7 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
             }
             else if(characterId != 0)
             {
-                LevelLoader::Character characterDef = getCharacterDefById(characterDefs, characterId);
+                LevelLoader::Character characterDef = levelLoader.getCharacterDefById(characterId);
                 Character::Type type = static_cast<Character::Type>(characterDef.type);
                 Character* c = NULL;
                 switch(type)

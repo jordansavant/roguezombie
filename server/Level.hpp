@@ -62,12 +62,6 @@ public:
 
     void load(GameplayServer* server, unsigned int id, std::string file);
 
-    void loadIdString(const char* text, std::vector<unsigned int> &fill);
-
-    LevelLoader::Tile getTileDefById(std::vector<LevelLoader::Tile>&, unsigned int id);
-    LevelLoader::Structure getStructureDefById(std::vector<LevelLoader::Structure>&, unsigned int id);
-    LevelLoader::Character getCharacterDefById(std::vector<LevelLoader::Character>&, unsigned int id);
-
     void update(sf::Time &gameTime);
 
     void enterCombat();
