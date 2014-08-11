@@ -72,6 +72,7 @@ public:
 
     DialogNode* getDialogTree();
 
+    
     // Player management
 
 	bool createPlayer(Player* player);
@@ -82,7 +83,10 @@ public:
 
 	void deletePlayer(Player* player);
 
+    
     // Tile Positioning and Pathfinding
+
+    void iterateTiles(std::function<void(unsigned int index, unsigned int x, unsigned int y, Tile* tile)> inspector);
 
     Tile* getTileById(unsigned int id);
 
@@ -102,6 +106,7 @@ public:
 
     void raycastTiles(float startX, float startY, float endX, float endY, std::function<bool(Tile*)> inspect);
 
+    
     // Networking
 
     void handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type command);

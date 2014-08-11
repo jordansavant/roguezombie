@@ -96,6 +96,7 @@ void LevelLoader::load(std::string file, unsigned int levelId)
     loadIdString(levelNode->FirstChildElement("tileMap")->GetText(), tileIdMap);
     loadIdString(levelNode->FirstChildElement("structureMap")->GetText(), structureIdMap);
     loadIdString(levelNode->FirstChildElement("characterMap")->GetText(), characterIdMap);
+    loadIdString(levelNode->FirstChildElement("lightMap")->GetText(), lightIdMap);
 
     // Load definitions
 
@@ -116,12 +117,23 @@ void LevelLoader::load(std::string file, unsigned int levelId)
         structureDef.unpack(child);
         structureDefs.push_back(structureDef);
     }
+
+    // Characters
     tinyxml2::XMLElement* charactersNode = levelNode->FirstChildElement("characters");
     for (tinyxml2::XMLElement* child = charactersNode->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
     {
         LevelLoader::Character characterDef;
         characterDef.unpack(child);
         characterDefs.push_back(characterDef);
+    }
+
+    // Lights
+    tinyxml2::XMLElement* lightsNode = levelNode->FirstChildElement("lights");
+    for (tinyxml2::XMLElement* child = lightsNode->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
+    {
+        LevelLoader::Light lightDef;
+        lightDef.unpack(child);
+        lightDefs.push_back(lightDef);
     }
 }
 
@@ -153,6 +165,11 @@ LevelLoader::Character LevelLoader::getCharacterByIndex(unsigned int index)
     return getCharacterDefById(characterIdMap[index]);
 }
 
+LevelLoader::Light LevelLoader::getLightByIndex(unsigned int index)
+{
+    return getLightDefById(lightIdMap[index]);
+}
+
 LevelLoader::Tile LevelLoader::getTileDefById(unsigned int id)
 {
     for(unsigned int i=0; i < tileDefs.size(); i++)
@@ -170,4 +187,10 @@ LevelLoader::Character LevelLoader::getCharacterDefById(unsigned int id)
     for(unsigned int i=0; i < characterDefs.size(); i++)
         if(characterDefs[i].id == id)
             return characterDefs[i];
+}
+LevelLoader::Light LevelLoader::getLightDefById(unsigned int id)
+{
+    for(unsigned int i=0; i < lightDefs.size(); i++)
+        if(lightDefs[i].id == id)
+            return lightDefs[i];
 }

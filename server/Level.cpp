@@ -65,11 +65,10 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
     runners.push_back(new LevelRunner<Chest>(this, &chests));
     runners.push_back(new LevelRunner<Light>(this, &lights));
 
-    LevelLoader levelLoader;
-    levelLoader.load(file, 0);
-
 
     // Map
+    LevelLoader levelLoader;
+    levelLoader.load(file, 0);
     tileRows = levelLoader.rows;
     tileColumns = levelLoader.columns;
     tileCount = levelLoader.size;
@@ -107,14 +106,17 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
         {
             int index = i + j * tileColumns;
             Tile* t = tiles[index];
-
             unsigned int structureId = levelLoader.structureIdMap[index];
             unsigned int characterId = levelLoader.characterIdMap[index];
+            unsigned int lightId = levelLoader.lightIdMap[index];
+
+            // Load Structure
             if(structureId != 0)
             {
                 LevelLoader::Structure structureDef = levelLoader.getStructureDefById(structureId);
                 Structure::Type type = static_cast<Structure::Type>(structureDef.type);
                 Structure* s = NULL;
+
                 switch(type)
                 {
                     case Structure::Type::Wall:
@@ -145,30 +147,34 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
                     }
                 }
 
-                // Structure inventory
                 if(s)
                 {
+                    // Structure inventory
                     for(unsigned int i=0; i < structureDef.items.size(); i++)
                     {
                         Item::Type itemType = static_cast<Item::Type>(structureDef.items[i].type);
                         s->addItemToInventory(Item::create(itemType, server->getNextItemId()));
                     }
+                    // Structure Lights
+                    for(unsigned int i=0; i < structureDef.lights.size(); i++)
+                    {
+                        LevelLoader::Light lightDef = structureDef.lights[i];
+                        Light* light = new Light();
+                        light->load(this, s->Body::schema.x, s->Body::schema.y, lightDef.radius, sf::Color(lightDef.red, lightDef.green, lightDef.blue), lightDef.brightness);
+                        s->lights.push_back(light);
+                        lights.push_back(light);
+                    }
                 }
-                // Structure Lights
-                for(unsigned int i=0; i < structureDef.lights.size(); i++)
-                {
-                    LevelLoader::Light lightDef = structureDef.lights[i];
-                    Light* light = new Light();
-                    light->load(this, s->Body::schema.x, s->Body::schema.y, lightDef.radius, sf::Color(lightDef.red, lightDef.green, lightDef.blue), lightDef.brightness);
-                    s->lights.push_back(light);
-                    lights.push_back(light);
-                }
+                
             }
+
+            // Load Character
             else if(characterId != 0)
             {
                 LevelLoader::Character characterDef = levelLoader.getCharacterDefById(characterId);
                 Character::Type type = static_cast<Character::Type>(characterDef.type);
                 Character* c = NULL;
+
                 switch(type)
                 {
                     case Character::Type::Zombie:
@@ -223,38 +229,22 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
                     }
                 }
             }
-            //switch(0)
-            //{
-            //    case Interior::Spawn::Wall:
-            //    {
-            //        break;
-            //    }
-            //    case Interior::Spawn::Zombie:
-            //    {
-            //        break;
-            //    }
-            //    case Interior::Spawn::Ogre:
-            //    {
-            //        break;
-            //    }
-            //    case Interior::Spawn::Hunter:
-            //    {
-            //        break;
-            //    }
+
+            // Lights
+            if(lightId > 0)
+            {
+                LevelLoader::Light lightDef = levelLoader.getLightDefById(lightId);
+                Light* light = new Light();
+                light->load(this,t->schema.x, t->schema.y, lightDef.radius, sf::Color(lightDef.red, lightDef.green, lightDef.blue), lightDef.brightness);
+                lights.push_back(light);
+            }
+            
             //    case Interior::Spawn::Light:
             //    {
             //        sf::Color c(61, 255, 239);// = // sf::Color::Red;
             //        Light* light = new Light();
             //        light->load(this, t->schema.x, t->schema.y, 4, c, .66);
             //        lights.push_back(light);
-            //        break;
-            //    }
-            //    case Interior::Spawn::Door:
-            //    {
-            //        break;
-            //    }
-            //    case Interior::Spawn::Chest:
-            //    {
             //        break;
             //    }
             //    case Interior::Spawn::PortalTo2:
@@ -292,7 +282,6 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
             //}
         }
     }
-    bool crap = false;
 }
 
 void Level::update(sf::Time &gameTime)
@@ -395,6 +384,8 @@ DialogNode* Level::getDialogTree()
 
     return a;
 }
+
+
 
 /*
  * Player Management
@@ -528,9 +519,23 @@ void Level::deletePlayer(Player* player)
     delete player;
 }
 
+
 /*
  * Tile Positioning and Pathfinding
  */
+
+void Level::iterateTiles(std::function<void(unsigned int index, unsigned int x, unsigned int y, Tile* tile)> inspector)
+{
+    for (unsigned int y = 0; y < tileRows; ++y)
+    {
+        for (unsigned int x = 0; x < tileColumns; ++x)
+        {
+            int index = y * tileColumns + x;
+            Tile* tile = tiles[index];
+            inspector(index, x, y, tile);
+        }
+    }
+}
 
 Tile* Level::getTileById(unsigned int id)
 {

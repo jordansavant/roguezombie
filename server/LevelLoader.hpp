@@ -70,9 +70,11 @@ public:
     std::vector<unsigned int> tileIdMap;
     std::vector<unsigned int> structureIdMap;
     std::vector<unsigned int> characterIdMap;
+    std::vector<unsigned int> lightIdMap;
     std::vector<Tile> tileDefs;
     std::vector<Structure> structureDefs;
     std::vector<Character> characterDefs;
+    std::vector<Light> lightDefs;
 
     void load(std::string file, unsigned int levelId);
 
@@ -84,11 +86,15 @@ public:
 
     LevelLoader::Character getCharacterByIndex(unsigned int index);
 
+    LevelLoader::Light getLightByIndex(unsigned int index);
+
     LevelLoader::Tile getTileDefById(unsigned int id);
 
     LevelLoader::Structure getStructureDefById(unsigned int id);
 
     LevelLoader::Character getCharacterDefById(unsigned int id);
+
+    LevelLoader::Light getLightDefById(unsigned int id);
 
 };
 
