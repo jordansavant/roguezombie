@@ -4,10 +4,50 @@
 #include "../ResourcePath.h"
 #include <sstream>
 
+void LevelLoader::Event::unpack(tinyxml2::XMLElement* node)
+{
+    node->FirstChildElement("type")->QueryUnsignedText(&type);
+    node->FirstChildElement("targetLevelId")->QueryUnsignedText(&targetLevelId);
+    node->FirstChildElement("targetEntranceId")->QueryUnsignedText(&targetEntranceId);
+}
+
+void LevelLoader::Entrance::unpack(tinyxml2::XMLElement* node)
+{
+    node->FirstChildElement("id")->QueryUnsignedText(&id);
+    node->FirstChildElement("priority")->QueryUnsignedText(&priority);
+}
+
 void LevelLoader::Tile::unpack(tinyxml2::XMLElement* node)
 {
     node->FirstChildElement("id")->QueryUnsignedText(&id);
     node->FirstChildElement("type")->QueryUnsignedText(&type);
+
+    // Enter events in tile
+    tinyxml2::XMLElement* enterEventNodes = node->FirstChildElement("enterEvents");
+    for (tinyxml2::XMLElement* child = enterEventNodes->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
+    {
+        LevelLoader::Event eventDef;
+        eventDef.unpack(child);
+        enterEvents.push_back(eventDef);
+    }
+
+    // Exit events in tile
+    tinyxml2::XMLElement* exitEventNodes = node->FirstChildElement("exitEvents");
+    for (tinyxml2::XMLElement* child = exitEventNodes->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
+    {
+        LevelLoader::Event eventDef;
+        eventDef.unpack(child);
+        exitEvents.push_back(eventDef);
+    }
+    
+    // Entrances in tile
+    tinyxml2::XMLElement* entranceNodes = node->FirstChildElement("entrances");
+    for (tinyxml2::XMLElement* child = entranceNodes->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
+    {
+        LevelLoader::Entrance entranceDef;
+        entranceDef.unpack(child);
+        entrances.push_back(entranceDef);
+    }
 }
 
 void LevelLoader::Structure::unpack(tinyxml2::XMLElement* node)

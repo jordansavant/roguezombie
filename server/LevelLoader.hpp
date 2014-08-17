@@ -10,10 +10,30 @@ class LevelLoader
 {
 public:
 
+    struct Event
+    {
+        unsigned int type;
+        unsigned int targetLevelId;
+        unsigned int targetEntranceId;
+
+        void unpack(tinyxml2::XMLElement* node);
+    };
+
+    struct Entrance
+    {
+        unsigned int id;
+        unsigned int priority;
+
+        void unpack(tinyxml2::XMLElement* node);
+    };
+
     struct Tile
     {
         unsigned int id;
         unsigned int type;
+        std::vector<Event> enterEvents;
+        std::vector<Event> exitEvents;
+        std::vector<Entrance> entrances;
 
         void unpack(tinyxml2::XMLElement* node);
     };
