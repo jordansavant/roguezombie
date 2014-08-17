@@ -23,6 +23,12 @@ public:
         Ground,
     };
 
+    struct Entrance
+    {
+        unsigned int id;
+        unsigned int priority;
+    };
+
     struct Schema
     {
         Schema()
@@ -82,7 +88,7 @@ public:
     Level* level;
     Body* body;
     Body* door;
-    std::vector<unsigned int> entranceIds;
+    std::vector<Entrance> entrances;
     //unsigned int entrancePriority; // TODO
     unsigned int metadata_shadowcastId;
     unsigned int metadata_floodfillId;

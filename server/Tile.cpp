@@ -91,9 +91,9 @@ bool Tile::isOccupied()
 
 bool Tile::hasEntrance(unsigned int entranceId)
 {
-    for(unsigned int i=0; i < entranceIds.size(); i++)
+    for(unsigned int i=0; i < entrances.size(); i++)
     {
-        if(entranceIds[i] == entranceId)
+        if(entrances[i].id == entranceId)
             return true;
     }
 

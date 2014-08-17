@@ -146,7 +146,10 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
             for(unsigned int z=0; z < tileDef.entrances.size(); z++)
             {
                 LevelLoader::Entrance entranceDef = tileDef.entrances[z];
-                t->entranceIds.push_back(entranceDef.id);
+                Tile::Entrance e;
+                e.id = entranceDef.id;
+                e.priority = entranceDef.priority;
+                t->entrances.push_back(e);
             }
         }
     }

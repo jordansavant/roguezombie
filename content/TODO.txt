@@ -1,6 +1,7 @@
 TODO:
 Left off at getting to the point of new functionality for spawning players.
 I have tiledefs wired up for entrances and levels loading from server down.
+
 I need to support entrances in-game for Tile objects.
 I need to support finding entrances by id within tiles.
 I need to support creating character instances and placing them at the entrances based on available priority.
