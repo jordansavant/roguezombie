@@ -23,7 +23,7 @@
 #include <sstream>
 
 StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, bool isClient, bool isHost)
-    : bit::ClientServerState(stack, _game, isClient, isHost), rogueZombieGame(_game), levelClient(NULL), mode(Mode::Free), fps(),
+    : bit::ClientServerState(stack, _game, isClient, isHost), rogueZombieGame(_game), levelClient(NULL), mode(Mode::Init), fps(),
       combatTargettedTileId(0)
 {
     levelClient = new LevelClient();
@@ -39,6 +39,10 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     modeEnter.resize(Mode::_count, NULL);
     modeExit.resize(Mode::_count, NULL);
     modeUpdate.resize(Mode::_count, NULL);
+    
+    modeEnter[Mode::Joining] = std::bind(&StateGamePlay::modeOnEnterJoining, this);
+    modeExit[Mode::Joining] = std::bind(&StateGamePlay::modeOnExitJoining, this);
+    modeUpdate[Mode::Joining] = std::bind(&StateGamePlay::modeOnUpdateJoining, this, std::placeholders::_1);
 
     modeEnter[Mode::Free] = std::bind(&StateGamePlay::modeOnEnterFree, this);
     modeExit[Mode::Free] = std::bind(&StateGamePlay::modeOnExitFree, this);
@@ -63,6 +67,8 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     modeEnter[Mode::Journal] = std::bind(&StateGamePlay::modeOnEnterJournal, this);
     modeExit[Mode::Journal] = std::bind(&StateGamePlay::modeOnExitJournal, this);
     modeUpdate[Mode::Journal] = std::bind(&StateGamePlay::modeOnUpdateJournal, this, std::placeholders::_1);
+    
+    changeMode(Mode::Joining);
 }
 
 StateGamePlay::~StateGamePlay()
@@ -82,16 +88,47 @@ void StateGamePlay::changeMode(Mode _mode)
     if(_mode != mode)
     {
         displayMessage(std::string("Changed modes"));
-        modeExit[mode]();
+        if(mode != Mode::Init)
+        {
+            modeExit[mode]();
+        }
         mode = _mode;
         modeEnter[mode]();
     }
 }
 
 
-////////////////////////////////////////////////////////////////////////
-//                            FREE MODES                              //
-////////////////////////////////////////////////////////////////////////
+
+
+/// /////////////////////////////////////////////////////////////////////
+///                          JOINING MODES                             //
+/// /////////////////////////////////////////////////////////////////////
+
+void StateGamePlay::modeOnEnterJoining()
+{
+    hud->hide();
+}
+
+void StateGamePlay::modeOnExitJoining()
+{
+    hud->show();
+}
+
+void StateGamePlay::modeOnUpdateJoining(sf::Time &gameTime)
+{
+    // Exit to free mode when world has been initalized
+    if(this->isConfirmed)
+    {
+        changeMode(Mode::Free);
+    }
+}
+
+
+
+
+/// /////////////////////////////////////////////////////////////////////
+///                            FREE MODES                              //
+/// /////////////////////////////////////////////////////////////////////
 
 void StateGamePlay::modeOnEnterFree()
 {
@@ -248,9 +285,9 @@ void StateGamePlay::onLeaveCombat()
 
 
 
-////////////////////////////////////////////////////////////////////////
-//                            LOOT MODES                              //
-////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////
+///                            LOOT MODES                              //
+/// /////////////////////////////////////////////////////////////////////
 
 void StateGamePlay::modeOnEnterLoot()
 {
@@ -279,9 +316,9 @@ void StateGamePlay::modeOnUpdateLoot(sf::Time &gameTime)
 
 
 
-////////////////////////////////////////////////////////////////////////
-//                          INTERACT MODES                            //
-////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////
+///                          INTERACT MODES                            //
+/// /////////////////////////////////////////////////////////////////////
 
 void StateGamePlay::modeOnEnterInteract()
 {
@@ -301,9 +338,9 @@ void StateGamePlay::modeOnUpdateInteract(sf::Time &gameTime)
 
 
 
-////////////////////////////////////////////////////////////////////////
-//                           DIALOG MODES                             //
-////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////
+///                           DIALOG MODES                             //
+/// /////////////////////////////////////////////////////////////////////
 
 void StateGamePlay::modeOnEnterDialog()
 {
@@ -323,9 +360,9 @@ void StateGamePlay::modeOnUpdateDialog(sf::Time &gameTime)
 
 
 
-////////////////////////////////////////////////////////////////////////
-//                         INVENTORY MODES                            //
-////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////
+///                         INVENTORY MODES                            //
+/// /////////////////////////////////////////////////////////////////////
 
 void StateGamePlay::modeOnEnterInventory()
 {
@@ -343,9 +380,9 @@ void StateGamePlay::modeOnUpdateInventory(sf::Time &gameTime)
 }
 
 
-////////////////////////////////////////////////////////////////////////
-//                          JOURNAL MODES                             //
-////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////
+///                          JOURNAL MODES                             //
+/// /////////////////////////////////////////////////////////////////////
 
 void StateGamePlay::modeOnEnterJournal()
 {
@@ -364,9 +401,9 @@ void StateGamePlay::modeOnUpdateJournal(sf::Time &gameTime)
 
 
 
-////////////////////////////////////////////////////////////////////////
-//                          COMMON MODES                              //
-////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////
+///                          COMMON MODES                              //
+/// /////////////////////////////////////////////////////////////////////
 
 void StateGamePlay::modeOnUpdateCommonListener(sf::Time &gameTime)
 {

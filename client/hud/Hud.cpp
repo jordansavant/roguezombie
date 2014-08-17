@@ -106,6 +106,17 @@ void Hud::draw(sf::RenderWindow &window, sf::Time &gameTime)
 }
 
 
+void Hud::hide()
+{
+    // TODO, total hack
+    relativePosition.x += 10000;
+}
+
+void Hud::show()
+{
+    relativePosition.x -= 10000;
+}
+
 void Hud::onEnterCombat()
 {
     actionBar->show();

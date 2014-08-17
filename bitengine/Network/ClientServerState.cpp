@@ -170,14 +170,14 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, bit::ServerPacke
                 preparePacket_ClientInformation(infoPacket);
                 socket.send(infoPacket);
 
-                // Update confirmation flag
-                isConfirmed = true;
-
                 break;
             }
             case Server::ServerPacketType::InitializeWorld:
             {
                 handlePacket_InitializeWorld(packet);
+
+                // Update confirmation flag
+                isConfirmed = true;
 
                 break;
             }

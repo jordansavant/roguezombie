@@ -50,6 +50,10 @@ public:
 
 	void draw(sf::RenderWindow &window, sf::Time &gameTime);
 
+    void hide();
+
+    void show();
+
     void hideAllMenus(Element* except = NULL);
 
     void activateJournal(bool hideIfShowing = true);

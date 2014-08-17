@@ -24,6 +24,9 @@ public:
 
     enum Mode
     {
+        Init,
+        Joining,
+        LevelTransition,
         Free,
         Combat,
         Interact,
@@ -41,7 +44,7 @@ public:
     std::vector<std::function<void(sf::Time&)>> modeUpdate;
     std::vector<std::function<void()>> modeExit;
     LevelClient* levelClient;
-	std::vector<Command> commandQueue;
+    std::vector<Command> commandQueue;
     sf::Vector2f mousePositionInLevel;
     bit::FrameTimer fps;
     unsigned int combatTargettedTileId;
@@ -51,9 +54,13 @@ public:
 
     virtual void load();
 
-	void now();
+    void now();
 
     void changeMode(Mode);
+
+    void modeOnEnterJoining();
+    void modeOnExitJoining();
+    void modeOnUpdateJoining(sf::Time &gameTime);
 
     void modeOnEnterFree();
     void modeOnExitFree();

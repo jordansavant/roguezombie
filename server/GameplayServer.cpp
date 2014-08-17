@@ -114,7 +114,8 @@ void GameplayServer::movePlayerToLevel(Player* player, unsigned int fromLevelId,
 void GameplayServer::deletePlayerFromLevelAndServer(Player* p)
 {
     players.erase(p->clientId);
-    p->level->deletePlayer(p);
+    if(p->level)
+        p->level->deletePlayer(p); // level only exits if player actually joined
     delete p;
 }
 
