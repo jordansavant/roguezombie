@@ -1,6 +1,8 @@
 #include "Player.hpp"
 #include "Level.hpp"
 #include "Tile.hpp"
+#include "GameplayServer.hpp"
+#include "items/Item.hpp"
 #include "Character.hpp"
 
 Player::Player()
@@ -24,25 +26,65 @@ void Player::setCharacter(Character* character)
     this->character = character;
 }
 
+void Player::setupPlayerCharacter()
+{
+    // Mission number 1
+    //Mission* root = new Mission();
+    //root->load(getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::TestMissionRoot);
+    //
+    //Mission* healthMission = new Mission();
+    //healthMission->load(getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::GetDoubleHealth);
+    //healthMission->assignRequirement([] (Character* c) -> bool {
+    //    return (c->schema.health >= 200);
+    //});
+    //root->assignChildMission(healthMission);
+    //
+    //Mission* levelMission = new Mission();
+    //levelMission->load(getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::FindLevelTwo);
+    //levelMission->assignRequirement([] (Character* c) -> bool {
+    //    return (c->level == &c->level->server->levels[1]);
+    //});
+    //root->assignChildMission(levelMission);
+    //
+    //p->character->assignMission(root);
+
+    // Items
+    Item* magnum = Item::create(Item::Type::Magnum357, level->server->getNextItemId());
+    character->addItemToInventory(magnum);
+
+    Item* rifle = Item::create(Item::Type::Z4Rifle, level->server->getNextItemId());
+    character->addItemToInventory(rifle);
+
+    Item* crowbar = Item::create(Item::Type::Crowbar, level->server->getNextItemId());
+    character->addItemToInventory(crowbar);
+
+    Item* hardhat = Item::create(Item::Type::HardHat, level->server->getNextItemId());
+    character->addItemToInventory(hardhat);
+
+    character->equipFromInventory(Character::EquipmentSlot::WeaponPrimary, magnum->schema.id);
+    character->equipFromInventory(Character::EquipmentSlot::WeaponSecondary, crowbar->schema.id);
+    character->equipFromInventory(Character::EquipmentSlot::Head, hardhat->schema.id);
+}
+
 void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
 {
-	sf::Vector2f d(0, 0);
+    sf::Vector2f d(0, 0);
 
-	switch(commandType)
-	{
+    switch(commandType)
+    {
         // Debug Commands
-		case Command::Type::PlayerMoveUp:
+        case Command::Type::PlayerMoveUp:
             character->moveUp();
-			break;
-		case Command::Type::PlayerMoveDown:
+            break;
+        case Command::Type::PlayerMoveDown:
             character->moveDown();
-			break;
-		case Command::Type::PlayerMoveLeft:
+            break;
+        case Command::Type::PlayerMoveLeft:
             character->moveLeft();
-			break;
-		case Command::Type::PlayerMoveRight:
+            break;
+        case Command::Type::PlayerMoveRight:
             character->moveRight();
-			break;
+            break;
 
         // Free Mode Commands
         case Command::Type::FreeCommand:
@@ -186,7 +228,7 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
 
             break;
         }
-	}
+    }
 }
 
 bool Player::validateFree()

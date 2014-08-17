@@ -47,7 +47,7 @@ void Character::load(Level* _level, unsigned int _id, Type _type, float _x, floa
     blockFoV = false;
     schema.type = _type;
     schema.maxHealth = 100;
-	schema.health = 100;
+    schema.health = 100;
     Body::schema.obstructionRatio = .25;
 
     moveToPosition(_x, _y);
@@ -113,19 +113,19 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
 
             // If I have action points remaining
             if(schema.currentActionPoints > 0)
-			{
+            {
                 // Make a decision in combat
                 combat_DecideAction(gameTime);
-			}
-			else
-			{
+            }
+            else
+            {
                 // If I am out of action points, then resume waiting my turn and signal my turn is over
-				level->endTurn(this);
+                level->endTurn(this);
                 combat_SwitchStateWaiting();
 
                 // Send game event to player for end of turn
                 sendCombatTurnEnd();
-			}
+            }
             break;
 
         case CombatState::PerformAction:

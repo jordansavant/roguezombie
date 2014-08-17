@@ -47,7 +47,27 @@ void GameplayServer::load()
 
 void GameplayServer::update(sf::Time &gameTime)
 {
-    // Serve requests
+    // Honor player join requests
+    for(unsigned int i=0; i < pendingJoins.size(); i++)
+    {
+        Player* p = pendingJoins[i].player;
+        if(startingLevel->createPlayer(p))
+        {
+            p->setupPlayerCharacter();
+            sendWorldInitialization(*p->client);
+            pendingJoins[i].complete = true;
+        }
+        else if(pendingJoins[i].kickTimer.update(gameTime))
+        {
+            bit::Output::Debug("Server cannot create player, no room in the inn");
+            players.erase(p->clientId);
+            kickClient(*p->client, KickReason::NoSpawn);
+        }
+    }
+    // Remove completed requests
+    pendingJoins.erase(std::remove_if(pendingJoins.begin(), pendingJoins.end(), [](PendingPlayerJoin p) { return p.complete; }), pendingJoins.end());
+
+    // Honor level transition requests
     for(unsigned int i=0; i < pendingMoves.size(); i++)
     {
         pendingMoves[i].player->requestFullSnapshot = true;
@@ -91,6 +111,13 @@ void GameplayServer::movePlayerToLevel(Player* player, unsigned int fromLevelId,
     pendingMoves.push_back(m);
 }
 
+void GameplayServer::deletePlayerFromLevelAndServer(Player* p)
+{
+    players.erase(p->clientId);
+    p->level->deletePlayer(p);
+    delete p;
+}
+
 /**
  * Handle Incoming Client Packets
  **/
@@ -99,59 +126,17 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
 {
     bit::Output::Debug("Server handle client information");
 
-	if(players.find(client.id) == players.end())
+    if(players.find(client.id) == players.end())
     {
         // Player creation
         Player* p = new Player();
         p->load(&client);
         players[client.id] = p;
 
-        if(!startingLevel->createPlayer(p))
-        {
-            bit::Output::Debug("Server cannot create player, no room in the inn");
-            players.erase(client.id);
-            kickClient(client, KickReason::NoSpawn);
-            return;
-        }
-
-        // Mission number 1
-        //Mission* root = new Mission();
-        //root->load(getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::TestMissionRoot);
-        //
-        //Mission* healthMission = new Mission();
-        //healthMission->load(getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::GetDoubleHealth);
-        //healthMission->assignRequirement([] (Character* c) -> bool {
-        //    return (c->schema.health >= 200);
-        //});
-        //root->assignChildMission(healthMission);
-        //
-        //Mission* levelMission = new Mission();
-        //levelMission->load(getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::FindLevelTwo);
-        //levelMission->assignRequirement([] (Character* c) -> bool {
-        //    return (c->level == &c->level->server->levels[1]);
-        //});
-        //root->assignChildMission(levelMission);
-        //
-        //p->character->assignMission(root);
-
-        // Items
-        Item* magnum = Item::create(Item::Type::Magnum357, getNextItemId());
-        p->character->addItemToInventory(magnum);
-
-        Item* rifle = Item::create(Item::Type::Z4Rifle, getNextItemId());
-        p->character->addItemToInventory(rifle);
-
-        Item* crowbar = Item::create(Item::Type::Crowbar, getNextItemId());
-        p->character->addItemToInventory(crowbar);
-
-        Item* hardhat = Item::create(Item::Type::HardHat, getNextItemId());
-        p->character->addItemToInventory(hardhat);
-
-        p->character->equipFromInventory(Character::EquipmentSlot::WeaponPrimary, magnum->schema.id);
-        p->character->equipFromInventory(Character::EquipmentSlot::WeaponSecondary, crowbar->schema.id);
-        p->character->equipFromInventory(Character::EquipmentSlot::Head, hardhat->schema.id);
-
-        p->character->schema.intelligence = 2;
+        // Setup join request
+        PendingPlayerJoin pending;
+        pending.player = p;
+        pendingJoins.push_back(pending);
     }
 }
 
@@ -160,22 +145,22 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
     //bit::Output::Debug("Server handle client update");
     Player* player = players[client.id];
 
-	// Get command count
-	sf::Uint32 commandCount;
-	packet >> commandCount;
+    // Get command count
+    sf::Uint32 commandCount;
+    packet >> commandCount;
 
-	for(unsigned int i=0; i < commandCount; i++)
-	{
-		// Get command
-		sf::Uint8 commandType;
-		packet >> commandType;
+    for(unsigned int i=0; i < commandCount; i++)
+    {
+        // Get command
+        sf::Uint8 commandType;
+        packet >> commandType;
 
-		// Determine how to handle
-		switch(commandType)
-		{
+        // Determine how to handle
+        switch(commandType)
+        {
             default:
                 player->level->handlePlayerCommand(packet, client, static_cast<Command::Type>(commandType));
-				break;
+                break;
             case Command::Type::PlayerDebug:
                 if(player->level->state == Level::State::Free)
                 {
@@ -188,8 +173,8 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
                 }
 
                 break;
-		}
-	}
+        }
+    }
 }
 
 void GameplayServer::handlePacket_ClientDisconnect(bit::ClientPacket &packet, bit::RemoteClient &client)
@@ -201,8 +186,7 @@ void GameplayServer::handlePacket_ClientDisconnect(bit::ClientPacket &packet, bi
     if(itr != players.end())
     {
         Player* p = itr->second;
-        players.erase(client.id);
-        p->level->deletePlayer(p);
+        deletePlayerFromLevelAndServer(p);
     }
 }
 
@@ -215,8 +199,7 @@ void GameplayServer::handle_ClientTimeout(bit::RemoteClient &client)
     if(itr != players.end())
     {
         Player* p = itr->second;
-        players.erase(client.id);
-        p->level->deletePlayer(p);
+        deletePlayerFromLevelAndServer(p);
     }
 }
 

@@ -17,7 +17,7 @@ public:
     Player();
 
     Level* level;
-	Character* character;
+    Character* character;
     unsigned int clientId;
     bit::RemoteClient* client;
     bool requestFullSnapshot;
@@ -27,6 +27,8 @@ public:
     void setLevel(Level* level);
 
     void setCharacter(Character* character);
+
+    void setupPlayerCharacter();
 
     void handleCommand(bit::ClientPacket &packet, Command::Type commandType);
 

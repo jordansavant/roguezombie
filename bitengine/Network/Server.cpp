@@ -10,10 +10,10 @@ bit::Server::Server()
       thread(&Server::executionThread, this),
       waitingThreadEnd(false),
       isListening(false),
-      clientTimeoutTime(sf::seconds(5)),
+      clientTimeoutTime(sf::seconds(20)),
       maxConnectedClients(16),
       connectedClients(0),
-	  clientIdentifier(0),
+      clientIdentifier(0),
       clients(1)
 {
     listenerSocket.setBlocking(false);
@@ -36,7 +36,7 @@ bit::Server::~Server()
 
 void bit::Server::start()
 {
-	thread.launch();
+    thread.launch();
 }
 
 void bit::Server::stop()
@@ -211,19 +211,8 @@ void bit::Server::handlePacket(ClientPacket &packet, RemoteClient &client)
         }
         case Server::ClientPacketType::ClientInformation:
         {
-            // Confirm them
-            client.isConfirmed = true;
-
+            // Begin processing their information
             handlePacket_ClientInformation(packet, client);
-
-            if(!client.badConnection())
-            {
-                // Send them the full world
-                bit::ServerPacket worldPacket;
-                worldPacket << static_cast<sf::Int32>(Server::ServerPacketType::InitializeWorld);
-                preparePacket_InitializeWorld(worldPacket, client);
-                client.socket.send(worldPacket);
-            }
 
             break;
         }
@@ -278,7 +267,7 @@ void bit::Server::handleConnections()
         // Mark the new client as ready
         client->isConnected = true;
         client->lastPacketTime = now();
-		client->id = ++clientIdentifier;
+        client->id = ++clientIdentifier;
 
         // Close connection slots or add a new one
         connectedClients++;
@@ -314,7 +303,7 @@ void bit::Server::handleDisconnections()
             // Erase client
             client->socket.disconnect();
             delete client;
-			itr = clients.erase(itr);
+            itr = clients.erase(itr);
 
             // Return to listening state
             if(connectedClients < maxConnectedClients)
@@ -368,6 +357,21 @@ void bit::Server::kickClient(bit::RemoteClient &client, unsigned int kickCode)
     client.hasBeenKicked = true;
 }
 
+void bit::Server::sendWorldInitialization(bit::RemoteClient &client)
+{
+    if(!client.badConnection())
+    {
+        // Set the client as confirmed for communication
+        client.isConfirmed = true;
+
+        // Send them the full world
+        bit::ServerPacket worldPacket;
+        worldPacket << static_cast<sf::Int32>(Server::ServerPacketType::InitializeWorld);
+        preparePacket_InitializeWorld(worldPacket, client);
+        client.socket.send(worldPacket);
+    }
+}
+
 void bit::Server::sendToAllClients(ServerPacket &packet)
 {
     for(unsigned int i=0; i < clients.size(); i++)
@@ -399,10 +403,13 @@ void bit::Server::handleNewClient(RemoteClient &client)
 
 void bit::Server::sendEventToClient(bit::RemoteClient &client, std::function<void(ServerPacket&)> prepare)
 {
-    ServerPacket packet;
-    packet << static_cast<sf::Int32>(Server::ServerPacketType::Event);
-    prepare(packet);
-    client.socket.send(packet);
+    if(client.isConfirmed)
+    {
+        ServerPacket packet;
+        packet << static_cast<sf::Int32>(Server::ServerPacketType::Event);
+        prepare(packet);
+        client.socket.send(packet);
+    }
 }
 
 void bit::Server::sendEventToAllClients(std::function<void(ServerPacket&)> prepare)

@@ -1,11 +1,13 @@
 TODO:
 Left off at getting to the point of new functionality for spawning players.
 I have tiledefs wired up for entrances and levels loading from server down.
-
 I need to support entrances in-game for Tile objects.
 I need to support finding entrances by id within tiles.
 I need to support creating character instances and placing them at the entrances based on available priority.
-I need to support the fact that we might not have room on a tile (queuing from server).
+
+I need to support the fact that we might not have room on a tile from the server perspective.
+	- Support not joining
+	- What about level transition?
 
 Create more than one level and wire up their entrances.
 Test that we can transition between levels using enterEvents and exitEvents on tiles.

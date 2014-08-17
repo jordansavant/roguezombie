@@ -11,7 +11,7 @@ namespace bit
     public:
         RemoteClient();
 
-		unsigned int id;
+        unsigned int id;
         sf::TcpSocket socket;
         sf::Time lastPacketTime;
         bool isConnected;

@@ -116,7 +116,7 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
     // Debug commands to remove later on
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::X))
     {
-	    Command cmd;
+        Command cmd;
         cmd.type = Command::Type::PlayerDebug;
         issueCommand(cmd);
     }
@@ -128,19 +128,19 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
     }
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::S))
     {
-	    Command cmd;
+        Command cmd;
         cmd.type = Command::Type::PlayerMoveDown;
         issueCommand(cmd);
     }
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::A))
     {
-	    Command cmd;
+        Command cmd;
         cmd.type = Command::Type::PlayerMoveLeft;
         issueCommand(cmd);
     }
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::D))
     {
-	    Command cmd;
+        Command cmd;
         cmd.type = Command::Type::PlayerMoveRight;
         issueCommand(cmd);
     }
@@ -273,7 +273,7 @@ void StateGamePlay::modeOnExitLoot()
 
 void StateGamePlay::modeOnUpdateLoot(sf::Time &gameTime)
 {
-	// Exit
+    // Exit
     modeOnUpdateCommonListener(gameTime);
 }
 
@@ -295,7 +295,7 @@ void StateGamePlay::modeOnExitInteract()
 
 void StateGamePlay::modeOnUpdateInteract(sf::Time &gameTime)
 {
-	// Exit
+    // Exit
     modeOnUpdateCommonListener(gameTime);
 }
 
@@ -317,7 +317,7 @@ void StateGamePlay::modeOnExitDialog()
 
 void StateGamePlay::modeOnUpdateDialog(sf::Time &gameTime)
 {
-	// Exit
+    // Exit
     modeOnUpdateCommonListener(gameTime);
 }
 
@@ -418,7 +418,7 @@ void StateGamePlay::modeOnUpdateCommonListener(sf::Time &gameTime)
 
 void StateGamePlay::issueCommand(Command cmd)
 {
-	commandQueue.push_back(cmd);
+    commandQueue.push_back(cmd);
 }
 
 bool StateGamePlay::handleInput(sf::Time &gameTime)
@@ -784,20 +784,20 @@ void StateGamePlay::preparePacket_ClientUpdate(bit::ClientPacket &packet)
 {
     //bit::Output::Debug("Client prepare client update");
 
-	// Notify of command count
-	sf::Uint32 commandCount;
-	commandCount = commandQueue.size();
-	packet << commandCount;
+    // Notify of command count
+    sf::Uint32 commandCount;
+    commandCount = commandQueue.size();
+    packet << commandCount;
 
-	for(unsigned int i=0; i < commandQueue.size(); i++)
-	{
-		// Push commands onto packet, oldest first
+    for(unsigned int i=0; i < commandQueue.size(); i++)
+    {
+        // Push commands onto packet, oldest first
         packet << static_cast<sf::Uint8>(commandQueue[i].type);
         commandQueue[i].pack(packet);
-	}
+    }
 
-	// Clear commands
-	commandQueue.clear();
+    // Clear commands
+    commandQueue.clear();
 }
 
 void StateGamePlay::preparePacket_ClientDisconnect(bit::ClientPacket &packet)

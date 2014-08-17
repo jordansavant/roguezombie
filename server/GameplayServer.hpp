@@ -31,20 +31,31 @@ public:
 
     virtual void movePlayerToLevel(Player* player, unsigned int fromLevelId, unsigned int toLevelId);
 
+    virtual void deletePlayerFromLevelAndServer(Player* p);
+
 private:
 
     struct PendingMovePlayer
     {
+        PendingMovePlayer() : player(NULL), fromLevelId(0), toLevelId(0) {}
         Player* player;
         unsigned int fromLevelId;
-	    unsigned int toLevelId;
+        unsigned int toLevelId;
+    };
+    struct PendingPlayerJoin
+    {
+        PendingPlayerJoin() : player(NULL), kickTimer(15), complete(false) {}
+        Player* player;
+        bit::GameTimer kickTimer;
+        bool complete;
     };
     std::vector<PendingMovePlayer> pendingMoves;
+    std::vector<PendingPlayerJoin> pendingJoins;
 
     LevelLoader levelLoader;
     std::vector<Level> levels;
     Level* startingLevel;
-	std::map<unsigned int, Player*> players;
+    std::map<unsigned int, Player*> players;
     unsigned int bodyIdCounter;
     unsigned int missionIdCounter;
     unsigned int itemIdCounter;

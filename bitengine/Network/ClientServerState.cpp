@@ -20,7 +20,7 @@ bit::ClientServerState::ClientServerState(StateStack &stack, Game* game, bool is
       isConnected(false),
       isConfirmed(false),
       timeSinceLastPacket(sf::seconds(0.0f)),
-      clientTimeout(sf::seconds(2)),
+      clientTimeout(sf::seconds(20)),
       tickTimer(1.0f / BIT_SERVER_TICK_FPS),
       awaitingDisconnect(false),
       disconnectTimer(1),
@@ -40,7 +40,7 @@ bit::ClientServerState::~ClientServerState()
 
 sf::Time bit::ClientServerState::now()
 {
-	return clock.getElapsedTime();
+    return clock.getElapsedTime();
 }
 
 void bit::ClientServerState::load()
@@ -49,7 +49,7 @@ void bit::ClientServerState::load()
     if(isHost)
     {
         server = newServer();
-		server->start();
+        server->start();
         ipAddress = "127.0.0.1";
         port = getServerPort();
     }
@@ -160,35 +160,35 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, bit::ServerPacke
                 break;
 
             case Server::ServerPacketType::InitializeSelf:
-		    {
+            {
                 packet >> clientId;
                 handlePacket_InitializeSelf(packet);
 
-		        // Send information packet to confirm connection with server
-			    bit::ClientPacket infoPacket;
-			    infoPacket << static_cast<sf::Uint32>(Server::ClientPacketType::ClientInformation);
-			    preparePacket_ClientInformation(infoPacket);
-			    socket.send(infoPacket);
+                // Send information packet to confirm connection with server
+                bit::ClientPacket infoPacket;
+                infoPacket << static_cast<sf::Uint32>(Server::ClientPacketType::ClientInformation);
+                preparePacket_ClientInformation(infoPacket);
+                socket.send(infoPacket);
 
-			    // Update confirmation flag
-			    isConfirmed = true;
+                // Update confirmation flag
+                isConfirmed = true;
 
                 break;
-		    }
+            }
             case Server::ServerPacketType::InitializeWorld:
-		    {
+            {
                 handlePacket_InitializeWorld(packet);
 
                 break;
-		    }
+            }
             case Server::ServerPacketType::Event:
-		    {
+            {
                 handlePacket_ServerEvent(packet);
 
                 break;
-		    }
+            }
             case Server::ServerPacketType::Response:
-		    {
+            {
                 // Find our request
                 sf::Uint32 requestId;
                 packet >> requestId;
@@ -201,19 +201,19 @@ void bit::ClientServerState::handlePacket(sf::Int32 packetType, bit::ServerPacke
                 requests.erase(requestId);
 
                 break;
-		    }
+            }
             case Server::ServerPacketType::DisconnectAcknowledged:
-		    {
+            {
                 handlePacket_DisconnectAcknowledge(packet);
 
                 break;
-		    }
+            }
             case Server::ServerPacketType::Kick:
-		    {
+            {
                 handlePacket_Kick(packet);
 
                 break;
-		    }
+            }
             case Server::ServerPacketType::PeerClientConnected:
             {
                 handlePacket_PeerClientConnected(packet);
@@ -260,8 +260,8 @@ void bit::ClientServerState::serverRequest(std::function<void(ClientPacket&)> pr
     requests[request.id] = request;
 
     bit::ClientPacket packet;
-	packet << static_cast<sf::Uint32>(Server::ClientPacketType::Request);
+    packet << static_cast<sf::Uint32>(Server::ClientPacketType::Request);
     packet << sf::Uint32(request.id);
-	prepare(packet);
-	socket.send(packet);
+    prepare(packet);
+    socket.send(packet);
 }

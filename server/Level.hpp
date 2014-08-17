@@ -52,7 +52,7 @@ public:
     std::vector<Chest*> chests;
     std::vector<Tile*> tiles;
     std::vector<Light*> lights;
-	std::map<unsigned int, Player*> players;
+    std::map<unsigned int, Player*> players;
     unsigned int tileWidth, tileHeight, tileRows, tileColumns, tileCount, mapWidth, mapHeight;
     std::vector<BaseLevelRunner*> runners;
 
@@ -76,13 +76,13 @@ public:
     
     // Player management
 
-	bool createPlayer(Player* player);
+    bool createPlayer(Player* player);
 
     bool addPlayer(Player* player);
 
-	void removePlayer(Player* player);
+    void removePlayer(Player* player);
 
-	void deletePlayer(Player* player);
+    void deletePlayer(Player* player);
 
     bool setCharacterAtDefaultEntrance(Character* character);
     

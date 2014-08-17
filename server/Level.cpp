@@ -617,8 +617,7 @@ void Level::deletePlayer(Player* player)
     // Delete character
     delete player->character;
 
-    // Delete player
-    delete player;
+    // Delete player is handled by server
 }
 
 bool Level::setCharacterAtDefaultEntrance(Character* character)
