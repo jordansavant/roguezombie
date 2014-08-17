@@ -130,6 +130,7 @@ void LevelLoader::Light::unpack(tinyxml2::XMLElement* node)
 void LevelLoader::Level::unpack(tinyxml2::XMLElement* node)
 {
     node->FirstChildElement("id")->QueryUnsignedText(&id);
+    node->FirstChildElement("defaultEntranceId")->QueryUnsignedText(&defaultEntranceId);
 
     // Get level dimensions
     node->FirstChildElement("rows")->QueryUnsignedText(&rows);

@@ -111,6 +111,7 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
             bit::Output::Debug("Server cannot create player, no room in the inn");
             players.erase(client.id);
             kickClient(client, KickReason::NoSpawn);
+            return;
         }
 
         // Mission number 1

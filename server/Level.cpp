@@ -44,15 +44,30 @@ Level::~Level()
     turnQueue.clear();
 }
 
-/*
- * Game Logic
- */
 
+
+
+
+
+
+
+
+
+
+
+
+
+/// //////////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////////////
+///                              GAME LOADING                                   //
+/// //////////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////////////
 
 void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
 {
     server = _server;
     id = levelDef.id;
+    defaultEntranceId = levelDef.defaultEntranceId;
     state = State::Free;
 
     // Runners
@@ -128,6 +143,11 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
             }
             
             // Register entrances
+            for(unsigned int z=0; z < tileDef.entrances.size(); z++)
+            {
+                LevelLoader::Entrance entranceDef = tileDef.entrances[z];
+                t->entranceIds.push_back(entranceDef.id);
+            }
         }
     }
 
@@ -324,6 +344,28 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/// //////////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////////////
+///                             GAME RUNNING                                    //
+/// //////////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////////////
+
 void Level::update(sf::Time &gameTime)
 {
     // Update entities
@@ -391,8 +433,8 @@ void Level::endTurn(Character* character)
     Character* c = turnQueue.front();
     if(c == character)
     {
-	    turnQueue.pop_front();
-	    turnQueue.push_back(c);
+        turnQueue.pop_front();
+        turnQueue.push_back(c);
     }
 }
 
@@ -427,9 +469,26 @@ DialogNode* Level::getDialogTree()
 
 
 
-/*
- * Player Management
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/// //////////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////////////
+///                           PLAYER MANAGEMENT                                 //
+/// //////////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////////////
+
 
 bool Level::createPlayer(Player* player)
 {
@@ -486,7 +545,7 @@ bool Level::addPlayer(Player* player)
     }
 
     // Add body to tiles
-    if(!player->character->moveToPosition(tiles[44]->schema.x, tiles[44]->schema.y))
+    if(!setCharacterAtDefaultEntrance(player->character))
     {
         removePlayer(player);
 
@@ -505,7 +564,7 @@ bool Level::addPlayer(Player* player)
 void Level::removePlayer(Player* player)
 {
     if(players.find(player->clientId) != players.end())
-	{
+    {
         // Disconnect from Level
         player->setLevel(NULL);
         players.erase(player->clientId);
@@ -538,7 +597,7 @@ void Level::removePlayer(Player* player)
                 break;
         }
         turnQueue.erase(std::remove(turnQueue.begin(), turnQueue.end(), player->character), turnQueue.end());
-	}
+    }
 }
 
 void Level::deletePlayer(Player* player)
@@ -559,10 +618,42 @@ void Level::deletePlayer(Player* player)
     delete player;
 }
 
+bool Level::setCharacterAtDefaultEntrance(Character* character)
+{
+    // Find the default entrance
+    Tile* t = getAvailableEntranceTile(defaultEntranceId);
+    if(t == NULL)
+        return false;
 
-/*
- * Tile Positioning and Pathfinding
- */
+    if(!character->moveToPosition(t->schema.x, t->schema.y))
+        return false;
+
+    return true;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/// //////////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////////////
+///                            TILE MANAGEMENT                                  //
+/// //////////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////////////
 
 void Level::iterateTiles(std::function<void(unsigned int index, unsigned int x, unsigned int y, Tile* tile)> inspector)
 {
@@ -706,13 +797,53 @@ void Level::raycastTiles(float startX, float startY, float endX, float endY, std
     }
 }
 
-/*
- * Networking
- */
+Tile* Level::getAvailableEntranceTile(unsigned int entranceId)
+{
+    // TODO, replace this with a better map version
+    Tile* found = NULL;
+    iterateTiles([&found, entranceId] (unsigned int index, unsigned int x, unsigned int y, Tile* t){
+        if(!t->isOccupied() && t->hasEntrance(entranceId))
+        {
+            found = t;
+        }
+    });
+
+    return found;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/// //////////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////////////
+///                               NETWORKING                                    //
+/// //////////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////////////
 
 void Level::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type commandType)
 {
-	Player* player = players[client.id];
+    Player* player = players[client.id];
     player->handleCommand(packet, commandType);
 }
 

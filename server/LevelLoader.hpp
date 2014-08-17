@@ -90,6 +90,7 @@ public:
         unsigned int rows;
         unsigned int columns;
         unsigned int size;
+        unsigned int defaultEntranceId;
         std::vector<unsigned int> tileIdMap;
         std::vector<unsigned int> structureIdMap;
         std::vector<unsigned int> characterIdMap;

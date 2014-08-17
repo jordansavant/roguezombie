@@ -82,6 +82,8 @@ public:
     Level* level;
     Body* body;
     Body* door;
+    std::vector<unsigned int> entranceIds;
+    //unsigned int entrancePriority; // TODO
     unsigned int metadata_shadowcastId;
     unsigned int metadata_floodfillId;
     std::vector<std::function<void(Tile* t, Body* body)>> onBodyEnter;
@@ -98,6 +100,10 @@ public:
     virtual void setOccupyingDoor(Body* body);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
+
+    bool isOccupied();
+
+    bool hasEntrance(unsigned int entranceId);
 
 private:
 

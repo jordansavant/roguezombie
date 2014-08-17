@@ -84,6 +84,22 @@ void Tile::setOccupyingDoor(Body* _door)
     }
 }
 
+bool Tile::isOccupied()
+{
+    return body != NULL;
+}
+
+bool Tile::hasEntrance(unsigned int entranceId)
+{
+    for(unsigned int i=0; i < entranceIds.size(); i++)
+    {
+        if(entranceIds[i] == entranceId)
+            return true;
+    }
+
+    return false;
+}
+
 void Tile::runOnBodyEnter(Body* body)
 {
     for(unsigned int i=0; i < onBodyEnter.size(); i++)

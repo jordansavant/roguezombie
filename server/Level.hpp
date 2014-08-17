@@ -42,6 +42,7 @@ public:
 
     GameplayServer* server;
     unsigned int id;
+    unsigned int defaultEntranceId;
     State state;
     std::vector<Zombie*> zombies;
     std::vector<Ogre*> ogres;
@@ -83,7 +84,9 @@ public:
 
 	void deletePlayer(Player* player);
 
+    bool setCharacterAtDefaultEntrance(Character* character);
     
+
     // Tile Positioning and Pathfinding
 
     void iterateTiles(std::function<void(unsigned int index, unsigned int x, unsigned int y, Tile* tile)> inspector);
@@ -106,7 +109,9 @@ public:
 
     void raycastTiles(float startX, float startY, float endX, float endY, std::function<bool(Tile*)> inspect);
 
-    
+    Tile* getAvailableEntranceTile(unsigned int entranceId);
+
+
     // Networking
 
     void handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type command);
