@@ -60,7 +60,7 @@ public:
 
     // Game Logic
 
-    void load(GameplayServer* server, unsigned int id, std::string file);
+    void load(GameplayServer* server, LevelLoader::Level &levelDef);
 
     void update(sf::Time &gameTime);
 

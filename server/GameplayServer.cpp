@@ -14,7 +14,7 @@
 #include "dialog/Dialog.hpp"
 
 GameplayServer::GameplayServer()
-    : bit::Server(), bodyIdCounter(0), missionIdCounter(0), itemIdCounter(0), dialogIdCounter(0)
+    : bit::Server(), startingLevel(NULL), bodyIdCounter(0), missionIdCounter(0), itemIdCounter(0), dialogIdCounter(0)
 {
 }
 
@@ -28,10 +28,20 @@ GameplayServer::~GameplayServer()
 
 void GameplayServer::load()
 {
-    levels.resize(2);
-    for(unsigned int i=0; i < levels.size(); i++)
+    // Load the level pack definitions
+    levelLoader.load("RZ2.xml");
+
+    // Build all levels for this level pack
+    levels.resize(levelLoader.levelDefs.size());
+    for(unsigned int i=0; i < levelLoader.levelDefs.size(); i++)
     {
-        levels[i].load(this, i, "RZ2.xml");
+        levels[i].load(this, levelLoader.levelDefs[i]);
+
+        // Set up starting level for players
+        if(levelLoader.defaultLevelId == levels[i].id || startingLevel == NULL)
+        {
+            startingLevel = &levels[i];
+        }
     }
 }
 
@@ -96,7 +106,7 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
         p->load(&client);
         players[client.id] = p;
 
-        if(!levels[0].createPlayer(p))
+        if(!startingLevel->createPlayer(p))
         {
             bit::Output::Debug("Server cannot create player, no room in the inn");
             players.erase(client.id);
@@ -104,24 +114,24 @@ void GameplayServer::handlePacket_ClientInformation(bit::ClientPacket &packet, b
         }
 
         // Mission number 1
-        Mission* root = new Mission();
-        root->load(getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::TestMissionRoot);
-
-        Mission* healthMission = new Mission();
-        healthMission->load(getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::GetDoubleHealth);
-        healthMission->assignRequirement([] (Character* c) -> bool {
-            return (c->schema.health >= 200);
-        });
-        root->assignChildMission(healthMission);
-
-        Mission* levelMission = new Mission();
-        levelMission->load(getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::FindLevelTwo);
-        levelMission->assignRequirement([] (Character* c) -> bool {
-            return (c->level == &c->level->server->levels[1]);
-        });
-        root->assignChildMission(levelMission);
-
-        p->character->assignMission(root);
+        //Mission* root = new Mission();
+        //root->load(getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::TestMissionRoot);
+        //
+        //Mission* healthMission = new Mission();
+        //healthMission->load(getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::GetDoubleHealth);
+        //healthMission->assignRequirement([] (Character* c) -> bool {
+        //    return (c->schema.health >= 200);
+        //});
+        //root->assignChildMission(healthMission);
+        //
+        //Mission* levelMission = new Mission();
+        //levelMission->load(getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::FindLevelTwo);
+        //levelMission->assignRequirement([] (Character* c) -> bool {
+        //    return (c->level == &c->level->server->levels[1]);
+        //});
+        //root->assignChildMission(levelMission);
+        //
+        //p->character->assignMission(root);
 
         // Items
         Item* magnum = Item::create(Item::Type::Magnum357, getNextItemId());

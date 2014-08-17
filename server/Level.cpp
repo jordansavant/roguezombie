@@ -49,10 +49,10 @@ Level::~Level()
  */
 
 
-void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
+void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
 {
     server = _server;
-    id = _id;
+    id = levelDef.id;
     state = State::Free;
 
     // Runners
@@ -67,11 +67,9 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
 
 
     // Map
-    LevelLoader levelLoader;
-    levelLoader.load(file, 0);
-    tileRows = levelLoader.rows;
-    tileColumns = levelLoader.columns;
-    tileCount = levelLoader.size;
+    tileRows = levelDef.rows;
+    tileColumns = levelDef.columns;
+    tileCount = levelDef.size;
     tileWidth = 32;
     tileHeight = 32;
     mapWidth = tileWidth * tileColumns;
@@ -85,7 +83,7 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
         {
             // get the current tile information
             int index = i + j * tileColumns;
-            LevelLoader::Tile tileDef = levelLoader.getTileByIndex(index);
+            LevelLoader::Tile tileDef = levelDef.getTileByIndex(index);
             Tile::Type tileType = Tile::Type::Ground; // TODO cast this out
 
             // Its position on the map
@@ -96,6 +94,40 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
             Tile* t = new Tile();
             t->load(this, index, tileType, originX, originY, tileWidth, tileHeight);
             tiles[index] = t;
+
+            // Append events
+            for(unsigned int z=0; z < tileDef.enterEvents.size(); z++)
+            {
+                LevelLoader::Event eventDef = tileDef.enterEvents[z];
+                switch(eventDef.type)
+                {
+                    case 0: // No event
+                        break;
+                    case 1: // Player Go To Level
+                        t->onBodyEnter.push_back([] (Tile* t, Body* b){
+                            if(b->schema.type == Body::Type::Character)
+                            {
+                                Character* c = static_cast<Character*>(b);
+                                if(c->schema.isPlayerCharacter)
+                                {
+                                    bit::Output::Debug("DEPART LEVEL");
+                                    //Player* p = l->players[c->schema.clientId];
+                                    //l->server->movePlayerToLevel(p, l->id, 1);
+                                }
+                            }
+                        });
+                        break;
+                }
+            }
+            for(unsigned int z=0; z < tileDef.exitEvents.size(); z++)
+            {
+                LevelLoader::Event eventDef = tileDef.enterEvents[z];
+                switch(eventDef.type)
+                {
+                }
+            }
+            
+            // Register entrances
         }
     }
 
@@ -106,14 +138,14 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
         {
             int index = i + j * tileColumns;
             Tile* t = tiles[index];
-            unsigned int structureId = levelLoader.structureIdMap[index];
-            unsigned int characterId = levelLoader.characterIdMap[index];
-            unsigned int lightId = levelLoader.lightIdMap[index];
+            unsigned int structureId = levelDef.structureIdMap[index];
+            unsigned int characterId = levelDef.characterIdMap[index];
+            unsigned int lightId = levelDef.lightIdMap[index];
 
             // Load Structure
             if(structureId != 0)
             {
-                LevelLoader::Structure structureDef = levelLoader.getStructureDefById(structureId);
+                LevelLoader::Structure structureDef = levelDef.getStructureDefById(structureId);
                 Structure::Type type = static_cast<Structure::Type>(structureDef.type);
                 Structure* s = NULL;
 
@@ -171,7 +203,7 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
             // Load Character
             else if(characterId != 0)
             {
-                LevelLoader::Character characterDef = levelLoader.getCharacterDefById(characterId);
+                LevelLoader::Character characterDef = levelDef.getCharacterDefById(characterId);
                 Character::Type type = static_cast<Character::Type>(characterDef.type);
                 Character* c = NULL;
 
@@ -241,7 +273,7 @@ void Level::load(GameplayServer* _server, unsigned int _id, std::string file)
             // Lights
             if(lightId > 0)
             {
-                LevelLoader::Light lightDef = levelLoader.getLightDefById(lightId);
+                LevelLoader::Light lightDef = levelDef.getLightDefById(lightId);
                 Light* light = new Light();
                 light->load(this,t->schema.x, t->schema.y, lightDef.radius, sf::Color(lightDef.red, lightDef.green, lightDef.blue), lightDef.brightness);
                 lights.push_back(light);

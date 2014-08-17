@@ -5,6 +5,7 @@
 #include "SFML/Network.hpp"
 #include "../bitengine/Network.hpp"
 #include "Level.hpp"
+#include "LevelLoader.hpp"
 
 class GameplayServer : public bit::Server
 {
@@ -40,7 +41,9 @@ private:
     };
     std::vector<PendingMovePlayer> pendingMoves;
 
+    LevelLoader levelLoader;
     std::vector<Level> levels;
+    Level* startingLevel;
 	std::map<unsigned int, Player*> players;
     unsigned int bodyIdCounter;
     unsigned int missionIdCounter;

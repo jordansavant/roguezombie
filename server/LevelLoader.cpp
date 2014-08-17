@@ -127,29 +127,25 @@ void LevelLoader::Light::unpack(tinyxml2::XMLElement* node)
     node->FirstChildElement("brightness")->QueryFloatText(&brightness);
 }
 
-void LevelLoader::load(std::string file, unsigned int levelId)
+void LevelLoader::Level::unpack(tinyxml2::XMLElement* node)
 {
-    tinyxml2::XMLDocument doc;
-    tinyxml2::XMLError err = doc.LoadFile((resourcePath() + file).c_str());
-    tinyxml2::XMLElement* levelPackNode = doc.FirstChildElement( "levelpack" );
-    tinyxml2::XMLElement* levelsNode = levelPackNode->FirstChildElement( "levels" );
-    tinyxml2::XMLElement* levelNode = levelsNode->FirstChildElement("level");
+    node->FirstChildElement("id")->QueryUnsignedText(&id);
 
     // Get level dimensions
-    levelNode->FirstChildElement("rows")->QueryUnsignedText(&rows);
-    levelNode->FirstChildElement("columns")->QueryUnsignedText(&columns);
+    node->FirstChildElement("rows")->QueryUnsignedText(&rows);
+    node->FirstChildElement("columns")->QueryUnsignedText(&columns);
     size = rows * columns;
 
     // Parse id maps into linear arrays
-    loadIdString(levelNode->FirstChildElement("tileMap")->GetText(), tileIdMap);
-    loadIdString(levelNode->FirstChildElement("structureMap")->GetText(), structureIdMap);
-    loadIdString(levelNode->FirstChildElement("characterMap")->GetText(), characterIdMap);
-    loadIdString(levelNode->FirstChildElement("lightMap")->GetText(), lightIdMap);
+    loadIdString(node->FirstChildElement("tileMap")->GetText(), tileIdMap);
+    loadIdString(node->FirstChildElement("structureMap")->GetText(), structureIdMap);
+    loadIdString(node->FirstChildElement("characterMap")->GetText(), characterIdMap);
+    loadIdString(node->FirstChildElement("lightMap")->GetText(), lightIdMap);
 
     // Load definitions
 
     // Tiles
-    tinyxml2::XMLElement* tilesNode = levelNode->FirstChildElement("tiles");
+    tinyxml2::XMLElement* tilesNode = node->FirstChildElement("tiles");
     for (tinyxml2::XMLElement* child = tilesNode->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
     {
         LevelLoader::Tile tileDef;
@@ -158,7 +154,7 @@ void LevelLoader::load(std::string file, unsigned int levelId)
     }
 
     // Structures
-    tinyxml2::XMLElement* structuresNode = levelNode->FirstChildElement("structures");
+    tinyxml2::XMLElement* structuresNode = node->FirstChildElement("structures");
     for (tinyxml2::XMLElement* child = structuresNode->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
     {
         LevelLoader::Structure structureDef;
@@ -167,7 +163,7 @@ void LevelLoader::load(std::string file, unsigned int levelId)
     }
 
     // Characters
-    tinyxml2::XMLElement* charactersNode = levelNode->FirstChildElement("characters");
+    tinyxml2::XMLElement* charactersNode = node->FirstChildElement("characters");
     for (tinyxml2::XMLElement* child = charactersNode->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
     {
         LevelLoader::Character characterDef;
@@ -176,7 +172,7 @@ void LevelLoader::load(std::string file, unsigned int levelId)
     }
 
     // Lights
-    tinyxml2::XMLElement* lightsNode = levelNode->FirstChildElement("lights");
+    tinyxml2::XMLElement* lightsNode = node->FirstChildElement("lights");
     for (tinyxml2::XMLElement* child = lightsNode->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
     {
         LevelLoader::Light lightDef;
@@ -185,7 +181,7 @@ void LevelLoader::load(std::string file, unsigned int levelId)
     }
 }
 
-void LevelLoader::loadIdString(const char* text, std::vector<unsigned int> &fill)
+void LevelLoader::Level::loadIdString(const char* text, std::vector<unsigned int> &fill)
 {
     std::string s(text);
     std::vector<std::string> vs;
@@ -198,47 +194,66 @@ void LevelLoader::loadIdString(const char* text, std::vector<unsigned int> &fill
     }
 }
 
-LevelLoader::Tile LevelLoader::getTileByIndex(unsigned int index)
+LevelLoader::Tile LevelLoader::Level::getTileByIndex(unsigned int index)
 {
     return getTileDefById(tileIdMap[index]);
 }
 
-LevelLoader::Structure LevelLoader::getStructureByIndex(unsigned int index)
+LevelLoader::Structure LevelLoader::Level::getStructureByIndex(unsigned int index)
 {
     return getStructureDefById(structureIdMap[index]);
 }
 
-LevelLoader::Character LevelLoader::getCharacterByIndex(unsigned int index)
+LevelLoader::Character LevelLoader::Level::getCharacterByIndex(unsigned int index)
 {
     return getCharacterDefById(characterIdMap[index]);
 }
 
-LevelLoader::Light LevelLoader::getLightByIndex(unsigned int index)
+LevelLoader::Light LevelLoader::Level::getLightByIndex(unsigned int index)
 {
     return getLightDefById(lightIdMap[index]);
 }
 
-LevelLoader::Tile LevelLoader::getTileDefById(unsigned int id)
+LevelLoader::Tile LevelLoader::Level::getTileDefById(unsigned int id)
 {
     for(unsigned int i=0; i < tileDefs.size(); i++)
         if(tileDefs[i].id == id)
             return tileDefs[i];
 }
-LevelLoader::Structure LevelLoader::getStructureDefById(unsigned int id)
+LevelLoader::Structure LevelLoader::Level::getStructureDefById(unsigned int id)
 {
     for(unsigned int i=0; i < structureDefs.size(); i++)
         if(structureDefs[i].id == id)
             return structureDefs[i];
 }
-LevelLoader::Character LevelLoader::getCharacterDefById(unsigned int id)
+LevelLoader::Character LevelLoader::Level::getCharacterDefById(unsigned int id)
 {
     for(unsigned int i=0; i < characterDefs.size(); i++)
         if(characterDefs[i].id == id)
             return characterDefs[i];
 }
-LevelLoader::Light LevelLoader::getLightDefById(unsigned int id)
+LevelLoader::Light LevelLoader::Level::getLightDefById(unsigned int id)
 {
     for(unsigned int i=0; i < lightDefs.size(); i++)
         if(lightDefs[i].id == id)
             return lightDefs[i];
+}
+
+
+void LevelLoader::load(std::string file)
+{
+    tinyxml2::XMLDocument doc;
+    tinyxml2::XMLError err = doc.LoadFile((resourcePath() + file).c_str());
+    tinyxml2::XMLElement* levelPackNode = doc.FirstChildElement( "levelpack" );
+
+    levelPackNode->FirstChildElement("defaultLevelId")->QueryUnsignedText(&defaultLevelId);
+
+    // Levels
+    tinyxml2::XMLElement* levelsNode = levelPackNode->FirstChildElement("levels");
+    for (tinyxml2::XMLElement* child = levelsNode->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
+    {
+        LevelLoader::Level levelDef;
+        levelDef.unpack(child);
+        levelDefs.push_back(levelDef);
+    }
 }
