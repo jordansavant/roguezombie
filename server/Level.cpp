@@ -119,15 +119,16 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                     case 0: // No event
                         break;
                     case 1: // Player Go To Level
-                        t->onBodyEnter.push_back([] (Tile* t, Body* b){
+                        Level* l = this;
+                        t->onBodyEnter.push_back([l, eventDef] (Tile* t, Body* b){
                             if(b->schema.type == Body::Type::Character)
                             {
                                 Character* c = static_cast<Character*>(b);
                                 if(c->schema.isPlayerCharacter)
                                 {
                                     bit::Output::Debug("DEPART LEVEL");
-                                    //Player* p = l->players[c->schema.clientId];
-                                    //l->server->movePlayerToLevel(p, l->id, 1);
+                                    Player* p = c->schema.player;
+                                    l->server->movePlayerToLevel(p, l->id, eventDef.targetLevelId, eventDef.targetEntranceId);
                                 }
                             }
                         });
@@ -512,7 +513,7 @@ bool Level::createPlayer(Player* player)
     zombie->lights.push_back(orbLight);
 
     // Add player to this level's management
-    if(!addPlayer(player))
+    if(!addPlayer(player, defaultEntranceId))
     {
         deletePlayer(player);
 
@@ -522,7 +523,7 @@ bool Level::createPlayer(Player* player)
     return true;
 }
 
-bool Level::addPlayer(Player* player)
+bool Level::addPlayer(Player* player, unsigned int entranceId)
 {
     // Connect to Level
     player->setLevel(this);
@@ -548,7 +549,7 @@ bool Level::addPlayer(Player* player)
     }
 
     // Add body to tiles
-    if(!setCharacterAtDefaultEntrance(player->character))
+    if(!setCharacterAtEntrance(player->character, entranceId))
     {
         removePlayer(player);
 
@@ -620,10 +621,10 @@ void Level::deletePlayer(Player* player)
     // Delete player is handled by server
 }
 
-bool Level::setCharacterAtDefaultEntrance(Character* character)
+bool Level::setCharacterAtEntrance(Character* character, unsigned int entranceId)
 {
     // Find the default entrance
-    Tile* t = getAvailableEntranceTile(defaultEntranceId);
+    Tile* t = getAvailableEntranceTile(entranceId);
     if(t == NULL)
         return false;
 
@@ -632,7 +633,6 @@ bool Level::setCharacterAtDefaultEntrance(Character* character)
 
     return true;
 }
-
 
 
 

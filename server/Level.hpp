@@ -78,13 +78,13 @@ public:
 
     bool createPlayer(Player* player);
 
-    bool addPlayer(Player* player);
+    bool addPlayer(Player* player, unsigned int entranceId);
 
     void removePlayer(Player* player);
 
     void deletePlayer(Player* player);
 
-    bool setCharacterAtDefaultEntrance(Character* character);
+    bool setCharacterAtEntrance(Character* character, unsigned int entranceId);
     
 
     // Tile Positioning and Pathfinding

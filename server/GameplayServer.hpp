@@ -29,7 +29,7 @@ public:
 
     virtual unsigned int getNextDialogId();
 
-    virtual void movePlayerToLevel(Player* player, unsigned int fromLevelId, unsigned int toLevelId);
+    virtual void movePlayerToLevel(Player* player, unsigned int fromLevelId, unsigned int toLevelId, unsigned int toEntranceId);
 
     virtual void deletePlayerFromLevelAndServer(Player* p);
 
@@ -37,10 +37,11 @@ private:
 
     struct PendingMovePlayer
     {
-        PendingMovePlayer() : player(NULL), fromLevelId(0), toLevelId(0) {}
+        PendingMovePlayer() : player(NULL), fromLevelId(0), toLevelId(0), toEntranceId(0) {}
         Player* player;
         unsigned int fromLevelId;
         unsigned int toLevelId;
+        unsigned int toEntranceId;
     };
     struct PendingPlayerJoin
     {

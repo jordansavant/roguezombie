@@ -70,9 +70,14 @@ void GameplayServer::update(sf::Time &gameTime)
     // Honor level transition requests
     for(unsigned int i=0; i < pendingMoves.size(); i++)
     {
-        pendingMoves[i].player->requestFullSnapshot = true;
-        levels[pendingMoves[i].fromLevelId].removePlayer(pendingMoves[i].player);
-        levels[pendingMoves[i].toLevelId].addPlayer(pendingMoves[i].player);
+        PendingMovePlayer* pm = &pendingMoves[i];
+
+        unsigned int indexFrom = pm->fromLevelId - 1;
+        unsigned int indexTo = pm->toLevelId - 1;
+
+        pm->player->requestFullSnapshot = true;
+        levels[indexFrom].removePlayer(pm->player);
+        levels[indexTo].addPlayer(pm->player, pm->toEntranceId);
     }
     pendingMoves.clear();
 
@@ -102,12 +107,13 @@ unsigned int GameplayServer::getNextDialogId()
     return ++dialogIdCounter;
 }
 
-void GameplayServer::movePlayerToLevel(Player* player, unsigned int fromLevelId, unsigned int toLevelId)
+void GameplayServer::movePlayerToLevel(Player* player, unsigned int fromLevelId, unsigned int toLevelId, unsigned int toEntranceId)
 {
     PendingMovePlayer m;
     m.player = player;
     m.fromLevelId = fromLevelId;
     m.toLevelId = toLevelId;
+    m.toEntranceId = toEntranceId;
     pendingMoves.push_back(m);
 }
 
