@@ -1,20 +1,11 @@
 TODO:
-Left off at getting to the point of new functionality for spawning players.
-I have tiledefs wired up for entrances and levels loading from server down.
-I need to support entrances in-game for Tile objects.
-I need to support finding entrances by id within tiles.
-I need to support creating character instances and placing them at the entrances based on available priority.
-
-I need to support the fact that we might not have room on a tile from the server perspective.
-	- Support not joining
-	- What about level transition?
-
-Create more than one level and wire up their entrances.
+Left off with player join working in a queue system, now we need to get level transition working.
 Test that we can transition between levels using enterEvents and exitEvents on tiles.
+Make it work with out of room scenarios as well.
 
-Wire up a game victory event and game defeat event.
-Add support for client side game victory and game defeat server disconnection and new state etc.
+Wire up a game victory event and game defeat event states.
 
 Add the ability to spectate with other players if there are still living players.
+	- spectating characters
 Try not to do a forced immediate kick of all players when the game ends so that the server
-can keep on living, just the ability to move between any character, even dead ones for fade
+ can keep on living, just the ability to move between any character, even dead ones for fade etc.
