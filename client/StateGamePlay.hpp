@@ -38,8 +38,16 @@ public:
         _count
     };
 
+    enum EndGameReason
+    {
+        Quit,
+        Victory,
+        Defeat
+    };
+
     RogueZombieGame* rogueZombieGame;
     Mode mode;
+    EndGameReason endGameReason;
     std::vector<std::function<void()>> modeEnter;
     std::vector<std::function<void(sf::Time&)>> modeUpdate;
     std::vector<std::function<void()>> modeExit;
@@ -108,6 +116,8 @@ public:
     void requestInteractionsForTile(unsigned int tileId);
 
     void handleInteractionResponse(unsigned int tileId, Interaction::Type interaction, bit::ServerPacket &packet);
+
+    void endGame(EndGameReason);
 
 protected:
 

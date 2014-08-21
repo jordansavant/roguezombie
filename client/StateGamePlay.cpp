@@ -23,7 +23,7 @@
 #include <sstream>
 
 StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, bool isClient, bool isHost)
-    : bit::ClientServerState(stack, _game, isClient, isHost), rogueZombieGame(_game), levelClient(NULL), mode(Mode::Init), fps(),
+    : bit::ClientServerState(stack, _game, isClient, isHost), rogueZombieGame(_game), levelClient(NULL), mode(Mode::Init), endGameReason(EndGameReason::Quit), fps(),
       combatTargettedTileId(0)
 {
     levelClient = new LevelClient();
@@ -264,7 +264,7 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
     // Exit
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
     {
-        disconnect();
+        endGame(EndGameReason::Quit);
     }
 }
 
@@ -479,9 +479,6 @@ bool StateGamePlay::update(sf::Time &gameTime)
 
     fps.update(gameTime);
 
-    // Test journal
-    
-
     hud->update(*rogueZombieGame->renderWindow, gameTime);
 
     levelClient->update(gameTime);
@@ -615,6 +612,13 @@ void StateGamePlay::handleInteractionResponse(unsigned int tileId, Interaction::
         }
     }
 }
+
+void StateGamePlay::endGame(EndGameReason reason)
+{
+    endGameReason = reason;
+    disconnect();
+}
+
 
 /**
  * Packet handling
@@ -764,12 +768,12 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
             
             case ServerEvent::GameVictory:
             {
-                displayMessage(std::string("Game Victory"));
+                endGame(EndGameReason::Victory);
                 break;
             }
             case ServerEvent::GameDefeat:
             {
-                displayMessage(std::string("Game Defeat"));
+                endGame(EndGameReason::Defeat);
                 break;
             }
         }
@@ -780,8 +784,23 @@ void StateGamePlay::handlePacket_DisconnectAcknowledge(bit::ServerPacket &packet
 {
     bit::Output::Debug("Client handle client disconnected acknowledged");
 
-    // Exit
-    requestStackPop();
+    switch(endGameReason)
+    {
+        default:
+        case EndGameReason::Quit:
+            requestStackPop();
+            break;
+        case EndGameReason::Victory:
+            // TODO: after disconnect travel to credits state
+            rogueZombieGame->errorMessage = "Game ended in victory.";
+            requestStateClearTo(RogueZombieGame::stateGameError);
+            break;
+        case EndGameReason::Defeat:
+            // TODO: after disconnect travel to credits state
+            rogueZombieGame->errorMessage = "Game ended in defeat.";
+            requestStateClearTo(RogueZombieGame::stateGameError);
+            break;
+    }
 }
 
 void StateGamePlay::handlePacket_Shutdown(bit::ServerPacket &packet)
