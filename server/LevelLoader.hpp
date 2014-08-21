@@ -12,6 +12,15 @@ public:
 
     struct Event
     {
+        enum Type
+        {
+            undefined,
+            PlayerGoToLevel,
+            NpcGoToLevel,
+            GameVictory,
+            GameDefeat,
+        };
+
         unsigned int type;
         unsigned int targetLevelId;
         unsigned int targetEntranceId;

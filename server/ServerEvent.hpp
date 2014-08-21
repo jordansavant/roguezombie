@@ -22,6 +22,9 @@ enum ServerEvent
     CharacterMissesPlayer,
     PlayerAttacksCharacter,
     PlayerMissesCharacter,
+
+    GameVictory,
+    GameDefeat,
 };
 
 #endif

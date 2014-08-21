@@ -26,6 +26,7 @@
 #include "../bitengine/System.hpp"
 #include "../bitengine/System/tinyxml2.h"
 #include "../ResourcePath.h"
+#include "ServerEvent.hpp"
 #include <functional>
 #include <sstream>
 #include <map>
@@ -113,34 +114,11 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
             // Append events
             for(unsigned int z=0; z < tileDef.enterEvents.size(); z++)
             {
-                LevelLoader::Event eventDef = tileDef.enterEvents[z];
-                switch(eventDef.type)
-                {
-                    case 0: // No event
-                        break;
-                    case 1: // Player Go To Level
-                        Level* l = this;
-                        t->onBodyEnter.push_back([l, eventDef] (Tile* t, Body* b){
-                            if(b->schema.type == Body::Type::Character)
-                            {
-                                Character* c = static_cast<Character*>(b);
-                                if(c->schema.isPlayerCharacter)
-                                {
-                                    bit::Output::Debug("DEPART LEVEL");
-                                    Player* p = c->schema.player;
-                                    l->movePlayerToLevel(p, eventDef.targetLevelId, eventDef.targetEntranceId);
-                                }
-                            }
-                        });
-                        break;
-                }
+                loadEventIntoTile(t->onBodyEnter, tileDef.enterEvents[z]);
             }
             for(unsigned int z=0; z < tileDef.exitEvents.size(); z++)
             {
-                LevelLoader::Event eventDef = tileDef.enterEvents[z];
-                switch(eventDef.type)
-                {
-                }
+                loadEventIntoTile(t->onBodyLeave, tileDef.exitEvents[z]);
             }
             
             // Register entrances
@@ -302,48 +280,48 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                 light->load(this,t->schema.x, t->schema.y, lightDef.radius, sf::Color(lightDef.red, lightDef.green, lightDef.blue), lightDef.brightness);
                 lights.push_back(light);
             }
-            
-            //    case Interior::Spawn::Light:
-            //    {
-            //        sf::Color c(61, 255, 239);// = // sf::Color::Red;
-            //        Light* light = new Light();
-            //        light->load(this, t->schema.x, t->schema.y, 4, c, .66);
-            //        lights.push_back(light);
-            //        break;
-            //    }
-            //    case Interior::Spawn::PortalTo2:
-            //    {
-            //        Level* l = this;
-            //        t->onBodyEnter.push_back([l] (Tile* t, Body* b){
-            //            if(b->schema.type == Body::Type::Character)
-            //            {
-            //                Character* c = static_cast<Character*>(b);
-            //                if(c->schema.isPlayerCharacter)
-            //                {
-            //                    Player* p = l->players[c->schema.clientId];
-            //                    l->server->movePlayerToLevel(p, l->id, 1);
-            //                }
-            //            }
-            //        });
-            //        break;
-            //    }
-            //    case Interior::Spawn::PortalTo1:
-            //    {
-            //        Level* l = this;
-            //        t->onBodyEnter.push_back([l] (Tile* t, Body* b){
-            //            if(b->schema.type == Body::Type::Character)
-            //            {
-            //                Character* c = static_cast<Character*>(b);
-            //                if(c->schema.isPlayerCharacter)
-            //                {
-            //                    Player* p = l->players[c->schema.clientId];
-            //                    l->server->movePlayerToLevel(p, l->id, 0);
-            //                }
-            //            }
-            //        });
-            //        break;
-            //    }
-            //}
+        }
+    }
+}
+
+void Level::loadEventIntoTile(std::vector<std::function<void(Tile* t, Body* body)>> &listenerList, LevelLoader::Event &eventDef)
+{
+    LevelLoader::Event::Type etype = static_cast<LevelLoader::Event::Type>(eventDef.type);
+    switch(etype)
+    {
+        case LevelLoader::Event::Type::PlayerGoToLevel:
+        {
+            Level* l = this;
+            listenerList.push_back([l, eventDef] (Tile* t, Body* b){
+                if(b->schema.type == Body::Type::Character)
+                {
+                    Character* c = static_cast<Character*>(b);
+                    if(c->schema.isPlayerCharacter)
+                    {
+                        Player* p = c->schema.player;
+                        l->movePlayerToLevel(p, eventDef.targetLevelId, eventDef.targetEntranceId);
+                    }
+                }
+            });
+            break;
+        }
+        case LevelLoader::Event::Type::NpcGoToLevel:
+            break;
+        case LevelLoader::Event::Type::GameVictory:
+        {
+            Level* l = this;
+            listenerList.push_back([l, eventDef] (Tile* t, Body* b){
+                l->endGameVictory();
+            });
+            break;
+        }
+        case LevelLoader::Event::Type::GameDefeat:
+        {
+            Level* l = this;
+            listenerList.push_back([l, eventDef] (Tile* t, Body* b){
+                l->endGameDefeat();
+            });
+            break;
         }
     }
 }
@@ -470,6 +448,25 @@ DialogNode* Level::getDialogTree()
 
     return a;
 }
+
+
+void Level::endGameVictory()
+{
+    // notify all clients of victory
+    server->sendEventToAllClients([](bit::ServerPacket &packet){
+        packet << sf::Uint32(ServerEvent::GameVictory);
+    });
+}
+
+
+void Level::endGameDefeat()
+{
+    // notify all clients of victory
+    server->sendEventToAllClients([](bit::ServerPacket &packet){
+        packet << sf::Uint32(ServerEvent::GameDefeat);
+    });
+}
+
 
 
 

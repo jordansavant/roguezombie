@@ -63,6 +63,8 @@ public:
 
     void load(GameplayServer* server, LevelLoader::Level &levelDef);
 
+    void loadEventIntoTile(std::vector<std::function<void(Tile* t, Body* body)>> &listenerList, LevelLoader::Event &eventDef);
+
     void update(sf::Time &gameTime);
 
     void enterCombat();
@@ -72,6 +74,10 @@ public:
     void endTurn(Character* character);
 
     DialogNode* getDialogTree();
+
+    void endGameVictory();
+
+    void endGameDefeat();
 
     
     // Player management

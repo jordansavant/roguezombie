@@ -1,15 +1,12 @@
 TODO:
-Left off with level transition queue working.
-Need to test for disconnections while in the queue (should work).
+Left off with tile entrance priority selection being done.
 
-Add tile priority to entrance selection
-
-Wire up a game victory event and game defeat event states.
-
+Wire up a game victory event and game defeat event states
 Add the ability to spectate with other players if there are still living players.
 	- spectating characters
-Try not to do a forced immediate kick of all players when the game ends so that the server
- can keep on living, just the ability to move between any character, even dead ones for fade etc.
+Join spectation and end game events together
+	- Try not to do a forced immediate kick of all players when the game ends
+	  so that the server can keep on living, just the ability to move between
+	  any character, even dead ones for fade etc.
 
 Client side needs to support modes: LevelTransition, JoiningServer
-Server side needs to support AI/visual issues for level transition: turn queue, visuals, death etc

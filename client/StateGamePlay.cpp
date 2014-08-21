@@ -760,6 +760,18 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 displayMessage(ss.str());
                 break;
             }
+
+            
+            case ServerEvent::GameVictory:
+            {
+                displayMessage(std::string("Game Victory"));
+                break;
+            }
+            case ServerEvent::GameDefeat:
+            {
+                displayMessage(std::string("Game Defeat"));
+                break;
+            }
         }
     }
 }
