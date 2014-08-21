@@ -128,7 +128,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                                 {
                                     bit::Output::Debug("DEPART LEVEL");
                                     Player* p = c->schema.player;
-                                    l->server->movePlayerToLevel(p, l->id, eventDef.targetLevelId, eventDef.targetEntranceId);
+                                    l->movePlayerToLevel(p, eventDef.targetLevelId, eventDef.targetEntranceId);
                                 }
                             }
                         });
@@ -645,7 +645,11 @@ bool Level::setCharacterAtEntrance(Character* character, unsigned int entranceId
     return character->moveToPosition(t->schema.x, t->schema.y);
 }
 
-
+void Level::movePlayerToLevel(Player* player, unsigned int levelId, unsigned int entranceId)
+{
+    // Tell server to move
+    server->movePlayerToLevel(player, id, levelId, entranceId);
+}
 
 
 

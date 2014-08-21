@@ -685,6 +685,13 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
     {
         switch(eventType)
         {
+            case ServerEvent::LeavingLevel:
+                displayMessage(std::string("Leaving level"));
+                break;
+            case ServerEvent::ArrivedLevel:
+                displayMessage(std::string("Arrived at level"));
+                break;
+
             case ServerEvent::MissionCompleted:
                 levelClient->playerCharacter->handleServerEventPacket_missionCompleted(packet);
                 break;

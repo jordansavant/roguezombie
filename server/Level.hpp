@@ -89,6 +89,8 @@ public:
     bool canSetCharacterAtEntrance(Character* character, unsigned int entranceId);
 
     bool setCharacterAtEntrance(Character* character, unsigned int entranceId);
+
+    void movePlayerToLevel(Player* player, unsigned int toLevelId, unsigned int toEntranceId);
     
 
     // Tile Positioning and Pathfinding

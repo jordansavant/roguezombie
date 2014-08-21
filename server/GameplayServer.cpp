@@ -12,6 +12,7 @@
 #include "mission/Mission.hpp"
 #include "items/Item.hpp"
 #include "dialog/Dialog.hpp"
+#include "ServerEvent.hpp"
 
 GameplayServer::GameplayServer()
     : bit::Server(), startingLevel(NULL), bodyIdCounter(0), missionIdCounter(0), itemIdCounter(0), dialogIdCounter(0)
@@ -85,6 +86,11 @@ void GameplayServer::update(sf::Time &gameTime)
             levels[indexTo].addPlayer(pm->player, pm->toEntranceId);
             pm->player->requestFullSnapshot = true;
             pm->complete = true;
+
+            // Notify client of transition
+            sendEventToClient(*pm->player->client, [](bit::ServerPacket &packet){
+                packet << sf::Uint32(ServerEvent::ArrivedLevel);
+            });
         }
     }
     // Remove completed requests
@@ -118,12 +124,18 @@ unsigned int GameplayServer::getNextDialogId()
 
 void GameplayServer::movePlayerToLevel(Player* player, unsigned int fromLevelId, unsigned int toLevelId, unsigned int toEntranceId)
 {
+    // Queue the move
     PendingMovePlayer m;
     m.player = player;
     m.fromLevelId = fromLevelId;
     m.toLevelId = toLevelId;
     m.toEntranceId = toEntranceId;
     pendingMoves.push_back(m);
+
+    // Notify client of transition
+    sendEventToClient(*player->client, [](bit::ServerPacket &packet){
+        packet << sf::Uint32(ServerEvent::LeavingLevel);
+    });
 }
 
 void GameplayServer::deletePlayerFromLevelAndServer(Player* p)

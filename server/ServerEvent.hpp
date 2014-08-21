@@ -4,6 +4,9 @@
 
 enum ServerEvent
 {
+    LeavingLevel,
+    ArrivedLevel,
+
     MissionAssigned,
     MissionCompleted,
     
