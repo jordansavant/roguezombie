@@ -1,9 +1,8 @@
 TODO:
-Left off with player join working in a queue system, now we need to get level transition working.
-Test that we can transition between levels using enterEvents and exitEvents on tiles.
+Left off with level transition queue working.
+Need to test for disconnections while in the queue (should work).
 
-Make it work with out of room scenarios as well.
-Make it work with tile priority
+Add tile priority to entrance selection
 
 Wire up a game victory event and game defeat event states.
 
@@ -11,3 +10,6 @@ Add the ability to spectate with other players if there are still living players
 	- spectating characters
 Try not to do a forced immediate kick of all players when the game ends so that the server
  can keep on living, just the ability to move between any character, even dead ones for fade etc.
+
+Client side needs to support modes: LevelTransition, JoiningServer
+Server side needs to support AI/visual issues for level transition: turn queue, visuals, death etc

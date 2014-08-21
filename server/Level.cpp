@@ -817,15 +817,24 @@ void Level::raycastTiles(float startX, float startY, float endX, float endY, std
 Tile* Level::getAvailableEntranceTile(unsigned int entranceId)
 {
     // TODO, replace this with a better map version
-    Tile* found = NULL;
-    iterateTiles([&found, entranceId] (unsigned int index, unsigned int x, unsigned int y, Tile* t){
+    // Get all tiles and their entrances that match
+    std::vector<std::pair<Tile*, unsigned int>> availableTiles;
+    iterateTiles([&entranceId, &availableTiles] (unsigned int index, unsigned int x, unsigned int y, Tile* t){
         if(!t->isOccupied() && t->hasEntrance(entranceId))
         {
-            found = t;
+            availableTiles.push_back(std::pair<Tile*, unsigned int>(t, t->getEntrancePriority(entranceId)));
         }
     });
 
-    return found;
+    // If no tiles, return null
+    if(availableTiles.size() == 0)
+        return NULL;
+
+    // Sort available tiles by priority then return the first one
+    std::sort(availableTiles.begin(), availableTiles.end(), [] (std::pair<Tile*, unsigned int> a, std::pair<Tile*, unsigned int> b){
+        return a.second < b.second;
+    });
+    return availableTiles.front().first;
 }
 
 

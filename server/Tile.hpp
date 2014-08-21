@@ -111,6 +111,8 @@ public:
 
     bool hasEntrance(unsigned int entranceId);
 
+    unsigned int getEntrancePriority(unsigned int entranceId);
+
 private:
 
     void runOnBodyEnter(Body* body);

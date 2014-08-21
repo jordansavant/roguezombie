@@ -100,6 +100,18 @@ bool Tile::hasEntrance(unsigned int entranceId)
     return false;
 }
 
+unsigned int Tile::getEntrancePriority(unsigned int entranceId)
+{
+    for(unsigned int i=0; i < entrances.size(); i++)
+    {
+        if(entrances[i].id == entranceId)
+            return entrances[i].priority;
+    }
+
+    return 100000; // meh low priority, should never happen
+}
+
+
 void Tile::runOnBodyEnter(Body* body)
 {
     for(unsigned int i=0; i < onBodyEnter.size(); i++)
