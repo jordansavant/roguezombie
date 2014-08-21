@@ -17,7 +17,7 @@ bit::ClientServerState::ClientServerState(StateStack &stack, Game* game, bool is
       isClient(isClient),
       isHost(isHost),
       server(NULL),
-      isConnected(false),
+      isNetworkConnected(false),
       isConfirmed(false),
       timeSinceLastPacket(sf::seconds(0.0f)),
       clientTimeout(sf::seconds(20)),
@@ -65,7 +65,7 @@ void bit::ClientServerState::load()
         if(socket.connect(ipAddress, port, sf::seconds(5.0f)) == sf::TcpSocket::Done)
         {
             bit::Output::Debug("SERVER SOCKET ESTABLISHED");
-            isConnected = true;
+            isNetworkConnected = true;
         }
         else
         {
@@ -83,7 +83,7 @@ bool bit::ClientServerState::update(sf::Time &gameTime)
 
     if(isClient)
     {
-        if(isConnected)
+        if(isNetworkConnected)
         {
             // Handle the network input
             ServerPacket packet;
@@ -101,7 +101,7 @@ bool bit::ClientServerState::update(sf::Time &gameTime)
                 if(timeSinceLastPacket > clientTimeout)
                 {
                     bit::Output::Debug("SERVER PACKET TIMEOUT");
-                    isConnected = false;
+                    isNetworkConnected = false;
                     failedConnectionClock.restart();
                 }
             }
@@ -137,7 +137,7 @@ bool bit::ClientServerState::update(sf::Time &gameTime)
 
 void bit::ClientServerState::disconnect()
 {
-    if(isClient && isConnected)
+    if(isClient && isNetworkConnected)
     {
         awaitingDisconnect = true;
         bit::ClientPacket packet;

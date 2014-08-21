@@ -54,15 +54,15 @@ namespace bit
         sf::IpAddress ipAddress;
         unsigned short port;
         sf::TcpSocket socket;
-        bool isConnected;
-        bool isConfirmed;
+        bool isNetworkConnected; // Network socket connected
+        bool isConfirmed; // Active and confirmed game relationship
         sf::Clock failedConnectionClock;
         sf::Time timeSinceLastPacket;
         sf::Time clientTimeout;
         GameTimer tickTimer;
         sf::Time tickRate;
         sf::Clock tickClock;
-	    sf::Clock clock;
+        sf::Clock clock;
         bool awaitingDisconnect;
         GameTimer disconnectTimer;
         std::map<unsigned int, Request> requests;
@@ -74,7 +74,7 @@ namespace bit
 
         virtual unsigned short getServerPort() = 0;
 
-		sf::Time now();
+        sf::Time now();
 
         void handlePacket(sf::Int32 packetType, ServerPacket &packet);
 
