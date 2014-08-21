@@ -37,11 +37,12 @@ private:
 
     struct PendingMovePlayer
     {
-        PendingMovePlayer() : player(NULL), fromLevelId(0), toLevelId(0), toEntranceId(0) {}
+        PendingMovePlayer() : player(NULL), fromLevelId(0), toLevelId(0), toEntranceId(0), complete(false) {}
         Player* player;
         unsigned int fromLevelId;
         unsigned int toLevelId;
         unsigned int toEntranceId;
+        bool complete;
     };
     struct PendingPlayerJoin
     {

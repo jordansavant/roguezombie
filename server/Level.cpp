@@ -523,6 +523,11 @@ bool Level::createPlayer(Player* player)
     return true;
 }
 
+bool Level::canAddPlayer(Player* player, unsigned int entranceId)
+{
+    return canSetCharacterAtEntrance(player->character, entranceId);
+}
+
 bool Level::addPlayer(Player* player, unsigned int entranceId)
 {
     // Connect to Level
@@ -530,7 +535,6 @@ bool Level::addPlayer(Player* player, unsigned int entranceId)
     players[player->clientId] = player;
 
     // Push character into management list
-    player->character->level = this;
     switch(player->character->schema.type)
     {
         case Character::Type::Zombie:
@@ -621,17 +625,24 @@ void Level::deletePlayer(Player* player)
     // Delete player is handled by server
 }
 
-bool Level::setCharacterAtEntrance(Character* character, unsigned int entranceId)
+bool Level::canSetCharacterAtEntrance(Character* character, unsigned int entranceId)
 {
-    // Find the default entrance
+    // Find the entrance
     Tile* t = getAvailableEntranceTile(entranceId);
     if(t == NULL)
         return false;
 
-    if(!character->moveToPosition(t->schema.x, t->schema.y))
+    return character->canMoveToPosition(this, t->schema.x, t->schema.y);
+}
+
+bool Level::setCharacterAtEntrance(Character* character, unsigned int entranceId)
+{
+    // Find the entrance
+    Tile* t = getAvailableEntranceTile(entranceId);
+    if(t == NULL)
         return false;
 
-    return true;
+    return character->moveToPosition(t->schema.x, t->schema.y);
 }
 
 

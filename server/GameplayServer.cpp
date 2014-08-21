@@ -75,11 +75,20 @@ void GameplayServer::update(sf::Time &gameTime)
         unsigned int indexFrom = pm->fromLevelId - 1;
         unsigned int indexTo = pm->toLevelId - 1;
 
-        pm->player->requestFullSnapshot = true;
-        levels[indexFrom].removePlayer(pm->player);
-        levels[indexTo].addPlayer(pm->player, pm->toEntranceId);
+        // If I can add the player to the new level
+        if(levels[indexTo].canAddPlayer(pm->player, pm->toEntranceId))
+        {
+            // Remove them from their current level
+            levels[indexFrom].removePlayer(pm->player);
+
+            // Add them to their new level
+            levels[indexTo].addPlayer(pm->player, pm->toEntranceId);
+            pm->player->requestFullSnapshot = true;
+            pm->complete = true;
+        }
     }
-    pendingMoves.clear();
+    // Remove completed requests
+    pendingMoves.erase(std::remove_if(pendingMoves.begin(), pendingMoves.end(), [](PendingMovePlayer p) { return p.complete; }), pendingMoves.end());
 
     for(unsigned int i=0; i < levels.size(); i++)
     {

@@ -74,8 +74,8 @@ public:
     std::vector<Item*> equipment;
     unsigned int visionRadius;
 
-	struct Schema
-	{
+    struct Schema
+    {
         Schema()
             : isPlayerCharacter(false), clientId(0), player(NULL), type(Type::None), direction(0, 0),
               maxActionPoints(2), currentActionPoints(2), maxHealth(0), health(0), speed(3),
@@ -95,7 +95,7 @@ public:
         // Stats
         int maxActionPoints;
         int currentActionPoints;
-		int maxHealth;
+        int maxHealth;
         int health;
         int speed; // tiles per action point
         int intelligence;
@@ -158,8 +158,8 @@ public:
         }
 
         bool isDead();
-	};
-	Schema schema;
+    };
+    Schema schema;
 
 
     // Game Loop
@@ -279,8 +279,9 @@ public:
 
     virtual bool moveToTile(Tile* tile);
 
-    virtual bool moveToPosition(float x, float y);
+    virtual bool canMoveToPosition(Level* targetLevel, float x, float y);
 
+    virtual bool moveToPosition(float x, float y);
 
     // Mission
 

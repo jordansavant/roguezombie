@@ -750,6 +750,24 @@ bool Character::moveToTile(Tile* t)
     return moveToPosition(t->schema.x, t->schema.y);
 }
 
+// Checks a target level x and y to see if I could occupy it
+bool Character::canMoveToPosition(Level* targetLevel, float x, float y)
+{
+    std::vector<Tile*> newTiles;
+    targetLevel->getTilesWithinRectangle(x, y, Body::schema.width, Body::schema.height, newTiles);
+
+    // Check if I can move
+    for(unsigned int i=0; i < newTiles.size(); i++)
+    {
+        if(isTileBlocked(newTiles[i]))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 bool Character::moveToPosition(float x, float y)
 {
     std::vector<Tile*> newTiles;

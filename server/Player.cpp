@@ -19,6 +19,8 @@ void Player::load(bit::RemoteClient* _client)
 void Player::setLevel(Level* level)
 {
     this->level = level;
+    if(character)
+        character->level = level;
 }
 
 void Player::setCharacter(Character* character)

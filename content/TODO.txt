@@ -1,7 +1,9 @@
 TODO:
 Left off with player join working in a queue system, now we need to get level transition working.
 Test that we can transition between levels using enterEvents and exitEvents on tiles.
+
 Make it work with out of room scenarios as well.
+Make it work with tile priority
 
 Wire up a game victory event and game defeat event states.
 

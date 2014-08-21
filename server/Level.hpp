@@ -78,11 +78,15 @@ public:
 
     bool createPlayer(Player* player);
 
+    bool canAddPlayer(Player* player, unsigned int entranceId);
+
     bool addPlayer(Player* player, unsigned int entranceId);
 
     void removePlayer(Player* player);
 
     void deletePlayer(Player* player);
+
+    bool canSetCharacterAtEntrance(Character* character, unsigned int entranceId);
 
     bool setCharacterAtEntrance(Character* character, unsigned int entranceId);
     
