@@ -1,7 +1,7 @@
 TODO:
 Left off with tile entrance priority selection being done.
-
 Wire up a game victory event and game defeat event states
+
 Add the ability to spectate with other players if there are still living players.
 	- spectating characters
 Join spectation and end game events together
@@ -10,3 +10,26 @@ Join spectation and end game events together
 	  any character, even dead ones for fade etc.
 
 Client side needs to support modes: LevelTransition, JoiningServer
+
+
+Spectation process:
+	Player registers death event with character:
+	onDeath(Character *c) {
+		c
+	}
+
+	
+bit::Event<T, U>
+{
+	std::vector<T> listeners;
+	
+	override += (T listener)
+	{
+		listeners.push_back(T);
+	}
+	
+	trigger(U)
+	{
+		for listeners
+	}
+}
