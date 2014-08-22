@@ -7,6 +7,7 @@
 #include "SFML/Network.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
+#include "../bitengine/Structures.hpp"
 
 class Level;
 class Player;
@@ -73,6 +74,9 @@ public:
     std::vector<Mission*> missions;
     std::vector<Item*> equipment;
     unsigned int visionRadius;
+
+    // Events
+    bit::Event<std::function<void(Character* c)>> onDeath;
 
     struct Schema
     {

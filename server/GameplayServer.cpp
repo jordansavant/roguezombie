@@ -190,16 +190,7 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
                 player->level->handlePlayerCommand(packet, client, static_cast<Command::Type>(commandType));
                 break;
             case Command::Type::PlayerDebug:
-                if(player->level->state == Level::State::Free)
-                {
-                    player->character->isHostileCombatDetected = true;
-                    player->level->enterCombat();
-                }
-                else
-                {
-                    player->character->isHostileCombatDetected = false;
-                }
-
+                player->character->kill();
                 break;
         }
     }

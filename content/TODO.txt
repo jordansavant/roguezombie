@@ -15,21 +15,8 @@ Client side needs to support modes: LevelTransition, JoiningServer
 Spectation process:
 	Player registers death event with character:
 	onDeath(Character *c) {
-		c
-	}
-
-	
-bit::Event<T, U>
-{
-	std::vector<T> listeners;
-	
-	override += (T listener)
-	{
-		listeners.push_back(T);
+		Remove Character
+		Make character spectator
 	}
 	
-	trigger(U)
-	{
-		for listeners
-	}
-}
+	

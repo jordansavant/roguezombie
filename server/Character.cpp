@@ -402,9 +402,13 @@ void Character::followPath(sf::Time &gameTime)
 
 void Character::kill()
 {
+    // Change stats
     schema.health = 0;
 
-    // move equipment to inventory
+    // Trigger event
+    onDeath.trigger<Character*>(this);
+
+    // Move equipment to inventory
     for(unsigned int i=0; i < equipment.size(); i++)
     {
         unequip(static_cast<Character::EquipmentSlot>(i));
