@@ -190,7 +190,11 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
                 player->level->handlePlayerCommand(packet, client, static_cast<Command::Type>(commandType));
                 break;
             case Command::Type::PlayerDebug:
+                unsigned int id = player->character->onDeath += [] (Character* c) {
+                    bit::Output::Debug("dead");
+                };
                 player->character->kill();
+                player->character->onDeath -= id;
                 break;
         }
     }

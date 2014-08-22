@@ -32,9 +32,17 @@ namespace bit
                 listeners[i](arg1, arg2, arg3);
         }
 
-        void operator += (T listener)
+        // Registers the listener and returns its ID if it needs to remove it
+        unsigned int operator += (T listener)
         {
             listeners.push_back(listener);
+            return listeners.size() - 1;
+        }
+
+        // Removes a listener by its id
+        void operator -= (unsigned int index)
+        {
+            listeners.erase(listeners.begin() + index);
         }
     };
 }
