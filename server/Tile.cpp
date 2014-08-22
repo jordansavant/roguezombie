@@ -114,18 +114,12 @@ unsigned int Tile::getEntrancePriority(unsigned int entranceId)
 
 void Tile::runOnBodyEnter(Body* body)
 {
-    for(unsigned int i=0; i < onBodyEnter.size(); i++)
-    {
-        onBodyEnter[i](this, body);
-    }
+    onBodyEnter.trigger<Tile*, Body*>(this, body);
 }
 
 void Tile::runOnBodyLeave(Body* body)
 {
-    for(unsigned int i=0; i < onBodyLeave.size(); i++)
-    {
-        onBodyLeave[i](this, body);
-    }
+    onBodyLeave.trigger<Tile*, Body*>(this, body);
 }
 
 void Tile::prepareSnapshot(bit::ServerPacket &packet, bool full)

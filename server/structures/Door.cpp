@@ -88,14 +88,14 @@ void Door::registerTileTriggers(Tile* tile)
 
     if(tile)
     {
-        tile->onBodyEnter.push_back([d] (Tile* t, Body* b) {
+        tile->onBodyEnter += [d] (Tile* t, Body* b) {
             if(b->Body::schema.type == Body::Type::Character)
             {
                 d->openerCount++;
                 d->attemptOpen();
             }
-        });
-        tile->onBodyLeave.push_back([d] (Tile* t, Body* b) {
+        };
+        tile->onBodyLeave += [d] (Tile* t, Body* b) {
             if(b->Body::schema.type == Body::Type::Character)
             {
                 d->openerCount--;
@@ -104,7 +104,7 @@ void Door::registerTileTriggers(Tile* tile)
                     d->attemptClose();
                 }
             }
-        });
+        };
     }
 }
 

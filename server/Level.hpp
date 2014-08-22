@@ -6,6 +6,7 @@
 #include "SFML/Network.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
+#include "../bitengine/Structures.hpp"
 #include "LevelRunner.hpp"
 #include "Command.hpp"
 #include "Body.hpp"
@@ -63,7 +64,7 @@ public:
 
     void load(GameplayServer* server, LevelLoader::Level &levelDef);
 
-    void loadEventIntoTile(std::vector<std::function<void(Tile* t, Body* body)>> &listenerList, LevelLoader::Event &eventDef);
+    void loadEventIntoTile(bit::Event<std::function<void(Tile* t, Body* body)>> &e, LevelLoader::Event &eventDef);
 
     void update(sf::Time &gameTime);
 

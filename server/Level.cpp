@@ -290,7 +290,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
     }
 }
 
-void Level::loadEventIntoTile(std::vector<std::function<void(Tile* t, Body* body)>> &listenerList, LevelLoader::Event &eventDef)
+void Level::loadEventIntoTile(bit::Event<std::function<void(Tile* t, Body* body)>> &e, LevelLoader::Event &eventDef)
 {
     LevelLoader::Event::Type etype = static_cast<LevelLoader::Event::Type>(eventDef.type);
     switch(etype)
@@ -298,7 +298,7 @@ void Level::loadEventIntoTile(std::vector<std::function<void(Tile* t, Body* body
         case LevelLoader::Event::Type::PlayerGoToLevel:
         {
             Level* l = this;
-            listenerList.push_back([l, eventDef] (Tile* t, Body* b){
+            e += [l, eventDef] (Tile* t, Body* b){
                 if(b->schema.type == Body::Type::Character)
                 {
                     Character* c = static_cast<Character*>(b);
@@ -308,7 +308,7 @@ void Level::loadEventIntoTile(std::vector<std::function<void(Tile* t, Body* body
                         l->movePlayerToLevel(p, eventDef.targetLevelId, eventDef.targetEntranceId);
                     }
                 }
-            });
+            };
             break;
         }
         case LevelLoader::Event::Type::NpcGoToLevel:
@@ -316,17 +316,17 @@ void Level::loadEventIntoTile(std::vector<std::function<void(Tile* t, Body* body
         case LevelLoader::Event::Type::GameVictory:
         {
             Level* l = this;
-            listenerList.push_back([l, eventDef] (Tile* t, Body* b){
+            e += [l, eventDef] (Tile* t, Body* b){
                 l->endGameVictory();
-            });
+            };
             break;
         }
         case LevelLoader::Event::Type::GameDefeat:
         {
             Level* l = this;
-            listenerList.push_back([l, eventDef] (Tile* t, Body* b){
+            e += [l, eventDef] (Tile* t, Body* b){
                 l->endGameDefeat();
-            });
+            };
             break;
         }
     }

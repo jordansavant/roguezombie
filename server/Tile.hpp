@@ -5,6 +5,7 @@
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Intelligence.hpp"
+#include "../bitengine/Structures.hpp"
 #include <functional>
 
 class Level;
@@ -89,11 +90,10 @@ public:
     Body* body;
     Body* door;
     std::vector<Entrance> entrances;
-    //unsigned int entrancePriority; // TODO
     unsigned int metadata_shadowcastId;
     unsigned int metadata_floodfillId;
-    std::vector<std::function<void(Tile* t, Body* body)>> onBodyEnter;
-    std::vector<std::function<void(Tile* t, Body* body)>> onBodyLeave;
+    bit::Event<std::function<void(Tile* t, Body* body)>> onBodyEnter;
+    bit::Event<std::function<void(Tile* t, Body* body)>> onBodyLeave;
 
     virtual void load(Level* level, unsigned int id, Type type, int x, int y, int width, int height);
 
