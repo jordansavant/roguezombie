@@ -5,7 +5,7 @@ Character Changes
 Player Changes
 	+ support spectating character - done
 
-When a player dies
+DONE: When a player dies
 	* Character needs to be dettached - done
 	* Player needs to attach to character as a spectator - done
 	* Event needs to be sent to change to spectate mode - done
@@ -24,19 +24,18 @@ When a player disconnects
 	Player is deleted
 	* checkPlayersForDefeat()
 	
-When a spectator disconnects - done
+DONE: When a spectator disconnects
 	* Player tells spectatee to erase them from their spectator list - done
 	* Player is deleted - done
 	
-When a player is networked - done
+DONE: When a player is networked
 	If they have a character, network that character - done
 	* Else If they have a spectatee network that character - done
 
-When a spectator switches characters
-	* If they press left, look for next player character in the list in reverse
-	* If they press right, look for next player character in the list going forward
-	* Detach from existing spectatee
-	* Attach to new spectatee
+DONE: When a spectator switches characters
+	* Recognize input - done
+	* Detach from existing spectatee - done
+	* Attach to new spectatee - done
 	
 checkPlayersForDefeat() {
 	Iterate all players on all levels
