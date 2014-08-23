@@ -189,6 +189,9 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
 
                 if(s)
                 {
+                    // Meta list for structures
+                    structures.push_back(s);
+
                     // Structure inventory
                     for(unsigned int i=0; i < structureDef.items.size(); i++)
                     {
@@ -252,6 +255,9 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
 
                 if(c)
                 {
+                    // Meta list for characters
+                    characters.push_back(c);
+
                     // Character Inventory
                     for(unsigned int i=0; i < characterDef.items.size(); i++)
                     {
@@ -546,6 +552,7 @@ bool Level::addPlayer(Player* player, unsigned int entranceId)
             ogres.push_back(static_cast<Ogre*>(player->character));
             break;
     }
+    characters.push_back(player->character);
 
     // Manage lights for the character
     for(unsigned int i=0; i < player->character->lights.size(); i++)
@@ -609,7 +616,10 @@ void Level::removePlayer(Player* player)
                     ogres.erase(std::remove(ogres.begin(), ogres.end(), static_cast<Ogre*>(player->character)), ogres.end());
                     break;
             }
+            // Remove from turnqueue
             turnQueue.erase(std::remove(turnQueue.begin(), turnQueue.end(), player->character), turnQueue.end());
+            // Remove from character metalist
+            characters.erase(std::remove(characters.begin(), characters.end(), player->character), characters.end());
         }
     }
 }
@@ -630,6 +640,12 @@ void Level::deletePlayer(Player* player)
 
         // Delete character
         delete player->character;
+    }
+
+    // If spectating a character
+    if(player->spectatee)
+    {
+        player->unsetSpectatee();
     }
 
     // Delete player is handled by server
@@ -849,6 +865,33 @@ Tile* Level::getAvailableEntranceTile(unsigned int entranceId)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+/// //////////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////////////
+///                    CHARACTER AND STRUCTER HELPERS                           //
+/// //////////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////////////
+
+
+void Level::iterateCharacters(std::function<void(Character* character)> inspector)
+{
+    for (unsigned int i = 0; i < characters.size(); ++i)
+    {
+        inspector(characters[i]);
+    }
+}
 
 
 

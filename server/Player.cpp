@@ -27,16 +27,28 @@ void Player::setLevel(Level* level)
     }
 }
 
+// Used in player creation and player requickening
 void Player::setCharacter(Character* character)
 {
     this->character = character;
 
-    if(character)
+    // If I was spectating, do not
+    if(spectatee)
     {
-        character->onDeath += std::bind(&Player::onCharacterDeath, this, std::placeholders::_1);
-        character->setControllingPlayer(this);
-        controlState = ControlState::Normal;
+        unsetSpectatee();
     }
+
+    // Register character
+    character->onDeath += std::bind(&Player::onCharacterDeath, this, std::placeholders::_1);
+    character->setControllingPlayer(this);
+    controlState = ControlState::Normal;
+
+}
+
+void Player::unsetCharacter()
+{
+    character->unsetControllingPlayer();
+    character = NULL;
 }
 
 void Player::setupPlayerCharacter()
@@ -89,19 +101,80 @@ void Player::onCharacterDeath(Character* e)
     // incoming character is also my character
 
     // Set up spectation
-    spectatee = character;
-    spectatee->setSpectatingPlayer(this);
-    controlState = ControlState::Spectate;
+    setSpectatee(character);
     
     // Clear character control
-    character->unsetControllingPlayer();
-    character = NULL;
+    unsetCharacter();
 
     // Send server signal for spectate mode
     level->server->sendEventToClient(*client, [](bit::ServerPacket &packet){
         packet << sf::Uint32(ServerEvent::SpectateBegin);
     });
 
+}
+
+void Player::setSpectatee(Character* character)
+{
+    // Set up spectation
+    spectatee = character;
+    spectatee->setSpectatingPlayer(this);
+    controlState = ControlState::Spectate;
+}
+
+// Used when disconnecting or returning to game
+void Player::unsetSpectatee()
+{
+    // Remove self as spectator from character
+    spectatee->unsetSpectatingPlayer(this);
+    // Clear spectator
+    spectatee = NULL;
+}
+
+
+void Player::spectateNext(int direction)
+{
+    // TODO: this is a total hack
+    // Iterate all of the level's characters until I find my spectator
+    int index = -1;
+    Character* newSpectatee = NULL;
+    for(unsigned int i=0; i < level->characters.size(); i++)
+    {
+        if(level->characters[i] == spectatee)
+        {
+            index = i;
+            break;
+        }
+    }
+
+    // If I found my current spectator
+    if(index >= 0)
+    {
+        // TODO: switch to only spectate player characters
+            // if(candidate->schema.isPlayerCharacter && candidate->schema.player != this)
+        // Iterate from that character to the next looking for the next character
+        for(unsigned int i=index + 1; i < level->characters.size(); i++)
+        {
+            Character* candidate = level->characters[i];
+            newSpectatee = candidate;
+            break;
+        }
+        // If not found going forward, start at beginning and go back
+        if(!newSpectatee)
+        {
+            for(unsigned int i=0; i < index; i++)
+            {
+                Character* candidate = level->characters[i];
+                newSpectatee = candidate;
+                break;
+            }
+        }
+    }
+
+    if(newSpectatee)
+    {
+        unsetSpectatee();
+        setSpectatee(newSpectatee);
+    }
 }
 
 void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
@@ -282,16 +355,18 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
             {
                 // Debug Commands
                 case Command::Type::PlayerMoveUp:
-                    spectatee->moveUp();
+                    // spectatee->moveUp();
                     break;
                 case Command::Type::PlayerMoveDown:
-                    spectatee->moveDown();
+                    // spectatee->moveDown();
                     break;
                 case Command::Type::PlayerMoveLeft:
-                    spectatee->moveLeft();
+                    // spectatee->moveLeft();
+                    spectateNext(-1);
                     break;
                 case Command::Type::PlayerMoveRight:
-                    spectatee->moveRight();
+                    // spectatee->moveRight();
+                    spectateNext(1);
                     break;
             }
             break;

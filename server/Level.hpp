@@ -17,6 +17,7 @@
 
 class GameplayServer;
 class Character;
+class Structure;
 class Zombie;
 class Ogre;
 class Hunter;
@@ -45,9 +46,11 @@ public:
     unsigned int id;
     unsigned int defaultEntranceId;
     State state;
+    std::vector<Character*> characters; // meta list
     std::vector<Zombie*> zombies;
     std::vector<Ogre*> ogres;
     std::vector<Hunter*> hunters;
+    std::vector<Structure*> structures; // meta list
     std::vector<Wall*> walls;
     std::vector<Door*> doors;
     std::vector<Chest*> chests;
@@ -123,6 +126,11 @@ public:
     void raycastTiles(float startX, float startY, float endX, float endY, std::function<bool(Tile*)> inspect);
 
     Tile* getAvailableEntranceTile(unsigned int entranceId);
+
+
+    // Character and Structure helpers
+
+    void iterateCharacters(std::function<void(Character* character)> inspector);
 
 
     // Networking

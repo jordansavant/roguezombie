@@ -36,9 +36,17 @@ public:
 
     void setCharacter(Character* character);
 
+    void unsetCharacter();
+
     void setupPlayerCharacter();
 
     void onCharacterDeath(Character* character);
+
+    void setSpectatee(Character* character);
+
+    void unsetSpectatee();
+
+    void spectateNext(int direction);
 
     void handleCommand(bit::ClientPacket &packet, Command::Type commandType);
 

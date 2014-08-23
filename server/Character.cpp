@@ -985,7 +985,7 @@ void Character::setSpectatingPlayer(Player* player)
 
 void Character::unsetSpectatingPlayer(Player* player)
 {
-    spectators.erase(std::remove_if(spectators.begin(), spectators.end(), [player](Player* inspected){ return player == inspected; }));
+    spectators.erase(std::remove(spectators.begin(), spectators.end(), player), spectators.end());
 }
 
 void Character::getAvailableInteractions(std::vector<Interaction::Type> &fill)
