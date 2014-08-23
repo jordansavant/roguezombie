@@ -21,10 +21,10 @@ void Zombie::updateAlive_Free(sf::Time &gameTime)
 {
     Character::updateAlive_Free(gameTime);
 
-	if(!schema.isPlayerCharacter)
-	{
-		if(walkTimer.update(gameTime))
-		{
+    if(!schema.isPlayerCharacter)
+    {
+        if(walkTimer.update(gameTime))
+        {
             walkTimer.adjustBy(2 * bit::Math::randomFloat());
 
             switch(bit::Math::random(4))
@@ -42,6 +42,6 @@ void Zombie::updateAlive_Free(sf::Time &gameTime)
                     moveRight();
                     break;
             }
-		}
-	}
+        }
+    }
 }

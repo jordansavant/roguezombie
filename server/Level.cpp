@@ -163,6 +163,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                     {
                         Wall* wall = new Wall();
                         wall->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                        wall->setPosition(t->schema.x, t->schema.y);
                         walls.push_back(wall);
                         s = wall;
                         break;
@@ -171,6 +172,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                     {
                         Door* door = new Door();
                         door->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                        door->setPosition(t->schema.x, t->schema.y);
                         door->schema.isOpen = structureDef.isOpen;
                         doors.push_back(door);
                         s = door;
@@ -180,6 +182,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                     {
                         Chest* chest = new Chest();
                         chest->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                        chest->setPosition(t->schema.x, t->schema.y);
                         chest->schema.isLocked = structureDef.isLocked;
                         chests.push_back(chest);
                         s = chest;
@@ -224,6 +227,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                     {
                         Zombie* zombie = new Zombie();
                         zombie->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                        zombie->moveToPosition(t->schema.x, t->schema.y);
                         zombies.push_back(zombie);
                         zombie->hostilityCheckAi = AiRoutines::Combat::Zombie_DetectHostility;
                         zombie->combatDecisionAi = AiRoutines::Combat::Zombie_DecideCombat;
@@ -235,6 +239,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                     {
                         Ogre* ogre = new Ogre();
                         ogre->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                        ogre->moveToPosition(t->schema.x, t->schema.y);
                         ogres.push_back(ogre);
                         c = ogre;
                         break;
@@ -243,6 +248,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                     {
                         Hunter* hunter = new Hunter();
                         hunter->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                        hunter->moveToPosition(t->schema.x, t->schema.y);
                         hunters.push_back(hunter);
                         hunter->hostilityCheckAi = AiRoutines::Combat::Hunter_DetectHostility;
                         hunter->combatDecisionAi = AiRoutines::Combat::Hunter_DecideCombat;
@@ -684,6 +690,10 @@ bool Level::setCharacterAtEntrance(Character* character, unsigned int entranceId
     Tile* t = getAvailableEntranceTile(entranceId);
     if(t == NULL)
         return false;
+
+    // I am new to this level, set my position to my new tile so that I dont accidentally move off of (and null) another tile
+    character->Body::schema.x = t->schema.x;
+    character->Body::schema.y = t->schema.y;
 
     return character->moveToPosition(t->schema.x, t->schema.y);
 }

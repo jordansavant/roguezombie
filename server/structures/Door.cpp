@@ -15,20 +15,6 @@ void Door::load(Level* _level, unsigned int _id, float _x, float _y)
 {
     Structure::load(_level, _id, Structure::Type::Door, _x, _y, _level->tileWidth, _level->tileHeight);
 
-    std::vector<Tile*> currentTiles;
-    level->getTilesWithinRectangle(Body::schema.x, Body::schema.y, Body::schema.width, Body::schema.height, currentTiles);
-    for(unsigned int i=0; i < currentTiles.size(); i++)
-    {
-        currentTiles[i]->setOccupyingDoor(this);
-    }
-
-    std::vector<Tile*> cardinalTiles;
-    level->getCardinalTiles(level->getTileAtPosition(_x, _y), cardinalTiles);
-    for(unsigned int i=0; i < cardinalTiles.size(); i++)
-    {
-        registerTileTriggers(cardinalTiles[i]);
-    }
-
     schema.isOpen = false;
     schema.isLocked = false;
     Body::schema.obstructionRatio = 1;
@@ -37,6 +23,18 @@ void Door::load(Level* _level, unsigned int _id, float _x, float _y)
 void Door::update(sf::Time &gameTime)
 {
     Structure::update(gameTime);
+}
+
+void Door::setPosition(float x, float y)
+{
+    Structure::setPosition(x, y);
+
+    std::vector<Tile*> cardinalTiles;
+    level->getCardinalTiles(level->getTileAtPosition(x, y), cardinalTiles);
+    for(unsigned int i=0; i < cardinalTiles.size(); i++)
+    {
+        registerTileTriggers(cardinalTiles[i]);
+    }
 }
 
 void Door::attemptOpen()

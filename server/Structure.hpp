@@ -26,8 +26,8 @@ public:
         Chest,
     };
 
-	struct Schema
-	{
+    struct Schema
+    {
         Schema()
             : type(Type::None)
         {
@@ -45,12 +45,14 @@ public:
             bit::NetworkHelper::unpackEnum<sf::Uint32, Structure::Type>(packet, schema.type);
             return packet;
         }
-	};
-	Schema schema;
+    };
+    Schema schema;
 
     virtual void load(Level* level, unsigned int id, Type type, float x, float y, float width, float height);
 
     virtual void update(sf::Time &gameTime);
+
+    virtual void setPosition(float x, float y);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 };

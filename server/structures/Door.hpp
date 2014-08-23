@@ -41,6 +41,8 @@ public:
 
     virtual void update(sf::Time &gameTime);
 
+    virtual void setPosition(float x, float y);
+
     virtual void attemptOpen();
 
     virtual void attemptClose();

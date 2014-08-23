@@ -49,8 +49,6 @@ void Character::load(Level* _level, unsigned int _id, Type _type, float _x, floa
     schema.maxHealth = 100;
     schema.health = 100;
     Body::schema.obstructionRatio = .25;
-
-    moveToPosition(_x, _y);
 }
 
 void Character::update(sf::Time &gameTime)
