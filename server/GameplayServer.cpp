@@ -84,13 +84,22 @@ void GameplayServer::update(sf::Time &gameTime)
 
             // Add them to their new level
             levels[indexTo].addPlayer(pm->player, pm->toEntranceId);
+            
+            // Tell player to get full snapshot
             pm->player->requestFullSnapshot = true;
-            pm->complete = true;
+            // If the player character has spectators tell them as well
+            for(unsigned int i=0; i < pm->player->character->spectators.size(); i++)
+            {
+                Player* spectator = pm->player->character->spectators[i];
+                spectator->requestFullSnapshot = true;
+            }
 
             // Notify client of transition
             sendEventToClient(*pm->player->client, [](bit::ServerPacket &packet){
                 packet << sf::Uint32(ServerEvent::ArrivedLevel);
             });
+
+            pm->complete = true;
         }
     }
     // Remove completed requests

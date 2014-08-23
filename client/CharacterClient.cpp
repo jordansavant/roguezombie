@@ -91,7 +91,7 @@ void CharacterClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 
     // Sprite
     sprite.syncronizeEquipment();
-
+    sprite.cleanRender = full;
 }
 
 void CharacterClient::handleServerEventPacket_missionCompleted(bit::ServerPacket &packet)

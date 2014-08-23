@@ -18,6 +18,7 @@ public:
     CharacterSprite(unsigned int width, unsigned int height, unsigned int baseOffsetX, unsigned int basOffsetY);
 
     CharacterClient* character;
+    bool cleanRender;
     float renderX, renderY;
     float screenX, screenY;
     unsigned int width, height, baseOffsetX, baseOffsetY;

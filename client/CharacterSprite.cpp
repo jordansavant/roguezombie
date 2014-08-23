@@ -6,7 +6,7 @@
 #include "../bitengine/Math.hpp"
 
 CharacterSprite::CharacterSprite(unsigned int width, unsigned int height, unsigned int baseOffsetX, unsigned int baseOffsetY)
-    : renderX(0), renderY(0), width(width), height(height), baseOffsetX(baseOffsetX), baseOffsetY(baseOffsetY), facingRight(true), lastRenderX(0), lastRenderY(0),
+    : character(NULL), cleanRender(true), renderX(0), renderY(0), width(width), height(height), baseOffsetX(baseOffsetX), baseOffsetY(baseOffsetY), facingRight(true), lastRenderX(0), lastRenderY(0),
       highlightMap(NULL), normalMap(NULL), spriteLoader(NULL), headSprite(NULL), frontarmSprite(NULL), bodySprite(NULL), shadowSprite(NULL)
 {
     equipmentProfiles.resize(Character::EquipmentSlot::_count);
@@ -42,12 +42,13 @@ void CharacterSprite::update(sf::Time &gameTime)
     // Interpolate rendering position
     lastRenderX = renderX;
     lastRenderY = renderY;
-    if(renderX == 0 && renderY == 0)
+    if(cleanRender || (renderX == 0 && renderY == 0))
     {
         renderX = character->BodyClient::schema.x;
         renderY = character->BodyClient::schema.y;
         lastRenderX = renderX;
         lastRenderY = renderY;
+        cleanRender = false;
     }
     else
     {
