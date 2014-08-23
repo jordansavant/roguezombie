@@ -35,6 +35,8 @@ public:
 
     virtual Level* getNextLoadedLevel(Level* fromLevel);
 
+    virtual Level* getPreviousLoadedLevel(Level* fromLevel);
+
 private:
 
     struct PendingMovePlayer

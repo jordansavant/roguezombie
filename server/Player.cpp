@@ -131,9 +131,10 @@ void Player::unsetSpectatee()
 }
 
 
-void Player::spectateNext()
+void Player::spectateNext(int dir)
 {
-    // TODO: this is a total hack
+    bool forward = dir >= 0;
+
     // Iterate all of the level's characters until I find my spectator
     int index = -1;
     Character* newSpectatee = NULL;
@@ -144,7 +145,6 @@ void Player::spectateNext()
             index = i;
             break;
         }
-
     }
 
     // If I found my current spectator
@@ -152,10 +152,12 @@ void Player::spectateNext()
     {
         // If I have another character on this level
         unsigned int nextIndex = index + 1;
-        if(nextIndex < level->characters.size())
+        unsigned int prevIndex = index - 1;
+        unsigned int targIndex = forward ? nextIndex : prevIndex;
+        if(targIndex >= 0 && targIndex < level->characters.size())
         {
             // Get next character on this level
-            newSpectatee = level->characters[nextIndex];
+            newSpectatee = level->characters[targIndex];
             unsetSpectatee();
             setSpectatee(newSpectatee);
         }
@@ -168,12 +170,13 @@ void Player::spectateNext()
             Character* candidateCharacter = NULL;
             while(candidateCharacter == NULL)
             {
-                next = level->server->getNextLoadedLevel(next);
+                next = forward ? level->server->getNextLoadedLevel(next) : level->server->getPreviousLoadedLevel(next);
 
                 // If I found a character on another level
                 if(next->characters.size() > 0)
                 {
-                    candidateCharacter = next->characters[0];
+                    unsigned int candidateIndex = forward ? 0 : next->characters.size() - 1;
+                    candidateCharacter = next->characters[candidateIndex];
 
                     // If that character is my existing spectatee do nothing (full loop)
                     if(candidateCharacter == spectatee)
@@ -390,12 +393,10 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
                     // spectatee->moveDown();
                     break;
                 case Command::Type::PlayerMoveLeft:
-                    // spectatee->moveLeft();
-                    spectateNext();
+                    spectateNext(-1);
                     break;
                 case Command::Type::PlayerMoveRight:
-                    // spectatee->moveRight();
-                    spectateNext();
+                    spectateNext(1);
                     break;
             }
             break;

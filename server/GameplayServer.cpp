@@ -157,11 +157,20 @@ void GameplayServer::deletePlayerFromLevelAndServer(Player* p)
 
 Level* GameplayServer::getNextLoadedLevel(Level* fromLevel)
 {
-    unsigned int nextIndex = fromLevel->id + 1 - 1;
+    int nextIndex = fromLevel->id + 1 - 1; // next level id -1 for index
     if(nextIndex < levels.size())
         return &levels[nextIndex];
     else
-        return &levels[0];
+        return &levels.front();
+}
+
+Level* GameplayServer::getPreviousLoadedLevel(Level* fromLevel)
+{
+    int nextIndex = fromLevel->id - 1 - 1; // next level id -1 for index
+    if(nextIndex >= 0)
+        return &levels[nextIndex];
+    else
+        return &levels.back();
 }
 
 /**
