@@ -111,6 +111,8 @@ void Player::onCharacterDeath(Character* e)
         packet << sf::Uint32(ServerEvent::SpectateBegin);
     });
 
+    // Check for game over
+    level->server->checkForGameOver();
 }
 
 void Player::setSpectatee(Character* character)

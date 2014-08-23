@@ -15,7 +15,7 @@
 #include "ServerEvent.hpp"
 
 GameplayServer::GameplayServer()
-    : bit::Server(), startingLevel(NULL), bodyIdCounter(0), missionIdCounter(0), itemIdCounter(0), dialogIdCounter(0)
+    : bit::Server(), startingLevel(NULL), isGameOver(false), bodyIdCounter(0), missionIdCounter(0), itemIdCounter(0), dialogIdCounter(0)
 {
 }
 
@@ -153,6 +153,9 @@ void GameplayServer::deletePlayerFromLevelAndServer(Player* p)
     if(p->level)
         p->level->deletePlayer(p); // level only exits if player actually joined
     delete p;
+    
+    // check if game over if a player leaves for any reason
+    checkForGameOver();
 }
 
 Level* GameplayServer::getNextLoadedLevel(Level* fromLevel)
@@ -171,6 +174,33 @@ Level* GameplayServer::getPreviousLoadedLevel(Level* fromLevel)
         return &levels[nextIndex];
     else
         return &levels.back();
+}
+
+// If all players have no living characters its game over
+void GameplayServer::checkForGameOver()
+{
+    if(isGameOver)
+        return;
+
+    // Iterate the levels
+    bool alive = false;
+    for(auto iterator = players.begin(); iterator != players.end(); iterator++)
+    {
+        Player* player = iterator->second;
+        if(player->character && !player->character->schema.isDead())
+        {
+            alive = true;
+        }
+    }
+
+    if(!alive)
+    {
+        // If everyone pathetically died like losers...
+        sendEventToAllClients([](bit::ServerPacket& packet){
+            packet << sf::Uint32(ServerEvent::GameDefeat);
+        });
+        isGameOver = true;
+    }
 }
 
 /**

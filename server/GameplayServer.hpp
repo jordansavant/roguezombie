@@ -37,6 +37,8 @@ public:
 
     virtual Level* getPreviousLoadedLevel(Level* fromLevel);
 
+    virtual void checkForGameOver();
+
 private:
 
     struct PendingMovePlayer
@@ -62,6 +64,7 @@ private:
     std::vector<Level> levels;
     Level* startingLevel;
     std::map<unsigned int, Player*> players;
+    bool isGameOver;
     unsigned int bodyIdCounter;
     unsigned int missionIdCounter;
     unsigned int itemIdCounter;
