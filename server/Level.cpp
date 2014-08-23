@@ -963,14 +963,22 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
 
     // Get a subset of visible tiles for the player within a radius of tiles
     std::vector<Tile*> visibles;
-    if(p->controlState == Player::ControlState::Spectate && p->character)
-    {
-        bit::Output::Debug("WATATAH");
-    }
     Character* character = p->character ? p->character : p->spectatee;
     character->inspectVisibleTiles([&visibles] (Tile* t) {
         visibles.push_back(t);
     });
+
+    // inidicate if we are playing or spectating and data
+    if(p->character)
+    {
+        packet << true;
+        packet << sf::Uint32(p->character->Body::schema.id);
+    }
+    else if(p->spectatee)
+    {
+        packet << false;
+        packet << sf::Uint32(p->spectatee->Body::schema.id);
+    }
 
     // indicate number of tiles
     packet << sf::Uint32(visibles.size());

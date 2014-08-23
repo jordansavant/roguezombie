@@ -18,7 +18,7 @@ public:
 
     CharacterClient();
 
-	Character::Schema schema;
+    Character::Schema schema;
     CharacterSprite sprite;
     std::vector<bool> hasEquipment;
     std::vector<ItemClient> equipment;

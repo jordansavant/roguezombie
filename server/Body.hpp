@@ -41,8 +41,8 @@ public:
     std::map<unsigned int, DialogNode*> originConversations; // for memory management
     std::function<DialogNode*(void)> getStartingDialog;
 
-	struct Schema
-	{
+    struct Schema
+    {
         Schema()
             : id(0), type(Type::None), x(0), y(0), width(0), height(0), illumination(0), obstructionRatio(0)
         {
@@ -50,7 +50,7 @@ public:
 
         unsigned int id;
         Type type;
-		float x, y;
+        float x, y;
         float width, height;
         float illumination; // how illuminated this body is
         unsigned char rshade, gshade, bshade; // color of light
@@ -87,8 +87,8 @@ public:
             packet >> schema.obstructionRatio;
             return packet;
         }
-	};
-	Schema schema;
+    };
+    Schema schema;
 
     virtual void load(Level* level, unsigned int id, Type type, float x, float y, float width, float height);
 

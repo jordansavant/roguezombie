@@ -194,6 +194,12 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
             break;
     }
 
+    // Detect if we are spectating or playing
+    bool isPlaying;
+    packet >> isPlaying;
+    unsigned int playerBodyId;
+    packet >> playerBodyId;
+
     // Update / Create all entities
     unsigned int tileCount;
     packet >> tileCount;
@@ -216,7 +222,7 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
                 c = unpackNetworkEntity<CharacterClient>(packet, full, characters, characterPool);
 
                 // Player character
-                if(c->schema.clientId == state->clientId)
+                if(c->BodyClient::schema.id == playerBodyId)
                 {
                     playerCharacter = c;
                 }
