@@ -131,7 +131,7 @@ void Player::unsetSpectatee()
 }
 
 
-void Player::spectateNext(int direction)
+void Player::spectateNext()
 {
     // TODO: this is a total hack
     // Iterate all of the level's characters until I find my spectator
@@ -144,6 +144,7 @@ void Player::spectateNext(int direction)
             index = i;
             break;
         }
+
     }
 
     // If I found my current spectator
@@ -362,11 +363,11 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
                     break;
                 case Command::Type::PlayerMoveLeft:
                     // spectatee->moveLeft();
-                    spectateNext(-1);
+                    spectateNext();
                     break;
                 case Command::Type::PlayerMoveRight:
                     // spectatee->moveRight();
-                    spectateNext(1);
+                    spectateNext();
                     break;
             }
             break;

@@ -46,7 +46,7 @@ public:
 
     void unsetSpectatee();
 
-    void spectateNext(int direction);
+    void spectateNext();
 
     void handleCommand(bit::ClientPacket &packet, Command::Type commandType);
 

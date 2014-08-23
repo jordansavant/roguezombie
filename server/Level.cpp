@@ -626,6 +626,12 @@ void Level::removePlayer(Player* player)
 
 void Level::deletePlayer(Player* player)
 {
+    // Move any spectators
+    // TODO: this was moved up here because the method is dumb needing an active character
+    if(player->character)
+        for(unsigned int i=0; i < player->character->spectators.size(); i++)
+            player->character->spectators[i]->spectateNext();
+
     // Remove player
     removePlayer(player);
 
