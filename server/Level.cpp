@@ -310,8 +310,19 @@ void Level::loadEventIntoTile(bit::Event<std::function<void(Tile* t, Body* body)
                     Character* c = static_cast<Character*>(b);
                     if(c->schema.isPlayerCharacter)
                     {
-                        Player* p = c->schema.player;
-                        l->movePlayerToLevel(p, eventDef.targetLevelId, eventDef.targetEntranceId);
+                        if(l->state == Level::State::Combat)
+                        {
+                            // Cannot leave level in combat
+                            l->server->sendEventToClient(*c->schema.player->client, [] (bit::ServerPacket &packet) {
+                                packet << sf::Uint32(ServerEvent::CannotTransitionInCombat);
+                            });
+                        }
+                        else
+                        {
+                            // Go to level
+                            Player* p = c->schema.player;
+                            l->movePlayerToLevel(p, eventDef.targetLevelId, eventDef.targetEntranceId);
+                        }
                     }
                 }
             };

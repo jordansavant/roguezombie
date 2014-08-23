@@ -48,6 +48,7 @@ public:
     CharacterClient* playerCharacter;
     std::vector<MoveMarker> moveMarkers;
     bool isPlayerDecisionMode;
+    bool isPlayerSpecating;
 
     // Spritesheet 01;
     sf::Texture texture_spritesheet_01_unsmooth;

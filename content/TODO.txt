@@ -1,7 +1,3 @@
 TODO:
-Update events to check for non playing players (dead etc) and end game in defeat
-	- When a player character dies
-	- When a player disconnects
-	- Should not explode players
-	
 Client side needs to support modes: LevelTransition, JoiningServer
+Signify spectating character in client with some eye candy of some sort

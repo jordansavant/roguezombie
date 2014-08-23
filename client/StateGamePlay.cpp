@@ -695,6 +695,9 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
             case ServerEvent::ArrivedLevel:
                 displayMessage(std::string("Arrived at level"));
                 break;
+            case ServerEvent::CannotTransitionInCombat:
+                displayMessage(std::string("Cannot leave level in combat"));
+                break;
 
             case ServerEvent::SpectateBegin:
                 displayMessage(std::string("Spectate mode started"));

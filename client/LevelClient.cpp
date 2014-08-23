@@ -18,7 +18,7 @@
 #include <map>
 
 LevelClient::LevelClient()
-    : state(NULL), levelState(Level::State::Free), tilePool(), characterPool(), doorPool(), chestPool(), hoveredTile(NULL), playerCharacter(NULL), isPlayerDecisionMode(false)
+    : state(NULL), levelState(Level::State::Free), tilePool(), characterPool(), doorPool(), chestPool(), hoveredTile(NULL), playerCharacter(NULL), isPlayerDecisionMode(false), isPlayerSpecating(false)
 {
 }
 
@@ -197,6 +197,7 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
     // Detect if we are spectating or playing
     bool isPlaying;
     packet >> isPlaying;
+    isPlayerSpecating = !isPlaying;
     unsigned int playerBodyId;
     packet >> playerBodyId;
 

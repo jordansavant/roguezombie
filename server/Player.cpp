@@ -202,7 +202,7 @@ void Player::spectateNext(int dir)
                     else
                     {
                         unsetSpectatee();
-                        setSpectatee(newSpectatee);
+                        setSpectatee(candidateCharacter);
                         return;
                     }
                 }
