@@ -33,6 +33,8 @@ public:
 
     virtual void deletePlayerFromLevelAndServer(Player* p);
 
+    virtual Level* getNextLoadedLevel(Level* fromLevel);
+
 private:
 
     struct PendingMovePlayer

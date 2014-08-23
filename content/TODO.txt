@@ -1,22 +1,41 @@
 TODO:
-Left off with tile entrance priority selection being done.
-Wire up a game victory event and game defeat event states
+Update events to check for non playing players (dead etc) and end game in defeat
+	- When a player character dies
+	- When a player disconnects
+	- Should not explode players
 
-Add the ability to spectate with other players if there are still living players.
-	- spectating characters
-Join spectation and end game events together
-	- Try not to do a forced immediate kick of all players when the game ends
-	  so that the server can keep on living, just the ability to move between
-	  any character, even dead ones for fade etc.
-
+Have to keep the game from crashing if:
+	- No spectateable character can be found
+	- See rules below
+	
+Add better spectateNext() method
+	- Only support spectating other players
+		- If there are no other players then it should technically be game over
+			- Regardless there are scenarios where we cannot rely on this:
+				- All players have disconnected
+		- In the player keep 
+	- One command should toggle next characters on level
+		- Finds current character on level
+		- Looks for next character, round robins back to beginning
+		- If no character is found run spectate for next player
+	- One command should toggle next players across levels
+		- 
+		
+	Character switch routine: must traverse characters across levels
+		- Player has a current level and a spectatee on that level
+		- On Command
+			- Get next character on current level
+			- If character
+				- switch as spectator
+			- If no character
+				- Ask server to look for another character on the next level
+				- Server iterates levels to find current level
+				- Server finds next level with a character
+					- Server moves the spectator to that level and that first character
+					- END
+				- If no other level
+					- END
+			
+		
+		
 Client side needs to support modes: LevelTransition, JoiningServer
-
-
-Spectation process:
-	Player registers death event with character:
-	onDeath(Character *c) {
-		Remove Character
-		Make character spectator
-	}
-	
-	

@@ -155,6 +155,15 @@ void GameplayServer::deletePlayerFromLevelAndServer(Player* p)
     delete p;
 }
 
+Level* GameplayServer::getNextLoadedLevel(Level* fromLevel)
+{
+    unsigned int nextIndex = fromLevel->id + 1 - 1;
+    if(nextIndex < levels.size())
+        return &levels[nextIndex];
+    else
+        return &levels[0];
+}
+
 /**
  * Handle Incoming Client Packets
  **/

@@ -76,7 +76,7 @@ void CharacterSprite::update(sf::Time &gameTime)
     int bb = character->BodyClient::schema.bshade * character->BodyClient::schema.illumination;
     sf::Color color(rr, gg, bb);
 
-    // TODO: Remove primary character color hack
+    // TODO: Remove primary character color hack or turn into spectate highlight
     if(character->level->playerCharacter == character)
         color = sf::Color(0, 255, 255);
 

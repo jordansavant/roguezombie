@@ -150,31 +150,59 @@ void Player::spectateNext()
     // If I found my current spectator
     if(index >= 0)
     {
-        // TODO: switch to only spectate player characters
-            // if(candidate->schema.isPlayerCharacter && candidate->schema.player != this)
-        // Iterate from that character to the next looking for the next character
-        for(unsigned int i=index + 1; i < level->characters.size(); i++)
+        // If I have another character on this level
+        unsigned int nextIndex = index + 1;
+        if(nextIndex < level->characters.size())
         {
-            Character* candidate = level->characters[i];
-            newSpectatee = candidate;
-            break;
+            // Get next character on this level
+            newSpectatee = level->characters[nextIndex];
+            unsetSpectatee();
+            setSpectatee(newSpectatee);
         }
-        // If not found going forward, start at beginning and go back
-        if(!newSpectatee)
+
+        // If no more characters are on this level
+        else
         {
-            for(unsigned int i=0; i < index; i++)
+            // Loop through next levels until
+            Level* next = level;
+            Character* candidateCharacter = NULL;
+            while(candidateCharacter == NULL)
             {
-                Character* candidate = level->characters[i];
-                newSpectatee = candidate;
-                break;
+                next = level->server->getNextLoadedLevel(next);
+
+                // If I found a character on another level
+                if(next->characters.size() > 0)
+                {
+                    candidateCharacter = next->characters[0];
+
+                    // If that character is my existing spectatee do nothing (full loop)
+                    if(candidateCharacter == spectatee)
+                        return;
+
+                    // If that character is not on the same level as me
+                    if(candidateCharacter->level != level)
+                    {
+                        unsetSpectatee();
+
+                        // Transition to another level
+                        level->players.erase(clientId);
+                        setLevel(candidateCharacter->level);
+                        level->players[clientId] = this;
+
+                        setSpectatee(candidateCharacter);
+                        return;
+                    }
+                    
+                    // If that character is on my level
+                    else
+                    {
+                        unsetSpectatee();
+                        setSpectatee(newSpectatee);
+                        return;
+                    }
+                }
             }
         }
-    }
-
-    if(newSpectatee)
-    {
-        unsetSpectatee();
-        setSpectatee(newSpectatee);
     }
 }
 
