@@ -505,7 +505,6 @@ bool Level::createPlayer(Player* player)
 
     // Assign Character
     player->setCharacter(zombie);
-    zombie->setControllingPlayer(player);
 
     // Create light source for character's vision
     Light* light = new Light();
@@ -580,34 +579,38 @@ void Level::removePlayer(Player* player)
         player->setLevel(NULL);
         players.erase(player->clientId);
 
-        // Remove body from tiles
-        std::vector<Tile*> tiles;
-        getTilesWithinRectangle(player->character->Body::schema.x, player->character->Body::schema.y, player->character->Body::schema.width, player->character->Body::schema.height, tiles);
-        for(unsigned int i=0; i < tiles.size(); i++)
+        // If playing a character
+        if(player->character)
         {
-            if(tiles[i]->body && tiles[i]->body == player->character)
+            // Remove body from tiles
+            std::vector<Tile*> tiles;
+            getTilesWithinRectangle(player->character->Body::schema.x, player->character->Body::schema.y, player->character->Body::schema.width, player->character->Body::schema.height, tiles);
+            for(unsigned int i=0; i < tiles.size(); i++)
             {
-                tiles[i]->setOccupyingBody(NULL);
+                if(tiles[i]->body && tiles[i]->body == player->character)
+                {
+                    tiles[i]->setOccupyingBody(NULL);
+                }
             }
-        }
 
-        // Remove lights from management list
-        for(unsigned int i=0; i < player->character->lights.size(); i++)
-        {
-            lights.erase(std::remove(lights.begin(), lights.end(), player->character->lights[i]), lights.end());
-        }
+            // Remove lights from management list
+            for(unsigned int i=0; i < player->character->lights.size(); i++)
+            {
+                lights.erase(std::remove(lights.begin(), lights.end(), player->character->lights[i]), lights.end());
+            }
 
-        // Remove character from management lists
-        switch(player->character->schema.type)
-        {
-            case Character::Type::Zombie:
-                zombies.erase(std::remove(zombies.begin(), zombies.end(), static_cast<Zombie*>(player->character)), zombies.end());
-                break;
-            case Character::Type::Ogre:
-                ogres.erase(std::remove(ogres.begin(), ogres.end(), static_cast<Ogre*>(player->character)), ogres.end());
-                break;
+            // Remove character from management lists
+            switch(player->character->schema.type)
+            {
+                case Character::Type::Zombie:
+                    zombies.erase(std::remove(zombies.begin(), zombies.end(), static_cast<Zombie*>(player->character)), zombies.end());
+                    break;
+                case Character::Type::Ogre:
+                    ogres.erase(std::remove(ogres.begin(), ogres.end(), static_cast<Ogre*>(player->character)), ogres.end());
+                    break;
+            }
+            turnQueue.erase(std::remove(turnQueue.begin(), turnQueue.end(), player->character), turnQueue.end());
         }
-        turnQueue.erase(std::remove(turnQueue.begin(), turnQueue.end(), player->character), turnQueue.end());
     }
 }
 
@@ -616,14 +619,18 @@ void Level::deletePlayer(Player* player)
     // Remove player
     removePlayer(player);
 
-    // Delete light source for character's vision
-    for(unsigned int i=0; i < player->character->lights.size(); i++)
+    // If playing a character
+    if(player->character)
     {
-        delete player->character->lights[i];
-    }
+        // Delete light source for character's vision
+        for(unsigned int i=0; i < player->character->lights.size(); i++)
+        {
+            delete player->character->lights[i];
+        }
 
-    // Delete character
-    delete player->character;
+        // Delete character
+        delete player->character;
+    }
 
     // Delete player is handled by server
 }
@@ -913,7 +920,12 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
 
     // Get a subset of visible tiles for the player within a radius of tiles
     std::vector<Tile*> visibles;
-    p->character->inspectVisibleTiles([&visibles] (Tile* t) {
+    if(p->controlState == Player::ControlState::Spectate && p->character)
+    {
+        bit::Output::Debug("WATATAH");
+    }
+    Character* character = p->character ? p->character : p->spectatee;
+    character->inspectVisibleTiles([&visibles] (Tile* t) {
         visibles.push_back(t);
     });
 

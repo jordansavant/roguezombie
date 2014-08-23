@@ -1,12 +1,13 @@
 #include "Player.hpp"
 #include "Level.hpp"
 #include "Tile.hpp"
+#include "ServerEvent.hpp"
 #include "GameplayServer.hpp"
 #include "items/Item.hpp"
 #include "Character.hpp"
 
 Player::Player()
-    : level(NULL), character(NULL), clientId(0), client(NULL), requestFullSnapshot(false)
+    : level(NULL), controlState(ControlState::Normal), character(NULL), spectatee(NULL), clientId(0), client(NULL), requestFullSnapshot(false)
 {
 }
 
@@ -19,13 +20,23 @@ void Player::load(bit::RemoteClient* _client)
 void Player::setLevel(Level* level)
 {
     this->level = level;
+    
     if(character)
+    {
         character->level = level;
+    }
 }
 
 void Player::setCharacter(Character* character)
 {
     this->character = character;
+
+    if(character)
+    {
+        character->onDeath += std::bind(&Player::onCharacterDeath, this, std::placeholders::_1);
+        character->setControllingPlayer(this);
+        controlState = ControlState::Normal;
+    }
 }
 
 void Player::setupPlayerCharacter()
@@ -68,54 +79,189 @@ void Player::setupPlayerCharacter()
     character->equipFromInventory(Character::EquipmentSlot::Head, hardhat->schema.id);
 }
 
+// When a player dies
+//  Character needs to be dettached
+//  Player needs to attach to character as a spectator
+//  Event needs to be sent to change to spectate mode
+//  * checkPlayersForDefeat()
+void Player::onCharacterDeath(Character* e)
+{
+    // incoming character is also my character
+
+    // Set up spectation
+    spectatee = character;
+    spectatee->setSpectatingPlayer(this);
+    controlState = ControlState::Spectate;
+    
+    // Clear character control
+    character->unsetControllingPlayer();
+    character = NULL;
+
+    // Send server signal for spectate mode
+    level->server->sendEventToClient(*client, [](bit::ServerPacket &packet){
+        packet << sf::Uint32(ServerEvent::SpectateBegin);
+    });
+
+}
+
 void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
 {
     sf::Vector2f d(0, 0);
 
-    switch(commandType)
+    switch(controlState)
     {
-        // Debug Commands
-        case Command::Type::PlayerMoveUp:
-            character->moveUp();
-            break;
-        case Command::Type::PlayerMoveDown:
-            character->moveDown();
-            break;
-        case Command::Type::PlayerMoveLeft:
-            character->moveLeft();
-            break;
-        case Command::Type::PlayerMoveRight:
-            character->moveRight();
-            break;
-
-        // Free Mode Commands
-        case Command::Type::FreeCommand:
+        // Controlling Character
+        case ControlState::Normal:
         {
-            Command::Target target;
-            bit::NetworkHelper::unpackEnum<sf::Uint32, Command::Target>(packet, target);
-
-            switch(target)
+            switch(commandType)
             {
-                // Tile Targetted commands
-                case Command::Target::Tile:
-                {
-                    unsigned int tileId;
-                    packet >> tileId;
-                    Command::TargetTileCommand cmd;
-                    bit::NetworkHelper::unpackEnum<sf::Uint32, Command::TargetTileCommand>(packet, cmd);
+                // Debug Commands
+                case Command::Type::PlayerMoveUp:
+                    character->moveUp();
+                    break;
+                case Command::Type::PlayerMoveDown:
+                    character->moveDown();
+                    break;
+                case Command::Type::PlayerMoveLeft:
+                    character->moveLeft();
+                    break;
+                case Command::Type::PlayerMoveRight:
+                    character->moveRight();
+                    break;
 
-                    switch(cmd)
+                // Free Mode Commands
+                case Command::Type::FreeCommand:
+                {
+                    Command::Target target;
+                    bit::NetworkHelper::unpackEnum<sf::Uint32, Command::Target>(packet, target);
+
+                    switch(target)
                     {
-                        case Command::TargetTileCommand::Move:
+                        // Tile Targetted commands
+                        case Command::Target::Tile:
                         {
-                            // Ensure we are in free mode
-                            if(validateFree())
+                            unsigned int tileId;
+                            packet >> tileId;
+                            Command::TargetTileCommand cmd;
+                            bit::NetworkHelper::unpackEnum<sf::Uint32, Command::TargetTileCommand>(packet, cmd);
+
+                            switch(cmd)
                             {
-                                // Find the tile and issue decision to move to it
-                                Tile* t = level->tiles[tileId];
-                                if(t)
+                                case Command::TargetTileCommand::Move:
                                 {
-                                    character->pathToPosition(t->schema.x, t->schema.y);
+                                    // Ensure we are in free mode
+                                    if(validateFree())
+                                    {
+                                        // Find the tile and issue decision to move to it
+                                        Tile* t = level->tiles[tileId];
+                                        if(t)
+                                        {
+                                            character->pathToPosition(t->schema.x, t->schema.y);
+                                        }
+                                    }
+
+                                    break;
+                                }
+                            }
+
+                            break;
+                        }
+                    }
+                }
+
+                // Combat Commands
+                case Command::Type::CombatCommand:
+                {
+                    Command::Target target;
+                    bit::NetworkHelper::unpackEnum<sf::Uint32, Command::Target>(packet, target);
+
+                    switch(target)
+                    {
+                        // Commands without a target
+                        case Command::Target::NoTarget:
+                        {
+                            Command::NonTargetCommand cmd;
+                            bit::NetworkHelper::unpackEnum<sf::Uint32, Command::NonTargetCommand>(packet, cmd);
+                            switch(cmd)
+                            {
+                                case Command::NonTargetCommand::Skip:
+                                {
+                                    if(validateCombat())
+                                    {
+                                        character->combat_DecideAction_Skip();
+                                    }
+
+                                    break;
+                                }
+                                case Command::NonTargetCommand::SwapWeapon:
+                                {
+                                    if(validateCombat())
+                                    {
+                                        character->combat_DecideAction_SwapWeapon();
+                                    }
+
+                                    break;
+                                }
+                            }
+
+                            break;
+                        }
+
+                        // Tile Targetted commands
+                        case Command::Target::Tile:
+                        {
+                            unsigned int tileId;
+                            packet >> tileId;
+                            Command::TargetTileCommand cmd;
+                            bit::NetworkHelper::unpackEnum<sf::Uint32, Command::TargetTileCommand>(packet, cmd);
+
+                            switch(cmd)
+                            {
+                                case Command::TargetTileCommand::Move:
+                                {
+                                    // Ensure we are in combat
+                                    if(validateCombat())
+                                    {
+                                        // Find the tile and issue decision to move to it
+                                        Tile* t = level->tiles[tileId];
+                                        if(t)
+                                        {
+                                            character->combat_DecideAction_MoveToLocation(t->schema.x, t->schema.y);
+                                        }
+                                    }
+
+                                    break;
+                                }
+                            }
+
+                            break;
+                        }
+
+                        // Character Targetted commands
+                        case Command::Target::Character:
+                        {
+                            unsigned int tileId;
+                            packet >> tileId;
+                            Command::TargetCharacterCommand cmd;
+                            bit::NetworkHelper::unpackEnum<sf::Uint32, Command::TargetCharacterCommand>(packet, cmd);
+
+                            switch(cmd)
+                            {
+                                case Command::TargetCharacterCommand::Attack:
+                                {
+                                    // Ensure we are in combat
+                                    if(validateCombat())
+                                    {
+                                        // Find the tile and issue decision to move to it
+                                        Tile* t = level->tiles[tileId];
+                                        if(t && t->body && t->body->schema.type == Body::Type::Character)
+                                        {
+                                            Character* target = static_cast<Character*>(t->body);
+                                            character->combat_DecideAction_AttackCharacter(target);
+                                        }
+                                    }
+
+                                    break;
                                 }
                             }
 
@@ -126,111 +272,32 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
                     break;
                 }
             }
+            break;
         }
 
-        // Combat Commands
-        case Command::Type::CombatCommand:
+        // Spectator controls
+        case ControlState::Spectate:
         {
-            Command::Target target;
-            bit::NetworkHelper::unpackEnum<sf::Uint32, Command::Target>(packet, target);
-
-            switch(target)
+            switch(commandType)
             {
-                // Commands without a target
-                case Command::Target::NoTarget:
-                {
-                    Command::NonTargetCommand cmd;
-                    bit::NetworkHelper::unpackEnum<sf::Uint32, Command::NonTargetCommand>(packet, cmd);
-                    switch(cmd)
-                    {
-                        case Command::NonTargetCommand::Skip:
-                        {
-                            if(validateCombat())
-                            {
-                                character->combat_DecideAction_Skip();
-                            }
-
-                            break;
-                        }
-                        case Command::NonTargetCommand::SwapWeapon:
-                        {
-                            if(validateCombat())
-                            {
-                                character->combat_DecideAction_SwapWeapon();
-                            }
-
-                            break;
-                        }
-                    }
-
+                // Debug Commands
+                case Command::Type::PlayerMoveUp:
+                    spectatee->moveUp();
                     break;
-                }
-
-                // Tile Targetted commands
-                case Command::Target::Tile:
-                {
-                    unsigned int tileId;
-                    packet >> tileId;
-                    Command::TargetTileCommand cmd;
-                    bit::NetworkHelper::unpackEnum<sf::Uint32, Command::TargetTileCommand>(packet, cmd);
-
-                    switch(cmd)
-                    {
-                        case Command::TargetTileCommand::Move:
-                        {
-                            // Ensure we are in combat
-                            if(validateCombat())
-                            {
-                                // Find the tile and issue decision to move to it
-                                Tile* t = level->tiles[tileId];
-                                if(t)
-                                {
-                                    character->combat_DecideAction_MoveToLocation(t->schema.x, t->schema.y);
-                                }
-                            }
-
-                            break;
-                        }
-                    }
-
+                case Command::Type::PlayerMoveDown:
+                    spectatee->moveDown();
                     break;
-                }
-
-                // Character Targetted commands
-                case Command::Target::Character:
-                {
-                    unsigned int tileId;
-                    packet >> tileId;
-                    Command::TargetCharacterCommand cmd;
-                    bit::NetworkHelper::unpackEnum<sf::Uint32, Command::TargetCharacterCommand>(packet, cmd);
-
-                    switch(cmd)
-                    {
-                        case Command::TargetCharacterCommand::Attack:
-                        {
-                            // Ensure we are in combat
-                            if(validateCombat())
-                            {
-                                // Find the tile and issue decision to move to it
-                                Tile* t = level->tiles[tileId];
-                                if(t && t->body && t->body->schema.type == Body::Type::Character)
-                                {
-                                    Character* target = static_cast<Character*>(t->body);
-                                    character->combat_DecideAction_AttackCharacter(target);
-                                }
-                            }
-
-                            break;
-                        }
-                    }
-
+                case Command::Type::PlayerMoveLeft:
+                    spectatee->moveLeft();
                     break;
-                }
+                case Command::Type::PlayerMoveRight:
+                    spectatee->moveRight();
+                    break;
             }
-
             break;
         }
     }
+    
 }
 
 bool Player::validateFree()

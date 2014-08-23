@@ -7,6 +7,9 @@ enum ServerEvent
     LeavingLevel,
     ArrivedLevel,
 
+    SpectateBegin,
+    SpectateEnd,
+
     MissionAssigned,
     MissionCompleted,
     

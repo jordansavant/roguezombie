@@ -74,6 +74,7 @@ public:
     std::vector<Mission*> missions;
     std::vector<Item*> equipment;
     unsigned int visionRadius;
+    std::vector<Player*> spectators;
 
     // Events
     bit::Event<std::function<void(Character* c)>> onDeath;
@@ -303,6 +304,12 @@ public:
     void sendCombatDecisionEnd();
 
     virtual void setControllingPlayer(Player* player);
+
+    virtual void unsetControllingPlayer();
+
+    virtual void setSpectatingPlayer(Player* player);
+
+    virtual void unsetSpectatingPlayer(Player* player);
 
     virtual void getAvailableInteractions(std::vector<Interaction::Type> &fill);
 

@@ -696,6 +696,13 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 displayMessage(std::string("Arrived at level"));
                 break;
 
+            case ServerEvent::SpectateBegin:
+                displayMessage(std::string("Spectate mode started"));
+                break;
+            case ServerEvent::SpectateEnd:
+                displayMessage(std::string("Spectate mode ended"));
+                break;
+
             case ServerEvent::MissionCompleted:
                 levelClient->playerCharacter->handleServerEventPacket_missionCompleted(packet);
                 break;

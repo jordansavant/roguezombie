@@ -16,8 +16,16 @@ public:
 
     Player();
 
+    enum ControlState
+    {
+        Normal,
+        Spectate
+    };
+
     Level* level;
+    ControlState controlState;
     Character* character;
+    Character* spectatee;
     unsigned int clientId;
     bit::RemoteClient* client;
     bool requestFullSnapshot;
@@ -29,6 +37,8 @@ public:
     void setCharacter(Character* character);
 
     void setupPlayerCharacter();
+
+    void onCharacterDeath(Character* character);
 
     void handleCommand(bit::ClientPacket &packet, Command::Type commandType);
 

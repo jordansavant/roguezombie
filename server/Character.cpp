@@ -971,6 +971,23 @@ void Character::setControllingPlayer(Player* player)
     schema.player = player;
 }
 
+void Character::unsetControllingPlayer()
+{
+    schema.isPlayerCharacter = false;
+    schema.clientId = 0;
+    schema.player = NULL;
+}
+
+void Character::setSpectatingPlayer(Player* player)
+{
+    spectators.push_back(player);
+}
+
+void Character::unsetSpectatingPlayer(Player* player)
+{
+    spectators.erase(std::remove_if(spectators.begin(), spectators.end(), [player](Player* inspected){ return player == inspected; }));
+}
+
 void Character::getAvailableInteractions(std::vector<Interaction::Type> &fill)
 {
     if(schema.health > 0)
