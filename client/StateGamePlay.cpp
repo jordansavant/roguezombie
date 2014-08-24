@@ -223,6 +223,8 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
             // Combat Mode Commands
             if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
             {
+                hud->statBubble->deactivate();
+
                 // See if a tile is being hovered over
                 if(levelClient->hoveredTile)
                 {

@@ -16,10 +16,10 @@ public:
     OptionsBar(Hud* hud);
 
     Hud* hud;
-    HudElement* primary;
+    //HudElement* primary;
     HudElement* options;
-    HudElement* journal;
-    HudElement* character;
+    //HudElement* journal;
+    //HudElement* character;
     HudElement* inventory;
     HudElement* map;
 };

@@ -70,11 +70,11 @@ void TurnQueue::handleTurnQueue(bit::ServerPacket &packet)
             bit::NetworkHelper::unpackEnum<sf::Uint32, Character::Type>(packet, type);
 
             HudElement* he = static_cast<HudElement*>(childElements[i]);
-            he->sprite = hud->state->rogueZombieGame->spriteLoader->getSprite("tq_" + CharacterSprite::getSpriteMoniker(type) + (i == 0 ? "_active" : "_inactive"));
+            he->sprite = hud->state->rogueZombieGame->spriteLoader->getSprite("tq_" + CharacterSprite::getSpriteMoniker(type) + "_inactive");
             he->sprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[he->quadIndex]);
             he->scaleStyle = Element::ScaleStyle::None;
             he->relativePosition.y = y;
-            he->color = first ? sf::Color::White : sf::Color(100, 200, 100);
+            he->color = first ?  sf::Color(100, 255, 100) : sf::Color(25, 75, 25);
 
             y -= 20;
             first = false;
