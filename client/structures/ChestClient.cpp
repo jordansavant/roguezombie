@@ -20,15 +20,15 @@ void ChestClient::clientLoad(LevelClient* _level)
 {
     level = _level;
 
-    quadIndex = level->vertexMapCharacters.requestVertexIndex();
+    quadIndex = level->vertexMap_charactersToggleIlluminated.requestVertexIndex();
     sprite = level->state->rogueZombieGame->spriteLoader->getSprite("Chest");
-    sprite->applyToQuad(&level->vertexMapCharacters.vertexArray[quadIndex]);
+    sprite->applyToQuad(&level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex]);
 }
 
 void ChestClient::clientUpdate(sf::Time &gameTime)
 {
     // Sprite
-    sprite->applyToQuad(&level->vertexMapCharacters.vertexArray[quadIndex]);
+    sprite->applyToQuad(&level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex]);
 
     // Position
     float spriteWidth = 20;
@@ -46,7 +46,7 @@ void ChestClient::clientUpdate(sf::Time &gameTime)
     float renderY = renderPosition.y - spriteHeight + yFootOffset;
 
     float z = bit::Math::calculateDrawDepth(renderY + spriteHeight);
-    bit::Vertex3* quad = &level->vertexMapCharacters.vertexArray[quadIndex];
+    bit::Vertex3* quad = &level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex];
     bit::VertexHelper::positionQuad(quad, renderX, renderY, z, spriteWidth, spriteHeight);
 
     // Color and luminence
@@ -59,7 +59,7 @@ void ChestClient::clientUpdate(sf::Time &gameTime)
 
 void ChestClient::reset()
 {
-    bit::VertexHelper::resetQuad(&level->vertexMapCharacters.vertexArray[quadIndex]);
+    bit::VertexHelper::resetQuad(&level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex]);
 }
 
 void ChestClient::handleSnapshot(bit::ServerPacket &packet, bool full)

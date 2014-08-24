@@ -13,22 +13,24 @@ void MoveMarker::load(LevelClient* _level)
     level = _level;
 
     // Game quad
-    quadIndex = level->vertexMap_01.requestVertexIndex();
+    map = &level->vertexMap_charactersConstIlluminated;
     sprite = level->state->rogueZombieGame->spriteLoader->getSprite("MoveMarker");
-    bit::VertexHelper::resetQuad(&level->vertexMap_01.vertexArray[quadIndex]);
+    quadIndex = map->requestVertexIndex();
+    bit::VertexHelper::resetQuad(&map->vertexArray[quadIndex]);
 }
 
 void MoveMarker::renderAt(int worldX, int worldY, sf::Color &color)
 {
-    sprite->applyToQuad(&level->vertexMap_01.vertexArray[quadIndex]);
+    sprite->applyToQuad(&map->vertexArray[quadIndex]);
     sf::Vector2f isoPosition = bit::VectorMath::normalToIsometric(worldX, worldY);
-    renderX = isoPosition.x - 16;//schema.width;
-    renderY = isoPosition.y + 8;
-    bit::VertexHelper::positionQuad(&level->vertexMap_01.vertexArray[quadIndex], renderX, renderY, 1, sprite->width, sprite->height);
-    bit::VertexHelper::colorQuad(&level->vertexMap_01.vertexArray[quadIndex], color);
+    renderX = isoPosition.x - sprite->width / 2;
+    renderY = isoPosition.y + sprite->height / 2;
+    float z = bit::Math::calculateDrawDepth(renderY);
+    bit::VertexHelper::positionQuad(&map->vertexArray[quadIndex], renderX, renderY, z, sprite->width, sprite->height);
+    bit::VertexHelper::colorQuad(&map->vertexArray[quadIndex], color);
 }
 
 void MoveMarker::hide()
 {
-    bit::VertexHelper::resetQuad(&level->vertexMap_01.vertexArray[quadIndex]);
+    bit::VertexHelper::resetQuad(&map->vertexArray[quadIndex]);
 }

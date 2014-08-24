@@ -47,18 +47,18 @@ void TileClient::clientLoad(LevelClient* _level)
     level = _level;
 
     // Game quad
-    quadIndex = level->vertexMap_01.requestVertexIndex();
+    quadIndex = level->vertexMap_charactersNormal.requestVertexIndex();
     sprite = level->state->rogueZombieGame->spriteLoader->getSprite("Ground");
-    sprite->applyToQuad(&level->vertexMap_01.vertexArray[quadIndex]);
+    sprite->applyToQuad(&level->vertexMap_charactersNormal.vertexArray[quadIndex]);
 }
 
 void TileClient::clientUpdate(sf::Time &gameTime)
 {
     // Sprite
-    sprite->applyToQuad(&level->vertexMap_01.vertexArray[quadIndex]);
+    sprite->applyToQuad(&level->vertexMap_charactersNormal.vertexArray[quadIndex]);
 
     // Position
-    bit::Vertex3* quad = &level->vertexMap_01.vertexArray[quadIndex];
+    bit::Vertex3* quad = &level->vertexMap_charactersNormal.vertexArray[quadIndex];
     sf::Vector2f isoPosition = bit::VectorMath::normalToIsometric(schema.x, schema.y);
     renderX = isoPosition.x - schema.width;
     renderY = isoPosition.y;
@@ -137,7 +137,7 @@ void TileClient::reinitialize()
 
 void TileClient::reset()
 {
-    bit::VertexHelper::resetQuad(&level->vertexMap_01.vertexArray[quadIndex]);
+    bit::VertexHelper::resetQuad(&level->vertexMap_charactersNormal.vertexArray[quadIndex]);
 }
 
 void TileClient::handleSnapshot(bit::ServerPacket &packet, bool full)

@@ -80,28 +80,21 @@ void InteractionMenu::handleInteractionTree(bit::ServerPacket &packet, unsigned 
 
     this->tileId = tileId;
     this->tileClient = hud->state->levelClient->tiles[tileId];
-
+    
     int y = 10;
-    
-    bit::Label* title = new bit::Label(0, y, 0, 0, bit::Element::AnchorType::Top);
-    title->setSfFontSize(24);
-    title->setSfFont(hud->journalFont);
-    title->normalColor = sf::Color::White;
-    title->setSfFontString(std::string("Interact..."));
-    addChild(title);
-    y += 40;
-    
+    int w = 1;
+    int fontSize = 24;
     for(unsigned int i=0; i < optionSize; i++)
     {
         InteractionMenu* m = this;
         Interaction::Type it;
         bit::NetworkHelper::unpackEnum<sf::Uint32, Interaction::Type>(packet, it);
         
-        bit::Label* option = new bit::Label(0, y, 0, 0, bit::Element::AnchorType::Top, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-        option->setSfFontSize(24);
+        bit::Label* option = new bit::Label(15, y, 0, 0, bit::Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+        option->setSfFontSize(fontSize);
         option->setSfFont(hud->journalFont);
-        option->normalColor = sf::Color::White;
-        option->focusedColor = sf::Color::Red;
+        option->normalColor = sf::Color(0, 255, 0);
+        option->focusedColor = sf::Color(255, 255, 255);
         option->setSfFontString(Interaction::getTitle(it));
         option->canHaveFocus = true;
         option->paddingRight = 10;
@@ -124,6 +117,15 @@ void InteractionMenu::handleInteractionTree(bit::ServerPacket &packet, unsigned 
         };
         addChild(option);
 
+        int wc = Interaction::getTitle(it).size();
+        w = std::max(w, wc);
+
         y += 30;
     }
+
+
+    // change size based on occurences
+    float targetCharWidth = .55f;
+    targetHeight = 40 + fontSize * optionSize;
+    targetWidth = 60 + (int)((float)(fontSize * w * targetCharWidth));
 }

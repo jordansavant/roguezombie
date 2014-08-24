@@ -16,6 +16,7 @@ public:
     bit::Sprite* sprite;
     unsigned int quadIndex;
     float renderX, renderY;
+    bit::VertexMap* map;
 
     void load(LevelClient* level);
 

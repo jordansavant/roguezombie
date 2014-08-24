@@ -36,12 +36,12 @@ void LevelClient::load(StateGamePlay* _state)
 
     // Assets
     state->rogueZombieGame->spriteLoader->loadSprites(resourcePath() + "spritesheet_01.csv");
-    texture_spritesheet_01_unsmooth.loadFromFile(resourcePath() + "spritesheet_01.png");
-    texture_spritesheet_01_smooth.loadFromFile(resourcePath() + "spritesheet_01.png");
-    texture_spritesheet_01_smooth.setSmooth(true);
-    vertexMap_01.load(&texture_spritesheet_01_unsmooth, sf::PrimitiveType::Quads);
-    vertexMapCharacters.load(&texture_spritesheet_01_unsmooth, sf::PrimitiveType::Quads);
-    shader.loadFromFile(resourcePath() + "ShaderOutline.frag", sf::Shader::Fragment);
+    texture_spritesheetCharacters.loadFromFile(resourcePath() + "spritesheet_01.png");
+    vertexMap_charactersNormal.load(&texture_spritesheetCharacters, sf::PrimitiveType::Quads);
+    vertexMap_charactersToggleIlluminated.load(&texture_spritesheetCharacters, sf::PrimitiveType::Quads);
+    vertexMap_charactersConstIlluminated.load(&texture_spritesheetCharacters, sf::PrimitiveType::Quads);
+    illuminateShader.loadFromFile(resourcePath() + "Illuminate.frag", sf::Shader::Fragment);
+    outlineShader.loadFromFile(resourcePath() + "Outline.frag", sf::Shader::Fragment);
 
     // Load game runners
     runners.push_back(new LevelClientRunner<TileClient>(this, &tiles, &tilePool, 2000));
@@ -83,22 +83,30 @@ void LevelClient::update(sf::Time &gameTime)
 
 void LevelClient::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+    bool illuminateRequested = state->rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::LAlt);
+
     bit::VideoGame::depthTestBegin();
 
     // apply the transform
     states.transform *= getTransform();
 
     // non-characters
-    states.texture = vertexMap_01.texture;
-    target.draw(vertexMap_01.vertexArray, states);
+    states.texture = vertexMap_charactersNormal.texture;
+    target.draw(vertexMap_charactersNormal.vertexArray, states);
     
-    // characters with shader
-    states.texture = vertexMapCharacters.texture;
-    if(state->rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::LAlt))
+    // characters with illumination
+    states.texture = vertexMap_charactersToggleIlluminated.texture;
+    if(illuminateRequested)
     {
-        states.shader = &shader;
+        states.shader = NULL;
+        states.shader = &illuminateShader;
     }
-    target.draw(vertexMapCharacters.vertexArray, states);
+    target.draw(vertexMap_charactersToggleIlluminated.vertexArray, states);
+
+    // characters with outlining
+    states.texture = vertexMap_charactersConstIlluminated.texture;
+    states.shader = &illuminateShader;
+    target.draw(vertexMap_charactersConstIlluminated.vertexArray, states);
 
     bit::VideoGame::depthTestEnd();
 }

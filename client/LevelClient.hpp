@@ -51,11 +51,12 @@ public:
     bool isPlayerSpecating;
 
     // Spritesheet 01;
-    sf::Texture texture_spritesheet_01_unsmooth;
-    sf::Texture texture_spritesheet_01_smooth;
-    bit::VertexMap vertexMap_01;
-    bit::VertexMap vertexMapCharacters;
-    sf::Shader shader;
+    sf::Texture texture_spritesheetCharacters;
+    bit::VertexMap vertexMap_charactersNormal;
+    bit::VertexMap vertexMap_charactersToggleIlluminated;
+    bit::VertexMap vertexMap_charactersConstIlluminated;
+    sf::Shader outlineShader;
+    sf::Shader illuminateShader;
 
     // Input
     sf::Vector2i mousePositionInScreen;
