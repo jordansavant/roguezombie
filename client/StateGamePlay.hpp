@@ -45,6 +45,17 @@ public:
         Defeat
     };
 
+    struct Target
+    {
+        Target() : tileId(0), bodyId(0) {}
+
+        unsigned int tileId;
+        unsigned int bodyId;
+
+        void reset();
+        bool active();
+    };
+
     RogueZombieGame* rogueZombieGame;
     Mode mode;
     EndGameReason endGameReason;
@@ -55,7 +66,7 @@ public:
     std::vector<Command> commandQueue;
     sf::Vector2f mousePositionInLevel;
     bit::FrameTimer fps;
-    unsigned int combatTargettedTileId;
+    Target target;
 
     // Test Gui
     Hud* hud;

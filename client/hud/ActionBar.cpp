@@ -30,14 +30,14 @@ ActionBar::ActionBar(Hud* hud)
     attack->load(hud, std::string("optionbar_crosshair"));
     attack->onActivate = [hud] (Element* e) {
         // Attack Command
-        if(hud->state->combatTargettedTileId > 0)
+        if(hud->state->target.active())
         {
             Hud* hudx = hud;
             Command cmd;
             cmd.type = Command::Type::CombatCommand;
             cmd.pack = [hudx] (sf::Packet &packet) {
                 packet << sf::Uint32(Command::Target::Character);
-                packet << sf::Uint32(hudx->state->combatTargettedTileId);
+                packet << sf::Uint32(hudx->state->target.tileId);
                 packet << sf::Uint32(Command::TargetCharacterCommand::Attack);
             };
             hud->state->issueCommand(cmd);

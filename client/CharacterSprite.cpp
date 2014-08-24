@@ -29,9 +29,11 @@ void CharacterSprite::load(CharacterClient* _character, bit::SpriteLoader* _spri
         equipmentProfiles[i].quadIndex = highlightMap->requestVertexIndex();
     frontarmQuadIndex = highlightMap->requestVertexIndex();
 
-    healthQuadIndex = normalMap->requestVertexIndex();
-    antiHealthQuadIndex = normalMap->requestVertexIndex();
-    
+    healthQuadIndex = highlightMap->requestVertexIndex();
+    antiHealthQuadIndex = highlightMap->requestVertexIndex();
+
+    healthPositive = spriteLoader->getSprite("health_positive");
+    healthNegative = spriteLoader->getSprite("health_negative");
     whiteSprite = spriteLoader->getSprite("White");
 
     syncSprites();
@@ -125,22 +127,22 @@ void CharacterSprite::update(sf::Time &gameTime)
             int hh = 2;
             int hx = r.x + (spriteWidth * .125);
             int hy = r.y + spriteHeight - (spriteHeight - baseOffsetY) + 10;
-            whiteSprite->applyToQuad(&normalMap->vertexArray[healthQuadIndex]);
-            bit::VertexHelper::positionQuad(&normalMap->vertexArray[healthQuadIndex], hx, hy, z, hw, hh);
-            bit::VertexHelper::colorQuad(&normalMap->vertexArray[healthQuadIndex], sf::Color(144, 219, 54));
+            healthPositive->applyToQuad(&highlightMap->vertexArray[healthQuadIndex]);
+            bit::VertexHelper::positionQuad(&highlightMap->vertexArray[healthQuadIndex], hx, hy, z, hw, hh);
+            //bit::VertexHelper::colorQuad(&highlightMap->vertexArray[healthQuadIndex], sf::Color(144, 219, 54));
             int aw = spriteWidth * .75 - hw;
             int ah = 2;
             int ax = r.x + spriteWidth - aw - (spriteWidth * .125);
             int ay = hy;
 
-            whiteSprite->applyToQuad(&normalMap->vertexArray[antiHealthQuadIndex]);
-            bit::VertexHelper::positionQuad(&normalMap->vertexArray[antiHealthQuadIndex], ax, ay, z, aw, ah);
-            bit::VertexHelper::colorQuad(&normalMap->vertexArray[antiHealthQuadIndex], sf::Color(243, 11, 0));
+            healthNegative->applyToQuad(&highlightMap->vertexArray[antiHealthQuadIndex]);
+            bit::VertexHelper::positionQuad(&highlightMap->vertexArray[antiHealthQuadIndex], ax, ay, z, aw, ah);
+            //bit::VertexHelper::colorQuad(&highlightMap->vertexArray[antiHealthQuadIndex], sf::Color(243, 11, 0));
         }
         else
         {
-            bit::VertexHelper::resetQuad(&normalMap->vertexArray[healthQuadIndex]);
-            bit::VertexHelper::resetQuad(&normalMap->vertexArray[antiHealthQuadIndex]);
+            bit::VertexHelper::resetQuad(&highlightMap->vertexArray[healthQuadIndex]);
+            bit::VertexHelper::resetQuad(&highlightMap->vertexArray[antiHealthQuadIndex]);
         }
     }
     else
@@ -149,8 +151,8 @@ void CharacterSprite::update(sf::Time &gameTime)
         bit::VertexHelper::resetQuad(&highlightMap->vertexArray[frontarmQuadIndex]);
         bit::VertexHelper::resetQuad(&highlightMap->vertexArray[bodyQuadIndex]);
         bit::VertexHelper::resetQuad(&highlightMap->vertexArray[shadowQuadIndex]);
-        bit::VertexHelper::resetQuad(&normalMap->vertexArray[healthQuadIndex]);
-        bit::VertexHelper::resetQuad(&normalMap->vertexArray[antiHealthQuadIndex]);
+        bit::VertexHelper::resetQuad(&highlightMap->vertexArray[healthQuadIndex]);
+        bit::VertexHelper::resetQuad(&highlightMap->vertexArray[antiHealthQuadIndex]);
         for(unsigned int i=0; i < equipmentProfiles.size(); i++)
         {
             if(equipmentProfiles[i].sprite)
@@ -173,8 +175,8 @@ void CharacterSprite::reset()
     bit::VertexHelper::resetQuad(&highlightMap->vertexArray[bodyQuadIndex]);
     bit::VertexHelper::resetQuad(&highlightMap->vertexArray[shadowQuadIndex]);
     bit::VertexHelper::resetQuad(&highlightMap->vertexArray[deathQuadIndex]);
-    bit::VertexHelper::resetQuad(&normalMap->vertexArray[healthQuadIndex]);
-    bit::VertexHelper::resetQuad(&normalMap->vertexArray[antiHealthQuadIndex]);
+    bit::VertexHelper::resetQuad(&highlightMap->vertexArray[healthQuadIndex]);
+    bit::VertexHelper::resetQuad(&highlightMap->vertexArray[antiHealthQuadIndex]);
 
     for(unsigned int i=0; i < equipmentProfiles.size(); i++)
     {

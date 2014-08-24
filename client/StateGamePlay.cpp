@@ -23,8 +23,7 @@
 #include <sstream>
 
 StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, bool isClient, bool isHost)
-    : bit::ClientServerState(stack, _game, isClient, isHost), rogueZombieGame(_game), levelClient(NULL), mode(Mode::Init), endGameReason(EndGameReason::Quit), fps(),
-      combatTargettedTileId(0)
+    : bit::ClientServerState(stack, _game, isClient, isHost), rogueZombieGame(_game), levelClient(NULL), mode(Mode::Init), endGameReason(EndGameReason::Quit), fps()
 {
     levelClient = new LevelClient();
     std::string fpsFontPath(resourcePath() + "Agency.ttf");
@@ -223,6 +222,7 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
             // Combat Mode Commands
             if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
             {
+                // Always deactivate the stat bubble if something is clicked
                 hud->statBubble->deactivate();
 
                 // See if a tile is being hovered over
@@ -235,7 +235,8 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
                     {
                         if(t->hasTargetableCharacter())
                         {
-                            combatTargettedTileId = t->schema.id;
+                            target.tileId = t->schema.id;
+                            target.bodyId = t->schema.bodyId;
                             hud->statBubble->handleStats(t->schema.id);
                         }
                     }
@@ -275,14 +276,16 @@ void StateGamePlay::onEnterCombat()
 {
     displayMessage(std::string("Combat mode engaged"));
     hud->onEnterCombat();
-    combatTargettedTileId = 0;
+    target.tileId = 0;
+    target.bodyId = 0;
 }
 
 void StateGamePlay::onLeaveCombat()
 {
     displayMessage(std::string("Free mode resumed"));
     hud->onLeaveCombat();
-    combatTargettedTileId = 0;
+    target.tileId = 0;
+    target.bodyId = 0;
 }
 
 
@@ -723,11 +726,29 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
 
             case ServerEvent::CombatTurnStart:
                 displayMessage(std::string("Turn begins"));
-                combatTargettedTileId = 0;
+
+                // If the targetted body is not the same, reset it
+                if(target.active())
+                {
+                    bool bad = true;
+                    auto t = levelClient->tiles.find(target.tileId);
+                    if(t != levelClient->tiles.end())
+                    {
+                        if(t->second->hasTargetableCharacter() && t->second->schema.bodyId == target.bodyId)
+                        {
+                            bad = false;
+                        }
+                    }
+                    if(bad)
+                    {
+                        target.reset();
+                    }
+                }
+
                 break;
             case ServerEvent::CombatTurnEnd:
                 displayMessage(std::string("Turn complete"));
-                combatTargettedTileId = 0;
+                // combatTargettedTileId = 0;
                 break;
             case ServerEvent::CombatDecisionStart:
                 levelClient->handleCombatDecisionStart(packet);
@@ -890,4 +911,15 @@ void StateGamePlay::preparePacket_ClientUpdate(bit::ClientPacket &packet)
 void StateGamePlay::preparePacket_ClientDisconnect(bit::ClientPacket &packet)
 {
     bit::Output::Debug("Client prepare client disconnect");
+}
+
+void StateGamePlay::Target::reset()
+{
+    tileId = 0;
+    bodyId = 0;
+}
+
+bool StateGamePlay::Target::active()
+{
+    return tileId > 0;
 }

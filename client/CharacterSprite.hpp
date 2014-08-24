@@ -70,6 +70,8 @@ public:
 
     // Stat spriting
     bit::Sprite* whiteSprite;
+    bit::Sprite* healthPositive;
+    bit::Sprite* healthNegative;
     unsigned int healthQuadIndex;
     unsigned int antiHealthQuadIndex;
 

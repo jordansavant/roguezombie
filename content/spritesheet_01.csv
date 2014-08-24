@@ -24,7 +24,7 @@ Undefined_Shadow,110,322,40,40,0,0,40,40,false
 Wall,2,304,64,64,0,0,64,64,false
 WallThin,2,238,64,64,0,0,64,64,false
 Water,2,478,64,32,0,0,64,32,false
-White,490,26,1,1,0,0,1,1,false
+White,498,26,1,1,0,0,1,1,false
 Z4Rifle,68,364,40,40,0,0,40,40,false
 Zombie,68,322,40,40,0,0,40,40,false
 Zombie_Body,68,280,40,40,0,0,40,40,false
@@ -32,3 +32,5 @@ Zombie_Dead,68,238,40,40,0,0,40,40,false
 Zombie_FrontArm,44,436,40,40,0,0,40,40,false
 Zombie_Head,2,436,40,40,0,0,40,40,false
 Zombie_Shadow,110,322,40,40,0,0,40,40,false
+health_negative,494,26,2,2,0,0,2,2,false
+health_positive,490,26,2,2,0,0,2,2,false

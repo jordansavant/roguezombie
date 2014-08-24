@@ -109,7 +109,7 @@ void TileClient::clientUpdate(sf::Time &gameTime)
         else if(level->levelState == Level::State::Combat && level->isPlayerDecisionMode)
         {
             // If I am the currently targetted tile, highlight me
-            if(level->state->combatTargettedTileId == schema.id)
+            if(level->state->target.tileId == schema.id)
             {
                 c = sf::Color(0, 255, 0);
             }
