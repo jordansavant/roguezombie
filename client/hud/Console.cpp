@@ -13,7 +13,7 @@ void Console::print(std::string &message)
     bit::Label* line = new bit::Label(-400, 0, 0, 0, bit::Element::AnchorType::BottomLeft);
     line->setSfFontSize(24);
     line->setSfFont(hud->journalFont);
-    line->normalColor = sf::Color::White;
+    line->normalColor = sf::Color(0, 255, 0);
     line->setSfFontString(message);
     
     // Add the child

@@ -52,6 +52,7 @@ void TurnQueue::handleTurnQueue(bit::ServerPacket &packet)
         {
             if(first)
             {
+                sf::Color c(0, 255, 0);
                 unsigned int curAp;
                 unsigned int maxAp;
                 packet >> maxAp;
@@ -62,7 +63,7 @@ void TurnQueue::handleTurnQueue(bit::ServerPacket &packet)
                 currentAp->relativePosition.x = -40;
                 currentAp->relativePosition.y = -6;
                 currentAp->opacity = 1;
-                first = false;
+                currentAp->normalColor = c;
             }
 
             Character::Type type;
@@ -73,8 +74,10 @@ void TurnQueue::handleTurnQueue(bit::ServerPacket &packet)
             he->sprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[he->quadIndex]);
             he->scaleStyle = Element::ScaleStyle::None;
             he->relativePosition.y = y;
+            he->color = first ? sf::Color::White : sf::Color(100, 200, 100);
 
             y -= 20;
+            first = false;
         }
     }
 }

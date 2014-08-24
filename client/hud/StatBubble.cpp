@@ -15,7 +15,7 @@
 #include <iomanip>
 
 StatBubble::StatBubble(Hud* _hud)
-    : Frame(_hud, 50, 0, 150, 145, bit::Element::AnchorType::Left), isActive(false), tileId(0), tileClient(NULL), refreshTimer(.1), fadeTimer(3)
+    : Frame(_hud, 50, 0, 190, 145, bit::Element::AnchorType::Left), isActive(false), tileId(0), tileClient(NULL), refreshTimer(.1), fadeTimer(3)
 {
     useBottomPointer = true;
     managesOpacity = true;
@@ -110,7 +110,7 @@ void StatBubble::handleStats(unsigned int tileId)
     bit::Label* label = new bit::Label(x, y, 0, 0, bit::Element::AnchorType::TopLeft);
     label->setSfFontSize(24);
     label->setSfFont(hud->journalFont);
-    label->normalColor = sf::Color::White;
+    label->normalColor = sf::Color(0, 255, 0);
     label->setSfFontString(Character::getTitle(type));
     label->paddingRight = 10;
     label->paddingBottom = 10;
@@ -125,7 +125,7 @@ void StatBubble::handleStats(unsigned int tileId)
         label = new bit::Label(x, y, 0, 0, bit::Element::AnchorType::TopLeft);
         label->setSfFontSize(24);
         label->setSfFont(hud->journalFont);
-        label->normalColor = sf::Color::White;
+        label->normalColor = sf::Color(0, 255, 0);
         label->setSfFontString(ssc.str());
         label->paddingRight = 10;
         label->paddingBottom = 10;
@@ -139,7 +139,7 @@ void StatBubble::handleStats(unsigned int tileId)
     label = new bit::Label(x, y, 0, 0, bit::Element::AnchorType::TopLeft);
     label->setSfFontSize(24);
     label->setSfFont(hud->journalFont);
-    label->normalColor = sf::Color::White;
+    label->normalColor = sf::Color(0, 255, 0);
     label->setSfFontString(ssa.str());
     label->paddingRight = 10;
     label->paddingBottom = 10;
@@ -152,7 +152,7 @@ void StatBubble::handleStats(unsigned int tileId)
     label = new bit::Label(x, y, 0, 0, bit::Element::AnchorType::TopLeft);
     label->setSfFontSize(24);
     label->setSfFont(hud->journalFont);
-    label->normalColor = sf::Color::White;
+    label->normalColor = sf::Color(0, 255, 0);
     label->setSfFontString(ssb.str());
     label->paddingRight = 10;
     label->paddingBottom = 10;

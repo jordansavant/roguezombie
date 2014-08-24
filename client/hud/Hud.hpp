@@ -48,7 +48,7 @@ public:
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
-	void draw(sf::RenderWindow &window, sf::Time &gameTime);
+    void draw(sf::RenderWindow &window, sf::Time &gameTime);
 
     void hide();
 

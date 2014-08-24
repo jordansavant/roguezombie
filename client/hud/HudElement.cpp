@@ -10,6 +10,7 @@ HudElement::HudElement(float relativeX, float relativeY, float width, float heig
 {
     scaleStyle = ScaleStyle::PowerOfTwo;
     canHaveFocus = true;
+    color = sf::Color::White;
 }
 
 HudElement::HudElement(float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput)
@@ -17,6 +18,7 @@ HudElement::HudElement(float relativeX, float relativeY, float width, float heig
 {
     scaleStyle = ScaleStyle::PowerOfTwo;
     canHaveFocus = true;
+    color = sf::Color::White;
 }
 
 void HudElement::load(Hud* _hud, std::string &spritename)
@@ -43,7 +45,7 @@ void HudElement::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     // Update real position of label
     Element::updateReals(window, gameTime);
 
-    sf::Color color(isInfocus ? sf::Color::White : sf::Color(150, 150, 150));
+    sf::Color color(isInfocus ? color : sf::Color(color.r * .6f, color.g * .6f, color.b * .6f));
     color.a = 255 * opacity;
 
     // Set Sprites details

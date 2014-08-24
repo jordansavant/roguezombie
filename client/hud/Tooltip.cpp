@@ -14,10 +14,10 @@ Tooltip::Tooltip(Hud* _hud)
     useBottomPointer = true;
     managesOpacity = true;
     opacity = 0;
-    color = sf::Color(123, 123, 123);
+    color = sf::Color(0, 123, 0);
 
     information = new bit::Label(15, 10, 0, 0, bit::Element::AnchorType::TopLeft);
-    information->setSfFontSize(24);
+    information->setSfFontSize(20);
     information->setSfFont(hud->journalFont);
     information->normalColor = color;
     information->setSfFontString(std::string(""));
@@ -76,9 +76,11 @@ void Tooltip::displayAt(std::string &info, int screenX, int screenY)
         w = std::max(w, wc);
     }
 
+    float targetCharWidth = .55f;
+
     information->setSfFontString(info);
     targetHeight = 30 + information->fontSize * n;
-    targetWidth = 50 + (int)((float)(information->fontSize * w) / 2.1f);
+    targetWidth = 50 + (int)((float)(information->fontSize * w * targetCharWidth));
     screenY -= targetHeight * elementScale + Frame::bottomPointerSprite->height;
     screenX -= targetWidth * elementScale / 2;
     relativePosition.x = screenX / elementScale;

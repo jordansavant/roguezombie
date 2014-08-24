@@ -87,7 +87,7 @@ ActionBar::ActionBar(Hud* hud)
         hud->state->issueCommand(cmd);
     };
     swap->makeHoverable(hud->state->rogueZombieGame->inputManager, [hud](bit::Hoverable* h, bit::Element* me) {
-        hud->displayTooltipAt(std::string("Swap primary and secondary weapon"), me->left + me->width / 2, me->top - 5);
+        hud->displayTooltipAt(std::string("Swap primary and\nsecondary weapon"), me->left + me->width / 2, me->top - 5);
     });
     addChild(swap);
     originX += swap->sprite->width + xpadding;

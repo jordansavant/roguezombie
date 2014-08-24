@@ -101,7 +101,7 @@ void TileClient::clientUpdate(sf::Time &gameTime)
             {
                 int s = bit::Math::clamp(255 * schema.illumination * 4, 0, 255);
                 sf::Color move(s, s, s);
-                sf::Color interact(255, 0, 0);
+                sf::Color interact(0, 255, 0);
                 c = schema.bodyId > 0 ? interact : move;
             }
         }
@@ -111,18 +111,18 @@ void TileClient::clientUpdate(sf::Time &gameTime)
             // If I am the currently targetted tile, highlight me
             if(level->state->combatTargettedTileId == schema.id)
             {
-                c = sf::Color(255, 0, 0);
+                c = sf::Color(0, 255, 0);
             }
             // If hovered highlight white if not a body (if moevable)
             else if(level->hoveredTile == this && schema.bodyId == 0)
             {
-                int s = bit::Math::clamp(255 * schema.illumination * 4, 0, 255);
+                int s = bit::Math::clamp(175 * schema.illumination * 4, 0, 175);
                 c = sf::Color(s, s, s);
             }
             else if(level->hoveredTile == this && hasTargetableCharacter())
             {
-                int s = bit::Math::clamp(255 * schema.illumination * 4, 0, 255);
-                c = sf::Color(s, 0, 0);
+                int s = bit::Math::clamp(175 * schema.illumination * 4, 0, 175);
+                c = sf::Color(0, s, 0);
             }
         }
     }

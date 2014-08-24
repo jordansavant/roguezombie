@@ -20,6 +20,7 @@ public:
     unsigned int quadIndex;
     Hud* hud;
     bit::Sprite* sprite;
+    sf::Color color;
 
     void load(Hud* hud, std::string &spritename);
 
@@ -27,7 +28,7 @@ public:
 
     void updateReals(sf::RenderWindow &window, sf::Time &gameTime);
 
-	void draw(sf::RenderWindow &window, sf::Time &gameTime);
+    void draw(sf::RenderWindow &window, sf::Time &gameTime);
 };
 
 #endif
