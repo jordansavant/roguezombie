@@ -219,6 +219,7 @@ void bit::Container::clearChildren()
 void bit::Container::removeChild(unsigned int index)
 {
     delete childElements[index];
+    childElements.erase(childElements.begin() + index);
 }
 
 void bit::Container::moveChild(Container* other, unsigned int index)

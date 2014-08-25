@@ -68,6 +68,11 @@ enum ClientRequest
     // If no slotted item exists it is ignored
     // Return is constantly void
     UnequipItemFromSlotToInventory,
+
+    // Takes an item id, and if found in the inventory attempts to move it to the designated position
+    // If the position is taken it is swapped
+    // Return is constantly void
+    MoveInventoryItemToPosition,
 };
 
 #endif

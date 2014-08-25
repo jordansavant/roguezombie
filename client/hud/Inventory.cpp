@@ -2,7 +2,9 @@
 #include "Hud.hpp"
 #include "InventoryItemLabel.hpp"
 #include "InventoryEquipmentSlot.hpp"
+#include "InventoryPositionSlot.hpp"
 #include "../../bitengine/Input.hpp"
+#include "../../bitengine/System.hpp"
 #include "../../server/ClientRequest.hpp"
 #include "../StateGamePlay.hpp"
 #include "../LevelClient.hpp"
@@ -12,7 +14,7 @@
 #include "../mission/MissionClient.hpp"
 
 Inventory::Inventory(Hud* _hud)
-    : HudMenu(_hud, 0, 0, 1300, 720, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), refreshTimer(5)
+    : HudMenu(_hud, 0, 0, 1300, 720, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), refreshTimer(5), itemCount(0)
 {
     managesOpacity = true;
     originX = 0;
@@ -40,6 +42,32 @@ Inventory::Inventory(Hud* _hud)
     inventoryPanel = new Frame(hud, 5, 0, 794, 710, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     inventoryPanel->managesOpacity = true;
     addChild(inventoryPanel);
+
+
+    // INVENTORY SLOTS
+    bit::Label* title = new bit::Label(20, 10, 0, 0, bit::Element::AnchorType::TopLeft);
+    title->setSfFontSize(24);
+    title->setSfFont(hud->journalFont);
+    title->normalColor = sf::Color(0, 255, 0);
+    title->setSfFontString(std::string("INVENTORY:"));
+    inventoryPanel->addChild(title);
+    int y = 48;
+    int width = 64;
+    int pad = 2;
+    int x = pad;
+    for(unsigned int j=0; j < 120; j++)
+    {
+        if(x + width + pad > inventoryPanel->targetWidth)
+        {
+            y += width + pad;
+            x = pad;
+        }
+        InventoryPositionSlot* slot = new InventoryPositionSlot(hud, j, this, x, y, width, width, bit::Element::AnchorType::TopLeft);
+        inventoryPanel->addChild(slot);
+        positionSlotBoxes.push_back(slot);
+        x += width + pad;
+    }
+
 
     // EQUIPMENT BOXES
     int topOffset = 150;
@@ -97,7 +125,6 @@ void Inventory::buildEquipment()
         return;
     }
 
-    // HEAD
     // If the gear is not present, add it
     for(unsigned int i=0; i < Character::EquipmentSlot::_count; i++)
     {
@@ -131,30 +158,26 @@ void Inventory::buildItemList(bool force)
     }
 
     // If the number of items matches the last sync, skip // TODO - improve
-    if(!force && inventoryPanel->childElements.size() - 1 == levelClient->playerCharacter->inventoryClient.itemClients.size())
+    if(!force && itemCount == levelClient->playerCharacter->inventoryClient.itemClients.size())
     {
         return;
     }
 
     // clean up
-    inventoryPanel->clearChildren();
+    itemCount = 0;
+    for(unsigned int i=0; i < positionSlotBoxes.size(); i++)
+    {
+        positionSlotBoxes[i]->clearChildren();
+    }
 
-    float y = 10;
-    bit::Label* title = new bit::Label(20, y, 0, 0, bit::Element::AnchorType::TopLeft);
-    title->setSfFontSize(24);
-    title->setSfFont(hud->journalFont);
-    title->normalColor = sf::Color(0, 255, 0);
-    title->setSfFontString(std::string("INVENTORY:"));
-    inventoryPanel->addChild(title);
-    y += 40;
-
+    unsigned int i=0;
     for(auto iterator = levelClient->playerCharacter->inventoryClient.itemClients.begin(); iterator != levelClient->playerCharacter->inventoryClient.itemClients.end(); iterator++)
     {
-        ItemClient* i = &iterator->second;
-        InventoryItemLabel* option = buildItem(i, 20, y);
-        inventoryPanel->addChild(option);
-
-        y += 30;
+        ItemClient* item = &iterator->second;
+        InventoryItemLabel* option = buildItem(item, 0, 0);
+        positionSlotBoxes[i]->addChild(option);
+        i++;
+        itemCount++;
     }
 }
 

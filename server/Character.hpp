@@ -270,6 +270,8 @@ public:
 
     virtual void swapWeapons();
 
+    virtual bool moveItemToPosition(unsigned int itemId, unsigned int position);
+
     // Movement
 
     virtual bool moveUp();

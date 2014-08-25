@@ -719,6 +719,12 @@ void Character::swapWeapons()
     equipment[Character::EquipmentSlot::WeaponSecondary] = primary;
 }
 
+bool Character::moveItemToPosition(unsigned int itemId, unsigned int position)
+{
+    // TODO
+    return true;
+}
+
 ///////////////////////////////////////////////////////
 //                   MOVEMENT                        //
 ///////////////////////////////////////////////////////

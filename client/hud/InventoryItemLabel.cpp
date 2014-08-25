@@ -1,4 +1,5 @@
 #include "InventoryItemLabel.hpp"
+#include "InventoryPositionSlot.hpp"
 #include "InventoryEquipmentSlot.hpp"
 #include "Inventory.hpp"
 #include "Hud.hpp"
@@ -7,7 +8,7 @@
 #include "../../server/ClientRequest.hpp"
 
 InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, float relativeX, float relativeY, AnchorType anchorType)
-    : bit::Label(relativeX, relativeY, 0, 0, anchorType), inventory(inventory), itemSchema(item->schema), currentEquipmentSlot(NULL)
+    : bit::Label(relativeX, relativeY, 0, 0, anchorType), inventory(inventory), itemSchema(item->schema), currentEquipmentSlot(NULL), currentPositionSlot(NULL)
 {
     setSfFontSize(24);
     setSfFont(inventory->hud->journalFont);
@@ -62,6 +63,49 @@ InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, f
                 return true;
             }
         }
+
+
+        // If dropping into an equipment slot
+        for(unsigned int i=0; i < inventory->positionSlotBoxes.size(); i++)
+        {
+            InventoryPositionSlot* slot = static_cast<InventoryPositionSlot*>(inventory->positionSlotBoxes[i]);
+
+            // If the slot is not already equipped with the item and its of an acceptable type
+            if(slot->isInfocus && slot->equippedItemLabel != e && slot->acceptsLabel(label))
+            {
+                // If the current slot had an item, move it back to the inventory
+                //if(slot->equippedItemLabel)
+                //{
+                //    slot->removeItemLabel();
+                //}
+
+                // Move this item from my current parent to the slot
+                bit::Container* currentParent = static_cast<bit::Container*>(e->parentElement);
+                currentParent->moveChild(slot, e);
+
+                e->relativePosition.x = 0;
+                e->relativePosition.y = 0;
+
+                // Send the request to move the item to the position
+                ItemClient* itemx = item;
+                inventory->hud->state->serverRequest(
+                    [itemx, slot](bit::ClientPacket& requestPacket)
+                    {
+                        requestPacket << sf::Uint32(ClientRequest::MoveInventoryItemToPosition);
+                        requestPacket << sf::Uint32(itemx->schema.id);
+                        requestPacket << sf::Uint32(slot->position);
+                    },
+                    [itemx](bit::ServerPacket& responsePacket)
+                    {
+                        bool success;
+                        responsePacket >> success;
+                    }
+                );
+
+                return true;
+            }
+        }
+
         
         // If dropping into the inventory
         if(inventory->inventoryPanel->isInfocus)

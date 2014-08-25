@@ -11,6 +11,7 @@ class Hud;
 class ItemClient;
 class InventoryItemLabel;
 class InventoryEquipmentSlot;
+class InventoryPositionSlot;
 
 class Inventory : public HudMenu
 {
@@ -21,16 +22,10 @@ public:
     bit::GameTimer refreshTimer;
     bit::Container* equipmentPanel;
     bit::Container* inventoryPanel;
+    unsigned int itemCount;
 
     std::vector<InventoryEquipmentSlot*> equipmentSlotBoxes;
-    //InventoryEquipmentSlot* headBox;
-    //InventoryEquipmentSlot* chestBox;
-    //InventoryEquipmentSlot* handBox;
-    //InventoryEquipmentSlot* legBox;
-    //InventoryEquipmentSlot* footBox;
-    //InventoryEquipmentSlot* totemBox;
-    //InventoryEquipmentSlot* primaryWeaponBox;
-    //InventoryEquipmentSlot* secondaryWeaponBox;
+    std::vector<InventoryPositionSlot*> positionSlotBoxes;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 

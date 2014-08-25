@@ -9,6 +9,7 @@
 #include "../items/ItemClient.hpp"
 
 class InventoryEquipmentSlot;
+class InventoryPositionSlot;
 
 class InventoryItemLabel : public bit::Label
 {
@@ -19,6 +20,7 @@ public:
     Inventory* inventory;
     Item::Schema itemSchema;
     InventoryEquipmentSlot* currentEquipmentSlot;
+    InventoryPositionSlot* currentPositionSlot;
 
 };
 

@@ -419,6 +419,21 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
 
             break;
         }
+
+        case ClientRequest::MoveInventoryItemToPosition:
+        {
+            bit::Output::Debug("Server detect request move item request");
+            
+            unsigned int itemId;
+            packet >> itemId;
+            unsigned int position;
+            packet >> position;
+
+            responsePacket << player->character->moveItemToPosition(itemId, position);
+
+            break;
+        }
+
     }
 }
 
