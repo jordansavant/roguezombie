@@ -11,8 +11,8 @@ InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, f
 {
     setSfFontSize(24);
     setSfFont(inventory->hud->journalFont);
-    normalColor = sf::Color::White;
-    focusedColor = sf::Color::Red;
+    normalColor = sf::Color(0, 255, 0);
+    focusedColor = sf::Color::White;
     setSfFontString(std::string(Item::getTitle(item->schema.type)));
     canHaveFocus = true;
     paddingRight = 10;

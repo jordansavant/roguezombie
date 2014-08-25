@@ -32,12 +32,12 @@ Inventory::Inventory(Hud* _hud)
 
     // PRIMARY PANELS
     // 500 x 720
-    equipmentPanel = new Frame(hud, 5, 0, 490, 710, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    equipmentPanel = new Frame(hud, -5, 0, 494, 710, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     equipmentPanel->managesOpacity = true;
     addChild(equipmentPanel);
     
     // 800 x 720
-    inventoryPanel = new Frame(hud, -5, 0, 790, 710, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    inventoryPanel = new Frame(hud, 5, 0, 794, 710, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     inventoryPanel->managesOpacity = true;
     addChild(inventoryPanel);
 
@@ -143,8 +143,8 @@ void Inventory::buildItemList(bool force)
     bit::Label* title = new bit::Label(20, y, 0, 0, bit::Element::AnchorType::TopLeft);
     title->setSfFontSize(24);
     title->setSfFont(hud->journalFont);
-    title->normalColor = sf::Color::White;
-    title->setSfFontString(std::string("Inventory..."));
+    title->normalColor = sf::Color(0, 255, 0);
+    title->setSfFontString(std::string("INVENTORY:"));
     inventoryPanel->addChild(title);
     y += 40;
 

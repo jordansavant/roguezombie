@@ -12,7 +12,7 @@
 #include "../TileClient.hpp"
 
 LootMenu::LootMenu(Hud* _hud)
-    : HudMenu(_hud, 50, 0, 300, 720, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), inventory(), isActive(false)
+    : HudMenu(_hud, 50, 0, 618, 720, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), inventory(), isActive(false)
 {
     managesOpacity = true;
     opacity = 0;
@@ -58,7 +58,7 @@ void LootMenu::show()
     clearEffects();
     relativePosition.x = -targetWidth;
     immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, targetWidth, 0));
-    immediateEffect(new bit::FadeEffect(300, 1));
+    immediateEffect(new bit::FadeEffect(300, Hud::popupOpacity));
 }
 
 void LootMenu::handleInventorySnapshot(bit::ServerPacket &packet, unsigned int tileId)
@@ -66,13 +66,15 @@ void LootMenu::handleInventorySnapshot(bit::ServerPacket &packet, unsigned int t
     inventory.handleSnapshot(packet);
 
     int y = 10;
+    int x = 20;
+    int fontSize = 24;
     clearChildren();
 
-    bit::Label* title = new bit::Label(0, y, 0, 0, bit::Element::AnchorType::Top);
-    title->setSfFontSize(24);
+    bit::Label* title = new bit::Label(x, y, 0, 0, bit::Element::AnchorType::TopLeft);
+    title->setSfFontSize(fontSize);
     title->setSfFont(hud->journalFont);
-    title->normalColor = sf::Color::White;
-    title->setSfFontString(std::string("Loot..."));
+    title->normalColor = sf::Color(0, 255, 0);
+    title->setSfFontString(std::string("LOOT:"));
     addChild(title);
     y += 40;
 
@@ -81,11 +83,11 @@ void LootMenu::handleInventorySnapshot(bit::ServerPacket &packet, unsigned int t
         ItemClient* i = &iterator->second;
 
         LootMenu* m = this;
-        bit::Label* option = new bit::Label(0, y, 0, 0, bit::Element::AnchorType::Top, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-        option->setSfFontSize(24);
+        bit::Label* option = new bit::Label(x, y, 0, 0, bit::Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+        option->setSfFontSize(fontSize);
         option->setSfFont(hud->journalFont);
-        option->normalColor = sf::Color::White;
-        option->focusedColor = sf::Color::Red;
+        option->normalColor = sf::Color(0, 255, 0);
+        option->focusedColor = sf::Color::White;
         option->setSfFontString(std::string(Item::getTitle(i->schema.type)));
         option->canHaveFocus = true;
         option->paddingRight = 10;
