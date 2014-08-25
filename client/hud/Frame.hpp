@@ -32,7 +32,10 @@ public:
     unsigned int bottomQuadIndex;
     unsigned int leftQuadIndex;
     unsigned int rightQuadIndex;
-    bit::Sprite* edgeSprite;
+    bit::Sprite* topEdgeSprite;
+    bit::Sprite* bottomEdgeSprite;
+    bit::Sprite* leftEdgeSprite;
+    bit::Sprite* rightEdgeSprite;
 
     unsigned int backgroundQuadIndex;
     bit::Sprite* backgroundSprite;

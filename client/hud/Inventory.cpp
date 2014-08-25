@@ -183,5 +183,5 @@ void Inventory::show()
     clearEffects();
     relativePosition.x = targetWidth;
     immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, -targetWidth, 0));
-    immediateEffect(new bit::FadeEffect(300, 1));
+    immediateEffect(new bit::FadeEffect(300, Hud::popupOpacity));
 }

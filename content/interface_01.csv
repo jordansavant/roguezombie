@@ -1,9 +1,12 @@
 trimmed_name,frame_x,frame_y,frame_width,frame_height,sprite_x,sprite_y,sprite_width,sprite_height,rotated
 hud_frame_background,2,240,12,12,0,0,12,12,false
-hud_frame_bottompointer,108,68,16,8,0,0,16,8,false
+hud_frame_bottom,108,68,12,12,0,0,12,12,false
+hud_frame_bottompointer,16,240,16,8,0,0,16,8,false
 hud_frame_corner,240,2,12,12,0,0,12,12,false
-hud_frame_top,234,204,12,12,0,0,12,12,false
-minimap_mark,16,240,16,8,0,0,16,8,false
+hud_frame_left,234,204,12,12,0,0,12,12,false
+hud_frame_right,108,82,12,12,0,0,12,12,false
+hud_frame_top,240,16,12,12,0,0,12,12,false
+minimap_mark,34,240,16,8,0,0,16,8,false
 optionbar_character,2,108,64,64,0,0,64,64,false
 optionbar_crosshair,108,2,64,64,0,0,64,64,false
 optionbar_hourglass,2,174,64,64,0,0,64,64,false

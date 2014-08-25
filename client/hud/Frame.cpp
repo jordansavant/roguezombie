@@ -49,7 +49,10 @@ void Frame::load()
     bottomQuadIndex = hud->interfaceVertexMap.requestVertexIndex();
     leftQuadIndex = hud->interfaceVertexMap.requestVertexIndex();
     rightQuadIndex = hud->interfaceVertexMap.requestVertexIndex();
-    edgeSprite = hud->state->rogueZombieGame->spriteLoader->getSprite("hud_frame_top");
+    topEdgeSprite = hud->state->rogueZombieGame->spriteLoader->getSprite("hud_frame_top");
+    bottomEdgeSprite = hud->state->rogueZombieGame->spriteLoader->getSprite("hud_frame_bottom");
+    leftEdgeSprite = hud->state->rogueZombieGame->spriteLoader->getSprite("hud_frame_left");
+    rightEdgeSprite = hud->state->rogueZombieGame->spriteLoader->getSprite("hud_frame_right");
     bit::VertexHelper::resetQuad(&hud->interfaceVertexMap.vertexArray[topQuadIndex]);
     bit::VertexHelper::resetQuad(&hud->interfaceVertexMap.vertexArray[bottomQuadIndex]);
     bit::VertexHelper::resetQuad(&hud->interfaceVertexMap.vertexArray[leftQuadIndex]);
@@ -133,36 +136,38 @@ void Frame::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     x = (int)left + cornerSprite->width;
     y = (int)top;
     w = (int)width - cornerSprite->width * 2;
-    h = edgeSprite->height;
-    edgeSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[topQuadIndex]);
+    h = topEdgeSprite->height;
+    topEdgeSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[topQuadIndex]);
     bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[topQuadIndex], x, y, 1, w, h);
 
     // Bottom
     x = (int)left + cornerSprite->width;
     y = (int)top + (int)height - cornerSprite->height;
     w = (int)width - cornerSprite->width * 2;
-    h = edgeSprite->height;
-    edgeSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[bottomQuadIndex]);
-    bit::VertexHelper::flipQuad(&hud->interfaceVertexMap.vertexArray[bottomQuadIndex], false, true);
+    h = bottomEdgeSprite->height;
+    bottomEdgeSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[bottomQuadIndex]);
     bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[bottomQuadIndex], x, y, 1, w, h);
 
     // Left
-    w = (int)height - edgeSprite->height * 2;
-    h = edgeSprite->width;
-    x = (int)left - w / 2 + edgeSprite->height / 2;
-    y = (int)top + (int)height / 2 - h / 2;
-    edgeSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[leftQuadIndex]);
+    x = (int)left;
+    y = (int)top + cornerSprite->height;
+    w = leftEdgeSprite->width;
+    h = (int)height - cornerSprite->height * 2;
+    leftEdgeSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[leftQuadIndex]);
     bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[leftQuadIndex], x, y, 1, w, h);
-    bit::VertexHelper::rotateQuad(&hud->interfaceVertexMap.vertexArray[leftQuadIndex], -bit::Math::PiOver2);
 
     // Right
-    w = (int)height - edgeSprite->height * 2;
-    h = edgeSprite->width;
-    x = (int)left + (int)width - edgeSprite->height / 2 - w / 2;
+    w = (int)height - topEdgeSprite->height * 2;
+    h = topEdgeSprite->width;
+    x = (int)left + (int)width - topEdgeSprite->height / 2 - w / 2;
     y = (int)top + (int)height / 2 - h / 2;
-    edgeSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[rightQuadIndex]);
+
+    x = (int)left + (int)width - rightEdgeSprite->width;
+    y = (int)top + (int)rightEdgeSprite->height;
+    w = rightEdgeSprite->width;
+    h = (int)height - cornerSprite->height * 2;
+    rightEdgeSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[rightQuadIndex]);
     bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[rightQuadIndex], x, y, 1, w, h);
-    bit::VertexHelper::rotateQuad(&hud->interfaceVertexMap.vertexArray[rightQuadIndex], bit::Math::PiOver2);
 
     // Background
     x = (int)left + cornerSprite->width;
