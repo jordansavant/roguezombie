@@ -76,7 +76,7 @@ void StatBubble::show()
 {
     canHaveFocus = true;
     clearEffects();
-    immediateEffect(new bit::FadeEffect(150, 1));
+    immediateEffect(new bit::FadeEffect(150, Hud::popupOpacity));
 }
 
 void StatBubble::handleStats(unsigned int tileId)
@@ -114,6 +114,7 @@ void StatBubble::handleStats(unsigned int tileId)
     label->setSfFontString(Character::getTitle(type));
     label->paddingRight = 10;
     label->paddingBottom = 10;
+    label->opacity = Hud::popupOpacity;
     addChild(label);
     y += 30;
 
@@ -129,6 +130,7 @@ void StatBubble::handleStats(unsigned int tileId)
         label->setSfFontString(ssc.str());
         label->paddingRight = 10;
         label->paddingBottom = 10;
+        label->opacity = Hud::popupOpacity;
         addChild(label);
         y += 30;
     }
@@ -143,6 +145,7 @@ void StatBubble::handleStats(unsigned int tileId)
     label->setSfFontString(ssa.str());
     label->paddingRight = 10;
     label->paddingBottom = 10;
+    label->opacity = Hud::popupOpacity;
     addChild(label);
     y += 30;
     
@@ -156,6 +159,7 @@ void StatBubble::handleStats(unsigned int tileId)
     label->setSfFontString(ssb.str());
     label->paddingRight = 10;
     label->paddingBottom = 10;
+    label->opacity = Hud::popupOpacity;
     addChild(label);
     y += 30;
 

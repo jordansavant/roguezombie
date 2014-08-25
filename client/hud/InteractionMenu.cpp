@@ -68,7 +68,7 @@ void InteractionMenu::show()
 {
     canHaveFocus = true;
     clearEffects();
-    immediateEffect(new bit::FadeEffect(150, 1));
+    immediateEffect(new bit::FadeEffect(150, Hud::popupOpacity));
 }
 
 void InteractionMenu::handleInteractionTree(bit::ServerPacket &packet, unsigned int tileId)
