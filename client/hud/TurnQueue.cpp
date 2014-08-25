@@ -8,25 +8,25 @@
 #include <sstream>
 
 TurnQueue::TurnQueue(Hud* _hud)
-    : bit::Container(-10, -10, 20, 128, bit::Element::AnchorType::BottomRight, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(_hud)
+    : bit::Container(-20, -20, 20, 128, bit::Element::AnchorType::BottomRight, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(_hud)
 {
-    scaleStyle = ScaleStyle::None;
+    scaleStyle = ScaleStyle::PowerOfTwo;
     
     // Fill elements with turn queue items
     for(unsigned int i=0; i < 100; i++)
     {
         HudElement* he = new HudElement(0, 10000, 0, 0, Element::AnchorType::Bottom);
         he->load(hud, std::string("optionbar_character"));
-        he->scaleStyle = Element::ScaleStyle::None;
+        he->scaleStyle = Element::ScaleStyle::PowerOfTwo;
         addChild(he);
     }
 
-    currentAp = new bit::Label(-40, -6, 0, 0, bit::Element::AnchorType::Bottom);
-    currentAp->setSfFontSize(14);
+    currentAp = new bit::Label(-80, -12, 0, 0, bit::Element::AnchorType::Bottom);
+    currentAp->setSfFontSize(24);
     currentAp->setSfFontString(std::string("1/2 AP"));
     currentAp->setSfFont(hud->journalFont);
     currentAp->normalColor = sf::Color::White;
-    currentAp->scaleStyle = Element::ScaleStyle::None;
+    currentAp->scaleStyle = Element::ScaleStyle::PowerOfTwo;
     currentAp->opacity = 0;
     addChild(currentAp);
 
@@ -60,8 +60,8 @@ void TurnQueue::handleTurnQueue(bit::ServerPacket &packet)
                 std::stringstream ss;
                 ss << curAp << "/" << maxAp << " AP";
                 currentAp->setSfFontString(ss.str());
-                currentAp->relativePosition.x = -40;
-                currentAp->relativePosition.y = -6;
+                currentAp->relativePosition.x = -80;
+                currentAp->relativePosition.y = -12;
                 currentAp->opacity = 1;
                 currentAp->normalColor = c;
             }
@@ -72,11 +72,11 @@ void TurnQueue::handleTurnQueue(bit::ServerPacket &packet)
             HudElement* he = static_cast<HudElement*>(childElements[i]);
             he->sprite = hud->state->rogueZombieGame->spriteLoader->getSprite("tq_" + CharacterSprite::getSpriteMoniker(type) + "_inactive");
             he->sprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[he->quadIndex]);
-            he->scaleStyle = Element::ScaleStyle::None;
+            he->scaleStyle = Element::ScaleStyle::PowerOfTwo;
             he->relativePosition.y = y;
             he->color = first ?  sf::Color(100, 255, 100) : sf::Color(25, 75, 25);
 
-            y -= 20;
+            y -= 40;
             first = false;
         }
     }
