@@ -154,6 +154,29 @@ Item* Item::removeItem(unsigned int itemId)
     return NULL;
 }
 
+unsigned int Item::findAvailablePosition()
+{
+    // TODO - horrid
+    unsigned int position = 0;
+    while(true)
+    {
+        bool vacant = true;
+        for(unsigned int i=0; i < items.size(); i++)
+        {
+            if(position == items[i]->schema.position)
+            {
+                position++;
+                vacant = false;
+                break;
+            }
+        }
+        if(vacant)
+        {
+            return position;
+        }
+    }
+}
+
 Body* Item::getParentBody()
 {
     if(parentItem)

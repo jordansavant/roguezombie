@@ -100,6 +100,12 @@ public:
 
     Item* removeItemFromInventory(unsigned int itemId);
 
+    Item* findItemInInventory(unsigned int itemId);
+
+    Item* removeItemByPosition(unsigned int position);
+
+    Item* findItemByPosition(unsigned int position);
+    
     void openInventoryForGuest(Body* guest);
 
     void closeInventoryForGuest();

@@ -113,7 +113,7 @@ void Inventory::update(sf::RenderWindow &window, sf::Time &gameTime)
     if(refreshTimer.update(gameTime))
     {
         buildEquipment();
-        buildItemList(false);
+        buildItemList(true);//false);
     }
 }
 
@@ -175,7 +175,9 @@ void Inventory::buildItemList(bool force)
     {
         ItemClient* item = &iterator->second;
         InventoryItemLabel* option = buildItem(item, 0, 0);
-        positionSlotBoxes[i]->addChild(option);
+        bit::Output::Debug("built:");
+        bit::Output::Debug(item->schema.position);
+        positionSlotBoxes[item->schema.position]->addChild(option);
         i++;
         itemCount++;
     }

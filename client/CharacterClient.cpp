@@ -118,6 +118,19 @@ void CharacterClient::handleServerEventPacket_missionCompleted(bit::ServerPacket
     }
 }
 
+void CharacterClient::handleServerEventPacket_inventoryUpdate(bit::ServerPacket &packet)
+{
+    //ItemClient ic;
+    inventoryClient.handleSnapshot(packet);
+
+    //auto result = inventoryClient.itemClients.find(ic.schema.id);
+    //if(result != inventoryClient.itemClients.end())
+    //{
+    //    inventoryClient.itemClients[ic.schema.id] = ic;
+    //    level->state->displayPlayerMessage(this, std::string(Item::getTitle(ic.schema.type) + " updated"));
+    //}
+}
+
 void CharacterClient::handleServerEventPacket_itemAdded(bit::ServerPacket &packet)
 {
     // depth includes all parents and the new item id

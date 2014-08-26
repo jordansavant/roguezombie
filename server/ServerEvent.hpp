@@ -14,6 +14,7 @@ enum ServerEvent
     MissionAssigned,
     MissionCompleted,
     
+    InventoryUpdate,
     ItemAdded,
     ItemRemoved,
     

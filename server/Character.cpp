@@ -3,6 +3,7 @@
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Math.hpp"
+#include "../bitengine/System.hpp"
 #include "ServerEvent.hpp"
 #include "GameplayServer.hpp"
 #include "Level.hpp"
@@ -680,7 +681,7 @@ bool Character::equipFromInventory(EquipmentSlot slot, unsigned int itemId)
                 break;
         }
 
-        inventory->removeItem(itemId);
+        removeItemFromInventory(itemId);
         unequip(slot);
         return equip(slot, item);
     }
@@ -704,7 +705,7 @@ void Character::unequip(EquipmentSlot slot)
     Item* equippedItem = equipment[slot];
     if(equippedItem)
     {
-        inventory->addItem(equippedItem);
+        addItemToInventory(equippedItem);
         schema.equipmentIds[slot] = 0;
         equipment[slot] = NULL;
     }
@@ -721,8 +722,35 @@ void Character::swapWeapons()
 
 bool Character::moveItemToPosition(unsigned int itemId, unsigned int position)
 {
-    // TODO
+    Item* existing = findItemByPosition(position);
+    Item* item = findItemInInventory(itemId);
+
+    // If I had an item at the position
+    if(existing && item)
+    {
+        existing->schema.position = item->schema.position;
+        item->schema.position = position;
+        sendInventoryUpdate();
+    }
+    else if(item)
+    {
+        item->schema.position = position;
+        sendInventoryUpdate();
+    }
+
     return true;
+}
+
+void Character::sendInventoryUpdate()
+{
+    if(schema.isPlayerCharacter)
+    {
+        Character* c = this;
+        level->server->sendEventToClient(*schema.player->client, [c](bit::ServerPacket &packet) {
+            packet << sf::Uint32(ServerEvent::InventoryUpdate);
+            c->inventory->prepareSnapshot(packet);
+        });
+    }
 }
 
 ///////////////////////////////////////////////////////

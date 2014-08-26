@@ -714,7 +714,11 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
             case ServerEvent::MissionCompleted:
                 levelClient->playerCharacter->handleServerEventPacket_missionCompleted(packet);
                 break;
-
+                
+            case ServerEvent::InventoryUpdate:
+                levelClient->playerCharacter->handleServerEventPacket_inventoryUpdate(packet);
+                hud->inventory->buildItemList();
+                break;
             case ServerEvent::ItemAdded:
                 levelClient->playerCharacter->handleServerEventPacket_itemAdded(packet);
                 hud->inventory->buildItemList();

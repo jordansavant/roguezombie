@@ -272,6 +272,8 @@ public:
 
     virtual bool moveItemToPosition(unsigned int itemId, unsigned int position);
 
+    void sendInventoryUpdate();
+
     // Movement
 
     virtual bool moveUp();
