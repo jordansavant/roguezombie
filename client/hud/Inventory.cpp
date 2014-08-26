@@ -113,7 +113,7 @@ void Inventory::update(sf::RenderWindow &window, sf::Time &gameTime)
     if(refreshTimer.update(gameTime))
     {
         buildEquipment();
-        buildItemList(true);//false);
+        buildItemList(false);
     }
 }
 
