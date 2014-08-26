@@ -730,12 +730,13 @@ bool Character::moveItemToPosition(unsigned int itemId, unsigned int position)
     {
         existing->schema.position = item->schema.position;
         item->schema.position = position;
-        sendInventoryUpdate();
+        sendItemUpdateEvent(existing);
+        sendItemUpdateEvent(item);
     }
     else if(item)
     {
         item->schema.position = position;
-        sendInventoryUpdate();
+        sendItemUpdateEvent(item);
     }
 
     return true;
@@ -749,6 +750,17 @@ void Character::sendInventoryUpdate()
         level->server->sendEventToClient(*schema.player->client, [c](bit::ServerPacket &packet) {
             packet << sf::Uint32(ServerEvent::InventoryUpdate);
             c->inventory->prepareSnapshot(packet);
+        });
+    }
+}
+
+void Character::sendItemUpdateEvent(Item* item)
+{
+    if(schema.isPlayerCharacter)
+    {
+        level->server->sendEventToClient(*schema.player->client, [item](bit::ServerPacket &packet) {
+            packet << sf::Uint32(ServerEvent::ItemUpdated);
+            item->prepareSnapshot(packet);
         });
     }
 }

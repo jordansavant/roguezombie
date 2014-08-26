@@ -41,6 +41,8 @@ public:
 
     void handleServerEventPacket_itemAdded(bit::ServerPacket &packet);
 
+    void handleServerEventPacket_itemUpdated(bit::ServerPacket &packet);
+
     void handleServerEventPacket_itemRemoved(bit::ServerPacket &packet);
 };
 

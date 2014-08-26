@@ -16,6 +16,7 @@ enum ServerEvent
     
     InventoryUpdate,
     ItemAdded,
+    ItemUpdated,
     ItemRemoved,
     
     CombatTurnStart,

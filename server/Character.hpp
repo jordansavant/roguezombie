@@ -273,6 +273,8 @@ public:
     virtual bool moveItemToPosition(unsigned int itemId, unsigned int position);
 
     void sendInventoryUpdate();
+    
+    void sendItemUpdateEvent(Item* item);
 
     // Movement
 
