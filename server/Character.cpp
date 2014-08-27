@@ -686,8 +686,8 @@ bool Character::equipFromInventory(EquipmentSlot slot, unsigned int itemId)
     if(item && slotAcceptsItem(slot, item))
     {
         removeItemFromInventory(itemId);
-        unequip(slot);
-        return equip(slot, item);
+        unequip(slot); // netevent
+        return equip(slot, item); // netevent
     }
     return false;
 }
@@ -713,6 +713,7 @@ void Character::unequip(EquipmentSlot slot)
         addItemToInventory(equippedItem);
         schema.equipmentIds[slot] = 0;
         equipment[slot] = NULL;
+        sendEquipmentRemovedEvent(slot); // netevent
     }
 }
 
@@ -760,6 +761,7 @@ bool Character::moveEquipmentToPosition(EquipmentSlot slot, unsigned int positio
                 // Remove equipment
                 schema.equipmentIds[slot] = 0;
                 equipment[slot] = NULL;
+                sendEquipmentRemovedEvent(slot); // netevent
 
                 // Add item to equipment slot
                 inventory->removeItem(itemAtPosition->schema.id);
@@ -782,6 +784,7 @@ bool Character::moveEquipmentToPosition(EquipmentSlot slot, unsigned int positio
             // Remove equipment
             schema.equipmentIds[slot] = 0;
             equipment[slot] = NULL;
+            sendEquipmentRemovedEvent(slot); // netevent
 
             // Add equipment to inventory at the slot specified
             equippedItem->schema.position = position;
@@ -826,6 +829,17 @@ void Character::sendEquipmentAddedEvent(EquipmentSlot slot)
             packet << sf::Uint32(ServerEvent::EquipmentAdded);
             packet << sf::Uint32(slot);
             item->prepareSnapshot(packet);
+        });
+    }
+}
+
+void Character::sendEquipmentRemovedEvent(EquipmentSlot slot)
+{
+    if(schema.isPlayerCharacter)
+    {
+        level->server->sendEventToClient(*schema.player->client, [slot](bit::ServerPacket &packet) {
+            packet << sf::Uint32(ServerEvent::EquipmentRemoved);
+            packet << sf::Uint32(slot);
         });
     }
 }

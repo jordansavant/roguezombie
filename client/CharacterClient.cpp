@@ -210,3 +210,14 @@ void CharacterClient::handleServerEventPacket_equipmentAdded(bit::ServerPacket &
     schema.equipmentIds[slot] = ic.schema.id;
     level->state->displayPlayerMessage(this, std::string(Item::getTitle(equipment[slot].schema.type) + " equipped"));
 }
+
+void CharacterClient::handleServerEventPacket_equipmentRemoved(bit::ServerPacket &packet)
+{
+    Character::EquipmentSlot slot;
+    bit::NetworkHelper::unpackEnum<sf::Uint32, Character::EquipmentSlot>(packet, slot);
+
+    equipment[slot] = ItemClient();
+    hasEquipment[slot] = false;
+    schema.equipmentIds[slot] = 0;
+    level->state->displayPlayerMessage(this, std::string("Equipment removed"));
+}
