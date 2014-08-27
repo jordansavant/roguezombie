@@ -22,6 +22,10 @@ public:
     InventoryEquipmentSlot* currentEquipmentSlot;
     InventoryPositionSlot* currentPositionSlot;
 
+    bool dropOntoEquipmentSlot(InventoryEquipmentSlot* slot);
+
+    bool dropOntoInventorySlot(InventoryPositionSlot* slot);
+
 };
 
 #endif

@@ -640,47 +640,51 @@ void Character::inspectLineOfSightCharacters(int endX, int endY, std::function<v
 //                  INVENTORY                        //
 ///////////////////////////////////////////////////////
 
+bool Character::slotAcceptsItem(EquipmentSlot slot, Item* item)
+{
+    switch(slot)
+    {
+        case EquipmentSlot::Head:
+            if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorHead))
+                return false;
+            break;
+        case EquipmentSlot::Chest:
+            if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorChest))
+                return false;
+            break;
+        case EquipmentSlot::Legs:
+            if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorLeg))
+                return false;
+            break;
+        case EquipmentSlot::Feet:
+            if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorFoot))
+                return false;
+            break;
+        case EquipmentSlot::Hands:
+            if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorHand))
+                return false;
+            break;
+        case EquipmentSlot::Totem:
+            if(!bit::Math::bitwiseHasAny(item->schema.CategoryJewelry, ItemCategory::Jewelry::JewelryTotem))
+                return false;
+            break;
+        case EquipmentSlot::WeaponPrimary:
+            if(!bit::Math::bitwiseHasAny(item->schema.CategoryWeapon, ItemCategory::Weapon::WeaponRanged | ItemCategory::Weapon::WeaponMelee))
+                return false;
+            break;
+        case EquipmentSlot::WeaponSecondary:
+            if(!bit::Math::bitwiseHasAny(item->schema.CategoryWeapon, ItemCategory::Weapon::WeaponRanged | ItemCategory::Weapon::WeaponMelee))
+                return false;
+            break;
+    }
+    return true;
+}
+
 bool Character::equipFromInventory(EquipmentSlot slot, unsigned int itemId)
 {
     Item* item = inventory->findItem(itemId);
-    if(item)
+    if(item && slotAcceptsItem(slot, item))
     {
-        switch(slot)
-        {
-            case EquipmentSlot::Head:
-                if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorHead))
-                    return false;
-                break;
-            case EquipmentSlot::Chest:
-                if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorChest))
-                    return false;
-                break;
-            case EquipmentSlot::Legs:
-                if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorLeg))
-                    return false;
-                break;
-            case EquipmentSlot::Feet:
-                if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorFoot))
-                    return false;
-                break;
-            case EquipmentSlot::Hands:
-                if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorHand))
-                    return false;
-                break;
-            case EquipmentSlot::Totem:
-                if(!bit::Math::bitwiseHasAny(item->schema.CategoryJewelry, ItemCategory::Jewelry::JewelryTotem))
-                    return false;
-                break;
-            case EquipmentSlot::WeaponPrimary:
-                if(!bit::Math::bitwiseHasAny(item->schema.CategoryWeapon, ItemCategory::Weapon::WeaponRanged | ItemCategory::Weapon::WeaponMelee))
-                    return false;
-                break;
-            case EquipmentSlot::WeaponSecondary:
-                if(!bit::Math::bitwiseHasAny(item->schema.CategoryWeapon, ItemCategory::Weapon::WeaponRanged | ItemCategory::Weapon::WeaponMelee))
-                    return false;
-                break;
-        }
-
         removeItemFromInventory(itemId);
         unequip(slot);
         return equip(slot, item);
@@ -740,6 +744,53 @@ bool Character::moveItemToPosition(unsigned int itemId, unsigned int position)
     }
 
     return true;
+}
+
+bool Character::moveEquipmentToPosition(EquipmentSlot slot, unsigned int position)
+{
+    Item* equippedItem = equipment[slot];
+    Item* itemAtPosition = findItemByPosition(position);
+    if(equippedItem)
+    {
+        if(itemAtPosition)
+        {
+            if(slotAcceptsItem(slot, itemAtPosition))
+            {
+                // Remove equipment
+                schema.equipmentIds[slot] = 0;
+                equipment[slot] = NULL;
+
+                // Add item to equipment slot
+                inventory->removeItem(itemAtPosition->schema.id);
+                itemAtPosition->schema.position = 0;
+                equip(slot, itemAtPosition);
+
+                // Add equipment to inventory at the slot specified
+                equippedItem->schema.position = position;
+                inventory->addItem(equippedItem);
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            // Remove equipment
+            schema.equipmentIds[slot] = 0;
+            equipment[slot] = NULL;
+
+            // Add equipment to inventory at the slot specified
+            equippedItem->schema.position = position;
+            inventory->addItem(equippedItem);
+
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void Character::sendInventoryUpdate()

@@ -73,6 +73,9 @@ enum ClientRequest
     // If the position is taken it is swapped
     // Return is constantly void
     MoveInventoryItemToPosition,
+
+    // Takes a slot and destination position
+    MoveEquippedItemToInventoryPosition,
 };
 
 #endif

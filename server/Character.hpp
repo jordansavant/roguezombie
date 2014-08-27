@@ -262,6 +262,8 @@ public:
 
     // Inventory
 
+    virtual bool slotAcceptsItem(EquipmentSlot slot, Item* item);
+
     virtual bool equipFromInventory(EquipmentSlot slot, unsigned int itemId);
 
     virtual bool equip(EquipmentSlot slot, Item* item);
@@ -271,6 +273,8 @@ public:
     virtual void swapWeapons();
 
     virtual bool moveItemToPosition(unsigned int itemId, unsigned int position);
+
+    virtual bool moveEquipmentToPosition(EquipmentSlot slot, unsigned int position);
 
     void sendInventoryUpdate();
     

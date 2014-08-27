@@ -434,6 +434,20 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
             break;
         }
 
+        case ClientRequest::MoveEquippedItemToInventoryPosition:
+        {
+            bit::Output::Debug("Server detect request move item from equipment request");
+
+            Character::EquipmentSlot slot;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Character::EquipmentSlot>(packet, slot);
+            unsigned int position;
+            packet >> position;
+
+            responsePacket << player->character->moveEquipmentToPosition(slot, position);
+
+            break;
+        }
+
     }
 }
 

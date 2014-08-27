@@ -34,12 +34,12 @@ Inventory::Inventory(Hud* _hud)
 
     // PRIMARY PANELS
     // 500 x 720
-    equipmentPanel = new Frame(hud, -5, 0, 494, 710, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    equipmentPanel = new Frame(hud, 0, 0, 500, 720, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     equipmentPanel->managesOpacity = true;
     addChild(equipmentPanel);
     
     // 800 x 720
-    inventoryPanel = new Frame(hud, 5, 0, 794, 710, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    inventoryPanel = new Frame(hud, 0, 0, 800, 720, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     inventoryPanel->managesOpacity = true;
     addChild(inventoryPanel);
 
@@ -51,11 +51,11 @@ Inventory::Inventory(Hud* _hud)
     title->normalColor = sf::Color(0, 255, 0);
     title->setSfFontString(std::string("INVENTORY:"));
     inventoryPanel->addChild(title);
-    int y = 48;
+    int y = 72;
     int width = 64;
-    int pad = 2;
+    int pad = 8;
     int x = pad;
-    for(unsigned int j=0; j < 120; j++)
+    for(unsigned int j=0; j < 99; j++)
     {
         if(x + width + pad > inventoryPanel->targetWidth)
         {
@@ -175,8 +175,6 @@ void Inventory::buildItemList(bool force)
     {
         ItemClient* item = &iterator->second;
         InventoryItemLabel* option = buildItem(item, 0, 0);
-        bit::Output::Debug("built:");
-        bit::Output::Debug(item->schema.position);
         positionSlotBoxes[item->schema.position]->addChild(option);
         i++;
         itemCount++;

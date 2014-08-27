@@ -34,7 +34,7 @@ namespace bit
 
         virtual bool listenForInput(sf::RenderWindow &window, sf::Time &gameTime);
 
-		virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
+        virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
 
         virtual unsigned int addChild(Element* child);
 
@@ -53,6 +53,8 @@ namespace bit
         virtual void moveChild(Container* other, unsigned int childIndex);
 
         virtual void moveChild(Container* other, Element* child);
+
+        virtual unsigned int findChildIndex(Element* child);
 
     private:
         Element* focusedChild;
