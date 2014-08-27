@@ -735,6 +735,10 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 levelClient->playerCharacter->handleServerEventPacket_equipmentAdded(packet);
                 hud->inventory->buildEquipment();
                 break;
+            case ServerEvent::EquipmentUpdated:
+                levelClient->playerCharacter->handleServerEventPacket_equipmentUpdated(packet);
+                hud->inventory->buildEquipment();
+                break;
             case ServerEvent::EquipmentRemoved:
                 levelClient->playerCharacter->handleServerEventPacket_equipmentRemoved(packet);
                 hud->inventory->buildEquipment();

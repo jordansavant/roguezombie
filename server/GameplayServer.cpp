@@ -448,6 +448,21 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
             break;
         }
 
+        case ClientRequest::SwapEquipmentBySlot:
+        {
+            bit::Output::Debug("Server detect request equipment swap request");
+            
+            Character::EquipmentSlot slotA;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Character::EquipmentSlot>(packet, slotA);
+
+            Character::EquipmentSlot slotB;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Character::EquipmentSlot>(packet, slotB);
+
+            responsePacket << player->character->swapEquipment(slotA, slotB);
+
+            break;
+        }
+
     }
 }
 

@@ -76,6 +76,9 @@ enum ClientRequest
 
     // Takes a slot and destination position
     MoveEquippedItemToInventoryPosition,
+
+    // Switches to compatible equipments
+    SwapEquipmentBySlot,
 };
 
 #endif

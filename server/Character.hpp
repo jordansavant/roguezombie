@@ -276,6 +276,8 @@ public:
 
     virtual bool moveEquipmentToPosition(EquipmentSlot slot, unsigned int position);
 
+    virtual bool swapEquipment(EquipmentSlot slotA, EquipmentSlot slotB);
+
     void sendInventoryUpdate();
     
     void sendItemUpdateEvent(Item* item);

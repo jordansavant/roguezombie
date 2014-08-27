@@ -797,6 +797,26 @@ bool Character::moveEquipmentToPosition(EquipmentSlot slot, unsigned int positio
     return false;
 }
 
+bool Character::swapEquipment(EquipmentSlot slotA, EquipmentSlot slotB)
+{
+    Item* itemA = equipment[slotA];
+    Item* itemB = equipment[slotB];
+
+    if(itemA && itemB)
+    {
+        if(slotAcceptsItem(slotA, itemB) && slotAcceptsItem(slotB, itemA))
+        {
+            equipment[slotA] = itemB;
+            equipment[slotB] = itemA;
+            sendEquipmentUpdatedEvent(slotA); // netevent
+            sendEquipmentUpdatedEvent(slotB); // netevent
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void Character::sendInventoryUpdate()
 {
     if(schema.isPlayerCharacter)
@@ -827,6 +847,19 @@ void Character::sendEquipmentAddedEvent(EquipmentSlot slot)
         Item* item = equipment[slot];
         level->server->sendEventToClient(*schema.player->client, [item, slot](bit::ServerPacket &packet) {
             packet << sf::Uint32(ServerEvent::EquipmentAdded);
+            packet << sf::Uint32(slot);
+            item->prepareSnapshot(packet);
+        });
+    }
+}
+
+void Character::sendEquipmentUpdatedEvent(EquipmentSlot slot)
+{
+    if(schema.isPlayerCharacter)
+    {
+        Item* item = equipment[slot];
+        level->server->sendEventToClient(*schema.player->client, [item, slot](bit::ServerPacket &packet) {
+            packet << sf::Uint32(ServerEvent::EquipmentUpdated);
             packet << sf::Uint32(slot);
             item->prepareSnapshot(packet);
         });
