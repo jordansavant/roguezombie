@@ -195,3 +195,18 @@ void CharacterClient::handleServerEventPacket_itemRemoved(bit::ServerPacket &pac
         inventoryClient.itemClients.erase(itemId);
     }
 }
+
+
+void CharacterClient::handleServerEventPacket_equipmentAdded(bit::ServerPacket &packet)
+{
+    Character::EquipmentSlot slot;
+    bit::NetworkHelper::unpackEnum<sf::Uint32, Character::EquipmentSlot>(packet, slot);
+
+    ItemClient ic;
+    ic.handleSnapshot(packet);
+
+    equipment[slot] = ic;
+    hasEquipment[slot] = true;
+    schema.equipmentIds[slot] = ic.schema.id;
+    level->state->displayPlayerMessage(this, std::string(Item::getTitle(equipment[slot].schema.type) + " equipped"));
+}

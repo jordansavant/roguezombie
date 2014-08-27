@@ -279,6 +279,12 @@ public:
     void sendInventoryUpdate();
     
     void sendItemUpdateEvent(Item* item);
+    
+    void sendEquipmentAddedEvent(EquipmentSlot slot);
+    
+    void sendEquipmentUpdatedEvent(EquipmentSlot slot);
+    
+    void sendEquipmentRemovedEvent(EquipmentSlot slot);
 
     // Movement
 

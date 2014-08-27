@@ -699,6 +699,7 @@ bool Character::equip(EquipmentSlot slot, Item* item)
     {
         equipment[slot] = item;
         schema.equipmentIds[slot] = item->schema.id;
+        sendEquipmentAddedEvent(slot); // netevent
         return true;
     }
     return false;
@@ -734,13 +735,13 @@ bool Character::moveItemToPosition(unsigned int itemId, unsigned int position)
     {
         existing->schema.position = item->schema.position;
         item->schema.position = position;
-        sendItemUpdateEvent(existing);
-        sendItemUpdateEvent(item);
+        sendItemUpdateEvent(existing); // netevent
+        sendItemUpdateEvent(item); // netevent
     }
     else if(item)
     {
         item->schema.position = position;
-        sendItemUpdateEvent(item);
+        sendItemUpdateEvent(item); // netevent
     }
 
     return true;
@@ -763,11 +764,11 @@ bool Character::moveEquipmentToPosition(EquipmentSlot slot, unsigned int positio
                 // Add item to equipment slot
                 inventory->removeItem(itemAtPosition->schema.id);
                 itemAtPosition->schema.position = 0;
-                equip(slot, itemAtPosition);
+                equip(slot, itemAtPosition); // netevent
 
                 // Add equipment to inventory at the slot specified
                 equippedItem->schema.position = position;
-                inventory->addItem(equippedItem);
+                inventory->addItem(equippedItem); // netevent
 
                 return true;
             }
@@ -811,6 +812,19 @@ void Character::sendItemUpdateEvent(Item* item)
     {
         level->server->sendEventToClient(*schema.player->client, [item](bit::ServerPacket &packet) {
             packet << sf::Uint32(ServerEvent::ItemUpdated);
+            item->prepareSnapshot(packet);
+        });
+    }
+}
+
+void Character::sendEquipmentAddedEvent(EquipmentSlot slot)
+{
+    if(schema.isPlayerCharacter)
+    {
+        Item* item = equipment[slot];
+        level->server->sendEventToClient(*schema.player->client, [item, slot](bit::ServerPacket &packet) {
+            packet << sf::Uint32(ServerEvent::EquipmentAdded);
+            packet << sf::Uint32(slot);
             item->prepareSnapshot(packet);
         });
     }
