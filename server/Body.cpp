@@ -66,9 +66,22 @@ void Body::distributedUpdate(sf::Time &gameTime)
 {
 }
 
+
+
+
+////////////////////////////////////////////////////////
+// INVENTORY
+////////////////////////////////////////////////////////
+
+
 void Body::addItemToInventory(Item* item)
 {
-    item->schema.position = inventory->findAvailablePosition();
+    addItemToInventoryAtPosition(item, inventory->findAvailablePosition());
+}
+
+void Body::addItemToInventoryAtPosition(Item* item, unsigned int position)
+{
+    item->schema.position = position;;
     inventory->addItem(item);
 }
 
@@ -154,6 +167,13 @@ void Body::closeInventoryOfHost()
         inventoryHost = NULL;
     }
 }
+
+
+
+////////////////////////////////////////////////////////
+// DIALOG AND INTERACTION
+////////////////////////////////////////////////////////
+
 
 void Body::handleDialogResponse(Body* listener, unsigned int responseId)
 {

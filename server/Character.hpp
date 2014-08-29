@@ -230,13 +230,14 @@ public:
 
     virtual void harm(int damage);
 
-    void detectCombatEnter();
+    virtual void detectCombatEnter();
 
-    void detectCombatExit();
+    virtual void detectCombatExit();
 
     virtual bool canDodge();
 
     virtual bool canBlock();
+
 
     // Inspection
 
@@ -260,23 +261,30 @@ public:
 
     void inspectLineOfSightCharacters(int endX, int endY, std::function<void(Character* c)> inspector, bool onlyLiving = true);
 
+
     // Inventory
 
-    virtual bool slotAcceptsItem(EquipmentSlot slot, Item* item);
+    bool slotAcceptsItem(EquipmentSlot slot, Item* item);
 
-    virtual bool equipFromInventory(EquipmentSlot slot, unsigned int itemId);
+    void voidEquipmentSlot(EquipmentSlot slot);
 
-    virtual bool equip(EquipmentSlot slot, Item* item);
+    void setEquipmentSlot(EquipmentSlot slot, Item* item);
 
-    virtual void unequip(EquipmentSlot slot);
+    bool equipFromInventory(EquipmentSlot slot, unsigned int itemId);
 
-    virtual void swapWeapons();
+    bool equip(EquipmentSlot slot, Item* item);
 
-    virtual bool moveItemToPosition(unsigned int itemId, unsigned int position);
+    void unequip(EquipmentSlot slot);
 
-    virtual bool moveEquipmentToPosition(EquipmentSlot slot, unsigned int position);
+    void unequipToPosition(EquipmentSlot slot, unsigned int position);
 
-    virtual bool swapEquipment(EquipmentSlot slotA, EquipmentSlot slotB);
+    void swapWeapons();
+
+    bool moveItemToPosition(unsigned int itemId, unsigned int position);
+
+    bool moveEquipmentToPosition(EquipmentSlot slot, unsigned int position);
+
+    bool swapEquipment(EquipmentSlot slotA, EquipmentSlot slotB);
 
     void sendInventoryUpdate();
     
@@ -288,23 +296,25 @@ public:
     
     void sendEquipmentRemovedEvent(EquipmentSlot slot);
 
+
     // Movement
 
-    virtual bool moveUp();
+    bool moveUp();
 
-    virtual bool moveDown();
+    bool moveDown();
 
-    virtual bool moveLeft();
+    bool moveLeft();
 
-    virtual bool moveRight();
+    bool moveRight();
 
-    virtual void pathToPosition(float x, float y);
+    void pathToPosition(float x, float y);
 
-    virtual bool moveToTile(Tile* tile);
+    bool moveToTile(Tile* tile);
 
-    virtual bool canMoveToPosition(Level* targetLevel, float x, float y);
+    bool canMoveToPosition(Level* targetLevel, float x, float y);
 
-    virtual bool moveToPosition(float x, float y);
+    bool moveToPosition(float x, float y);
+
 
     // Mission
 
@@ -321,29 +331,31 @@ public:
 
     void sendCombatDecisionEnd();
 
-    virtual void setControllingPlayer(Player* player);
+    void setControllingPlayer(Player* player);
 
-    virtual void unsetControllingPlayer();
+    void unsetControllingPlayer();
 
-    virtual void setSpectatingPlayer(Player* player);
+    void setSpectatingPlayer(Player* player);
 
-    virtual void unsetSpectatingPlayer(Player* player);
+    void unsetSpectatingPlayer(Player* player);
 
-    virtual void getAvailableInteractions(std::vector<Interaction::Type> &fill);
+    void getAvailableInteractions(std::vector<Interaction::Type> &fill);
 
-    virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
+    void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
+
 
     // Factories
 
     static std::string getTitle(Character::Type type);
 
+
 protected:
 
     // Movement
 
-    virtual bool isTileBlocked(Tile* tile);
+    bool isTileBlocked(Tile* tile);
 
-    virtual bool isTileBlockedForPathfinding(Tile* tile);
+    bool isTileBlockedForPathfinding(Tile* tile);
 
 
     // Mission

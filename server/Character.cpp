@@ -680,60 +680,109 @@ bool Character::slotAcceptsItem(EquipmentSlot slot, Item* item)
     return true;
 }
 
+// Utility method for undoing a slot
+void Character::voidEquipmentSlot(EquipmentSlot slot)
+{
+    schema.equipmentIds[slot] = 0;
+    equipment[slot] = NULL;
+}
+
+// Utility method for setting a slot
+void Character::setEquipmentSlot(EquipmentSlot slot, Item* item)
+{
+    equipment[slot] = item;
+    schema.equipmentIds[slot] = item->schema.id;
+}
+
+// Takes a destination slot and an inventory item id
+// If the item exists, validates its of an acceptable type
+// If there is a slot item it removes it and puts it in the same position as incoming item
+// Moves the incoming item to the slot
 bool Character::equipFromInventory(EquipmentSlot slot, unsigned int itemId)
 {
+    // If the item exists and is acceptable for the slot
     Item* item = inventory->findItem(itemId);
     if(item && slotAcceptsItem(slot, item))
     {
+        // Remove item from inventory
+        unsigned int position = item->schema.position;
         removeItemFromInventory(itemId);
-        unequip(slot); // netevent
-        return equip(slot, item); // netevent
+
+        // If we have equipment swap it with the item
+        if(equipment[slot])
+        {
+            Item* equipped = equipment[slot];
+            unequipToPosition(slot, position);
+        }
+
+        // Add the item to the slot
+        return equip(slot, item);
     }
     return false;
 }
 
+// Takes any item and sets it to the specified slot
+// This does not validate anything
+// Sends the equip network event
 bool Character::equip(EquipmentSlot slot, Item* item)
 {
-    Item* equippedItem = equipment[slot];
-    if(!equippedItem)
-    {
-        equipment[slot] = item;
-        schema.equipmentIds[slot] = item->schema.id;
-        sendEquipmentAddedEvent(slot); // netevent
-        return true;
-    }
-    return false;
+    // Set the slot up
+    setEquipmentSlot(slot, item);
+    sendEquipmentAddedEvent(slot); // netevent
+    return true;
 }
 
+// Takes a slot and moves its item to the inventory position available
+// Does not validate anything
+// Sends a network event for removal
 void Character::unequip(EquipmentSlot slot)
 {
-    Item* equippedItem = equipment[slot];
-    if(equippedItem)
+    if(equipment[slot])
     {
-        addItemToInventory(equippedItem);
-        schema.equipmentIds[slot] = 0;
-        equipment[slot] = NULL;
+        addItemToInventory(equipment[slot]);
+        voidEquipmentSlot(slot);
         sendEquipmentRemovedEvent(slot); // netevent
     }
 }
 
-void Character::swapWeapons()
+// Takes a slot and moves its item to the inventory at the position specified
+// Does not validate anything
+// Sends a network event for removal
+void Character::unequipToPosition(EquipmentSlot slot, unsigned int position)
 {
-    // Haha its nullsafe!
-    Item* primary = equipment[Character::EquipmentSlot::WeaponPrimary];
-    Item* secondary = equipment[Character::EquipmentSlot::WeaponSecondary];
-    equipment[Character::EquipmentSlot::WeaponPrimary] = secondary;
-    equipment[Character::EquipmentSlot::WeaponSecondary] = primary;
+    if(equipment[slot])
+    {
+        addItemToInventoryAtPosition(equipment[slot], position);
+        voidEquipmentSlot(slot);
+        sendEquipmentRemovedEvent(slot); // netevent
+    }
 }
 
+// Will take both weapon slots and swap them
+// This is used for in combat mainly
+void Character::swapWeapons()
+{
+    Item* primary = equipment[Character::EquipmentSlot::WeaponPrimary];
+    Item* secondary = equipment[Character::EquipmentSlot::WeaponSecondary];
+    
+    if(primary)
+        setEquipmentSlot(Character::EquipmentSlot::WeaponSecondary, primary);
+    if(secondary)
+        setEquipmentSlot(Character::EquipmentSlot::WeaponPrimary, secondary);
+}
+
+// Takes an existing inventory item and moves its inventory position
+// If another items exists at the new location they are swapped
 bool Character::moveItemToPosition(unsigned int itemId, unsigned int position)
 {
+    // Find one by id and the other by position
     Item* existing = findItemByPosition(position);
     Item* item = findItemInInventory(itemId);
 
     // If I had an item at the position
     if(existing && item)
     {
+        // Switch positions on the items
         existing->schema.position = item->schema.position;
         item->schema.position = position;
         sendItemUpdateEvent(existing); // netevent
@@ -741,6 +790,7 @@ bool Character::moveItemToPosition(unsigned int itemId, unsigned int position)
     }
     else if(item)
     {
+        // Just set the new position
         item->schema.position = position;
         sendItemUpdateEvent(item); // netevent
     }
@@ -748,29 +798,34 @@ bool Character::moveItemToPosition(unsigned int itemId, unsigned int position)
     return true;
 }
 
+// Takes equipment and moves it to the inventory at the specified position
+// If an item is present there it will need to check that it is acceptable
+// If so it will swap them
+// If there is no item there it will set the item at the specified position
 bool Character::moveEquipmentToPosition(EquipmentSlot slot, unsigned int position)
 {
+    // Find our items in question
     Item* equippedItem = equipment[slot];
     Item* itemAtPosition = findItemByPosition(position);
+
     if(equippedItem)
     {
+        // If we have an item at the position already
         if(itemAtPosition)
         {
+            // Check that it is an acceptable item to swap
             if(slotAcceptsItem(slot, itemAtPosition))
             {
                 // Remove equipment
-                schema.equipmentIds[slot] = 0;
-                equipment[slot] = NULL;
+                voidEquipmentSlot(slot);
                 sendEquipmentRemovedEvent(slot); // netevent
 
                 // Add item to equipment slot
-                inventory->removeItem(itemAtPosition->schema.id);
-                itemAtPosition->schema.position = 0;
+                removeItemFromInventory(itemAtPosition->schema.id);
                 equip(slot, itemAtPosition); // netevent
 
                 // Add equipment to inventory at the slot specified
-                equippedItem->schema.position = position;
-                inventory->addItem(equippedItem); // netevent
+                addItemToInventoryAtPosition(equippedItem, position);
 
                 return true;
             }
@@ -782,14 +837,12 @@ bool Character::moveEquipmentToPosition(EquipmentSlot slot, unsigned int positio
         else
         {
             // Remove equipment
-            schema.equipmentIds[slot] = 0;
-            equipment[slot] = NULL;
+            voidEquipmentSlot(slot);
             sendEquipmentRemovedEvent(slot); // netevent
 
             // Add equipment to inventory at the slot specified
-            equippedItem->schema.position = position;
-            inventory->addItem(equippedItem);
-
+            addItemToInventoryAtPosition(equippedItem, position);
+            
             return true;
         }
     }
@@ -797,20 +850,55 @@ bool Character::moveEquipmentToPosition(EquipmentSlot slot, unsigned int positio
     return false;
 }
 
+// Takes two slots, checks their compatibility and swaps their locations
 bool Character::swapEquipment(EquipmentSlot slotA, EquipmentSlot slotB)
 {
+    // See if we have items in both slots
     Item* itemA = equipment[slotA];
     Item* itemB = equipment[slotB];
 
+    // If we have both items
     if(itemA && itemB)
     {
+        // Check that both are compatible
         if(slotAcceptsItem(slotA, itemB) && slotAcceptsItem(slotB, itemA))
         {
-            equipment[slotA] = itemB;
-            equipment[slotB] = itemA;
+            // Swap them directly
+            setEquipmentSlot(slotA, itemB);
+            setEquipmentSlot(slotB, itemA);
             sendEquipmentUpdatedEvent(slotA); // netevent
             sendEquipmentUpdatedEvent(slotB); // netevent
             return true;
+        }
+    }
+    // If we only have item A
+    else if(itemA)
+    {
+        // Check that slot B accepts Item A
+        if(slotAcceptsItem(slotB, itemA))
+        {
+            // Remove item from slot A
+            voidEquipmentSlot(slotA);
+            sendEquipmentRemovedEvent(slotA);
+
+            // Set it to slot B
+            setEquipmentSlot(slotB, itemA);
+            sendEquipmentAddedEvent(slotB);
+        }
+    }
+    // If we only have item B
+    else if(itemB)
+    {
+        // Check that slot A accepts Item B
+        if(slotAcceptsItem(slotA, itemB))
+        {
+            // Remove item from slot B
+            voidEquipmentSlot(slotB);
+            sendEquipmentRemovedEvent(slotB);
+
+            // Set it to slot A
+            setEquipmentSlot(slotA, itemB);
+            sendEquipmentAddedEvent(slotA);
         }
     }
 
@@ -876,6 +964,7 @@ void Character::sendEquipmentRemovedEvent(EquipmentSlot slot)
         });
     }
 }
+
 
 ///////////////////////////////////////////////////////
 //                   MOVEMENT                        //
