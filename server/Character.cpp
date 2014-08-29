@@ -914,7 +914,22 @@ bool Character::moveLootItemToInventoryPosition(unsigned int itemId, unsigned in
         Item* myItem = findItemByPosition(position);
         if(myItem)
         {
-            return false; // TODO
+            Item* theirItem = inventoryHost->findItemInInventory(itemId);
+            if(theirItem)
+            {
+                unsigned int theirPosition = theirItem->schema.position;
+
+                // Take their item out
+                inventoryHost->removeItemFromInventory(theirItem->schema.id);
+
+                // Take my item from my inventory and add it to theirs
+                removeItemFromInventory(myItem->schema.id);
+                inventoryHost->addItemToInventoryAtPosition(myItem, theirPosition);
+
+                // Add their item to my position
+                addItemToInventoryAtPosition(theirItem, position);
+                return true;
+            }
         }
         // If I dont have an item there
         else
@@ -922,6 +937,7 @@ bool Character::moveLootItemToInventoryPosition(unsigned int itemId, unsigned in
             Item* theirItem = inventoryHost->removeItemFromInventory(itemId);
             if(theirItem)
             {
+                // Add their item to my inventory
                 addItemToInventoryAtPosition(theirItem, position);
                 return true;
             }
