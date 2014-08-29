@@ -910,6 +910,7 @@ bool Character::moveLootItemToInventoryPosition(unsigned int itemId, unsigned in
     // If I have an inventory host
     if(inventoryHost)
     {
+        // SWAP
         // See if I have an item at the postion
         Item* myItem = findItemByPosition(position);
         if(myItem)
@@ -931,6 +932,7 @@ bool Character::moveLootItemToInventoryPosition(unsigned int itemId, unsigned in
                 return true;
             }
         }
+        // NO SWAP
         // If I dont have an item there
         else
         {
@@ -939,6 +941,51 @@ bool Character::moveLootItemToInventoryPosition(unsigned int itemId, unsigned in
             {
                 // Add their item to my inventory
                 addItemToInventoryAtPosition(theirItem, position);
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+bool Character::moveInventoryItemToLootPosition(unsigned int itemId, unsigned int position)
+{
+    // If I have an inventory host
+    if(inventoryHost)
+    {
+        // SWAP
+        // See if they have an item
+        Item* theirItem = inventoryHost->findItemByPosition(position);
+        if(theirItem)
+        {
+            // Make sure I have the item
+            Item* myItem = findItemInInventory(itemId);
+            if(myItem)
+            {
+                unsigned int myPosition = myItem->schema.position;
+
+                // Take my item out
+                removeItemFromInventory(myItem->schema.id);
+
+                // Take their item from their inventory and add it to mine
+                inventoryHost->removeItemFromInventory(theirItem->schema.id);
+                addItemToInventoryAtPosition(theirItem, myPosition);
+
+                // Add my item to their position
+                inventoryHost->addItemToInventoryAtPosition(myItem, position);
+                return true;
+            }
+        }
+        // NO SWAP
+        // If they have no item there
+        else
+        {
+            Item* myItem = removeItemFromInventory(itemId);
+            if(myItem)
+            {
+                // Add my item to their inventory
+                inventoryHost->addItemToInventoryAtPosition(myItem, position);
                 return true;
             }
         }

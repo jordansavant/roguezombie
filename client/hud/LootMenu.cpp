@@ -93,8 +93,8 @@ void LootMenu::syncInventory()
         }
         return;
     }
-    
 
+    // If there is a tile from the current session, open it
     LootMenu* m = this;
     unsigned int tileIdx = tileId;
     hud->state->serverRequest(
@@ -113,6 +113,7 @@ void LootMenu::syncInventory()
 
 void LootMenu::handleInventorySnapshot(bit::ServerPacket &packet, unsigned int tileId)
 {
+    this->tileId = tileId;
     inventory.handleSnapshot(packet);
 
     // clean up
@@ -128,80 +129,5 @@ void LootMenu::handleInventorySnapshot(bit::ServerPacket &packet, unsigned int t
         InventoryItemLabel* option = new InventoryItemLabel(hud, item, 0, 0, bit::Element::AnchorType::TopLeft);
         lootSlotBoxes[item->schema.position]->addChild(option);
         i++;
-    }
-    return;
-
-    int y = 10;
-    int x = 20;
-    int fontSize = 24;
-    clearChildren();
-
-    bit::Label* title = new bit::Label(x, y, 0, 0, bit::Element::AnchorType::TopLeft);
-    title->setSfFontSize(fontSize);
-    title->setSfFont(hud->journalFont);
-    title->normalColor = sf::Color(0, 255, 0);
-    title->setSfFontString(std::string("LOOT:"));
-    addChild(title);
-    y += 40;
-
-    for(auto iterator = inventory.itemClients.begin(); iterator != inventory.itemClients.end(); iterator++)
-    {
-        ItemClient* i = &iterator->second;
-
-        LootMenu* m = this;
-        bit::Label* option = new bit::Label(x, y, 0, 0, bit::Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-        option->setSfFontSize(fontSize);
-        option->setSfFont(hud->journalFont);
-        option->normalColor = sf::Color(0, 255, 0);
-        option->focusedColor = sf::Color::White;
-        option->setSfFontString(std::string(Item::getTitle(i->schema.type)));
-        option->canHaveFocus = true;
-        option->paddingRight = 10;
-        option->paddingBottom = 10;
-        option->onActivate = [m, i, tileId] (Element* e){
-
-            LootMenu* mx = m;
-            ItemClient* ix = i;
-            unsigned int tileIdx = tileId;
-
-            // If an item is clicked send a request to the server to transfer the item
-            m->hud->state->serverRequest(
-
-                [mx, ix, tileIdx] (bit::ClientPacket &packet)
-                {
-                    packet << sf::Uint32(ClientRequest::TransferItemFromCounterpartyToParty);
-                    packet << sf::Uint32(ix->schema.id);
-                },
-
-                [mx, ix, tileIdx] (bit::ServerPacket &packet)
-                {
-                    bool success;
-                    packet >> success;
-                    
-                    LootMenu* mxy = mx;
-                    ItemClient* ixy = ix;
-                    unsigned int tileIdxy = tileIdx;
-
-                    // After the transfer has been issued, request a resync of the objects inventory
-                    mx->hud->state->serverRequest(
-
-                        [tileIdxy, mxy] (bit::ClientPacket &packet)
-                        {
-                            packet << sf::Uint32(ClientRequest::ProcessInteractionForBodyOnTile);
-                            packet << sf::Uint32(Interaction::Type::OpenInventory);
-                            packet << sf::Uint32(tileIdxy);
-                        },
-
-                        [tileIdxy, mxy] (bit::ServerPacket &packet)
-                        {
-                            mxy->hud->state->handleInteractionResponse(tileIdxy, Interaction::Type::OpenInventory, packet);
-                        }
-                    );
-                }
-            );
-        };
-        addChild(option);
-
-        y += 30;
     }
 }

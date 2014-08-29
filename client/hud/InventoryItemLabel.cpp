@@ -281,11 +281,17 @@ bool InventoryItemLabel::dropOntoLootSlot(InventoryLootSlot* slot)
 {
     // There are three operations that cause this:
     // 1. Dropping from another loot cell to this loot cell
-    // 2. Dropping from an equipment slot to this loot cell
-    // 3. Dropping from an inventory cell into this loot cell
-    return false;
+    // 2. Dropping from an inventory cell into this loot cell
+    // 3. Dropping from an equipment slot to this loot cell
 
-    // 1. Dropping from another inventory cell to this inventory cell
+    // 1. Dropping from another loot cell to this loot cell
+    if(currentLootSlot)
+    {
+        // not supported yet
+        return false;
+    }
+
+    // 2. Dropping from an inventory cell into this loot cell
     if(currentPositionSlot)
     {
         // Visual prediction:
@@ -305,22 +311,26 @@ bool InventoryItemLabel::dropOntoLootSlot(InventoryLootSlot* slot)
         // 2. This will naturally send one or two item updates which include the positioning information
         // 3. Response is moot
         Item::Schema schema = itemSchema;
+        Hud* hudx = hud;
         hud->state->serverRequest(
             [schema, slot](bit::ClientPacket& requestPacket)
             {
-                requestPacket << sf::Uint32(ClientRequest::MoveInventoryItemToPosition);
+                requestPacket << sf::Uint32(ClientRequest::MoveInventoryItemToLootPosition);
                 requestPacket << sf::Uint32(schema.id);
                 requestPacket << sf::Uint32(slot->position);
             },
-            [schema](bit::ServerPacket& responsePacket)
+            [hudx, schema](bit::ServerPacket& responsePacket)
             {
                 bool success;
                 responsePacket >> success;
+                hudx->lootMenu->syncInventory();
             }
         );
 
         return true;
     }
+
+    return false;
 
     // 2. Dropping from an equipment slot to this inventory cell
     if(currentEquipmentSlot)

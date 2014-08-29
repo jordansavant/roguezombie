@@ -288,6 +288,8 @@ public:
 
     bool moveLootItemToInventoryPosition(unsigned int itemId, unsigned int position);
 
+    bool moveInventoryItemToLootPosition(unsigned int itemId, unsigned int position);
+
     void sendInventoryUpdate();
     
     void sendItemUpdateEvent(Item* item);

@@ -84,6 +84,11 @@ enum ClientRequest
     // If the position is taken it is swapped with the loot inventory 
     // Return is constantly void
     MoveLootItemToInventoryPosition,
+
+    // Takes an item id, and if found in the inventory attempts to move it to the designated position in the hosts' loot
+    // If the position is taken it is swapped with the inventory 
+    // Return is constantly void
+    MoveInventoryItemToLootPosition,
 };
 
 #endif
