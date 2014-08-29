@@ -14,7 +14,8 @@
 #include "InventoryItemLabel.hpp"
 
 LootMenu::LootMenu(Hud* _hud)
-    : HudMenu(_hud, 50, 0, 618, 720, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), inventory(), isActive(false)
+    : HudMenu(_hud, 50, 0, 618, 720, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)),
+      inventory(), isActive(false), tileId(0)
 {
     managesOpacity = true;
     opacity = 0;
@@ -57,6 +58,7 @@ void LootMenu::activate()
 void LootMenu::deactivate()
 {
     isActive = false;
+    tileId = 0;
     hide();
 }
 
@@ -78,6 +80,35 @@ void LootMenu::show()
     relativePosition.x = -targetWidth;
     immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, targetWidth, 0));
     immediateEffect(new bit::FadeEffect(300, Hud::popupOpacity));
+}
+
+void LootMenu::syncInventory()
+{
+    // If no tile, clear
+    if(tileId == 0)
+    {
+        for(unsigned int i=0; i < lootSlotBoxes.size(); i++)
+        {
+            lootSlotBoxes[i]->clearChildren();
+        }
+        return;
+    }
+    
+
+    LootMenu* m = this;
+    unsigned int tileIdx = tileId;
+    hud->state->serverRequest(
+        [tileIdx, m] (bit::ClientPacket &packet)
+        {
+            packet << sf::Uint32(ClientRequest::ProcessInteractionForBodyOnTile);
+            packet << sf::Uint32(Interaction::Type::OpenInventory);
+            packet << sf::Uint32(tileIdx);
+        },
+        [tileIdx, m] (bit::ServerPacket &packet)
+        {
+            m->hud->state->handleInteractionResponse(tileIdx, Interaction::Type::OpenInventory, packet);
+        }
+    );
 }
 
 void LootMenu::handleInventorySnapshot(bit::ServerPacket &packet, unsigned int tileId)

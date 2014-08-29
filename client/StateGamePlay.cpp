@@ -598,6 +598,7 @@ void StateGamePlay::handleInteractionResponse(unsigned int tileId, Interaction::
             if(givenAccess)
             {
                 changeMode(Mode::Loot);
+                hud->lootMenu->tileId = tileId;
                 hud->lootMenu->handleInventorySnapshot(packet, tileId);
             }
             else

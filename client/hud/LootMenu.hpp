@@ -23,6 +23,7 @@ public:
     ItemClient inventory;
     bool isActive;
     std::vector<InventoryLootSlot*> lootSlotBoxes;
+    unsigned int tileId;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
@@ -33,6 +34,8 @@ public:
     virtual void hide();
 
     virtual void show();
+
+    void syncInventory();
 
     void handleInventorySnapshot(bit::ServerPacket &packet, unsigned int tileId);
 };

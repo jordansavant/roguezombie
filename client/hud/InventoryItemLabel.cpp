@@ -254,6 +254,7 @@ bool InventoryItemLabel::dropOntoInventorySlot(InventoryPositionSlot* slot)
         // 2. This will naturally send one or two item updates which include the positioning information
         // 3. Response is moot
         Item::Schema schema = itemSchema;
+        Hud* hudx = hud;
         hud->state->serverRequest(
             [schema, slot](bit::ClientPacket& requestPacket)
             {
@@ -261,10 +262,11 @@ bool InventoryItemLabel::dropOntoInventorySlot(InventoryPositionSlot* slot)
                 requestPacket << sf::Uint32(schema.id);
                 requestPacket << sf::Uint32(slot->position);
             },
-            [schema](bit::ServerPacket& responsePacket)
+            [hudx, schema](bit::ServerPacket& responsePacket)
             {
                 bool success;
                 responsePacket >> success;
+                hudx->lootMenu->syncInventory();
             }
         );
 
