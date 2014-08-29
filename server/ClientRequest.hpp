@@ -69,6 +69,11 @@ enum ClientRequest
     // Return is constantly void
     UnequipItemFromSlotToInventory,
 
+    // Takes an item id, and if found in the host's inventory attempts to equip it in the slot
+    // If the slot is not available or if the item does not match the criteria it fails
+    // Return is constantly void
+    EquipItemFromLootToSlot,
+
     // Takes an item id, and if found in the inventory attempts to move it to the designated position
     // If the position is taken it is swapped
     // Return is constantly void

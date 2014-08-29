@@ -272,6 +272,8 @@ public:
 
     bool equipFromInventory(EquipmentSlot slot, unsigned int itemId);
 
+    bool equipFromLoot(EquipmentSlot slot, unsigned int itemId);
+
     bool equip(EquipmentSlot slot, Item* item);
 
     void unequip(EquipmentSlot slot);

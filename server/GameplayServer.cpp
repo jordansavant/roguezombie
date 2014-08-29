@@ -396,7 +396,7 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
 
         case ClientRequest::EquipItemFromInventoryToSlot:
         {
-            bit::Output::Debug("Server detect request equip item request");
+            bit::Output::Debug("Server detect request equip item from inventory request");
 
             Character::EquipmentSlot slot;
             bit::NetworkHelper::unpackEnum<sf::Uint32, Character::EquipmentSlot>(packet, slot);
@@ -416,6 +416,20 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
             bit::NetworkHelper::unpackEnum<sf::Uint32, Character::EquipmentSlot>(packet, slot);
 
             player->character->unequip(slot);
+
+            break;
+        }
+        
+        case ClientRequest::EquipItemFromLootToSlot:
+        {
+            bit::Output::Debug("Server detect request equip item from loot request");
+
+            Character::EquipmentSlot slot;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Character::EquipmentSlot>(packet, slot);
+            unsigned int itemId;
+            packet >> itemId;
+
+            responsePacket << player->character->equipFromLoot(slot, itemId);
 
             break;
         }

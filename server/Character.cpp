@@ -721,6 +721,41 @@ bool Character::equipFromInventory(EquipmentSlot slot, unsigned int itemId)
     return false;
 }
 
+// Takes a destination slot and an loot item id
+// If the item exists, validates its of an acceptable type
+// If there is a slot item it removes it and puts it in the same position as incoming item
+// Moves the incoming item to the slot
+bool Character::equipFromLoot(EquipmentSlot slot, unsigned int itemId)
+{
+    if(inventoryHost)
+    {
+        // If the item exists and is acceptable for the slot
+        Item* theirItem = inventoryHost->findItemInInventory(itemId);
+        if(theirItem && slotAcceptsItem(slot, theirItem))
+        {
+            // Remove item from their inventory
+            unsigned int position = theirItem->schema.position;
+            inventoryHost->removeItemFromInventory(theirItem->schema.id);
+
+            // If we have equipment swap it with the item
+            if(equipment[slot])
+            {
+                // Remove my equipment
+                Item* equipped = equipment[slot];
+                voidEquipmentSlot(slot);
+                sendEquipmentRemovedEvent(slot);
+
+                // Add it to the host's inventory at their position
+                inventoryHost->addItemToInventoryAtPosition(equipped, position);
+            }
+
+            // Add their item to the slot
+            return equip(slot, theirItem);
+        }
+        return false;
+    }
+}
+
 // Takes any item and sets it to the specified slot
 // This does not validate anything
 // Sends the equip network event

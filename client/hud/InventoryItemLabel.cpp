@@ -150,6 +150,41 @@ bool InventoryItemLabel::dropOntoEquipmentSlot(InventoryEquipmentSlot* slot)
         return true;
     }
 
+    // 3. Dropping from a loot cell into this equipment slot
+    if(currentLootSlot)
+    {
+
+        // If the targetted slot had an item, remove it so it returns to the inventory
+        if(slot->equippedItemLabel)
+            slot->removeItemLabel();
+
+        // Move this item from my current parent to the slot
+        currentLootSlot->moveChild(slot, this);
+
+        // Position label within equipment slot
+        relativePosition.x = 0;
+        relativePosition.y = 0;
+
+        // Send the request to change the equipment
+        Item::Schema schema = itemSchema;
+        Hud* hudx = hud;
+        hud->state->serverRequest(
+            [schema, slot](bit::ClientPacket& requestPacket)
+            {
+                requestPacket << sf::Uint32(ClientRequest::EquipItemFromLootToSlot);
+                requestPacket << sf::Uint32(slot->slot);
+                requestPacket << sf::Uint32(schema.id);
+            },
+            [hudx, schema](bit::ServerPacket& responsePacket)
+            {
+                bool success;
+                responsePacket >> success;
+                hudx->lootMenu->syncInventory();
+            }
+        );
+        return true;
+    }
+
     return false;
 }
 
