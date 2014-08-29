@@ -13,7 +13,7 @@ namespace bit
         static float Pi;
         static float TwoPi;
 
-		static float lerp(float val1, float val2, float ratio);
+        static float lerp(float val1, float val2, float ratio);
 
         static float clamp(float value, float min, float max);
 
@@ -24,6 +24,8 @@ namespace bit
         static int random(int min, int max);
 
         static int random(int max);
+
+        static float calculateDrawDepthByRange(float y, float targetYRange, float lowerBoundary = 0, float upperBoundary = 1);
 
         static float calculateDrawDepth(float y, bool invert = false);
 

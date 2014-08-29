@@ -13,7 +13,7 @@ float bit::Math::TwoPi = 6.28318530718f;
 
 float bit::Math::lerp(float val1, float val2, float ratio)
 {
-	return val1 + ratio * (val2 - val1);
+    return val1 + ratio * (val2 - val1);
 }
 
 float bit::Math::clamp(float value, float min, float max)
@@ -39,6 +39,20 @@ int bit::Math::random(int min, int max)
 int bit::Math::random(int max)
 {
     return std::rand() % max;
+}
+
+// closer to the range, the larger
+float bit::Math::calculateDrawDepthByRange(float y, float targetYRange, float lowerBoundary, float upperBoundary)
+{
+    float target = clamp(y / targetYRange, 0, 1);
+    float range = (upperBoundary - lowerBoundary);
+
+    if(target <= 0 || range <= 0)
+        return 0;
+
+    // Move to boundary range
+    float targetScaled = target * range;
+    return lowerBoundary + targetScaled;
 }
 
 float bit::Math::calculateDrawDepth(float y, bool invert)

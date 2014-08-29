@@ -11,6 +11,7 @@
 #include "TurnQueue.hpp"
 #include "ActionBar.hpp"
 #include "Tooltip.hpp"
+#include "InventoryIcon.hpp"
 #include "../../ResourcePath.h"
 #include "../../bitengine/Input.hpp"
 #include "../StateGamePlay.hpp"
@@ -21,7 +22,8 @@ float Hud::hoverlessOpacity = .5f;
 float Hud::popupOpacity = .7f;
 
 Hud::Hud(StateGamePlay* _state)
-    : bit::Container(0, 0, _state->rogueZombieGame->targetResolution.x, _state->rogueZombieGame->targetResolution.y, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, this, std::placeholders::_1, std::placeholders::_2,  std::placeholders::_3)), state(_state)
+    : bit::Container(0, 0, _state->rogueZombieGame->targetResolution.x, _state->rogueZombieGame->targetResolution.y, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, this, std::placeholders::_1, std::placeholders::_2,  std::placeholders::_3)),
+      state(_state), inventoryIconPool(500, std::bind(&Hud::createInventoryIcon, this))
 {
     fullscreen = true;
 
@@ -243,4 +245,9 @@ bool Hud::typicalElementControl(Element* element, sf::RenderWindow* window, sf::
     }
 
     return false;
+}
+
+InventoryIcon* Hud::createInventoryIcon()
+{
+    return new InventoryIcon(this);
 }

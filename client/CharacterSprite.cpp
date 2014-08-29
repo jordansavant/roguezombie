@@ -4,6 +4,7 @@
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Graphics.hpp"
 #include "../bitengine/Math.hpp"
+#include "RZConfig.hpp"
 
 CharacterSprite::CharacterSprite(unsigned int width, unsigned int height, unsigned int baseOffsetX, unsigned int baseOffsetY)
     : character(NULL), cleanRender(true), renderX(0), renderY(0), width(width), height(height), baseOffsetX(baseOffsetX), baseOffsetY(baseOffsetY), facingRight(true), lastRenderX(0), lastRenderY(0),
@@ -70,7 +71,7 @@ void CharacterSprite::update(sf::Time &gameTime)
     screenY = r.y;
     r.x -= spriteWidth / 2;// + xFootOffset / 2;
     r.y -= yFootOffset;
-    float z = bit::Math::calculateDrawDepth(r.y + spriteHeight);
+    float z = bit::Math::calculateDrawDepthByRange(r.y + spriteHeight, RZConfig::zrenderRange);
 
     // Color and luminence
     int rr = character->BodyClient::schema.rshade * character->BodyClient::schema.illumination;

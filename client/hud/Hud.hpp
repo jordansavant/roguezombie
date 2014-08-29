@@ -20,6 +20,7 @@ class Console;
 class TurnQueue;
 class ActionBar;
 class Tooltip;
+class InventoryIcon;
 
 class Hud : public bit::Container
 {
@@ -44,6 +45,7 @@ public:
     sf::Texture interfaceTexture;
     bit::VertexMap interfaceVertexMap;
     sf::Font journalFont;
+    bit::Pool<InventoryIcon> inventoryIconPool;
     static float hoverlessOpacity;
     static float popupOpacity;
 
@@ -78,6 +80,8 @@ public:
     bool typicalContainerControl(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime);
 
     bool typicalElementControl(Element* element, sf::RenderWindow* window, sf::Time* gameTime);
+
+    InventoryIcon* createInventoryIcon();
 };
 
 #endif

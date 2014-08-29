@@ -379,3 +379,16 @@ std::string Item::getSpriteName(Type type)
             return "Crowbar";
     }
 }
+
+std::string Item::getIconName(Type type)
+{
+    switch(type)
+    {
+        default:
+        case Type::None:
+            return "unknown";
+
+        case Type::Magnum357:
+            return "Magnum357";
+    }
+}
