@@ -994,6 +994,62 @@ bool Character::moveInventoryItemToLootPosition(unsigned int itemId, unsigned in
     return false;
 }
 
+
+bool Character::moveEquipmentToLootPosition(EquipmentSlot slot, unsigned int position)
+{
+    // If I have an inventory host
+    if(inventoryHost)
+    {
+        // SWAP
+        // See if they have an item
+        Item* theirItem = inventoryHost->findItemByPosition(position);
+        if(theirItem)
+        {
+            // Check that their item will go in this slot
+            if(!slotAcceptsItem(slot, theirItem))
+            {
+                return false;
+            }
+
+            // Make sure I have the equipment
+            Item* myEquipment = equipment[slot];
+            if(myEquipment)
+            {
+                // Take my equipment off
+                voidEquipmentSlot(slot);
+                sendEquipmentRemovedEvent(slot);
+
+                // Take their item from their inventory and add it to my equipment
+                inventoryHost->removeItemFromInventory(theirItem->schema.id);
+                setEquipmentSlot(slot, theirItem);
+                sendEquipmentAddedEvent(slot);
+
+                // Add my old equipment to their position
+                inventoryHost->addItemToInventoryAtPosition(myEquipment, position);
+                return true;
+            }
+        }
+        // NO SWAP
+        // If they have no item there
+        else
+        {
+            Item* myEquipment = equipment[slot];
+            if(myEquipment)
+            {
+                // Take my equipment off
+                voidEquipmentSlot(slot);
+                sendEquipmentRemovedEvent(slot);
+
+                // Add my old equipment to their inventory
+                inventoryHost->addItemToInventoryAtPosition(myEquipment, position);
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 void Character::sendInventoryUpdate()
 {
     if(schema.isPlayerCharacter)

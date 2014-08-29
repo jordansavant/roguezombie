@@ -330,9 +330,7 @@ bool InventoryItemLabel::dropOntoLootSlot(InventoryLootSlot* slot)
         return true;
     }
 
-    return false;
-
-    // 2. Dropping from an equipment slot to this inventory cell
+    // 3. Dropping from an equipment slot to this loot cell
     if(currentEquipmentSlot)
     {
         Character::EquipmentSlot equipmentSlot = currentEquipmentSlot->slot;
@@ -357,17 +355,19 @@ bool InventoryItemLabel::dropOntoLootSlot(InventoryLootSlot* slot)
         // 2. This will naturally send one or two item updates which include the positioning information
         // 3. Response is moot
         Item::Schema schema = itemSchema;
+        Hud* hudx = hud;
         hud->state->serverRequest(
             [schema, slot, equipmentSlot](bit::ClientPacket& requestPacket)
             {
-                requestPacket << sf::Uint32(ClientRequest::MoveEquippedItemToInventoryPosition);
+                requestPacket << sf::Uint32(ClientRequest::MoveEquippedItemToLootPosition);
                 requestPacket << sf::Uint32(equipmentSlot);
                 requestPacket << sf::Uint32(slot->position);
             },
-            [schema](bit::ServerPacket& responsePacket)
+            [hudx, schema](bit::ServerPacket& responsePacket)
             {
                 bool success;
                 responsePacket >> success;
+                hudx->lootMenu->syncInventory();
             }
         );
 

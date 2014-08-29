@@ -89,6 +89,12 @@ enum ClientRequest
     // If the position is taken it is swapped with the inventory 
     // Return is constantly void
     MoveInventoryItemToLootPosition,
+
+    // Moves a loot item to an equipment slot
+    MoveLootItemToEquipmentSlot,
+
+    // Moves a piece of equipment to a loot slot
+    MoveEquippedItemToLootPosition,
 };
 
 #endif
