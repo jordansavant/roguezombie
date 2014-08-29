@@ -1,4 +1,5 @@
 #include "InventoryItemLabel.hpp"
+#include "InventoryIcon.hpp"
 #include "InventoryPositionSlot.hpp"
 #include "InventoryEquipmentSlot.hpp"
 #include "InventoryLootSlot.hpp"
@@ -10,7 +11,7 @@
 #include "../../server/ClientRequest.hpp"
 
 InventoryItemLabel::InventoryItemLabel(Hud* hud, ItemClient* item, float relativeX, float relativeY, AnchorType anchorType)
-    : bit::Label(relativeX, relativeY, 0, 0, anchorType), hud(hud), itemSchema(item->schema), currentEquipmentSlot(NULL), currentPositionSlot(NULL), currentLootSlot(NULL)
+    : bit::Label(relativeX, relativeY, 0, 0, anchorType), hud(hud), itemSchema(item->schema), icon(NULL), currentEquipmentSlot(NULL), currentPositionSlot(NULL), currentLootSlot(NULL)
 {
     setSfFontSize(24);
     setSfFont(hud->journalFont);
@@ -63,7 +64,38 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, ItemClient* item, float relativ
 
         return false;
     });
+
+    icon = hud->inventoryIconPool.fetch();
+    icon->set(std::string("icon_" + Item::getIconName(item->schema.type)));
 }
+
+InventoryItemLabel::~InventoryItemLabel()
+{
+    if(icon)
+    {
+        bit::VertexHelper::resetQuad(&icon->map->vertexArray[icon->quadIndex]);
+        delete icon;
+    }
+}
+
+void InventoryItemLabel::cleanUp()
+{
+    hud->inventoryIconPool.recycle(icon);
+    icon = NULL;
+}
+
+void InventoryItemLabel::updateTargets(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    bit::Label::updateTargets(window, gameTime);
+}
+
+void InventoryItemLabel::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    bit::Label::updateReals(window, gameTime);
+
+    icon->position(left, top, Hud::zindex_icons, 64, 64);
+}
+
 
 
 bool InventoryItemLabel::dropOntoEquipmentSlot(InventoryEquipmentSlot* slot)

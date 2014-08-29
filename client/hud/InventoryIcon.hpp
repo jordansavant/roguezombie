@@ -20,8 +20,11 @@ public:
     unsigned int quadIndex;
     sf::Color color;
     bit::VertexMap* map;
+    bit::Sprite* sprite;
 
     void set(std::string &spritename);
+
+    void position(int x, int y, int z, int width, int height);
 
     void reset();
 };
