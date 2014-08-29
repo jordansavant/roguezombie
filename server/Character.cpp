@@ -833,6 +833,34 @@ bool Character::moveItemToPosition(unsigned int itemId, unsigned int position)
     return true;
 }
 
+// Takes an existing loot item and moves its loot position
+// If another items exists at the new location they are swapped
+// Basically rearranges the accessing container
+bool Character::moveLootItemToLootPosition(unsigned int itemId, unsigned int position)
+{
+    if(inventoryHost)
+    {
+        // Find one by id and the other by position
+        Item* existing = inventoryHost->findItemByPosition(position);
+        Item* item = inventoryHost->findItemInInventory(itemId);
+
+        // If I had an item at the position
+        if(existing && item)
+        {
+            // Switch positions on the items
+            existing->schema.position = item->schema.position;
+            item->schema.position = position;
+        }
+        else if(item)
+        {
+            // Just set the new position
+            item->schema.position = position;
+        }
+    }
+
+    return true;
+}
+
 // Takes equipment and moves it to the inventory at the specified position
 // If an item is present there it will need to check that it is acceptable
 // If so it will swap them

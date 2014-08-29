@@ -100,6 +100,9 @@ enum ClientRequest
 
     // Moves a piece of equipment to a loot slot
     MoveEquippedItemToLootPosition,
+
+    // Moves a loot item to another position within the loot inventory (rearrange)
+    MoveLootItemToLootPosition,
 };
 
 #endif

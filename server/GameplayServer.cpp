@@ -505,6 +505,20 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
             break;
         }
 
+        case ClientRequest::MoveLootItemToLootPosition:
+        {
+            bit::Output::Debug("Server detect request move loot to loot request");
+            
+            unsigned int itemId;
+            packet >> itemId;
+            unsigned int position;
+            packet >> position;
+
+            responsePacket << player->character->moveLootItemToLootPosition(itemId, position);
+
+            break;
+        }
+
         case ClientRequest::MoveEquippedItemToLootPosition:
         {
             bit::Output::Debug("Server detect request move equipment to loot request");

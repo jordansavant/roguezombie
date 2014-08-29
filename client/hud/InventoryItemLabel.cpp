@@ -61,6 +61,7 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, ItemClient* item, float relativ
             }
         }
 
+        return false;
     });
 }
 
@@ -320,10 +321,41 @@ bool InventoryItemLabel::dropOntoLootSlot(InventoryLootSlot* slot)
     // 3. Dropping from an equipment slot to this loot cell
 
     // 1. Dropping from another loot cell to this loot cell
-    if(currentLootSlot)
+    if(currentLootSlot && currentLootSlot != slot)
     {
-        // not supported yet
-        return false;
+        // Visual prediction:
+        // 1. Remove it from the current parent
+        // 2. Take what is in the new parent, if anything
+        // 3. Add this to the new parent
+        // 4. Add the other to the old parent, if anything
+        currentLootSlot->moveChild(slot, this);
+
+        // Position within the grid slot
+        relativePosition.x = 0;
+        relativePosition.y = 0;
+
+        // Networking:
+        // 1. Request the server move the item, which includes the swap process
+        // 2. This will naturally send one or two item updates which include the positioning information
+        // 3. Response is moot
+        Item::Schema schema = itemSchema;
+        Hud* hudx = hud;
+        hud->state->serverRequest(
+            [schema, slot](bit::ClientPacket& requestPacket)
+            {
+                requestPacket << sf::Uint32(ClientRequest::MoveLootItemToLootPosition);
+                requestPacket << sf::Uint32(schema.id);
+                requestPacket << sf::Uint32(slot->position);
+            },
+            [hudx, schema](bit::ServerPacket& responsePacket)
+            {
+                bool success;
+                responsePacket >> success;
+                hudx->lootMenu->syncInventory();
+            }
+        );
+
+        return true;
     }
 
     // 2. Dropping from an inventory cell into this loot cell
