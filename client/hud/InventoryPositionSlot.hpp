@@ -17,9 +17,8 @@ class InventoryPositionSlot : public Frame
 {
 public:
 
-    InventoryPositionSlot(Hud* hud, unsigned int position, Inventory* inventory, float relativeX, float relativeY, float width, float height, AnchorType anchorType);
+    InventoryPositionSlot(Hud* hud, unsigned int position, float relativeX, float relativeY, float width, float height, AnchorType anchorType);
 
-    Inventory* inventory;
     InventoryItemLabel* equippedItemLabel;
     unsigned int position;
 

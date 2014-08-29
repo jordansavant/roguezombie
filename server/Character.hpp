@@ -286,6 +286,8 @@ public:
 
     bool swapEquipment(EquipmentSlot slotA, EquipmentSlot slotB);
 
+    bool moveLootItemToInventoryPosition(unsigned int itemId, unsigned int position);
+
     void sendInventoryUpdate();
     
     void sendItemUpdateEvent(Item* item);

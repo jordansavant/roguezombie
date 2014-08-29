@@ -10,6 +10,8 @@
 #include "../mission/MissionClient.hpp"
 #include "../../server/Interaction.hpp"
 #include "../TileClient.hpp"
+#include "InventoryLootSlot.hpp"
+#include "InventoryItemLabel.hpp"
 
 LootMenu::LootMenu(Hud* _hud)
     : HudMenu(_hud, 50, 0, 618, 720, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), inventory(), isActive(false)
@@ -21,6 +23,24 @@ LootMenu::LootMenu(Hud* _hud)
     entries->setSfFont(hud->journalFont);
     entries->normalColor = sf::Color::White;
     addChild(entries);
+
+    // INVENTORY SLOTS
+    int y = 72;
+    int width = 64;
+    int pad = 8;
+    int x = pad;
+    for(unsigned int j=0; j < 20; j++)
+    {
+        if(x + width + pad > targetWidth)
+        {
+            y += width + pad;
+            x = pad;
+        }
+        InventoryLootSlot* slot = new InventoryLootSlot(hud, j, x, y, width, width, bit::Element::AnchorType::TopLeft);
+        addChild(slot);
+        lootSlotBoxes.push_back(slot);
+        x += width + pad;
+    }
 }
 
 void LootMenu::update(sf::RenderWindow &window, sf::Time &gameTime)
@@ -37,7 +57,6 @@ void LootMenu::activate()
 void LootMenu::deactivate()
 {
     isActive = false;
-    clearChildren();
     hide();
 }
 
@@ -64,6 +83,22 @@ void LootMenu::show()
 void LootMenu::handleInventorySnapshot(bit::ServerPacket &packet, unsigned int tileId)
 {
     inventory.handleSnapshot(packet);
+
+    // clean up
+    for(unsigned int i=0; i < lootSlotBoxes.size(); i++)
+    {
+        lootSlotBoxes[i]->clearChildren();
+    }
+
+    unsigned int i=0;
+    for(auto iterator = inventory.itemClients.begin(); iterator != inventory.itemClients.end(); iterator++)
+    {
+        ItemClient* item = &iterator->second;
+        InventoryItemLabel* option = new InventoryItemLabel(hud, item, 0, 0, bit::Element::AnchorType::TopLeft);
+        lootSlotBoxes[item->schema.position]->addChild(option);
+        i++;
+    }
+    return;
 
     int y = 10;
     int x = 20;

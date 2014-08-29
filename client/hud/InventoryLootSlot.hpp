@@ -1,7 +1,8 @@
 #pragma once
-#ifndef RZ_INVENTORYEQUIPMENTSLOT_H
-#define RZ_INVENTORYEQUIPMENTSLOT_H
+#ifndef RZ_INVENTORYLOOTSLOT_H
+#define RZ_INVENTORYLOOTSLOT_H
 
+#include "Inventory.hpp"
 #include "Frame.hpp"
 #include "SFML/Graphics.hpp"
 #include "../../bitengine/Gui.hpp"
@@ -12,17 +13,14 @@
 class Hud;
 class InventoryItemLabel;
 
-class InventoryEquipmentSlot : public Frame
+class InventoryLootSlot : public Frame
 {
 public:
 
-    InventoryEquipmentSlot(Hud* hud, Character::EquipmentSlot slot, float relativeX, float relativeY, float width, float height, AnchorType anchorType);
+    InventoryLootSlot(Hud* hud, unsigned int position, float relativeX, float relativeY, float width, float height, AnchorType anchorType);
 
     InventoryItemLabel* equippedItemLabel;
-    Character::EquipmentSlot slot;
-    unsigned int AcceptedCategoryArmor;
-    unsigned int AcceptedCategoryWeapon;
-    unsigned int AcceptedCategoryJewelry;
+    unsigned int position;
 
     void addItemLabel(InventoryItemLabel* label);
 

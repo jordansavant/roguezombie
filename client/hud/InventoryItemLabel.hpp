@@ -10,21 +10,25 @@
 
 class InventoryEquipmentSlot;
 class InventoryPositionSlot;
+class InventoryLootSlot;
 
 class InventoryItemLabel : public bit::Label
 {
 public:
 
-    InventoryItemLabel(Inventory* inventory, ItemClient* item, float relativeX, float relativeY, AnchorType anchorType);
+    InventoryItemLabel(Hud* hud, ItemClient* item, float relativeX, float relativeY, AnchorType anchorType);
 
-    Inventory* inventory;
+    Hud* hud;
     Item::Schema itemSchema;
     InventoryEquipmentSlot* currentEquipmentSlot;
     InventoryPositionSlot* currentPositionSlot;
+    InventoryLootSlot* currentLootSlot;
 
     bool dropOntoEquipmentSlot(InventoryEquipmentSlot* slot);
 
     bool dropOntoInventorySlot(InventoryPositionSlot* slot);
+
+    bool dropOntoLootSlot(InventoryLootSlot* slot);
 
 };
 

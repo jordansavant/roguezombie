@@ -1,17 +1,19 @@
 #include "InventoryItemLabel.hpp"
 #include "InventoryPositionSlot.hpp"
 #include "InventoryEquipmentSlot.hpp"
+#include "InventoryLootSlot.hpp"
 #include "Inventory.hpp"
+#include "LootMenu.hpp"
 #include "Hud.hpp"
 #include "../StateGamePlay.hpp"
 #include "../RogueZombieGame.hpp"
 #include "../../server/ClientRequest.hpp"
 
-InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, float relativeX, float relativeY, AnchorType anchorType)
-    : bit::Label(relativeX, relativeY, 0, 0, anchorType), inventory(inventory), itemSchema(item->schema), currentEquipmentSlot(NULL), currentPositionSlot(NULL)
+InventoryItemLabel::InventoryItemLabel(Hud* hud, ItemClient* item, float relativeX, float relativeY, AnchorType anchorType)
+    : bit::Label(relativeX, relativeY, 0, 0, anchorType), hud(hud), itemSchema(item->schema), currentEquipmentSlot(NULL), currentPositionSlot(NULL), currentLootSlot(NULL)
 {
     setSfFontSize(24);
-    setSfFont(inventory->hud->journalFont);
+    setSfFont(hud->journalFont);
     normalColor = sf::Color(0, 255, 0);
     focusedColor = sf::Color::White;
     setSfFontString(std::string(Item::getTitle(item->schema.type)));
@@ -21,13 +23,13 @@ InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, f
     paddingBottom = 10;
 
     InventoryItemLabel* label = this;
-    makeDraggable(inventory->hud->state->rogueZombieGame->inputManager, NULL, [inventory, item, label] (bit::Draggable* d, Element* e) -> bool
+    makeDraggable(hud->state->rogueZombieGame->inputManager, NULL, [hud, item, label] (bit::Draggable* d, Element* e) -> bool
     {
         // Check the equipment slots to see if it is being hovered when the drop occurs
-        for(unsigned int i=0; i < inventory->equipmentPanel->childElements.size(); i++)
+        for(unsigned int i=0; i < hud->inventory->equipmentPanel->childElements.size(); i++)
         {
             // If the slot is not already equipped with the item and its of an acceptable type
-            InventoryEquipmentSlot* slot = static_cast<InventoryEquipmentSlot*>(inventory->equipmentPanel->childElements[i]);
+            InventoryEquipmentSlot* slot = static_cast<InventoryEquipmentSlot*>(hud->inventory->equipmentPanel->childElements[i]);
             if(slot->isInfocus && slot->equippedItemLabel != e && slot->acceptsLabel(label))
             {
                 // Drop the item into the slot
@@ -37,47 +39,28 @@ InventoryItemLabel::InventoryItemLabel(Inventory* inventory, ItemClient* item, f
 
 
         // Check the inventory slots to see if it is being hovered when the drop occurs
-        for(unsigned int i=0; i < inventory->positionSlotBoxes.size(); i++)
+        for(unsigned int i=0; i < hud->inventory->positionSlotBoxes.size(); i++)
         {
             // If the slot is not already equipped with the item and its of an acceptable type
-            InventoryPositionSlot* slot = static_cast<InventoryPositionSlot*>(inventory->positionSlotBoxes[i]);
+            InventoryPositionSlot* slot = static_cast<InventoryPositionSlot*>(hud->inventory->positionSlotBoxes[i]);
             if(slot->isInfocus && slot->equippedItemLabel != e && slot->acceptsLabel(label))
             {
                 return label->dropOntoInventorySlot(slot);
             }
         }
-
         
-        // If dropping into the inventory
-        if(inventory->inventoryPanel->isInfocus)
+
+        // Check the loot slots to see if it is being hovered when the drop occurs
+        for(unsigned int i=0; i < hud->lootMenu->lootSlotBoxes.size(); i++)
         {
-            // See which equipment slot it came from
-            for(unsigned int i=0; i < inventory->equipmentPanel->childElements.size(); i++)
+            // If the slot is not already equipped with the item and its of an acceptable type
+            InventoryLootSlot* slot = static_cast<InventoryLootSlot*>(hud->lootMenu->lootSlotBoxes[i]);
+            if(slot->isInfocus && slot->equippedItemLabel != e && slot->acceptsLabel(label))
             {
-                InventoryEquipmentSlot* slot = static_cast<InventoryEquipmentSlot*>(inventory->equipmentPanel->childElements[i]);
-                if(slot->equippedItemLabel == e)
-                {
-                    // If it did come from an equipment slot send the unequip packet
-                    inventory->hud->state->serverRequest(
-                        [slot](bit::ClientPacket& requestPacket)
-                        {
-                            requestPacket <<sf::Uint32(ClientRequest::UnequipItemFromSlotToInventory);
-                            requestPacket << sf::Uint32(slot->slot);
-                        },
-                        [](bit::ServerPacket& responsePacket)
-                        {
-                        }
-                    );
-                }
+                return label->dropOntoLootSlot(slot);
             }
-            bit::Container* p = static_cast<bit::Container*>(e->parentElement);
-            p->moveChild(inventory->inventoryPanel, e);
-            e->relativePosition.x = 0;
-            e->relativePosition.y = 0;
-            return true;
         }
 
-        return false;
     });
 }
 
@@ -105,7 +88,7 @@ bool InventoryItemLabel::dropOntoEquipmentSlot(InventoryEquipmentSlot* slot)
 
         // Send the request to change the equipment
         Item::Schema schema = itemSchema;
-        inventory->hud->state->serverRequest(
+        hud->state->serverRequest(
             [schema, slot](bit::ClientPacket& requestPacket)
             {
                 requestPacket << sf::Uint32(ClientRequest::EquipItemFromInventoryToSlot);
@@ -150,7 +133,7 @@ bool InventoryItemLabel::dropOntoEquipmentSlot(InventoryEquipmentSlot* slot)
         // 2. This will naturally send one or two item updates which include the positioning information
         // 3. Response is moot
         Item::Schema schema = itemSchema;
-        inventory->hud->state->serverRequest(
+        hud->state->serverRequest(
             [schema, slot, slotA, slotB](bit::ClientPacket& requestPacket)
             {
                 requestPacket << sf::Uint32(ClientRequest::SwapEquipmentBySlot);
@@ -198,7 +181,7 @@ bool InventoryItemLabel::dropOntoInventorySlot(InventoryPositionSlot* slot)
         // 2. This will naturally send one or two item updates which include the positioning information
         // 3. Response is moot
         Item::Schema schema = itemSchema;
-        inventory->hud->state->serverRequest(
+        hud->state->serverRequest(
             [schema, slot](bit::ClientPacket& requestPacket)
             {
                 requestPacket << sf::Uint32(ClientRequest::MoveInventoryItemToPosition);
@@ -240,7 +223,129 @@ bool InventoryItemLabel::dropOntoInventorySlot(InventoryPositionSlot* slot)
         // 2. This will naturally send one or two item updates which include the positioning information
         // 3. Response is moot
         Item::Schema schema = itemSchema;
-        inventory->hud->state->serverRequest(
+        hud->state->serverRequest(
+            [schema, slot, equipmentSlot](bit::ClientPacket& requestPacket)
+            {
+                requestPacket << sf::Uint32(ClientRequest::MoveEquippedItemToInventoryPosition);
+                requestPacket << sf::Uint32(equipmentSlot);
+                requestPacket << sf::Uint32(slot->position);
+            },
+            [schema](bit::ServerPacket& responsePacket)
+            {
+                bool success;
+                responsePacket >> success;
+            }
+        );
+
+        return true;
+    }
+
+    // 3. Dropping from a loot cell into this inventory cell
+    if(currentLootSlot)
+    {
+        currentLootSlot->moveChild(slot, this);
+
+        // Position within the grid slot
+        relativePosition.x = 0;
+        relativePosition.y = 0;
+
+        // Networking:
+        // 1. Request the server move the item, which includes the swap process
+        // 2. This will naturally send one or two item updates which include the positioning information
+        // 3. Response is moot
+        Item::Schema schema = itemSchema;
+        hud->state->serverRequest(
+            [schema, slot](bit::ClientPacket& requestPacket)
+            {
+                requestPacket << sf::Uint32(ClientRequest::MoveLootItemToInventoryPosition);
+                requestPacket << sf::Uint32(schema.id);
+                requestPacket << sf::Uint32(slot->position);
+            },
+            [schema](bit::ServerPacket& responsePacket)
+            {
+                bool success;
+                responsePacket >> success;
+            }
+        );
+
+        return true;
+    }
+
+    return false;
+}
+
+
+bool InventoryItemLabel::dropOntoLootSlot(InventoryLootSlot* slot)
+{
+    // There are three operations that cause this:
+    // 1. Dropping from another loot cell to this loot cell
+    // 2. Dropping from an equipment slot to this loot cell
+    // 3. Dropping from an inventory cell into this loot cell
+    return false;
+
+    // 1. Dropping from another inventory cell to this inventory cell
+    if(currentPositionSlot)
+    {
+        // Visual prediction:
+        // 1. Remove it from the current parent
+        // 2. Take what is in the new parent, if anything
+        // 3. Add this to the new parent
+        // 4. Add the other to the old parent, if anything
+        currentPositionSlot->moveChild(slot, this);
+        
+
+        // Position within the grid slot
+        relativePosition.x = 0;
+        relativePosition.y = 0;
+
+        // Networking:
+        // 1. Request the server move the item, which includes the swap process
+        // 2. This will naturally send one or two item updates which include the positioning information
+        // 3. Response is moot
+        Item::Schema schema = itemSchema;
+        hud->state->serverRequest(
+            [schema, slot](bit::ClientPacket& requestPacket)
+            {
+                requestPacket << sf::Uint32(ClientRequest::MoveInventoryItemToPosition);
+                requestPacket << sf::Uint32(schema.id);
+                requestPacket << sf::Uint32(slot->position);
+            },
+            [schema](bit::ServerPacket& responsePacket)
+            {
+                bool success;
+                responsePacket >> success;
+            }
+        );
+
+        return true;
+    }
+
+    // 2. Dropping from an equipment slot to this inventory cell
+    if(currentEquipmentSlot)
+    {
+        Character::EquipmentSlot equipmentSlot = currentEquipmentSlot->slot;
+
+        // If the destination cell has an item already
+        if(slot->equippedItemLabel)
+        {
+            // Make sure the equipment slot can take that item
+            if(!currentEquipmentSlot->acceptsLabel(slot->equippedItemLabel))
+                return false;
+        }
+
+        // Visual prediction:
+        currentEquipmentSlot->moveChild(slot, this);
+        
+        // Position within the grid slot
+        relativePosition.x = 0;
+        relativePosition.y = 0;
+
+        // Networking:
+        // 1. Request the server move the item, which includes the swap process
+        // 2. This will naturally send one or two item updates which include the positioning information
+        // 3. Response is moot
+        Item::Schema schema = itemSchema;
+        hud->state->serverRequest(
             [schema, slot, equipmentSlot](bit::ClientPacket& requestPacket)
             {
                 requestPacket << sf::Uint32(ClientRequest::MoveEquippedItemToInventoryPosition);

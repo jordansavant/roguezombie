@@ -10,6 +10,8 @@
 #include "../items/ItemClient.hpp"
 
 class Hud;
+class InventoryItemLabel;
+class InventoryLootSlot;
 
 class LootMenu : public HudMenu
 {
@@ -20,6 +22,7 @@ public:
     bit::Label* entries;
     ItemClient inventory;
     bool isActive;
+    std::vector<InventoryLootSlot*> lootSlotBoxes;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 

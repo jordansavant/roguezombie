@@ -79,6 +79,11 @@ enum ClientRequest
 
     // Switches to compatible equipments
     SwapEquipmentBySlot,
+
+    // Takes an item id, and if found in the loot inventory attempts to move it to the designated position
+    // If the position is taken it is swapped with the loot inventory 
+    // Return is constantly void
+    MoveLootItemToInventoryPosition,
 };
 
 #endif

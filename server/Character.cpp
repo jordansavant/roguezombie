@@ -905,6 +905,32 @@ bool Character::swapEquipment(EquipmentSlot slotA, EquipmentSlot slotB)
     return false;
 }
 
+bool Character::moveLootItemToInventoryPosition(unsigned int itemId, unsigned int position)
+{
+    // If I have an inventory host
+    if(inventoryHost)
+    {
+        // See if I have an item at the postion
+        Item* myItem = findItemByPosition(position);
+        if(myItem)
+        {
+            return false; // TODO
+        }
+        // If I dont have an item there
+        else
+        {
+            Item* theirItem = inventoryHost->removeItemFromInventory(itemId);
+            if(theirItem)
+            {
+                addItemToInventoryAtPosition(theirItem, position);
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 void Character::sendInventoryUpdate()
 {
     if(schema.isPlayerCharacter)

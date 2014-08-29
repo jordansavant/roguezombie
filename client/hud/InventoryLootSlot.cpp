@@ -1,68 +1,68 @@
 #include "InventoryItemLabel.hpp"
-#include "InventoryPositionSlot.hpp"
+#include "InventoryLootSlot.hpp"
 #include "Inventory.hpp"
 #include "Hud.hpp"
 #include "../StateGamePlay.hpp"
 #include "../RogueZombieGame.hpp"
 #include "../../server/ClientRequest.hpp"
 
-InventoryPositionSlot::InventoryPositionSlot(Hud* hud, unsigned int position, float relativeX, float relativeY, float width, float height, AnchorType anchorType)
+InventoryLootSlot::InventoryLootSlot(Hud* hud, unsigned int position, float relativeX, float relativeY, float width, float height, AnchorType anchorType)
     : Frame(hud, relativeX, relativeY, width, height, anchorType, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)),
       position(position), equippedItemLabel(NULL)
 {
     managesOpacity = true;
 }
 
-void InventoryPositionSlot::addItemLabel(InventoryItemLabel* label)
+void InventoryLootSlot::addItemLabel(InventoryItemLabel* label)
 {
-    label->currentPositionSlot = this;
+    label->currentLootSlot = this;
     addChild(label);
 }
 
-void InventoryPositionSlot::removeItemLabel()
+void InventoryLootSlot::removeItemLabel()
 {
     if(equippedItemLabel)
     {
-        equippedItemLabel->currentPositionSlot = NULL;
+        equippedItemLabel->currentLootSlot = NULL;
         equippedItemLabel = NULL;
     }
     clearChildren();
 }
 
-bool InventoryPositionSlot::acceptsLabel(InventoryItemLabel* label)
+bool InventoryLootSlot::acceptsLabel(InventoryItemLabel* label)
 {
     return true;
 }
 
-unsigned int InventoryPositionSlot::addChild(Element* child)
+unsigned int InventoryLootSlot::addChild(Element* child)
 {
     InventoryItemLabel* label = static_cast<InventoryItemLabel*>(child);
     equippedItemLabel = label;
-    equippedItemLabel->currentPositionSlot = this;
+    equippedItemLabel->currentLootSlot = this;
     return bit::Container::addChild(child);
 }
 
-void InventoryPositionSlot::moveChild(Container* other, unsigned int index)
+void InventoryLootSlot::moveChild(Container* other, unsigned int index)
 {
     bit::Container::moveChild(other, index);
     if(equippedItemLabel)
     {
-        equippedItemLabel->currentPositionSlot = NULL;
+        equippedItemLabel->currentLootSlot = NULL;
         equippedItemLabel = NULL;
     }
 }
 
-void InventoryPositionSlot::moveChild(Container* other, Element* child)
+void InventoryLootSlot::moveChild(Container* other, Element* child)
 {
     bit::Container::moveChild(other, child);
 }
 
-void InventoryPositionSlot::removeChild(unsigned int index)
+void InventoryLootSlot::removeChild(unsigned int index)
 {
     bit::Container::removeChild(index);
     if(equippedItemLabel)
     {
-        equippedItemLabel->currentPositionSlot = NULL;
+        equippedItemLabel->currentLootSlot = NULL;
         equippedItemLabel = NULL;
     }
 }
