@@ -8,21 +8,29 @@
 #include "../../bitengine/Graphics.hpp"
 #include "../items/ItemClient.hpp"
 
+class InventoryIcon;
 class InventoryEquipmentSlot;
 class InventoryPositionSlot;
 class InventoryLootSlot;
 
-class InventoryItemLabel : public bit::Label
+class InventoryItemLabel : public bit::Element
 {
 public:
 
     InventoryItemLabel(Hud* hud, ItemClient* item, float relativeX, float relativeY, AnchorType anchorType);
 
+    virtual ~InventoryItemLabel();
+
     Hud* hud;
     Item::Schema itemSchema;
+    InventoryIcon* icon;
     InventoryEquipmentSlot* currentEquipmentSlot;
     InventoryPositionSlot* currentPositionSlot;
     InventoryLootSlot* currentLootSlot;
+
+    void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
+
+    void updateReals(sf::RenderWindow &window, sf::Time &gameTime);
 
     bool dropOntoEquipmentSlot(InventoryEquipmentSlot* slot);
 

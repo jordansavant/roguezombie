@@ -1,4 +1,5 @@
 #include "InventoryItemLabel.hpp"
+#include "InventoryIcon.hpp"
 #include "InventoryPositionSlot.hpp"
 #include "InventoryEquipmentSlot.hpp"
 #include "InventoryLootSlot.hpp"
@@ -10,17 +11,10 @@
 #include "../../server/ClientRequest.hpp"
 
 InventoryItemLabel::InventoryItemLabel(Hud* hud, ItemClient* item, float relativeX, float relativeY, AnchorType anchorType)
-    : bit::Label(relativeX, relativeY, 0, 0, anchorType), hud(hud), itemSchema(item->schema), currentEquipmentSlot(NULL), currentPositionSlot(NULL), currentLootSlot(NULL)
+    : bit::Element(relativeX, relativeY, 64, 64, anchorType), hud(hud), itemSchema(item->schema), icon(NULL), currentEquipmentSlot(NULL), currentPositionSlot(NULL), currentLootSlot(NULL)
 {
-    setSfFontSize(24);
-    setSfFont(hud->journalFont);
-    normalColor = sf::Color(0, 255, 0);
-    focusedColor = sf::Color::White;
-    setSfFontString(std::string(Item::getTitle(item->schema.type)));
     canHaveFocus = true;
-    paddingRight = 10;
     opacity = 0;
-    paddingBottom = 10;
 
     InventoryItemLabel* label = this;
     makeDraggable(hud->state->rogueZombieGame->inputManager, NULL, [hud, item, label] (bit::Draggable* d, Element* e) -> bool
@@ -63,7 +57,38 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, ItemClient* item, float relativ
 
         return false;
     });
+
+    icon = hud->inventoryIconPool.fetch();
+    icon->set(std::string("icon_" + Item::getIconName(item->schema.type)));
 }
+
+InventoryItemLabel::~InventoryItemLabel()
+{
+    if(icon)
+    {
+        if(Hud::destroying)
+        {
+            delete icon;
+        }
+        else
+        {
+            hud->inventoryIconPool.recycle(icon);
+        }
+    }
+}
+
+void InventoryItemLabel::updateTargets(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    bit::Element::updateTargets(window, gameTime);
+}
+
+void InventoryItemLabel::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    bit::Element::updateReals(window, gameTime);
+
+    icon->position(left, top, Hud::zindex_icons, 64, 64, elementScale);
+}
+
 
 
 bool InventoryItemLabel::dropOntoEquipmentSlot(InventoryEquipmentSlot* slot)

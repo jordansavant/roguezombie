@@ -96,6 +96,7 @@ void Frame::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     Container::updateReals(window, gameTime);
 
     int x, y, w, h;
+    float z = Hud::zindex_frames;
 
     // Top left corner
     x = (int)left;
@@ -103,7 +104,7 @@ void Frame::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     w = cornerSprite->width;
     h = cornerSprite->height;
     cornerSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[topLeftQuadIndex]);
-    bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[topLeftQuadIndex], x, y, 1, w, h);
+    bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[topLeftQuadIndex], x, y, z, w, h);
 
     // Top right corner
     x = (int)left + (int)width - cornerSprite->width;
@@ -112,7 +113,7 @@ void Frame::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     h = cornerSprite->height;
     cornerSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[topRightQuadIndex]);
     bit::VertexHelper::flipQuad(&hud->interfaceVertexMap.vertexArray[topRightQuadIndex], true, false);
-    bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[topRightQuadIndex], x, y, 1, w, h);
+    bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[topRightQuadIndex], x, y, z, w, h);
 
     // Bottom left corner
     x = (int)left;
@@ -121,7 +122,7 @@ void Frame::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     h = cornerSprite->height;
     cornerSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[bottomLeftQuadIndex]);
     bit::VertexHelper::flipQuad(&hud->interfaceVertexMap.vertexArray[bottomLeftQuadIndex], false, true);
-    bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[bottomLeftQuadIndex], x, y, 1, w, h);
+    bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[bottomLeftQuadIndex], x, y, z, w, h);
     
     // Bottom right corner
     x = (int)left + (int)width - cornerSprite->width;
@@ -130,7 +131,7 @@ void Frame::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     h = cornerSprite->height;
     cornerSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[bottomRightQuadIndex]);
     bit::VertexHelper::flipQuad(&hud->interfaceVertexMap.vertexArray[bottomRightQuadIndex], true, true);
-    bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[bottomRightQuadIndex], x, y, 1, w, h);
+    bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[bottomRightQuadIndex], x, y, z, w, h);
 
     // Top
     x = (int)left + cornerSprite->width;
@@ -138,7 +139,7 @@ void Frame::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     w = (int)width - cornerSprite->width * 2;
     h = topEdgeSprite->height;
     topEdgeSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[topQuadIndex]);
-    bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[topQuadIndex], x, y, 1, w, h);
+    bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[topQuadIndex], x, y, z, w, h);
 
     // Bottom
     x = (int)left + cornerSprite->width;
@@ -146,7 +147,7 @@ void Frame::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     w = (int)width - cornerSprite->width * 2;
     h = bottomEdgeSprite->height;
     bottomEdgeSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[bottomQuadIndex]);
-    bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[bottomQuadIndex], x, y, 1, w, h);
+    bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[bottomQuadIndex], x, y, z, w, h);
 
     // Left
     x = (int)left;
@@ -154,7 +155,7 @@ void Frame::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     w = leftEdgeSprite->width;
     h = (int)height - cornerSprite->height * 2;
     leftEdgeSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[leftQuadIndex]);
-    bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[leftQuadIndex], x, y, 1, w, h);
+    bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[leftQuadIndex], x, y, z, w, h);
 
     // Right
     w = (int)height - topEdgeSprite->height * 2;
@@ -167,7 +168,7 @@ void Frame::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     w = rightEdgeSprite->width;
     h = (int)height - cornerSprite->height * 2;
     rightEdgeSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[rightQuadIndex]);
-    bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[rightQuadIndex], x, y, 1, w, h);
+    bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[rightQuadIndex], x, y, z, w, h);
 
     // Background
     x = (int)left + cornerSprite->width;
@@ -175,7 +176,7 @@ void Frame::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     w = (int)width - cornerSprite->width * 2;
     h = (int)height - cornerSprite->height * 2;
     backgroundSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[backgroundQuadIndex]);
-    bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[backgroundQuadIndex], x, y, 1, w, h);
+    bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[backgroundQuadIndex], x, y, z, w, h);
 
     // Bottom Pointer
     if(useBottomPointer)
@@ -185,6 +186,6 @@ void Frame::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
         w = bottomPointerSprite->width;
         h = bottomPointerSprite->height;
         bottomPointerSprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[bottomPointerQuadIndex]);
-        bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[bottomPointerQuadIndex], x, y, 1, w, h);
+        bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[bottomPointerQuadIndex], x, y, z, w, h);
     }
 }

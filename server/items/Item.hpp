@@ -134,6 +134,9 @@ public:
     static std::string getTitle(Type type);
 
     static std::string getSpriteName(Type type);
+
+    static std::string getIconName(Type type);
+
 };
 
 #endif

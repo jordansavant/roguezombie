@@ -20,12 +20,15 @@ class Console;
 class TurnQueue;
 class ActionBar;
 class Tooltip;
+class InventoryIcon;
 
 class Hud : public bit::Container
 {
 public:
 
     Hud(StateGamePlay* state);
+
+    virtual ~Hud();
 
     StateGamePlay* state;
     std::vector<HudMenu*> submenus;
@@ -44,8 +47,14 @@ public:
     sf::Texture interfaceTexture;
     bit::VertexMap interfaceVertexMap;
     sf::Font journalFont;
+    bit::Pool<InventoryIcon> inventoryIconPool;
+
+    static bool destroying;
     static float hoverlessOpacity;
     static float popupOpacity;
+    static float zindex_icons;
+    static float zindex_cells;
+    static float zindex_frames;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
@@ -78,6 +87,8 @@ public:
     bool typicalContainerControl(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime);
 
     bool typicalElementControl(Element* element, sf::RenderWindow* window, sf::Time* gameTime);
+
+    InventoryIcon* createInventoryIcon();
 };
 
 #endif

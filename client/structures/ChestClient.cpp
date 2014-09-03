@@ -4,6 +4,7 @@
 #include "../LevelClient.hpp"
 #include "../StateGamePlay.hpp"
 #include "../RogueZombieGame.hpp"
+#include "../RZConfig.hpp"
 #include "../../bitengine/Game.hpp"
 #include "../../bitengine/Graphics.hpp"
 #include "../../bitengine/Network.hpp"
@@ -45,7 +46,7 @@ void ChestClient::clientUpdate(sf::Time &gameTime)
     float renderX = renderPosition.x - spriteWidth / 2 + xFootOffset / 2;
     float renderY = renderPosition.y - spriteHeight + yFootOffset;
 
-    float z = bit::Math::calculateDrawDepth(renderY + spriteHeight);
+    float z = bit::Math::calculateDrawDepthByRange(renderY + spriteHeight, RZConfig::zrenderRange);
     bit::Vertex3* quad = &level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex];
     bit::VertexHelper::positionQuad(quad, renderX, renderY, z, spriteWidth, spriteHeight);
 
