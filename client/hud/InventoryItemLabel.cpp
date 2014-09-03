@@ -73,8 +73,14 @@ InventoryItemLabel::~InventoryItemLabel()
 {
     if(icon)
     {
-        bit::VertexHelper::resetQuad(&icon->map->vertexArray[icon->quadIndex]);
-        delete icon;
+        if(Hud::destroying)
+        {
+            delete icon;
+        }
+        else
+        {
+            hud->inventoryIconPool.recycle(icon);
+        }
     }
 }
 

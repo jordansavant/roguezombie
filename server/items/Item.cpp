@@ -390,5 +390,8 @@ std::string Item::getIconName(Type type)
 
         case Type::Magnum357:
             return "Magnum357";
+
+        case Type::Z4Rifle:
+            return "Z4Rifle";
     }
 }

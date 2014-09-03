@@ -28,6 +28,8 @@ public:
 
     Hud(StateGamePlay* state);
 
+    virtual ~Hud();
+
     StateGamePlay* state;
     std::vector<HudMenu*> submenus;
     OptionsBar* optionsBar;
@@ -47,6 +49,7 @@ public:
     sf::Font journalFont;
     bit::Pool<InventoryIcon> inventoryIconPool;
 
+    static bool destroying;
     static float hoverlessOpacity;
     static float popupOpacity;
     static float zindex_icons;

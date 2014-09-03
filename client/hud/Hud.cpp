@@ -18,6 +18,7 @@
 #include "../LevelClient.hpp"
 #include "../RogueZombieGame.hpp"
 
+bool Hud::destroying = false;
 float Hud::hoverlessOpacity = .5f;
 float Hud::popupOpacity = .7f;
 float Hud::zindex_icons = 1.0f;
@@ -28,6 +29,7 @@ Hud::Hud(StateGamePlay* _state)
     : bit::Container(0, 0, _state->rogueZombieGame->targetResolution.x, _state->rogueZombieGame->targetResolution.y, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, this, std::placeholders::_1, std::placeholders::_2,  std::placeholders::_3)),
       state(_state), inventoryIconPool(500, std::bind(&Hud::createInventoryIcon, this))
 {
+    destroying = false;
     fullscreen = true;
 
     // Assets
@@ -81,6 +83,11 @@ Hud::Hud(StateGamePlay* _state)
 
     tooltip = new Tooltip(this);
     addChild(tooltip);
+}
+
+Hud::~Hud()
+{
+    destroying = true;
 }
 
 void Hud::update(sf::RenderWindow &window, sf::Time &gameTime)
