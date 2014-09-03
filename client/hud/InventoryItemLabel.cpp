@@ -11,17 +11,10 @@
 #include "../../server/ClientRequest.hpp"
 
 InventoryItemLabel::InventoryItemLabel(Hud* hud, ItemClient* item, float relativeX, float relativeY, AnchorType anchorType)
-    : bit::Label(relativeX, relativeY, 0, 0, anchorType), hud(hud), itemSchema(item->schema), icon(NULL), currentEquipmentSlot(NULL), currentPositionSlot(NULL), currentLootSlot(NULL)
+    : bit::Element(relativeX, relativeY, 64, 64, anchorType), hud(hud), itemSchema(item->schema), icon(NULL), currentEquipmentSlot(NULL), currentPositionSlot(NULL), currentLootSlot(NULL)
 {
-    setSfFontSize(24);
-    setSfFont(hud->journalFont);
-    normalColor = sf::Color(0, 255, 0);
-    focusedColor = sf::Color::White;
-    setSfFontString(std::string(Item::getTitle(item->schema.type)));
     canHaveFocus = true;
-    paddingRight = 10;
     opacity = 0;
-    paddingBottom = 10;
 
     InventoryItemLabel* label = this;
     makeDraggable(hud->state->rogueZombieGame->inputManager, NULL, [hud, item, label] (bit::Draggable* d, Element* e) -> bool
@@ -84,22 +77,16 @@ InventoryItemLabel::~InventoryItemLabel()
     }
 }
 
-void InventoryItemLabel::cleanUp()
-{
-    hud->inventoryIconPool.recycle(icon);
-    icon = NULL;
-}
-
 void InventoryItemLabel::updateTargets(sf::RenderWindow &window, sf::Time &gameTime)
 {
-    bit::Label::updateTargets(window, gameTime);
+    bit::Element::updateTargets(window, gameTime);
 }
 
 void InventoryItemLabel::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
 {
-    bit::Label::updateReals(window, gameTime);
+    bit::Element::updateReals(window, gameTime);
 
-    icon->position(left, top, Hud::zindex_icons, 64, 64);
+    icon->position(left, top, Hud::zindex_icons, 64, 64, elementScale);
 }
 
 

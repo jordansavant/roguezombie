@@ -35,6 +35,7 @@ Hud::Hud(StateGamePlay* _state)
     // Assets
     state->rogueZombieGame->spriteLoader->loadSprites(resourcePath() + "interface_01.csv");
     interfaceTexture.loadFromFile(resourcePath() + "interface_01.png");
+    interfaceTexture.setSmooth(false);
     interfaceVertexMap.load(&interfaceTexture, sf::PrimitiveType::Quads);
     journalFont.loadFromFile(resourcePath() + "OCRAEXT.TTF");
     

@@ -13,7 +13,7 @@ class InventoryEquipmentSlot;
 class InventoryPositionSlot;
 class InventoryLootSlot;
 
-class InventoryItemLabel : public bit::Label
+class InventoryItemLabel : public bit::Element
 {
 public:
 
@@ -27,8 +27,6 @@ public:
     InventoryEquipmentSlot* currentEquipmentSlot;
     InventoryPositionSlot* currentPositionSlot;
     InventoryLootSlot* currentLootSlot;
-
-    void cleanUp();
 
     void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
 

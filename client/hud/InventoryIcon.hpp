@@ -24,7 +24,7 @@ public:
 
     void set(std::string &spritename);
 
-    void position(int x, int y, int z, int width, int height);
+    void position(int x, int y, int z, int width, int height, float scale);
 
     void reset();
 };

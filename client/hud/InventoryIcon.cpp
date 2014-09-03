@@ -20,10 +20,10 @@ void InventoryIcon::set(std::string &spriteName)
     bit::VertexHelper::resetQuad(&map->vertexArray[quadIndex]);
 }
 
-void InventoryIcon::position(int x, int y, int z, int width, int height)
+void InventoryIcon::position(int x, int y, int z, int width, int height, float scale)
 {
     sprite->applyToQuad(&map->vertexArray[quadIndex]);
-    bit::VertexHelper::positionQuad(&map->vertexArray[quadIndex], x, y, z, width, height);
+    bit::VertexHelper::positionQuad(&map->vertexArray[quadIndex], x, y, z, width, height, scale);
 }
 
 void InventoryIcon::reset()

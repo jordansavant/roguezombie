@@ -25,7 +25,6 @@ void InventoryLootSlot::removeItemLabel()
     {
         equippedItemLabel->currentLootSlot = NULL;
         equippedItemLabel = NULL;
-        equippedItemLabel->cleanUp();
     }
     clearChildren();
 }
@@ -65,6 +64,5 @@ void InventoryLootSlot::removeChild(unsigned int index)
     {
         equippedItemLabel->currentLootSlot = NULL;
         equippedItemLabel = NULL;
-        equippedItemLabel->cleanUp();
     }
 }
