@@ -393,5 +393,8 @@ std::string Item::getIconName(Type type)
 
         case Type::Z4Rifle:
             return "Z4Rifle";
+
+        case Type::Crowbar:
+            return "Crowbar";
     }
 }
