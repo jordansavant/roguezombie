@@ -80,6 +80,11 @@ void bit::Container::update(sf::RenderWindow &window, sf::Time &gameTime)
     {
         addChild(transferChild);
         transferChild->transitFromParent = false;
+        if(transferChild->onTransmit)
+        {
+            transferChild->onTransmit(transferChild);
+            transferChild->onTransmit = NULL;
+        }
         transferChild = NULL;
     }
 
@@ -219,6 +224,7 @@ void bit::Container::clearChildren()
 void bit::Container::removeChild(unsigned int index)
 {
     delete childElements[index];
+    childElements.erase(childElements.begin() + index);
 }
 
 void bit::Container::moveChild(Container* other, unsigned int index)
@@ -252,4 +258,17 @@ void bit::Container::moveChild(Container* other, Element* child)
     {
         moveChild(other, location);
     }
+}
+
+unsigned int bit::Container::findChildIndex(Element* child)
+{
+    for(unsigned int i=0; i < childElements.size(); i++)
+    {
+        if(childElements[i] == child)
+        {
+            return i;
+        }
+    }
+
+    return 999999; // err
 }

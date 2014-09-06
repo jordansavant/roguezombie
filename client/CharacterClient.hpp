@@ -37,9 +37,19 @@ public:
 
     void handleServerEventPacket_missionCompleted(bit::ServerPacket &packet);
 
+    void handleServerEventPacket_inventoryUpdate(bit::ServerPacket &packet);
+
     void handleServerEventPacket_itemAdded(bit::ServerPacket &packet);
 
+    void handleServerEventPacket_itemUpdated(bit::ServerPacket &packet);
+
     void handleServerEventPacket_itemRemoved(bit::ServerPacket &packet);
+
+    void handleServerEventPacket_equipmentAdded(bit::ServerPacket &packet);
+
+    void handleServerEventPacket_equipmentUpdated(bit::ServerPacket &packet);
+
+    void handleServerEventPacket_equipmentRemoved(bit::ServerPacket &packet);
 };
 
 #endif

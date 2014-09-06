@@ -6,10 +6,11 @@
 #include "../RogueZombieGame.hpp"
 #include "../../server/ClientRequest.hpp"
 
-InventoryEquipmentSlot::InventoryEquipmentSlot(Hud* hud, Character::EquipmentSlot slot, Inventory* inventory, float relativeX, float relativeY, float width, float height, AnchorType anchorType)
-    : Frame(hud, relativeX, relativeY, width, height, anchorType, std::bind(&Hud::typicalContainerControl, inventory->hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), slot(slot), inventory(inventory), equippedItemLabel(NULL),
+InventoryEquipmentSlot::InventoryEquipmentSlot(Hud* hud, Character::EquipmentSlot slot, float relativeX, float relativeY, float width, float height, AnchorType anchorType)
+    : Frame(hud, relativeX, relativeY, width, height, anchorType, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), slot(slot), equippedItemLabel(NULL),
       AcceptedCategoryArmor(ItemCategory::Armor::ArmorNone), AcceptedCategoryWeapon(ItemCategory::Weapon::WeaponNone), AcceptedCategoryJewelry(ItemCategory::Jewelry::JewelryNone)
 {
+    scaleStyle = ScaleStyle::PowerOfTwo;
     managesOpacity = true;
 }
 

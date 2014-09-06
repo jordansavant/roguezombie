@@ -11,23 +11,34 @@
 #include "TurnQueue.hpp"
 #include "ActionBar.hpp"
 #include "Tooltip.hpp"
+#include "InventoryIcon.hpp"
 #include "../../ResourcePath.h"
 #include "../../bitengine/Input.hpp"
 #include "../StateGamePlay.hpp"
 #include "../LevelClient.hpp"
 #include "../RogueZombieGame.hpp"
+#include "../RZConfig.hpp"
 
+bool Hud::destroying = false;
 float Hud::hoverlessOpacity = .5f;
 float Hud::popupOpacity = .7f;
 
+float Hud::zindex_icons = .8f; // inventory icons
+float Hud::zindex_iconsDragged = 1.0f; // icons being dragged
+float Hud::zindex_cells = .1f; // containers for inventory icons
+float Hud::zindex_frames = .1f; // menu frames
+
 Hud::Hud(StateGamePlay* _state)
-    : bit::Container(0, 0, _state->rogueZombieGame->targetResolution.x, _state->rogueZombieGame->targetResolution.y, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, this, std::placeholders::_1, std::placeholders::_2,  std::placeholders::_3)), state(_state)
+    : bit::Container(0, 0, _state->rogueZombieGame->targetResolution.x, _state->rogueZombieGame->targetResolution.y, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, this, std::placeholders::_1, std::placeholders::_2,  std::placeholders::_3)),
+      state(_state), inventoryIconPool(500, std::bind(&Hud::createInventoryIcon, this))
 {
+    destroying = false;
     fullscreen = true;
 
     // Assets
     state->rogueZombieGame->spriteLoader->loadSprites(resourcePath() + "interface_01.csv");
     interfaceTexture.loadFromFile(resourcePath() + "interface_01.png");
+    interfaceTexture.setSmooth(false);
     interfaceVertexMap.load(&interfaceTexture, sf::PrimitiveType::Quads);
     journalFont.loadFromFile(resourcePath() + "OCRAEXT.TTF");
     
@@ -76,6 +87,11 @@ Hud::Hud(StateGamePlay* _state)
 
     tooltip = new Tooltip(this);
     addChild(tooltip);
+}
+
+Hud::~Hud()
+{
+    destroying = true;
 }
 
 void Hud::update(sf::RenderWindow &window, sf::Time &gameTime)
@@ -243,4 +259,15 @@ bool Hud::typicalElementControl(Element* element, sf::RenderWindow* window, sf::
     }
 
     return false;
+}
+
+InventoryIcon* Hud::createInventoryIcon()
+{
+    return new InventoryIcon(this);
+}
+
+float Hud::getDrawDepth(float targetDepth)
+{
+    // Target depth does not consider game elements
+    return 1 - bit::Math::calculateDrawDepthByRange(targetDepth, 1.0f, RZConfig::zrenderInterfaceLowerbound, RZConfig::zrenderInterfaceUpperbound);
 }

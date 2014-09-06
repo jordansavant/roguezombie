@@ -118,6 +118,24 @@ void CharacterClient::handleServerEventPacket_missionCompleted(bit::ServerPacket
     }
 }
 
+void CharacterClient::handleServerEventPacket_inventoryUpdate(bit::ServerPacket &packet)
+{
+    inventoryClient.handleSnapshot(packet);
+}
+
+void CharacterClient::handleServerEventPacket_itemUpdated(bit::ServerPacket &packet)
+{
+    ItemClient ic;
+    ic.handleSnapshot(packet);
+
+    auto result = inventoryClient.itemClients.find(ic.schema.id);
+    if(result != inventoryClient.itemClients.end())
+    {
+        inventoryClient.itemClients[ic.schema.id] = ic;
+        level->state->displayPlayerMessage(this, std::string(Item::getTitle(ic.schema.type) + " updated"));
+    }
+}
+
 void CharacterClient::handleServerEventPacket_itemAdded(bit::ServerPacket &packet)
 {
     // depth includes all parents and the new item id
@@ -176,4 +194,44 @@ void CharacterClient::handleServerEventPacket_itemRemoved(bit::ServerPacket &pac
         level->state->displayPlayerMessage(this, std::string(Item::getTitle(inventoryClient.itemClients[itemId].schema.type) + " removed"));
         inventoryClient.itemClients.erase(itemId);
     }
+}
+
+
+void CharacterClient::handleServerEventPacket_equipmentAdded(bit::ServerPacket &packet)
+{
+    Character::EquipmentSlot slot;
+    bit::NetworkHelper::unpackEnum<sf::Uint32, Character::EquipmentSlot>(packet, slot);
+
+    ItemClient ic;
+    ic.handleSnapshot(packet);
+
+    equipment[slot] = ic;
+    hasEquipment[slot] = true;
+    schema.equipmentIds[slot] = ic.schema.id;
+    level->state->displayPlayerMessage(this, std::string(Item::getTitle(equipment[slot].schema.type) + " equipped"));
+}
+
+void CharacterClient::handleServerEventPacket_equipmentUpdated(bit::ServerPacket &packet)
+{
+    Character::EquipmentSlot slot;
+    bit::NetworkHelper::unpackEnum<sf::Uint32, Character::EquipmentSlot>(packet, slot);
+
+    ItemClient ic;
+    ic.handleSnapshot(packet);
+
+    equipment[slot] = ic;
+    hasEquipment[slot] = true;
+    schema.equipmentIds[slot] = ic.schema.id;
+    level->state->displayPlayerMessage(this, std::string(Item::getTitle(equipment[slot].schema.type) + " equipped and updated"));
+}
+
+void CharacterClient::handleServerEventPacket_equipmentRemoved(bit::ServerPacket &packet)
+{
+    Character::EquipmentSlot slot;
+    bit::NetworkHelper::unpackEnum<sf::Uint32, Character::EquipmentSlot>(packet, slot);
+
+    equipment[slot] = ItemClient();
+    hasEquipment[slot] = false;
+    schema.equipmentIds[slot] = 0;
+    level->state->displayPlayerMessage(this, std::string("Equipment removed"));
 }

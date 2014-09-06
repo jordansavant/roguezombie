@@ -68,6 +68,41 @@ enum ClientRequest
     // If no slotted item exists it is ignored
     // Return is constantly void
     UnequipItemFromSlotToInventory,
+
+    // Takes an item id, and if found in the host's inventory attempts to equip it in the slot
+    // If the slot is not available or if the item does not match the criteria it fails
+    // Return is constantly void
+    EquipItemFromLootToSlot,
+
+    // Takes an item id, and if found in the inventory attempts to move it to the designated position
+    // If the position is taken it is swapped
+    // Return is constantly void
+    MoveInventoryItemToPosition,
+
+    // Takes a slot and destination position
+    MoveEquippedItemToInventoryPosition,
+
+    // Switches to compatible equipments
+    SwapEquipmentBySlot,
+
+    // Takes an item id, and if found in the loot inventory attempts to move it to the designated position
+    // If the position is taken it is swapped with the loot inventory 
+    // Return is constantly void
+    MoveLootItemToInventoryPosition,
+
+    // Takes an item id, and if found in the inventory attempts to move it to the designated position in the hosts' loot
+    // If the position is taken it is swapped with the inventory 
+    // Return is constantly void
+    MoveInventoryItemToLootPosition,
+
+    // Moves a loot item to an equipment slot
+    MoveLootItemToEquipmentSlot,
+
+    // Moves a piece of equipment to a loot slot
+    MoveEquippedItemToLootPosition,
+
+    // Moves a loot item to another position within the loot inventory (rearrange)
+    MoveLootItemToLootPosition,
 };
 
 #endif

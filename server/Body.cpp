@@ -66,8 +66,22 @@ void Body::distributedUpdate(sf::Time &gameTime)
 {
 }
 
+
+
+
+////////////////////////////////////////////////////////
+// INVENTORY
+////////////////////////////////////////////////////////
+
+
 void Body::addItemToInventory(Item* item)
 {
+    addItemToInventoryAtPosition(item, inventory->findAvailablePosition());
+}
+
+void Body::addItemToInventoryAtPosition(Item* item, unsigned int position)
+{
+    item->schema.position = position;;
     inventory->addItem(item);
 }
 
@@ -76,9 +90,38 @@ Item* Body::removeItemFromInventory(unsigned int itemId)
     Item* item = inventory->removeItem(itemId);
     if(item)
     {
+        item->schema.position = 0;
         item->parentBody = NULL;
     }
     return item;
+}
+
+Item* Body::findItemInInventory(unsigned int itemId)
+{
+    return inventory->findItem(itemId);
+}
+
+Item* Body::removeItemByPosition(unsigned int position)
+{
+    Item* found = findItemByPosition(position);
+    if(found)
+        return removeItemFromInventory(found->schema.id);
+    return NULL;
+}
+
+Item* Body::findItemByPosition(unsigned int position)
+{
+    Item* found = NULL;
+    for(unsigned int i=0; i < inventory->items.size(); i++)
+    {
+        Item* item = inventory->items[i];
+        if(item && item->schema.position == position)
+        {
+            found = item;
+            break;
+        }
+    }
+    return found;
 }
 
 void Body::openInventoryForGuest(Body* guest)
@@ -124,6 +167,13 @@ void Body::closeInventoryOfHost()
         inventoryHost = NULL;
     }
 }
+
+
+
+////////////////////////////////////////////////////////
+// DIALOG AND INTERACTION
+////////////////////////////////////////////////////////
+
 
 void Body::handleDialogResponse(Body* listener, unsigned int responseId)
 {

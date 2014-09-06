@@ -90,16 +90,30 @@ public:
     };
     Schema schema;
 
+
+    // GAME LOGIC
+
     virtual void load(Level* level, unsigned int id, Type type, float x, float y, float width, float height);
 
     virtual void update(sf::Time &gameTime);
 
     virtual void distributedUpdate(sf::Time &gameTime);
 
+
+    // INVENTORY
+
     void addItemToInventory(Item* item);
+
+    void addItemToInventoryAtPosition(Item* item, unsigned int position);
 
     Item* removeItemFromInventory(unsigned int itemId);
 
+    Item* removeItemByPosition(unsigned int position);
+
+    Item* findItemInInventory(unsigned int itemId);
+
+    Item* findItemByPosition(unsigned int position);
+    
     void openInventoryForGuest(Body* guest);
 
     void closeInventoryForGuest();
@@ -107,6 +121,9 @@ public:
     void openInventoryOfHost(Body* host);
     
     void closeInventoryOfHost();
+
+
+    // DIALOG AND INTERACTION
 
     void handleDialogResponse(Body* listener, unsigned int responseId);
 

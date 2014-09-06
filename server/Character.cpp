@@ -3,6 +3,7 @@
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Math.hpp"
+#include "../bitengine/System.hpp"
 #include "ServerEvent.hpp"
 #include "GameplayServer.hpp"
 #include "Level.hpp"
@@ -639,85 +640,539 @@ void Character::inspectLineOfSightCharacters(int endX, int endY, std::function<v
 //                  INVENTORY                        //
 ///////////////////////////////////////////////////////
 
+bool Character::slotAcceptsItem(EquipmentSlot slot, Item* item)
+{
+    switch(slot)
+    {
+        case EquipmentSlot::Head:
+            if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorHead))
+                return false;
+            break;
+        case EquipmentSlot::Chest:
+            if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorChest))
+                return false;
+            break;
+        case EquipmentSlot::Legs:
+            if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorLeg))
+                return false;
+            break;
+        case EquipmentSlot::Feet:
+            if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorFoot))
+                return false;
+            break;
+        case EquipmentSlot::Hands:
+            if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorHand))
+                return false;
+            break;
+        case EquipmentSlot::Totem:
+            if(!bit::Math::bitwiseHasAny(item->schema.CategoryJewelry, ItemCategory::Jewelry::JewelryTotem))
+                return false;
+            break;
+        case EquipmentSlot::WeaponPrimary:
+            if(!bit::Math::bitwiseHasAny(item->schema.CategoryWeapon, ItemCategory::Weapon::WeaponRanged | ItemCategory::Weapon::WeaponMelee))
+                return false;
+            break;
+        case EquipmentSlot::WeaponSecondary:
+            if(!bit::Math::bitwiseHasAny(item->schema.CategoryWeapon, ItemCategory::Weapon::WeaponRanged | ItemCategory::Weapon::WeaponMelee))
+                return false;
+            break;
+    }
+    return true;
+}
+
+// Utility method for undoing a slot
+void Character::voidEquipmentSlot(EquipmentSlot slot)
+{
+    schema.equipmentIds[slot] = 0;
+    equipment[slot] = NULL;
+}
+
+// Utility method for setting a slot
+void Character::setEquipmentSlot(EquipmentSlot slot, Item* item)
+{
+    equipment[slot] = item;
+    schema.equipmentIds[slot] = item->schema.id;
+}
+
+// Takes a destination slot and an inventory item id
+// If the item exists, validates its of an acceptable type
+// If there is a slot item it removes it and puts it in the same position as incoming item
+// Moves the incoming item to the slot
 bool Character::equipFromInventory(EquipmentSlot slot, unsigned int itemId)
 {
+    // If the item exists and is acceptable for the slot
     Item* item = inventory->findItem(itemId);
-    if(item)
+    if(item && slotAcceptsItem(slot, item))
     {
-        switch(slot)
+        // Remove item from inventory
+        unsigned int position = item->schema.position;
+        removeItemFromInventory(itemId);
+
+        // If we have equipment swap it with the item
+        if(equipment[slot])
         {
-            case EquipmentSlot::Head:
-                if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorHead))
-                    return false;
-                break;
-            case EquipmentSlot::Chest:
-                if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorChest))
-                    return false;
-                break;
-            case EquipmentSlot::Legs:
-                if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorLeg))
-                    return false;
-                break;
-            case EquipmentSlot::Feet:
-                if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorFoot))
-                    return false;
-                break;
-            case EquipmentSlot::Hands:
-                if(!bit::Math::bitwiseHasAny(item->schema.CategoryArmor, ItemCategory::Armor::ArmorHand))
-                    return false;
-                break;
-            case EquipmentSlot::Totem:
-                if(!bit::Math::bitwiseHasAny(item->schema.CategoryJewelry, ItemCategory::Jewelry::JewelryTotem))
-                    return false;
-                break;
-            case EquipmentSlot::WeaponPrimary:
-                if(!bit::Math::bitwiseHasAny(item->schema.CategoryWeapon, ItemCategory::Weapon::WeaponRanged | ItemCategory::Weapon::WeaponMelee))
-                    return false;
-                break;
-            case EquipmentSlot::WeaponSecondary:
-                if(!bit::Math::bitwiseHasAny(item->schema.CategoryWeapon, ItemCategory::Weapon::WeaponRanged | ItemCategory::Weapon::WeaponMelee))
-                    return false;
-                break;
+            Item* equipped = equipment[slot];
+            unequipToPosition(slot, position);
         }
 
-        inventory->removeItem(itemId);
-        unequip(slot);
+        // Add the item to the slot
         return equip(slot, item);
     }
     return false;
 }
 
+// Takes a destination slot and an loot item id
+// If the item exists, validates its of an acceptable type
+// If there is a slot item it removes it and puts it in the same position as incoming item
+// Moves the incoming item to the slot
+bool Character::equipFromLoot(EquipmentSlot slot, unsigned int itemId)
+{
+    if(inventoryHost)
+    {
+        // If the item exists and is acceptable for the slot
+        Item* theirItem = inventoryHost->findItemInInventory(itemId);
+        if(theirItem && slotAcceptsItem(slot, theirItem))
+        {
+            // Remove item from their inventory
+            unsigned int position = theirItem->schema.position;
+            inventoryHost->removeItemFromInventory(theirItem->schema.id);
+
+            // If we have equipment swap it with the item
+            if(equipment[slot])
+            {
+                // Remove my equipment
+                Item* equipped = equipment[slot];
+                voidEquipmentSlot(slot);
+                sendEquipmentRemovedEvent(slot);
+
+                // Add it to the host's inventory at their position
+                inventoryHost->addItemToInventoryAtPosition(equipped, position);
+            }
+
+            // Add their item to the slot
+            return equip(slot, theirItem);
+        }
+        return false;
+    }
+}
+
+// Takes any item and sets it to the specified slot
+// This does not validate anything
+// Sends the equip network event
 bool Character::equip(EquipmentSlot slot, Item* item)
 {
-    Item* equippedItem = equipment[slot];
-    if(!equippedItem)
+    // Set the slot up
+    setEquipmentSlot(slot, item);
+    sendEquipmentAddedEvent(slot); // netevent
+    return true;
+}
+
+// Takes a slot and moves its item to the inventory position available
+// Does not validate anything
+// Sends a network event for removal
+void Character::unequip(EquipmentSlot slot)
+{
+    if(equipment[slot])
     {
-        equipment[slot] = item;
-        schema.equipmentIds[slot] = item->schema.id;
-        return true;
+        addItemToInventory(equipment[slot]);
+        voidEquipmentSlot(slot);
+        sendEquipmentRemovedEvent(slot); // netevent
     }
+}
+
+// Takes a slot and moves its item to the inventory at the position specified
+// Does not validate anything
+// Sends a network event for removal
+void Character::unequipToPosition(EquipmentSlot slot, unsigned int position)
+{
+    if(equipment[slot])
+    {
+        addItemToInventoryAtPosition(equipment[slot], position);
+        voidEquipmentSlot(slot);
+        sendEquipmentRemovedEvent(slot); // netevent
+    }
+}
+
+// Will take both weapon slots and swap them
+// This is used for in combat mainly
+void Character::swapWeapons()
+{
+    Item* primary = equipment[Character::EquipmentSlot::WeaponPrimary];
+    Item* secondary = equipment[Character::EquipmentSlot::WeaponSecondary];
+    
+    if(primary)
+        setEquipmentSlot(Character::EquipmentSlot::WeaponSecondary, primary);
+    if(secondary)
+        setEquipmentSlot(Character::EquipmentSlot::WeaponPrimary, secondary);
+}
+
+// Takes an existing inventory item and moves its inventory position
+// If another items exists at the new location they are swapped
+bool Character::moveItemToPosition(unsigned int itemId, unsigned int position)
+{
+    // Find one by id and the other by position
+    Item* existing = findItemByPosition(position);
+    Item* item = findItemInInventory(itemId);
+
+    // If I had an item at the position
+    if(existing && item)
+    {
+        // Switch positions on the items
+        existing->schema.position = item->schema.position;
+        item->schema.position = position;
+        sendItemUpdateEvent(existing); // netevent
+        sendItemUpdateEvent(item); // netevent
+    }
+    else if(item)
+    {
+        // Just set the new position
+        item->schema.position = position;
+        sendItemUpdateEvent(item); // netevent
+    }
+
+    return true;
+}
+
+// Takes an existing loot item and moves its loot position
+// If another items exists at the new location they are swapped
+// Basically rearranges the accessing container
+bool Character::moveLootItemToLootPosition(unsigned int itemId, unsigned int position)
+{
+    if(inventoryHost)
+    {
+        // Find one by id and the other by position
+        Item* existing = inventoryHost->findItemByPosition(position);
+        Item* item = inventoryHost->findItemInInventory(itemId);
+
+        // If I had an item at the position
+        if(existing && item)
+        {
+            // Switch positions on the items
+            existing->schema.position = item->schema.position;
+            item->schema.position = position;
+        }
+        else if(item)
+        {
+            // Just set the new position
+            item->schema.position = position;
+        }
+    }
+
+    return true;
+}
+
+// Takes equipment and moves it to the inventory at the specified position
+// If an item is present there it will need to check that it is acceptable
+// If so it will swap them
+// If there is no item there it will set the item at the specified position
+bool Character::moveEquipmentToPosition(EquipmentSlot slot, unsigned int position)
+{
+    // Find our items in question
+    Item* equippedItem = equipment[slot];
+    Item* itemAtPosition = findItemByPosition(position);
+
+    if(equippedItem)
+    {
+        // If we have an item at the position already
+        if(itemAtPosition)
+        {
+            // Check that it is an acceptable item to swap
+            if(slotAcceptsItem(slot, itemAtPosition))
+            {
+                // Remove equipment
+                voidEquipmentSlot(slot);
+                sendEquipmentRemovedEvent(slot); // netevent
+
+                // Add item to equipment slot
+                removeItemFromInventory(itemAtPosition->schema.id);
+                equip(slot, itemAtPosition); // netevent
+
+                // Add equipment to inventory at the slot specified
+                addItemToInventoryAtPosition(equippedItem, position);
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            // Remove equipment
+            voidEquipmentSlot(slot);
+            sendEquipmentRemovedEvent(slot); // netevent
+
+            // Add equipment to inventory at the slot specified
+            addItemToInventoryAtPosition(equippedItem, position);
+            
+            return true;
+        }
+    }
+
     return false;
 }
 
-void Character::unequip(EquipmentSlot slot)
+// Takes two slots, checks their compatibility and swaps their locations
+bool Character::swapEquipment(EquipmentSlot slotA, EquipmentSlot slotB)
 {
-    Item* equippedItem = equipment[slot];
-    if(equippedItem)
+    // See if we have items in both slots
+    Item* itemA = equipment[slotA];
+    Item* itemB = equipment[slotB];
+
+    // If we have both items
+    if(itemA && itemB)
     {
-        inventory->addItem(equippedItem);
-        schema.equipmentIds[slot] = 0;
-        equipment[slot] = NULL;
+        // Check that both are compatible
+        if(slotAcceptsItem(slotA, itemB) && slotAcceptsItem(slotB, itemA))
+        {
+            // Swap them directly
+            setEquipmentSlot(slotA, itemB);
+            setEquipmentSlot(slotB, itemA);
+            sendEquipmentUpdatedEvent(slotA); // netevent
+            sendEquipmentUpdatedEvent(slotB); // netevent
+            return true;
+        }
+    }
+    // If we only have item A
+    else if(itemA)
+    {
+        // Check that slot B accepts Item A
+        if(slotAcceptsItem(slotB, itemA))
+        {
+            // Remove item from slot A
+            voidEquipmentSlot(slotA);
+            sendEquipmentRemovedEvent(slotA);
+
+            // Set it to slot B
+            setEquipmentSlot(slotB, itemA);
+            sendEquipmentAddedEvent(slotB);
+        }
+    }
+    // If we only have item B
+    else if(itemB)
+    {
+        // Check that slot A accepts Item B
+        if(slotAcceptsItem(slotA, itemB))
+        {
+            // Remove item from slot B
+            voidEquipmentSlot(slotB);
+            sendEquipmentRemovedEvent(slotB);
+
+            // Set it to slot A
+            setEquipmentSlot(slotA, itemB);
+            sendEquipmentAddedEvent(slotA);
+        }
+    }
+
+    return false;
+}
+
+bool Character::moveLootItemToInventoryPosition(unsigned int itemId, unsigned int position)
+{
+    // If I have an inventory host
+    if(inventoryHost)
+    {
+        // SWAP
+        // See if I have an item at the postion
+        Item* myItem = findItemByPosition(position);
+        if(myItem)
+        {
+            Item* theirItem = inventoryHost->findItemInInventory(itemId);
+            if(theirItem)
+            {
+                unsigned int theirPosition = theirItem->schema.position;
+
+                // Take their item out
+                inventoryHost->removeItemFromInventory(theirItem->schema.id);
+
+                // Take my item from my inventory and add it to theirs
+                removeItemFromInventory(myItem->schema.id);
+                inventoryHost->addItemToInventoryAtPosition(myItem, theirPosition);
+
+                // Add their item to my position
+                addItemToInventoryAtPosition(theirItem, position);
+                return true;
+            }
+        }
+        // NO SWAP
+        // If I dont have an item there
+        else
+        {
+            Item* theirItem = inventoryHost->removeItemFromInventory(itemId);
+            if(theirItem)
+            {
+                // Add their item to my inventory
+                addItemToInventoryAtPosition(theirItem, position);
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+bool Character::moveInventoryItemToLootPosition(unsigned int itemId, unsigned int position)
+{
+    // If I have an inventory host
+    if(inventoryHost)
+    {
+        // SWAP
+        // See if they have an item
+        Item* theirItem = inventoryHost->findItemByPosition(position);
+        if(theirItem)
+        {
+            // Make sure I have the item
+            Item* myItem = findItemInInventory(itemId);
+            if(myItem)
+            {
+                unsigned int myPosition = myItem->schema.position;
+
+                // Take my item out
+                removeItemFromInventory(myItem->schema.id);
+
+                // Take their item from their inventory and add it to mine
+                inventoryHost->removeItemFromInventory(theirItem->schema.id);
+                addItemToInventoryAtPosition(theirItem, myPosition);
+
+                // Add my item to their position
+                inventoryHost->addItemToInventoryAtPosition(myItem, position);
+                return true;
+            }
+        }
+        // NO SWAP
+        // If they have no item there
+        else
+        {
+            Item* myItem = removeItemFromInventory(itemId);
+            if(myItem)
+            {
+                // Add my item to their inventory
+                inventoryHost->addItemToInventoryAtPosition(myItem, position);
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+
+bool Character::moveEquipmentToLootPosition(EquipmentSlot slot, unsigned int position)
+{
+    // If I have an inventory host
+    if(inventoryHost)
+    {
+        // SWAP
+        // See if they have an item
+        Item* theirItem = inventoryHost->findItemByPosition(position);
+        if(theirItem)
+        {
+            // Check that their item will go in this slot
+            if(!slotAcceptsItem(slot, theirItem))
+            {
+                return false;
+            }
+
+            // Make sure I have the equipment
+            Item* myEquipment = equipment[slot];
+            if(myEquipment)
+            {
+                // Take my equipment off
+                voidEquipmentSlot(slot);
+                sendEquipmentRemovedEvent(slot);
+
+                // Take their item from their inventory and add it to my equipment
+                inventoryHost->removeItemFromInventory(theirItem->schema.id);
+                setEquipmentSlot(slot, theirItem);
+                sendEquipmentAddedEvent(slot);
+
+                // Add my old equipment to their position
+                inventoryHost->addItemToInventoryAtPosition(myEquipment, position);
+                return true;
+            }
+        }
+        // NO SWAP
+        // If they have no item there
+        else
+        {
+            Item* myEquipment = equipment[slot];
+            if(myEquipment)
+            {
+                // Take my equipment off
+                voidEquipmentSlot(slot);
+                sendEquipmentRemovedEvent(slot);
+
+                // Add my old equipment to their inventory
+                inventoryHost->addItemToInventoryAtPosition(myEquipment, position);
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void Character::sendInventoryUpdate()
+{
+    if(schema.isPlayerCharacter)
+    {
+        Character* c = this;
+        level->server->sendEventToClient(*schema.player->client, [c](bit::ServerPacket &packet) {
+            packet << sf::Uint32(ServerEvent::InventoryUpdate);
+            c->inventory->prepareSnapshot(packet);
+        });
     }
 }
 
-void Character::swapWeapons()
+void Character::sendItemUpdateEvent(Item* item)
 {
-    // Haha its nullsafe!
-    Item* primary = equipment[Character::EquipmentSlot::WeaponPrimary];
-    Item* secondary = equipment[Character::EquipmentSlot::WeaponSecondary];
-    equipment[Character::EquipmentSlot::WeaponPrimary] = secondary;
-    equipment[Character::EquipmentSlot::WeaponSecondary] = primary;
+    if(schema.isPlayerCharacter)
+    {
+        level->server->sendEventToClient(*schema.player->client, [item](bit::ServerPacket &packet) {
+            packet << sf::Uint32(ServerEvent::ItemUpdated);
+            item->prepareSnapshot(packet);
+        });
+    }
 }
+
+void Character::sendEquipmentAddedEvent(EquipmentSlot slot)
+{
+    if(schema.isPlayerCharacter)
+    {
+        Item* item = equipment[slot];
+        level->server->sendEventToClient(*schema.player->client, [item, slot](bit::ServerPacket &packet) {
+            packet << sf::Uint32(ServerEvent::EquipmentAdded);
+            packet << sf::Uint32(slot);
+            item->prepareSnapshot(packet);
+        });
+    }
+}
+
+void Character::sendEquipmentUpdatedEvent(EquipmentSlot slot)
+{
+    if(schema.isPlayerCharacter)
+    {
+        Item* item = equipment[slot];
+        level->server->sendEventToClient(*schema.player->client, [item, slot](bit::ServerPacket &packet) {
+            packet << sf::Uint32(ServerEvent::EquipmentUpdated);
+            packet << sf::Uint32(slot);
+            item->prepareSnapshot(packet);
+        });
+    }
+}
+
+void Character::sendEquipmentRemovedEvent(EquipmentSlot slot)
+{
+    if(schema.isPlayerCharacter)
+    {
+        level->server->sendEventToClient(*schema.player->client, [slot](bit::ServerPacket &packet) {
+            packet << sf::Uint32(ServerEvent::EquipmentRemoved);
+            packet << sf::Uint32(slot);
+        });
+    }
+}
+
 
 ///////////////////////////////////////////////////////
 //                   MOVEMENT                        //

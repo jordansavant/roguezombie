@@ -154,6 +154,29 @@ Item* Item::removeItem(unsigned int itemId)
     return NULL;
 }
 
+unsigned int Item::findAvailablePosition()
+{
+    // TODO - horrid
+    unsigned int position = 0;
+    while(true)
+    {
+        bool vacant = true;
+        for(unsigned int i=0; i < items.size(); i++)
+        {
+            if(position == items[i]->schema.position)
+            {
+                position++;
+                vacant = false;
+                break;
+            }
+        }
+        if(vacant)
+        {
+            return position;
+        }
+    }
+}
+
 Body* Item::getParentBody()
 {
     if(parentItem)
@@ -345,6 +368,25 @@ std::string Item::getSpriteName(Type type)
 
         case Type::HardHat:
             return "HardHat";
+
+        case Type::Magnum357:
+            return "Magnum357";
+
+        case Type::Z4Rifle:
+            return "Z4Rifle";
+
+        case Type::Crowbar:
+            return "Crowbar";
+    }
+}
+
+std::string Item::getIconName(Type type)
+{
+    switch(type)
+    {
+        default:
+        case Type::None:
+            return "unknown";
 
         case Type::Magnum357:
             return "Magnum357";

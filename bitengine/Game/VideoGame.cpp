@@ -26,16 +26,16 @@ bit::VideoGame::VideoGame(std::string gameTitle, int width, int height, bool ful
     gameComponents.push_back(musicManager);
     gameComponents.push_back(spriteLoader);
 
-	settings.depthBits = 24;
-	settings.stencilBits = 8;
-	settings.antialiasingLevel = 4;
-	settings.majorVersion = 3;
-	settings.minorVersion = 0;
+    settings.depthBits = 24;
+    settings.stencilBits = 8;
+    settings.antialiasingLevel = 4;
+    settings.majorVersion = 3;
+    settings.minorVersion = 0;
 
     changeResolution(width, height, false);
     isFullscreen = fullscreen;
     renderWindow = new sf::RenderWindow(sf::VideoMode(currentResolution.x, currentResolution.y, 32), title, (isFullscreen ? sf::Style::Fullscreen : sf::Style::Titlebar), settings);
-	renderWindow->setVerticalSyncEnabled(verticalSync = false);
+    renderWindow->setVerticalSyncEnabled(verticalSync = false);
     configureOpenGL();
 }
 
@@ -64,10 +64,10 @@ void bit::VideoGame::run()
 {
     registerStates();
 
-	// Game loop
-	running = true;
-	while (running)
-	{
+    // Game loop
+    running = true;
+    while (running)
+    {
         if(graphicsChange)
         {
             graphicsChange = false;
@@ -78,64 +78,64 @@ void bit::VideoGame::run()
         }
 
         // Freshen draw
-	    renderWindow->clear();
+        renderWindow->clear();
 
-		// UPDATE at fixed intervals
-		float newTime = clock.getElapsedTime().asSeconds();
-		float frameTime = newTime - actualTime;
-		if(frameTime > 0.25f)
-		{
-			frameTime = 0.25f; // Avoid spiral of death
-		}
-		timer += frameTime;
+        // UPDATE at fixed intervals
+        float newTime = clock.getElapsedTime().asSeconds();
+        float frameTime = newTime - actualTime;
+        if(frameTime > 0.25f)
+        {
+            frameTime = 0.25f; // Avoid spiral of death
+        }
+        timer += frameTime;
 
-		// Run update in dt sized chunks
-		while(timer >= dt)
-		{
-			// Window listening
-			sf::Event event;
+        // Run update in dt sized chunks
+        while(timer >= dt)
+        {
+            // Window listening
+            sf::Event event;
             inputManager->preinspectEvents();
-			while (renderWindow->pollEvent(event))
-			{
-				if (event.type == sf::Event::Closed)
-					quit();
+            while (renderWindow->pollEvent(event))
+            {
+                if (event.type == sf::Event::Closed)
+                    quit();
 
-				if (event.type == sf::Event::GainedFocus)
-					isInFocus = true;
+                if (event.type == sf::Event::GainedFocus)
+                    isInFocus = true;
 
-				if (event.type == sf::Event::LostFocus)
-					isInFocus = false;
+                if (event.type == sf::Event::LostFocus)
+                    isInFocus = false;
 
-				if (event.type == sf::Event::Resized)
-				{
+                if (event.type == sf::Event::Resized)
+                {
                     changeResolution(event.size.width, event.size.height);
-				}
+                }
 
                 // Special input events
                 if (event.type == sf::Event::MouseWheelMoved)
                 {
                     inputManager->inspectMouseWheelEvent(event);
                 }
-			}
+            }
 
             sf::Time gtu = sf::seconds(dt);
- 			update(gtu);
-			timer -= dt;
-		}
+            update(gtu);
+            timer -= dt;
+        }
 
         // OpenGL Calls for clearing Depth
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	    glClearDepth(1.0f);
-	    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClearDepth(1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         sf::Time gtd = sf::seconds(newTime - actualTime);
-		draw(*renderWindow, gtd);
+        draw(*renderWindow, gtd);
 
-		// end the current frame (internally swaps the front and back buffers)
-		renderWindow->display();
+        // end the current frame (internally swaps the front and back buffers)
+        renderWindow->display();
 
-		actualTime = newTime;
-	}
+        actualTime = newTime;
+    }
 }
 
 void bit::VideoGame::update(sf::Time &gameTime)
@@ -145,10 +145,10 @@ void bit::VideoGame::update(sf::Time &gameTime)
 
 void bit::VideoGame::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
-	for(unsigned int i=0; i<gameComponents.size(); i++)
-	{
-		gameComponents[i]->draw(window, gameTime);
-	}
+    for(unsigned int i=0; i<gameComponents.size(); i++)
+    {
+        gameComponents[i]->draw(window, gameTime);
+    }
 }
 
 void bit::VideoGame::registerStates()
@@ -170,9 +170,9 @@ void bit::VideoGame::configureOpenGL()
 {
     // Open GL Functions
     // - Enable and Disable depth in your specific draws where Vertex3's are used etc.
-	glDepthMask(GL_TRUE);
-	glDepthFunc(GL_LEQUAL);
-	glDepthRange(1.0f, 0.0f); // top = 1, bottom = 0
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LEQUAL);
+    //glDepthRange(1.0f, 0.0f); // top = 1, bottom = 0  ** Commented out because this was causing major loss of precision, should be 0, 1
     glAlphaFunc(GL_GREATER, 0.0f);
 }
 

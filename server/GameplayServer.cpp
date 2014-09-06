@@ -396,7 +396,7 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
 
         case ClientRequest::EquipItemFromInventoryToSlot:
         {
-            bit::Output::Debug("Server detect request equip item request");
+            bit::Output::Debug("Server detect request equip item from inventory request");
 
             Character::EquipmentSlot slot;
             bit::NetworkHelper::unpackEnum<sf::Uint32, Character::EquipmentSlot>(packet, slot);
@@ -416,6 +416,119 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
             bit::NetworkHelper::unpackEnum<sf::Uint32, Character::EquipmentSlot>(packet, slot);
 
             player->character->unequip(slot);
+
+            break;
+        }
+        
+        case ClientRequest::EquipItemFromLootToSlot:
+        {
+            bit::Output::Debug("Server detect request equip item from loot request");
+
+            Character::EquipmentSlot slot;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Character::EquipmentSlot>(packet, slot);
+            unsigned int itemId;
+            packet >> itemId;
+
+            responsePacket << player->character->equipFromLoot(slot, itemId);
+
+            break;
+        }
+
+        case ClientRequest::MoveInventoryItemToPosition:
+        {
+            bit::Output::Debug("Server detect request move item request");
+            
+            unsigned int itemId;
+            packet >> itemId;
+            unsigned int position;
+            packet >> position;
+
+            responsePacket << player->character->moveItemToPosition(itemId, position);
+
+            break;
+        }
+
+        case ClientRequest::MoveEquippedItemToInventoryPosition:
+        {
+            bit::Output::Debug("Server detect request move item from equipment request");
+
+            Character::EquipmentSlot slot;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Character::EquipmentSlot>(packet, slot);
+            unsigned int position;
+            packet >> position;
+
+            responsePacket << player->character->moveEquipmentToPosition(slot, position);
+
+            break;
+        }
+
+        case ClientRequest::SwapEquipmentBySlot:
+        {
+            bit::Output::Debug("Server detect request equipment swap request");
+            
+            Character::EquipmentSlot slotA;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Character::EquipmentSlot>(packet, slotA);
+
+            Character::EquipmentSlot slotB;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Character::EquipmentSlot>(packet, slotB);
+
+            responsePacket << player->character->swapEquipment(slotA, slotB);
+
+            break;
+        }
+
+        case ClientRequest::MoveLootItemToInventoryPosition:
+        {
+            bit::Output::Debug("Server detect request move loot to inventory request");
+            
+            unsigned int itemId;
+            packet >> itemId;
+            unsigned int position;
+            packet >> position;
+
+            responsePacket << player->character->moveLootItemToInventoryPosition(itemId, position);
+
+            break;
+        }
+
+        case ClientRequest::MoveInventoryItemToLootPosition:
+        {
+            bit::Output::Debug("Server detect request move inventory to loot request");
+            
+            unsigned int itemId;
+            packet >> itemId;
+            unsigned int position;
+            packet >> position;
+
+            responsePacket << player->character->moveInventoryItemToLootPosition(itemId, position);
+
+            break;
+        }
+
+        case ClientRequest::MoveLootItemToLootPosition:
+        {
+            bit::Output::Debug("Server detect request move loot to loot request");
+            
+            unsigned int itemId;
+            packet >> itemId;
+            unsigned int position;
+            packet >> position;
+
+            responsePacket << player->character->moveLootItemToLootPosition(itemId, position);
+
+            break;
+        }
+
+        case ClientRequest::MoveEquippedItemToLootPosition:
+        {
+            bit::Output::Debug("Server detect request move equipment to loot request");
+            
+            Character::EquipmentSlot slot;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Character::EquipmentSlot>(packet, slot);
+            unsigned int position;
+            packet >> position;
+
+            responsePacket << player->character->moveEquipmentToLootPosition(slot, position);
 
             break;
         }

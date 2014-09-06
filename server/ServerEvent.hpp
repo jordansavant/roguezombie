@@ -14,8 +14,13 @@ enum ServerEvent
     MissionAssigned,
     MissionCompleted,
     
+    InventoryUpdate,
     ItemAdded,
+    ItemUpdated,
     ItemRemoved,
+    EquipmentAdded,
+    EquipmentUpdated,
+    EquipmentRemoved,
     
     CombatTurnStart,
     CombatTurnEnd,

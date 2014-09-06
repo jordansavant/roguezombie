@@ -5,6 +5,7 @@
 #include "CharacterClient.hpp"
 #include "StateGamePlay.hpp"
 #include "RogueZombieGame.hpp"
+#include "RZConfig.hpp"
 #include "SFML/Graphics.hpp"
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Graphics.hpp"
@@ -62,7 +63,7 @@ void TileClient::clientUpdate(sf::Time &gameTime)
     sf::Vector2f isoPosition = bit::VectorMath::normalToIsometric(schema.x, schema.y);
     renderX = isoPosition.x - schema.width;
     renderY = isoPosition.y;
-    bit::VertexHelper::positionQuad(quad, renderX, renderY, 0, width, height);
+    bit::VertexHelper::positionQuad(quad, renderX, renderY, RZConfig::zrenderTile, width, height);
     centerRenderX = renderX + width / 2;
     centerRenderY = renderY + height / 2;
 

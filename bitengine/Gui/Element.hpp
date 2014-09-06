@@ -69,6 +69,7 @@ namespace bit
         bool hasPositioned;
         bool removeFromParent;
         bool transitFromParent;
+        std::function<void(Element*)> onTransmit;
         Draggable* draggable;
         Hoverable* hoverable;
 
@@ -76,7 +77,7 @@ namespace bit
 
         virtual void updateReals(sf::RenderWindow &window, sf::Time &gameTime);
 
-		virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
+        virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
 
         virtual Element* queueEffect(Effect* effect);
 
