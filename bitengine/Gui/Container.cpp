@@ -76,6 +76,27 @@ void bit::Container::update(sf::RenderWindow &window, sf::Time &gameTime)
         }
     }
 
+    // If I have an incoming transfer child and it was not deleted from its old parent
+    // Should only fire on swaps where moveChild is called on two containers
+    // NOTE, THIS WILL EXPLODE IF I AM TRANSFERRING UP THE CONTAINER TREE, SOMEDAY FIX ALL OF THESE SHENANIGANS
+    if(transferChild && transferChild->parentElement && transferChild->parentElement != this)
+    {
+        bit::Container* otherParent = static_cast<bit::Container*>(transferChild->parentElement);
+        for(auto it = otherParent->childElements.begin(); it != otherParent->childElements.end();)
+        {
+            if((*it) == transferChild)
+            {
+                it = otherParent->childElements.erase(it);
+                break;
+            }
+            else
+            {
+                ++it;
+            }
+        }
+    }
+
+    // If I have a transfer child, they should not be in the other container's list of children anymore
     if(transferChild)
     {
         addChild(transferChild);

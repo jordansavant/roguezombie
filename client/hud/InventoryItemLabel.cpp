@@ -106,12 +106,21 @@ bool InventoryItemLabel::dropOntoEquipmentSlot(InventoryEquipmentSlot* slot)
     // 1. Dropping from another inventory cell to this equipment slot
     if(currentPositionSlot)
     {
-        // If the targetted slot had an item, remove it so it returns to the inventory
+        // Visual prediction:
         if(slot->equippedItemLabel)
-            slot->removeItemLabel();
+        {
+            InventoryPositionSlot* originSlot = currentPositionSlot;
+            InventoryEquipmentSlot* destinationSlot = slot;
+            InventoryItemLabel* originLabel = this;
+            InventoryItemLabel* destinationLabel = slot->equippedItemLabel;
 
-        // Move this item from my current parent to the slot
-        currentPositionSlot->moveChild(slot, this);
+            originSlot->moveChild(destinationSlot, originLabel);
+            destinationSlot->moveChild(originSlot, destinationLabel);
+        }
+        else
+        {
+            currentPositionSlot->moveChild(slot, this);
+        }
 
         // Position label within equipment slot
         relativePosition.x = 0;
@@ -153,7 +162,20 @@ bool InventoryItemLabel::dropOntoEquipmentSlot(InventoryEquipmentSlot* slot)
         }
 
         // Visual prediction:
-        currentEquipmentSlot->moveChild(slot, this);
+        if(slot->equippedItemLabel)
+        {
+            InventoryEquipmentSlot* originSlot = currentEquipmentSlot;
+            InventoryEquipmentSlot* destinationSlot = slot;
+            InventoryItemLabel* originLabel = this;
+            InventoryItemLabel* destinationLabel = slot->equippedItemLabel;
+
+            originSlot->moveChild(destinationSlot, originLabel);
+            destinationSlot->moveChild(originSlot, destinationLabel);
+        }
+        else
+        {
+            currentEquipmentSlot->moveChild(slot, this);
+        }
         
         // Position within the grid slot
         relativePosition.x = 0;
@@ -184,13 +206,21 @@ bool InventoryItemLabel::dropOntoEquipmentSlot(InventoryEquipmentSlot* slot)
     // 3. Dropping from a loot cell into this equipment slot
     if(currentLootSlot)
     {
-
-        // If the targetted slot had an item, remove it so it returns to the inventory
+        // Visual prediction:
         if(slot->equippedItemLabel)
-            slot->removeItemLabel();
+        {
+            InventoryLootSlot* originSlot = currentLootSlot;
+            InventoryEquipmentSlot* destinationSlot = slot;
+            InventoryItemLabel* originLabel = this;
+            InventoryItemLabel* destinationLabel = slot->equippedItemLabel;
 
-        // Move this item from my current parent to the slot
-        currentLootSlot->moveChild(slot, this);
+            originSlot->moveChild(destinationSlot, originLabel);
+            destinationSlot->moveChild(originSlot, destinationLabel);
+        }
+        else
+        {
+            currentLootSlot->moveChild(slot, this);
+        }
 
         // Position label within equipment slot
         relativePosition.x = 0;
@@ -231,11 +261,20 @@ bool InventoryItemLabel::dropOntoInventorySlot(InventoryPositionSlot* slot)
     if(currentPositionSlot)
     {
         // Visual prediction:
-        // 1. Remove it from the current parent
-        // 2. Take what is in the new parent, if anything
-        // 3. Add this to the new parent
-        // 4. Add the other to the old parent, if anything
-        currentPositionSlot->moveChild(slot, this);
+        if(slot->equippedItemLabel)
+        {
+            InventoryPositionSlot* originSlot = currentPositionSlot;
+            InventoryPositionSlot* destinationSlot = slot;
+            InventoryItemLabel* originLabel = this;
+            InventoryItemLabel* destinationLabel = slot->equippedItemLabel;
+
+            originSlot->moveChild(destinationSlot, originLabel);
+            destinationSlot->moveChild(originSlot, destinationLabel);
+        }
+        else
+        {
+            currentPositionSlot->moveChild(slot, this);
+        }
         
 
         // Position within the grid slot
@@ -278,7 +317,20 @@ bool InventoryItemLabel::dropOntoInventorySlot(InventoryPositionSlot* slot)
         }
 
         // Visual prediction:
-        currentEquipmentSlot->moveChild(slot, this);
+        if(slot->equippedItemLabel)
+        {
+            InventoryEquipmentSlot* originSlot = currentEquipmentSlot;
+            InventoryPositionSlot* destinationSlot = slot;
+            InventoryItemLabel* originLabel = this;
+            InventoryItemLabel* destinationLabel = slot->equippedItemLabel;
+
+            originSlot->moveChild(destinationSlot, originLabel);
+            destinationSlot->moveChild(originSlot, destinationLabel);
+        }
+        else
+        {
+            currentEquipmentSlot->moveChild(slot, this);
+        }
         
         // Position within the grid slot
         relativePosition.x = 0;
@@ -309,7 +361,21 @@ bool InventoryItemLabel::dropOntoInventorySlot(InventoryPositionSlot* slot)
     // 3. Dropping from a loot cell into this inventory cell
     if(currentLootSlot)
     {
-        currentLootSlot->moveChild(slot, this);
+        // Visual prediction:
+        if(slot->equippedItemLabel)
+        {
+            InventoryLootSlot* originSlot = currentLootSlot;
+            InventoryPositionSlot* destinationSlot = slot;
+            InventoryItemLabel* originLabel = this;
+            InventoryItemLabel* destinationLabel = slot->equippedItemLabel;
+
+            originSlot->moveChild(destinationSlot, originLabel);
+            destinationSlot->moveChild(originSlot, destinationLabel);
+        }
+        else
+        {
+            currentLootSlot->moveChild(slot, this);
+        }
 
         // Position within the grid slot
         relativePosition.x = 0;
@@ -354,11 +420,20 @@ bool InventoryItemLabel::dropOntoLootSlot(InventoryLootSlot* slot)
     if(currentLootSlot && currentLootSlot != slot)
     {
         // Visual prediction:
-        // 1. Remove it from the current parent
-        // 2. Take what is in the new parent, if anything
-        // 3. Add this to the new parent
-        // 4. Add the other to the old parent, if anything
-        currentLootSlot->moveChild(slot, this);
+        if(slot->equippedItemLabel)
+        {
+            InventoryLootSlot* originSlot = currentLootSlot;
+            InventoryLootSlot* destinationSlot = slot;
+            InventoryItemLabel* originLabel = this;
+            InventoryItemLabel* destinationLabel = slot->equippedItemLabel;
+
+            originSlot->moveChild(destinationSlot, originLabel);
+            destinationSlot->moveChild(originSlot, destinationLabel);
+        }
+        else
+        {
+            currentLootSlot->moveChild(slot, this);
+        }
 
         // Position within the grid slot
         relativePosition.x = 0;
@@ -392,12 +467,20 @@ bool InventoryItemLabel::dropOntoLootSlot(InventoryLootSlot* slot)
     if(currentPositionSlot)
     {
         // Visual prediction:
-        // 1. Remove it from the current parent
-        // 2. Take what is in the new parent, if anything
-        // 3. Add this to the new parent
-        // 4. Add the other to the old parent, if anything
-        currentPositionSlot->moveChild(slot, this);
-        
+        if(slot->equippedItemLabel)
+        {
+            InventoryPositionSlot* originSlot = currentPositionSlot;
+            InventoryLootSlot* destinationSlot = slot;
+            InventoryItemLabel* originLabel = this;
+            InventoryItemLabel* destinationLabel = slot->equippedItemLabel;
+
+            originSlot->moveChild(destinationSlot, originLabel);
+            destinationSlot->moveChild(originSlot, destinationLabel);
+        }
+        else
+        {
+            currentPositionSlot->moveChild(slot, this);
+        }
 
         // Position within the grid slot
         relativePosition.x = 0;
@@ -441,7 +524,20 @@ bool InventoryItemLabel::dropOntoLootSlot(InventoryLootSlot* slot)
         }
 
         // Visual prediction:
-        currentEquipmentSlot->moveChild(slot, this);
+        if(slot->equippedItemLabel)
+        {
+            InventoryEquipmentSlot* originSlot = currentEquipmentSlot;
+            InventoryLootSlot* destinationSlot = slot;
+            InventoryItemLabel* originLabel = this;
+            InventoryItemLabel* destinationLabel = slot->equippedItemLabel;
+
+            originSlot->moveChild(destinationSlot, originLabel);
+            destinationSlot->moveChild(originSlot, destinationLabel);
+        }
+        else
+        {
+            currentEquipmentSlot->moveChild(slot, this);
+        }
         
         // Position within the grid slot
         relativePosition.x = 0;

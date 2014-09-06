@@ -38,7 +38,7 @@ namespace bit
 
         void colorByFocus(bool focus);
 
-		virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
+        virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
     };
 }
 

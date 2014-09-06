@@ -51,6 +51,7 @@ namespace bit
 
         virtual ~Element();
 
+        // Positioning
         Element* parentElement;
         sf::Vector2f relativePosition;
         AnchorType anchorType;
@@ -58,18 +59,28 @@ namespace bit
         float targetWidth, targetHeight;
         float opacity;
         float elementScale;
+        sf::RectangleShape debugRect; // debug
+
+        // Input Activation
         bool isInfocus;
         bool canHaveFocus;
         std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput;
-        std::function<void(Element*, sf::RenderWindow*, sf::Time*)> onAfterUpdate;
         std::function<void(Element*)> onActivate;
+
+        // Blarb
+        std::function<void(Element*, sf::RenderWindow*, sf::Time*)> onAfterUpdate;
+
+        // Effects
         std::deque<Effect*> effectQueue;
         std::list<Effect*> concurrentEffects;
-        sf::RectangleShape debugRect; // debug
+
+        // Helper properties for Containers
         bool hasPositioned;
         bool removeFromParent;
         bool transitFromParent;
         std::function<void(Element*)> onTransmit;
+
+        // Manipulation
         Draggable* draggable;
         Hoverable* hoverable;
 

@@ -46,6 +46,7 @@ unsigned int InventoryPositionSlot::addChild(Element* child)
 void InventoryPositionSlot::moveChild(Container* other, unsigned int index)
 {
     bit::Container::moveChild(other, index);
+
     if(equippedItemLabel)
     {
         equippedItemLabel->currentPositionSlot = NULL;

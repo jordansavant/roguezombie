@@ -16,7 +16,7 @@ namespace bit
         Draggable(bit::InputManager* inputManager);
 
         bit::InputManager* inputManager;
-	    bool isDragging;
+        bool isDragging;
         float dragOriginX, dragOriginY;
         float elementOriginX, elementOriginY;
         std::function<void(Draggable*, bit::Element*)> onDragStart;
