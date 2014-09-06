@@ -16,6 +16,7 @@
 Inventory::Inventory(Hud* _hud)
     : HudMenu(_hud, 0, 0, 1300, 720, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), refreshTimer(5), itemCount(0)
 {
+    scaleStyle = ScaleStyle::PowerOfTwo;
     managesOpacity = true;
     originX = 0;
     originY = 0;
@@ -35,11 +36,13 @@ Inventory::Inventory(Hud* _hud)
     // PRIMARY PANELS
     // 500 x 720
     equipmentPanel = new Frame(hud, 0, 0, 500, 720, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    equipmentPanel->scaleStyle = ScaleStyle::PowerOfTwo;
     equipmentPanel->managesOpacity = true;
     addChild(equipmentPanel);
     
     // 800 x 720
     inventoryPanel = new Frame(hud, 0, 0, 800, 720, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    inventoryPanel->scaleStyle = ScaleStyle::PowerOfTwo;
     inventoryPanel->managesOpacity = true;
     addChild(inventoryPanel);
 

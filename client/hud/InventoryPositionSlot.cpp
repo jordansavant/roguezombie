@@ -10,6 +10,7 @@ InventoryPositionSlot::InventoryPositionSlot(Hud* hud, unsigned int position, fl
     : Frame(hud, relativeX, relativeY, width, height, anchorType, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)),
       position(position), equippedItemLabel(NULL)
 {
+    scaleStyle = ScaleStyle::PowerOfTwo;
     managesOpacity = true;
 }
 

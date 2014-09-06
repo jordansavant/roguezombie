@@ -10,6 +10,7 @@ InventoryEquipmentSlot::InventoryEquipmentSlot(Hud* hud, Character::EquipmentSlo
     : Frame(hud, relativeX, relativeY, width, height, anchorType, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), slot(slot), equippedItemLabel(NULL),
       AcceptedCategoryArmor(ItemCategory::Armor::ArmorNone), AcceptedCategoryWeapon(ItemCategory::Weapon::WeaponNone), AcceptedCategoryJewelry(ItemCategory::Jewelry::JewelryNone)
 {
+    scaleStyle = ScaleStyle::PowerOfTwo;
     managesOpacity = true;
 }
 
