@@ -68,6 +68,23 @@ void bit::Container::update(sf::RenderWindow &window, sf::Time &gameTime)
         // Something is taking over so remove it from the list but dont delete it
         else if((*it)->transitFromParent)
         {
+            // Immediately add to the other parent
+            // Hierarchy bug, see below
+            if((*it)->transferToParent && (*it)->transferToParent != this)
+            {
+                bit::Container* otherParent = static_cast<bit::Container*>((*it)->transferToParent);
+                otherParent->addChild((*it));
+                otherParent->transferChild->transitFromParent = false;
+                otherParent->transferChild->transferToParent = NULL;
+                if(otherParent->transferChild->onTransmit)
+                {
+                    otherParent->transferChild->onTransmit(transferChild);
+                    otherParent->transferChild->onTransmit = NULL;
+                }
+                otherParent->transferChild = NULL;
+            }
+
+            // Remove
             it = childElements.erase(it);
         }
         else
@@ -101,6 +118,7 @@ void bit::Container::update(sf::RenderWindow &window, sf::Time &gameTime)
     {
         addChild(transferChild);
         transferChild->transitFromParent = false;
+        transferChild->transferToParent = NULL;
         if(transferChild->onTransmit)
         {
             transferChild->onTransmit(transferChild);
@@ -259,6 +277,7 @@ void bit::Container::moveChild(Container* other, unsigned int index)
 
     child->transitFromParent = true;
     other->transferChild = child;
+    child->transferToParent = other;
 }
 
 void bit::Container::moveChild(Container* other, Element* child)

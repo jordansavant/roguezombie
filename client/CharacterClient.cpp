@@ -235,3 +235,28 @@ void CharacterClient::handleServerEventPacket_equipmentRemoved(bit::ServerPacket
     schema.equipmentIds[slot] = 0;
     level->state->displayPlayerMessage(this, std::string("Equipment removed"));
 }
+
+void CharacterClient::handleServerEventPacket_equipmentSwapped(bit::ServerPacket &packet)
+{
+    Character::EquipmentSlot slotA;
+    bit::NetworkHelper::unpackEnum<sf::Uint32, Character::EquipmentSlot>(packet, slotA);
+
+    ItemClient icA;
+    icA.handleSnapshot(packet);
+    
+    Character::EquipmentSlot slotB;
+    bit::NetworkHelper::unpackEnum<sf::Uint32, Character::EquipmentSlot>(packet, slotB);
+
+    ItemClient icB;
+    icB.handleSnapshot(packet);
+
+    equipment[slotA] = icA;
+    hasEquipment[slotA] = true;
+    schema.equipmentIds[slotA] = icA.schema.id;
+
+    equipment[slotB] = icB;
+    hasEquipment[slotB] = true;
+    schema.equipmentIds[slotB] = icB.schema.id;
+
+    level->state->displayPlayerMessage(this, std::string(Item::getTitle(equipment[slotA].schema.type) + " swapped with " + Item::getTitle(equipment[slotB].schema.type)));
+}

@@ -50,6 +50,8 @@ public:
     void handleServerEventPacket_equipmentUpdated(bit::ServerPacket &packet);
 
     void handleServerEventPacket_equipmentRemoved(bit::ServerPacket &packet);
+
+    void handleServerEventPacket_equipmentSwapped(bit::ServerPacket &packet);
 };
 
 #endif

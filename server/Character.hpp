@@ -305,6 +305,8 @@ public:
     void sendEquipmentUpdatedEvent(EquipmentSlot slot);
     
     void sendEquipmentRemovedEvent(EquipmentSlot slot);
+    
+    void sendEquipmentSwappedEvent(EquipmentSlot slotA, EquipmentSlot slotB);
 
 
     // Movement

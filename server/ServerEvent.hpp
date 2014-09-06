@@ -21,6 +21,7 @@ enum ServerEvent
     EquipmentAdded,
     EquipmentUpdated,
     EquipmentRemoved,
+    EquipmentSwapped,
     
     CombatTurnStart,
     CombatTurnEnd,

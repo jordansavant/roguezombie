@@ -78,6 +78,7 @@ namespace bit
         bool hasPositioned;
         bool removeFromParent;
         bool transitFromParent;
+        bit::Element* transferToParent;
         std::function<void(Element*)> onTransmit;
 
         // Manipulation

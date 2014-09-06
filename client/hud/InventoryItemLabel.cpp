@@ -156,9 +156,6 @@ bool InventoryItemLabel::dropOntoEquipmentSlot(InventoryEquipmentSlot* slot)
             // Make sure the equipment slot can take that item
             if(!currentEquipmentSlot->acceptsLabel(slot->equippedItemLabel))
                 return false;
-            
-            if(slot->equippedItemLabel)
-                slot->removeItemLabel();
         }
 
         // Visual prediction:

@@ -743,6 +743,10 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 levelClient->playerCharacter->handleServerEventPacket_equipmentRemoved(packet);
                 hud->inventory->buildEquipment();
                 break;
+            case ServerEvent::EquipmentSwapped:
+                levelClient->playerCharacter->handleServerEventPacket_equipmentSwapped(packet);
+                hud->inventory->buildEquipment();
+                break;
 
             case ServerEvent::CombatTurnStart:
                 displayMessage(std::string("Turn begins"));

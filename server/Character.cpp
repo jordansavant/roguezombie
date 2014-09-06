@@ -929,8 +929,7 @@ bool Character::swapEquipment(EquipmentSlot slotA, EquipmentSlot slotB)
             // Swap them directly
             setEquipmentSlot(slotA, itemB);
             setEquipmentSlot(slotB, itemA);
-            sendEquipmentUpdatedEvent(slotA); // netevent
-            sendEquipmentUpdatedEvent(slotB); // netevent
+            sendEquipmentSwappedEvent(slotA, slotB); // netevent
             return true;
         }
     }
@@ -1169,6 +1168,22 @@ void Character::sendEquipmentRemovedEvent(EquipmentSlot slot)
         level->server->sendEventToClient(*schema.player->client, [slot](bit::ServerPacket &packet) {
             packet << sf::Uint32(ServerEvent::EquipmentRemoved);
             packet << sf::Uint32(slot);
+        });
+    }
+}
+
+void Character::sendEquipmentSwappedEvent(EquipmentSlot slotA, EquipmentSlot slotB)
+{
+    if(schema.isPlayerCharacter)
+    {
+        Item* itemA = equipment[slotA];
+        Item* itemB = equipment[slotB];
+        level->server->sendEventToClient(*schema.player->client, [itemA, slotA, itemB, slotB](bit::ServerPacket &packet) {
+            packet << sf::Uint32(ServerEvent::EquipmentSwapped);
+            packet << sf::Uint32(slotA);
+            itemA->prepareSnapshot(packet);
+            packet << sf::Uint32(slotB);
+            itemB->prepareSnapshot(packet);
         });
     }
 }

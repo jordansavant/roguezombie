@@ -133,13 +133,18 @@ void Inventory::buildEquipment()
     {
         Character::EquipmentSlot slot = static_cast<Character::EquipmentSlot>(i);
 
+        // If we have a slot that does not have an item icon for the item on the character
         if(levelClient->playerCharacter->hasEquipment[slot] && equipmentSlotBoxes[slot]->equippedItemLabel == NULL)
         {
             equipmentSlotBoxes[slot]->addItemLabel(buildItem(&levelClient->playerCharacter->equipment[slot], 0, 0));
+            bit::Output::Debug("item without label");
         }
         // If the gear is present but does not match, remove it
         else if(levelClient->playerCharacter->hasEquipment[slot] && equipmentSlotBoxes[slot]->equippedItemLabel->itemSchema.id != levelClient->playerCharacter->equipment[slot].schema.id)
         {
+            bit::Output::Debug(equipmentSlotBoxes[slot]->equippedItemLabel->itemSchema.id);
+            bit::Output::Debug("mismatch item to label");
+            bit::Output::Debug(levelClient->playerCharacter->equipment[slot].schema.id);
             equipmentSlotBoxes[slot]->removeItemLabel();
             equipmentSlotBoxes[slot]->addItemLabel(buildItem(&levelClient->playerCharacter->equipment[slot], 0, 0));
         }
@@ -147,6 +152,7 @@ void Inventory::buildEquipment()
         else if(!levelClient->playerCharacter->hasEquipment[slot] && equipmentSlotBoxes[slot]->equippedItemLabel)
         {
             equipmentSlotBoxes[slot]->removeItemLabel();
+            bit::Output::Debug("label without item");
         }
     }
 }
