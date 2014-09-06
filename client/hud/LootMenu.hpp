@@ -19,7 +19,6 @@ public:
 
     LootMenu(Hud* hud);
 
-    bit::Label* entries;
     ItemClient inventory;
     bool isActive;
     std::vector<InventoryLootSlot*> lootSlotBoxes;

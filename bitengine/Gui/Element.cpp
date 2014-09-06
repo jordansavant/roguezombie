@@ -9,6 +9,8 @@
 #include "../Game/VideoGame.hpp"
 #include "../Math/Math.hpp"
 
+bool bit::Element::debugMode = false;
+
 bit::Element::Element()
     : sf::FloatRect(), parentElement(NULL), relativePosition(), anchorType(AnchorType::Center), scaleStyle(ScaleStyle::Smooth), opacity(1), elementScale(1), isInfocus(false), canHaveFocus(false), lambdaListenToInput(NULL), onAfterUpdate(NULL), onActivate(NULL), hasPositioned(false), removeFromParent(false), transitFromParent(false), onTransmit(NULL), draggable(NULL), hoverable(NULL)
 {
@@ -46,21 +48,18 @@ void bit::Element::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
 
 void bit::Element::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
-    //debugRect.setPosition(left, top);
-    //debugRect.setFillColor(sf::Color(255, 195, 0, bit::Math::clamp(255 * opacity * .2, 0, 255)));
-    //debugRect.setSize(sf::Vector2f(width, height));
-    //debugRect.setOutlineColor(sf::Color(255, 255, 255, bit::Math::clamp(255 * opacity * .2, 0, 255)));
-    //
-    //if(isInfocus)
-    //{
-    //    debugRect.setOutlineThickness(2);
-    //}
-    //else
-    //{
-    //    debugRect.setOutlineThickness(0);
-    //}
-    //
-    //window.draw(debugRect);
+    if(debugMode)
+    {
+        debugRect.setPosition(left, top);
+        debugRect.setFillColor(sf::Color(255, 195, 0, bit::Math::clamp(255 * opacity * .4, 0, 255)));
+        debugRect.setSize(sf::Vector2f(width, height));
+        debugRect.setOutlineColor(sf::Color(255, 255, 255, bit::Math::clamp(255 * opacity * .4, 0, 255)));
+        if(isInfocus)
+            debugRect.setOutlineThickness(2);
+        else
+            debugRect.setOutlineThickness(0);
+        window.draw(debugRect);
+    }
 }
 
 bit::Element* bit::Element::queueEffect(bit::Effect* effect)

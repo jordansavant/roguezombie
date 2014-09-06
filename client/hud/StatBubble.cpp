@@ -15,11 +15,12 @@
 #include <iomanip>
 
 StatBubble::StatBubble(Hud* _hud)
-    : Frame(_hud, 50, 0, 190, 145, bit::Element::AnchorType::Left), isActive(false), tileId(0), tileClient(NULL), refreshTimer(.1), fadeTimer(3)
+    : Frame(_hud, 0, 0, 190, 145, bit::Element::AnchorType::TopRight), isActive(false), tileId(0), tileClient(NULL), refreshTimer(.1), fadeTimer(3)
 {
     useBottomPointer = true;
     managesOpacity = true;
     opacity = 0;
+    canHaveFocus = false;
 }
 
 void StatBubble::updateReals(sf::RenderWindow &window, sf::Time &gameTime)

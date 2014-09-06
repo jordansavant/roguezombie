@@ -5,6 +5,8 @@
 #include "../Game/VideoGame.hpp"
 #include "../Math/Math.hpp"
 
+bool bit::Container::debugMode = false;
+
 bit::Container::Container()
     : Element(), childElements(), managesOpacity(false), focusedChild(NULL), focusedChildIndex(-1), transferChild(NULL), fullscreen(false)
 {
@@ -156,15 +158,19 @@ bool bit::Container::listenForInput(sf::RenderWindow &window, sf::Time &gameTime
 
 void bit::Container::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
-    //debugRect.setPosition(left, top);
-    //debugRect.setFillColor(sf::Color(230, 0, 255, bit::Math::clamp(255 * opacity, 0, 80)));
-    //debugRect.setSize(sf::Vector2f(width, height));
-    //debugRect.setOutlineColor(sf::Color(255, 255, 255, bit::Math::clamp(255 * opacity, 0, 80)));
-    //if(isInfocus)
-    //    debugRect.setOutlineThickness(2);
-    //else
-    //    debugRect.setOutlineThickness(0);
-    //window.draw(debugRect);
+    if(debugMode)
+    {
+        float o = std::max(opacity, .2f);
+        debugRect.setPosition(left, top);
+        debugRect.setFillColor(sf::Color(230, 0, 255, bit::Math::clamp(255 * o, 0, 80)));
+        debugRect.setSize(sf::Vector2f(width, height));
+        debugRect.setOutlineColor(sf::Color(255, 255, 255, bit::Math::clamp(255 * o, 0, 80)));
+        if(isInfocus)
+            debugRect.setOutlineThickness(2);
+        else
+            debugRect.setOutlineThickness(0);
+        window.draw(debugRect);
+    }
 
     for(unsigned int i = 0; i < childElements.size(); i++)
     {

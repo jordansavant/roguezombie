@@ -20,18 +20,13 @@ LootMenu::LootMenu(Hud* _hud)
     scaleStyle = ScaleStyle::PowerOfTwo;
     managesOpacity = true;
     opacity = 0;
-    entries = new bit::Label(0, 0, 0, 0, bit::Element::AnchorType::TopLeft);
-    entries->setSfFontSize(24);
-    entries->setSfFont(hud->journalFont);
-    entries->normalColor = sf::Color::White;
-    addChild(entries);
 
     // INVENTORY SLOTS
     int y = 72;
     int width = 64;
     int pad = 8;
     int x = pad;
-    for(unsigned int j=0; j < 20; j++)
+    for(unsigned int j=0; j < 60; j++)
     {
         if(x + width + pad > targetWidth)
         {
@@ -116,6 +111,56 @@ void LootMenu::handleInventorySnapshot(bit::ServerPacket &packet, unsigned int t
 {
     this->tileId = tileId;
     inventory.handleSnapshot(packet);
+
+    // Check if I can avoid rebuilding the GUI elements
+    bool match = true;
+
+    // Check that all items on the inventory are correct in the GUI
+    for(auto iterator = inventory.itemClients.begin(); iterator != inventory.itemClients.end(); iterator++)
+    {
+        ItemClient* item = &iterator->second;
+        unsigned int position = item->schema.position;
+        unsigned int itemId = item->schema.id;
+        if(position < lootSlotBoxes.size())
+        {
+            if(lootSlotBoxes[position]->equippedItemLabel == NULL || lootSlotBoxes[position]->equippedItemLabel->itemSchema.id != itemId)
+            {
+                match = false;
+                break;
+            }
+        }
+    }
+
+    // Check that all items in the GUI match the items in the player
+    if(match)
+    {
+        for(unsigned int i=0; i < lootSlotBoxes.size(); i++)
+        {
+            Item::Schema* labelItem = lootSlotBoxes[i]->equippedItemLabel ? &lootSlotBoxes[i]->equippedItemLabel->itemSchema : NULL;
+            Item::Schema* invenIten = NULL;
+
+            if(labelItem)
+            {
+                auto result = inventory.itemClients.find(labelItem->id);
+                if(result != inventory.itemClients.end())
+                {
+                    invenIten = &result->second.schema;
+                }
+            }
+
+            if(labelItem)
+            {
+                if(invenIten == NULL || labelItem->position != invenIten->position)
+                {
+                    match = false;
+                    break;
+                }
+            }
+        }
+    }
+
+    if(match)
+        return;
 
     // clean up
     for(unsigned int i=0; i < lootSlotBoxes.size(); i++)

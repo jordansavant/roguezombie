@@ -114,8 +114,8 @@ void Hud::draw(sf::RenderWindow &window, sf::Time &gameTime)
     window.draw(interfaceVertexMap.vertexArray, states);
 
     // Minimap
-    //states.transform *= minimap.getTransform();
-    //window.draw(minimap.vertexMap.vertexArray, states);
+    states.transform *= minimap.getTransform();
+    window.draw(minimap.vertexMap.vertexArray, states);
 
     state->rogueZombieGame->depthTestEnd();
 

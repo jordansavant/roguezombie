@@ -36,6 +36,8 @@ namespace bit
         // Added property to help move child elements between containers
         Element* transferChild;
 
+        static bool debugMode;
+
         virtual void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
 
         virtual void updateReals(sf::RenderWindow &window, sf::Time &gameTime);

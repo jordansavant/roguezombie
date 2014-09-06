@@ -10,7 +10,7 @@
 #include <sstream>
 
 RogueZombieGame::RogueZombieGame()
-	: VideoGame("Rogue Zombie", 1280, 720, false), errorMessage(""), mouse(resourcePath() + "mouse.png")
+    : VideoGame("Rogue Zombie", 1280, 720, false), errorMessage(""), mouse(resourcePath() + "mouse.png")
 {
     Game::stateStack->pushState(stateGameStart);
     exploreMusic = musicManager->loadMusic(resourcePath() + "RockmenExplore.ogg");
@@ -25,7 +25,7 @@ unsigned int RogueZombieGame::stateGameError = 5;
 
 void RogueZombieGame::update(sf::Time &gameTime)
 {
-	VideoGame::update(gameTime);
+    VideoGame::update(gameTime);
 
     if(isInFocus)
     {
@@ -47,12 +47,16 @@ void RogueZombieGame::update(sf::Time &gameTime)
             changeFullscreen(!isFullscreen);
         if(inputManager->isButtonPressed(sf::Keyboard::Comma))
             this->setVerticalSync(!this->verticalSync);
+        if(inputManager->isButtonPressed(sf::Keyboard::Subtract))
+            bit::Container::debugMode = !bit::Container::debugMode;
+        if(inputManager->isButtonPressed(sf::Keyboard::Add))
+            bit::Element::debugMode = !bit::Element::debugMode;
     }
 }
 
 void RogueZombieGame::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
-	VideoGame::draw(window, gameTime);
+    VideoGame::draw(window, gameTime);
 
     mouse.draw(window, gameTime);
 }

@@ -85,6 +85,8 @@ namespace bit
         Draggable* draggable;
         Hoverable* hoverable;
 
+        static bool debugMode;
+
         virtual void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
 
         virtual void updateReals(sf::RenderWindow &window, sf::Time &gameTime);

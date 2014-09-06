@@ -10,7 +10,7 @@
 class RogueZombieGame: public bit::VideoGame
 {
 public:
-		RogueZombieGame();
+        RogueZombieGame();
 
         static unsigned int stateGameIntroduction;
         static unsigned int stateGameStart;
@@ -23,9 +23,9 @@ public:
         unsigned int exploreMusic;
         unsigned int combatMusic;
 
-		virtual void update(sf::Time &gameTime);
+        virtual void update(sf::Time &gameTime);
 
-		virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
+        virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
 
         virtual void registerStates();
 };

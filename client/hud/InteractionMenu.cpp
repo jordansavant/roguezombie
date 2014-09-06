@@ -18,6 +18,8 @@ InteractionMenu::InteractionMenu(Hud* _hud)
     useBottomPointer = true;
     managesOpacity = true;
     opacity = 0;
+    canHaveFocus = false;
+
 }
 
 void InteractionMenu::update(sf::RenderWindow &window, sf::Time &gameTime)
@@ -37,8 +39,12 @@ void InteractionMenu::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
         sf::Vector2i mapping = window.mapCoordsToPixel(sf::Vector2f(tileClient->centerRenderX, tileClient->centerRenderY));
         left = mapping.x - width / 2;
         top = mapping.y - height - tileClient->height;
-        Frame::updateReals(window, gameTime);
     }
+    else
+    {
+        left = 100000;
+    }
+    Frame::updateReals(window, gameTime);
 }
 
 void InteractionMenu::activate()
@@ -61,7 +67,7 @@ void InteractionMenu::hide()
 {
     canHaveFocus = false;
     clearEffects();
-    immediateEffect(new bit::FadeEffect(150, 0, bit::Easing::Linear));
+    immediateEffect(new bit::FadeEffect(150, .5, bit::Easing::Linear));
 }
 
 void InteractionMenu::show()

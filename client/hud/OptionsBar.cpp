@@ -36,7 +36,7 @@ OptionsBar::OptionsBar(Hud* _hud)
     //addChild(primary);
     //originX += primary->sprite->width + xpadding;
 
-    options = new HudElement(originX, 20, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    options = new HudElement(originX, 0, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     options->load(hud, std::string("optionbar_options"));
     addChild(options);
     originX += options->sprite->width + xpadding;
@@ -57,7 +57,7 @@ OptionsBar::OptionsBar(Hud* _hud)
     //addChild(character);
     //originX += character->sprite->width + xpadding;
 
-    inventory = new HudElement(originX, 20, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    inventory = new HudElement(originX, 0, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     inventory->load(hud, std::string("optionbar_inventory"));
     inventory->onActivate = [_hud] (Element* e) {
         if(_hud->state->mode == StateGamePlay::Mode::Inventory || _hud->state->mode == StateGamePlay::Mode::Loot)
@@ -68,7 +68,7 @@ OptionsBar::OptionsBar(Hud* _hud)
     addChild(inventory);
     originX += inventory->sprite->width + xpadding;
 
-    map = new HudElement(originX, 20, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    map = new HudElement(originX, 0, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     map->load(hud, std::string("optionbar_map"));
     addChild(map);
     originX += map->sprite->width + xpadding;
