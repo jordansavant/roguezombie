@@ -14,7 +14,7 @@
 #include "../mission/MissionClient.hpp"
 
 Inventory::Inventory(Hud* _hud)
-    : HudMenu(_hud, 0, 0, 1300, 720, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), refreshTimer(5), itemCount(0)
+    : HudMenu(_hud, 0, 0, 1300, 720, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), refreshTimer(5)
 {
     scaleStyle = ScaleStyle::PowerOfTwo;
     managesOpacity = true;
@@ -137,14 +137,10 @@ void Inventory::buildEquipment()
         if(levelClient->playerCharacter->hasEquipment[slot] && equipmentSlotBoxes[slot]->equippedItemLabel == NULL)
         {
             equipmentSlotBoxes[slot]->addItemLabel(buildItem(&levelClient->playerCharacter->equipment[slot], 0, 0));
-            bit::Output::Debug("item without label");
         }
         // If the gear is present but does not match, remove it
         else if(levelClient->playerCharacter->hasEquipment[slot] && equipmentSlotBoxes[slot]->equippedItemLabel->itemSchema.id != levelClient->playerCharacter->equipment[slot].schema.id)
         {
-            bit::Output::Debug(equipmentSlotBoxes[slot]->equippedItemLabel->itemSchema.id);
-            bit::Output::Debug("mismatch item to label");
-            bit::Output::Debug(levelClient->playerCharacter->equipment[slot].schema.id);
             equipmentSlotBoxes[slot]->removeItemLabel();
             equipmentSlotBoxes[slot]->addItemLabel(buildItem(&levelClient->playerCharacter->equipment[slot], 0, 0));
         }
@@ -152,7 +148,6 @@ void Inventory::buildEquipment()
         else if(!levelClient->playerCharacter->hasEquipment[slot] && equipmentSlotBoxes[slot]->equippedItemLabel)
         {
             equipmentSlotBoxes[slot]->removeItemLabel();
-            bit::Output::Debug("label without item");
         }
     }
 }
@@ -166,27 +161,70 @@ void Inventory::buildItemList(bool force)
         return;
     }
 
-    // If the number of items matches the last sync, skip // TODO - improve
-    if(!force && itemCount == levelClient->playerCharacter->inventoryClient.itemClients.size())
+    // Check if it matches before jacking with the GUI
+    if(!force)
     {
-        return;
+        bool match = true;
+
+        // Check that all items on the player are correct in the GUI
+        for(auto iterator = levelClient->playerCharacter->inventoryClient.itemClients.begin(); iterator != levelClient->playerCharacter->inventoryClient.itemClients.end(); iterator++)
+        {
+            ItemClient* item = &iterator->second;
+            unsigned int position = item->schema.position;
+            unsigned int itemId = item->schema.id;
+            if(position < positionSlotBoxes.size())
+            {
+                if(positionSlotBoxes[position]->equippedItemLabel == NULL || positionSlotBoxes[position]->equippedItemLabel->itemSchema.id != itemId)
+                {
+                    match = false;
+                    break;
+                }
+            }
+        }
+
+        // Check that all items in the GUI match the items in the player
+        if(match)
+        {
+            for(unsigned int i=0; i < positionSlotBoxes.size(); i++)
+            {
+                Item::Schema* labelItem = positionSlotBoxes[i]->equippedItemLabel ? &positionSlotBoxes[i]->equippedItemLabel->itemSchema : NULL;
+                Item::Schema* playerItem = NULL;
+
+                if(labelItem)
+                {
+                    auto result = levelClient->playerCharacter->inventoryClient.itemClients.find(labelItem->id);
+                    if(result != levelClient->playerCharacter->inventoryClient.itemClients.end())
+                    {
+                        playerItem = &result->second.schema;
+                    }
+                }
+
+                if(labelItem)
+                {
+                    if(playerItem == NULL || labelItem->position != playerItem->position)
+                    {
+                        match = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if(match)
+            return;
     }
 
     // clean up
-    itemCount = 0;
     for(unsigned int i=0; i < positionSlotBoxes.size(); i++)
     {
         positionSlotBoxes[i]->clearChildren();
     }
-
-    unsigned int i=0;
+    // rebuild
     for(auto iterator = levelClient->playerCharacter->inventoryClient.itemClients.begin(); iterator != levelClient->playerCharacter->inventoryClient.itemClients.end(); iterator++)
     {
         ItemClient* item = &iterator->second;
         InventoryItemLabel* option = buildItem(item, 0, 0);
         positionSlotBoxes[item->schema.position]->addChild(option);
-        i++;
-        itemCount++;
     }
 }
 

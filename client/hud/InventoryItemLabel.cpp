@@ -265,11 +265,15 @@ bool InventoryItemLabel::dropOntoInventorySlot(InventoryPositionSlot* slot)
             InventoryItemLabel* originLabel = this;
             InventoryItemLabel* destinationLabel = slot->equippedItemLabel;
 
+            originLabel->itemSchema.position = destinationSlot->position;
+            destinationLabel->itemSchema.position = originSlot->position;
+
             originSlot->moveChild(destinationSlot, originLabel);
             destinationSlot->moveChild(originSlot, destinationLabel);
         }
         else
         {
+            this->itemSchema.position = slot->position;
             currentPositionSlot->moveChild(slot, this);
         }
         
@@ -321,11 +325,14 @@ bool InventoryItemLabel::dropOntoInventorySlot(InventoryPositionSlot* slot)
             InventoryItemLabel* originLabel = this;
             InventoryItemLabel* destinationLabel = slot->equippedItemLabel;
 
+            originLabel->itemSchema.position = destinationSlot->position;
+
             originSlot->moveChild(destinationSlot, originLabel);
             destinationSlot->moveChild(originSlot, destinationLabel);
         }
         else
         {
+            this->itemSchema.position = slot->position;
             currentEquipmentSlot->moveChild(slot, this);
         }
         
@@ -366,11 +373,15 @@ bool InventoryItemLabel::dropOntoInventorySlot(InventoryPositionSlot* slot)
             InventoryItemLabel* originLabel = this;
             InventoryItemLabel* destinationLabel = slot->equippedItemLabel;
 
+            originLabel->itemSchema.position = destinationSlot->position;
+            destinationLabel->itemSchema.position = originSlot->position;
+
             originSlot->moveChild(destinationSlot, originLabel);
             destinationSlot->moveChild(originSlot, destinationLabel);
         }
         else
         {
+            this->itemSchema.position = slot->position;
             currentLootSlot->moveChild(slot, this);
         }
 
@@ -424,11 +435,15 @@ bool InventoryItemLabel::dropOntoLootSlot(InventoryLootSlot* slot)
             InventoryItemLabel* originLabel = this;
             InventoryItemLabel* destinationLabel = slot->equippedItemLabel;
 
+            originLabel->itemSchema.position = destinationSlot->position;
+            destinationLabel->itemSchema.position = originSlot->position;
+
             originSlot->moveChild(destinationSlot, originLabel);
             destinationSlot->moveChild(originSlot, destinationLabel);
         }
         else
         {
+            this->itemSchema.position = slot->position;
             currentLootSlot->moveChild(slot, this);
         }
 
@@ -471,11 +486,15 @@ bool InventoryItemLabel::dropOntoLootSlot(InventoryLootSlot* slot)
             InventoryItemLabel* originLabel = this;
             InventoryItemLabel* destinationLabel = slot->equippedItemLabel;
 
+            originLabel->itemSchema.position = destinationSlot->position;
+            destinationLabel->itemSchema.position = originSlot->position;
+
             originSlot->moveChild(destinationSlot, originLabel);
             destinationSlot->moveChild(originSlot, destinationLabel);
         }
         else
         {
+            this->itemSchema.position = slot->position;
             currentPositionSlot->moveChild(slot, this);
         }
 
@@ -528,11 +547,14 @@ bool InventoryItemLabel::dropOntoLootSlot(InventoryLootSlot* slot)
             InventoryItemLabel* originLabel = this;
             InventoryItemLabel* destinationLabel = slot->equippedItemLabel;
 
+            originLabel->itemSchema.position = destinationSlot->position;
+
             originSlot->moveChild(destinationSlot, originLabel);
             destinationSlot->moveChild(originSlot, destinationLabel);
         }
         else
         {
+            this->itemSchema.position = slot->position;
             currentEquipmentSlot->moveChild(slot, this);
         }
         

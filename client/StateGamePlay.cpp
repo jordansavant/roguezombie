@@ -721,31 +721,31 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 break;
             case ServerEvent::ItemAdded:
                 levelClient->playerCharacter->handleServerEventPacket_itemAdded(packet);
-                hud->inventory->buildItemList();
+                //hud->inventory->buildItemList();
                 break;
             case ServerEvent::ItemUpdated:
                 levelClient->playerCharacter->handleServerEventPacket_itemUpdated(packet);
-                hud->inventory->buildItemList();
+                //hud->inventory->buildItemList();
                 break;
             case ServerEvent::ItemRemoved:
                 levelClient->playerCharacter->handleServerEventPacket_itemRemoved(packet);
-                hud->inventory->buildItemList();
+                //hud->inventory->buildItemList();
                 break;
             case ServerEvent::EquipmentAdded:
                 levelClient->playerCharacter->handleServerEventPacket_equipmentAdded(packet);
-                hud->inventory->buildEquipment();
+                //hud->inventory->buildEquipment();
                 break;
             case ServerEvent::EquipmentUpdated:
                 levelClient->playerCharacter->handleServerEventPacket_equipmentUpdated(packet);
-                hud->inventory->buildEquipment();
+                //hud->inventory->buildEquipment();
                 break;
             case ServerEvent::EquipmentRemoved:
                 levelClient->playerCharacter->handleServerEventPacket_equipmentRemoved(packet);
-                hud->inventory->buildEquipment();
+                //hud->inventory->buildEquipment();
                 break;
             case ServerEvent::EquipmentSwapped:
                 levelClient->playerCharacter->handleServerEventPacket_equipmentSwapped(packet);
-                hud->inventory->buildEquipment();
+                //hud->inventory->buildEquipment();
                 break;
 
             case ServerEvent::CombatTurnStart:

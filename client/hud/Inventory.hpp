@@ -22,7 +22,6 @@ public:
     bit::GameTimer refreshTimer;
     bit::Container* equipmentPanel;
     bit::Container* inventoryPanel;
-    unsigned int itemCount;
 
     std::vector<InventoryEquipmentSlot*> equipmentSlotBoxes;
     std::vector<InventoryPositionSlot*> positionSlotBoxes;
