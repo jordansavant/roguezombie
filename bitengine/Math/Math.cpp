@@ -48,7 +48,7 @@ float bit::Math::calculateDrawDepthByRange(float y, float targetYRange, float lo
     float range = (upperBoundary - lowerBoundary);
 
     if(target <= 0 || range <= 0)
-        return 0;
+        return lowerBoundary;
 
     // Move to boundary range
     float targetScaled = target * range;

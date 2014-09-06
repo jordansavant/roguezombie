@@ -86,7 +86,8 @@ void InventoryItemLabel::updateReals(sf::RenderWindow &window, sf::Time &gameTim
 {
     bit::Element::updateReals(window, gameTime);
 
-    icon->position(left, top, Hud::zindex_icons, 64, 64, elementScale);
+    float z = this->draggable->isDragging ? Hud::getDrawDepth(Hud::zindex_iconsDragged) : Hud::getDrawDepth(Hud::zindex_icons);
+    icon->position(left, top, z, 64, 64, elementScale);
 }
 
 

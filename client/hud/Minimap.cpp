@@ -24,7 +24,8 @@ void Minimap::addPoint(unsigned int tileId, int x, int y)
 
         sf::Vector2f minimapIso = bit::VectorMath::normalToIsometric(x / 4, y / 4);
         //sf::Vector2f minimapIso(x / 4, y / 4);
-        bit::VertexHelper::positionQuad(quad, minimapIso.x, minimapIso.y, .5f, 16, 8);
+        float z = Hud::getDrawDepth(Hud::zindex_icons);
+        bit::VertexHelper::positionQuad(quad, minimapIso.x, minimapIso.y, z, 16, 8);
 
         points.insert(std::pair<unsigned int, sf::Vector2i>(tileId, sf::Vector2i(x, y)));
     }

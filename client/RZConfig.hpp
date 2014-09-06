@@ -6,7 +6,8 @@ class RZConfig
 {
 public:
 
-    static int zrenderRange;
+    static int zrenderRangeGameplay;
+    static float zrenderTile;
 
     static float zrenderGameplayLowerbound;
     static float zrenderGameplayUpperbound;

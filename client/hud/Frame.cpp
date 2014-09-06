@@ -96,7 +96,7 @@ void Frame::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     Container::updateReals(window, gameTime);
 
     int x, y, w, h;
-    float z = Hud::zindex_frames;
+    float z = Hud::getDrawDepth(Hud::zindex_frames);
 
     // Top left corner
     x = (int)left;

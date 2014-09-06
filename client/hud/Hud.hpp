@@ -53,6 +53,7 @@ public:
     static float hoverlessOpacity;
     static float popupOpacity;
     static float zindex_icons;
+    static float zindex_iconsDragged;
     static float zindex_cells;
     static float zindex_frames;
 
@@ -89,6 +90,8 @@ public:
     bool typicalElementControl(Element* element, sf::RenderWindow* window, sf::Time* gameTime);
 
     InventoryIcon* createInventoryIcon();
+
+    static float getDrawDepth(float targetDepth);
 };
 
 #endif
