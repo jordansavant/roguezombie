@@ -46,7 +46,7 @@ void WallClient::clientUpdate(sf::Time &gameTime)
     float renderX = renderPosition.x - spriteWidth / 2 + xFootOffset / 2;
     float renderY = renderPosition.y - spriteHeight + yFootOffset;
 
-    float z = bit::Math::calculateDrawDepthByRange(renderY + spriteHeight, RZConfig::zrenderRange);
+    float z = RZConfig::getDrawDepthForGameplay(renderY + spriteHeight);
     bit::Vertex3* quad = &level->vertexMap_charactersNormal.vertexArray[quadIndex];
     bit::VertexHelper::positionQuad(quad, renderX, renderY, z, spriteWidth, spriteHeight);
     

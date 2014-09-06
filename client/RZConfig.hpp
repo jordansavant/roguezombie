@@ -14,6 +14,7 @@ public:
     static float zrenderInterfaceLowerbound;
     static float zrenderInterfaceUpperbound;
 
+    static float getDrawDepthForGameplay(float yPosition);
 };
 
 #endif

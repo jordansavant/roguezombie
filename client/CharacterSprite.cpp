@@ -71,7 +71,7 @@ void CharacterSprite::update(sf::Time &gameTime)
     screenY = r.y;
     r.x -= spriteWidth / 2;// + xFootOffset / 2;
     r.y -= yFootOffset;
-    float z = bit::Math::calculateDrawDepthByRange(r.y + spriteHeight, RZConfig::zrenderRange);
+    float z = RZConfig::getDrawDepthForGameplay(r.y + spriteHeight);
 
     // Color and luminence
     int rr = character->BodyClient::schema.rshade * character->BodyClient::schema.illumination;
