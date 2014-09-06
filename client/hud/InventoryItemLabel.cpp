@@ -80,6 +80,9 @@ InventoryItemLabel::~InventoryItemLabel()
 void InventoryItemLabel::updateTargets(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::Element::updateTargets(window, gameTime);
+
+    float o = opacity;
+    icon->color.a = (char)(o * 255);
 }
 
 void InventoryItemLabel::updateReals(sf::RenderWindow &window, sf::Time &gameTime)

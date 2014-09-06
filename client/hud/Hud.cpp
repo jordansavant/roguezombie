@@ -23,7 +23,7 @@ bool Hud::destroying = false;
 float Hud::hoverlessOpacity = .5f;
 float Hud::popupOpacity = .7f;
 
-float Hud::zindex_icons = .4f; // inventory icons
+float Hud::zindex_icons = .8f; // inventory icons
 float Hud::zindex_iconsDragged = 1.0f; // icons being dragged
 float Hud::zindex_cells = .1f; // containers for inventory icons
 float Hud::zindex_frames = .1f; // menu frames

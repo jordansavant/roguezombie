@@ -4,12 +4,12 @@
 #include "Hud.hpp"
 
 InventoryIcon::InventoryIcon()
-    : hud(NULL), quadIndex(0), map(NULL), sprite(NULL)
+    : hud(NULL), quadIndex(0), map(NULL), sprite(NULL), color(sf::Color::White)
 {
 }
 
 InventoryIcon::InventoryIcon(Hud* hud)
-    : hud(hud), quadIndex(0), map(&hud->interfaceVertexMap), sprite(NULL)
+    : hud(hud), quadIndex(0), map(&hud->interfaceVertexMap), sprite(NULL), color(sf::Color::White)
 {
     quadIndex = map->requestVertexIndex();
 }
@@ -24,6 +24,7 @@ void InventoryIcon::position(int x, int y, int z, int width, int height, float s
 {
     sprite->applyToQuad(&map->vertexArray[quadIndex]);
     bit::VertexHelper::positionQuad(&map->vertexArray[quadIndex], x, y, z, width, height, scale);
+    bit::VertexHelper::colorQuad(&map->vertexArray[quadIndex], color);
 }
 
 void InventoryIcon::reset()
