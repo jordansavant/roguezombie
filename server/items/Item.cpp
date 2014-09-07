@@ -375,7 +375,7 @@ std::string Item::getSpriteName(Type type)
         case Type::Z4Rifle:
             return "Z4Rifle";
 
-        case Type::Crowbar:
+        case Type::Crowbar: 
             return "Crowbar";
     }
 }
@@ -387,6 +387,9 @@ std::string Item::getIconName(Type type)
         default:
         case Type::None:
             return "unknown";
+
+        case Type::HardHat:
+            return "HardHat";
 
         case Type::Magnum357:
             return "Magnum357";

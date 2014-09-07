@@ -282,7 +282,7 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 
         if(addMini)
         {
-            state->hud->minimap.addPoint(t->schema.id, t->schema.x, t->schema.y);
+            //state->hud->minimap.addPoint(t->schema.id, t->schema.x, t->schema.y);
         }
     }
 

@@ -100,8 +100,8 @@ void Hud::update(sf::RenderWindow &window, sf::Time &gameTime)
 
     // Minimap
     float scale = bit::Math::roundPowerOf2(state->rogueZombieGame->currentResolutionRatio);
-    minimap.setPosition(175 * state->rogueZombieGame->currentResolutionRatioX, 125 * state->rogueZombieGame->currentResolutionRatioY);
-    minimap.setScale(scale, scale);
+    //minimap.setPosition(175 * state->rogueZombieGame->currentResolutionRatioX, 125 * state->rogueZombieGame->currentResolutionRatioY);
+    //minimap.setScale(scale, scale);
 }
 
 void Hud::draw(sf::RenderWindow &window, sf::Time &gameTime)
@@ -114,8 +114,8 @@ void Hud::draw(sf::RenderWindow &window, sf::Time &gameTime)
     window.draw(interfaceVertexMap.vertexArray, states);
 
     // Minimap
-    states.transform *= minimap.getTransform();
-    window.draw(minimap.vertexMap.vertexArray, states);
+    //states.transform *= minimap.getTransform();
+    //window.draw(minimap.vertexMap.vertexArray, states);
 
     state->rogueZombieGame->depthTestEnd();
 

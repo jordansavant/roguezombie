@@ -14,7 +14,7 @@
 #include "../mission/MissionClient.hpp"
 
 Inventory::Inventory(Hud* _hud)
-    : HudMenu(_hud, 0, 0, 1300, 720, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), refreshTimer(5)
+    : HudMenu(_hud, 0, 0, 691, 728, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), refreshTimer(5)
 {
     scaleStyle = ScaleStyle::PowerOfTwo;
     managesOpacity = true;
@@ -35,30 +35,24 @@ Inventory::Inventory(Hud* _hud)
 
     // PRIMARY PANELS
     // 500 x 720
-    equipmentPanel = new Frame(hud, 0, 0, 500, 720, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    equipmentPanel = new Frame(hud, 0, 0, 400, targetHeight, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     equipmentPanel->scaleStyle = ScaleStyle::PowerOfTwo;
     equipmentPanel->managesOpacity = true;
     addChild(equipmentPanel);
     
     // 800 x 720
-    inventoryPanel = new Frame(hud, 0, 0, 800, 720, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    inventoryPanel = new Frame(hud, 0, 0, 296, targetHeight, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     inventoryPanel->scaleStyle = ScaleStyle::PowerOfTwo;
     inventoryPanel->managesOpacity = true;
     addChild(inventoryPanel);
 
 
     // INVENTORY SLOTS
-    bit::Label* title = new bit::Label(20, 10, 0, 0, bit::Element::AnchorType::TopLeft);
-    title->setSfFontSize(24);
-    title->setSfFont(hud->journalFont);
-    title->normalColor = sf::Color(0, 255, 0);
-    title->setSfFontString(std::string("INVENTORY:"));
-    inventoryPanel->addChild(title);
-    int y = 72;
+    int y = 8;
     int width = 64;
     int pad = 8;
     int x = pad;
-    for(unsigned int j=0; j < 99; j++)
+    for(unsigned int j=0; j < 40; j++)
     {
         if(x + width + pad > inventoryPanel->targetWidth)
         {
@@ -100,11 +94,11 @@ Inventory::Inventory(Hud* _hud)
     equipmentSlotBoxes[Character::EquipmentSlot::Hands]->AcceptedCategoryArmor = ItemCategory::Armor::ArmorHand;
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Hands]);
     
-    equipmentSlotBoxes[Character::EquipmentSlot::WeaponPrimary] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::WeaponPrimary, 150, topOffset + 120, 100, 100, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::WeaponPrimary] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::WeaponPrimary, 150, topOffset + 120, 64, 64, bit::Element::AnchorType::Top);
     equipmentSlotBoxes[Character::EquipmentSlot::WeaponPrimary]->AcceptedCategoryWeapon = ItemCategory::Weapon::WeaponRanged | ItemCategory::Weapon::WeaponMelee;
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::WeaponPrimary]);
     
-    equipmentSlotBoxes[Character::EquipmentSlot::WeaponSecondary] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::WeaponSecondary, 150, topOffset + 240, 100, 100, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::WeaponSecondary] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::WeaponSecondary, 150, topOffset + 240, 64, 64, bit::Element::AnchorType::Top);
     equipmentSlotBoxes[Character::EquipmentSlot::WeaponSecondary]->AcceptedCategoryWeapon = ItemCategory::Weapon::WeaponRanged | ItemCategory::Weapon::WeaponMelee;
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::WeaponSecondary]);
 }

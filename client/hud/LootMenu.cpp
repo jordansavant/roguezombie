@@ -14,7 +14,7 @@
 #include "InventoryItemLabel.hpp"
 
 LootMenu::LootMenu(Hud* _hud)
-    : HudMenu(_hud, 50, 0, 618, 720, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)),
+    : HudMenu(_hud, 50, 0, 296, 728, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)),
       inventory(), isActive(false), tileId(0)
 {
     scaleStyle = ScaleStyle::PowerOfTwo;
@@ -22,11 +22,11 @@ LootMenu::LootMenu(Hud* _hud)
     opacity = 0;
 
     // INVENTORY SLOTS
-    int y = 72;
+    int y = 8;
     int width = 64;
     int pad = 8;
     int x = pad;
-    for(unsigned int j=0; j < 60; j++)
+    for(unsigned int j=0; j < 40; j++)
     {
         if(x + width + pad > targetWidth)
         {
@@ -64,7 +64,7 @@ void LootMenu::hide()
     isShown = false;
     clearEffects();
     relativePosition.x = 0;
-    immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, -targetWidth, 0));
+    immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, targetWidth + 700, 0));
     immediateEffect(new bit::FadeEffect(150, 0));
 }
 
@@ -73,8 +73,8 @@ void LootMenu::show()
     canHaveFocus = true;
     isShown = true;
     clearEffects();
-    relativePosition.x = -targetWidth;
-    immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, targetWidth, 0));
+    relativePosition.x = targetWidth;
+    immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, -targetWidth - 700, 0));
     immediateEffect(new bit::FadeEffect(300, Hud::popupOpacity));
 }
 

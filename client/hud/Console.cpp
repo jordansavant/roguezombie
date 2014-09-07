@@ -15,6 +15,7 @@ void Console::print(std::string &message)
     line->setSfFont(hud->journalFont);
     line->normalColor = sf::Color(0, 255, 0);
     line->setSfFontString(message);
+    line->paddingBottom = 10;
     
     // Add the child
     addChild(line);
