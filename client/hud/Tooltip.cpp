@@ -14,7 +14,7 @@ Tooltip::Tooltip(Hud* _hud)
     useBottomPointer = true;
     managesOpacity = true;
     opacity = 0;
-    color = sf::Color(0, 123, 0);
+    color = sf::Color(0, 255, 0);
     Frame::z = Hud::getDrawDepth(1);
 
     information = new bit::Label(15, 10, 0, 0, bit::Element::AnchorType::TopLeft);
@@ -55,14 +55,14 @@ void Tooltip::hide()
 {
     canHaveFocus = false;
     clearEffects();
-    immediateEffect(new bit::FadeEffect(150, 0, bit::Easing::Linear));
+    immediateEffect(new bit::FadeEffect(0, 0, bit::Easing::Instant));
 }
 
 void Tooltip::show()
 {
     canHaveFocus = true;
     clearEffects();
-    queueEffect(new bit::Effect(500))->queueEffect(new bit::FadeEffect(150, 1));
+    queueEffect(new bit::Effect(750))->queueEffect(new bit::FadeEffect(0, 1, bit::Easing::Instant));
 }
 
 void Tooltip::displayAt(std::string &info, int screenX, int screenY)
@@ -77,7 +77,7 @@ void Tooltip::displayAt(std::string &info, int screenX, int screenY)
         w = std::max(w, wc);
     }
 
-    float targetCharWidth = .55f;
+    float targetCharWidth = .50f;
 
     information->setSfFontString(info);
     targetHeight = 30 + information->fontSize * n;
