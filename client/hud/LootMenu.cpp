@@ -21,6 +21,9 @@ LootMenu::LootMenu(Hud* _hud)
     managesOpacity = true;
     opacity = 0;
 
+    naviconSprite = hud->state->rogueZombieGame->spriteLoader->getSprite("LootNavicon");
+    naviconQuadIndex = hud->interfaceVertexMap.requestVertexIndex();
+
     // INVENTORY SLOTS
     int y = 8;
     int width = 64;
@@ -43,6 +46,24 @@ LootMenu::LootMenu(Hud* _hud)
 void LootMenu::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::Container::update(window, gameTime);
+}
+
+void LootMenu::updateTargets(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    HudMenu::updateTargets(window, gameTime);
+
+    bit::Vertex3* quad = &hud->interfaceVertexMap.vertexArray[naviconQuadIndex];
+    bit::VertexHelper::colorQuad(quad, sf::Color(255, 255, 255, opacity * 255));
+}
+
+void LootMenu::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    HudMenu::updateReals(window, gameTime);
+
+    float z = Hud::getDrawDepth(Hud::zindex_frames);
+    bit::Vertex3* quad = &hud->interfaceVertexMap.vertexArray[naviconQuadIndex];
+    naviconSprite->applyToQuad(quad);
+    bit::VertexHelper::positionQuad(quad, left, top - naviconSprite->height * elementScale, z, naviconSprite->width, naviconSprite->height, elementScale);
 }
 
 void LootMenu::activate()

@@ -23,8 +23,14 @@ public:
     bool isActive;
     std::vector<InventoryLootSlot*> lootSlotBoxes;
     unsigned int tileId;
+    unsigned int naviconQuadIndex;
+    bit::Sprite* naviconSprite;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
+
+    void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
+
+    void updateReals(sf::RenderWindow &window, sf::Time &gameTime);
 
     void activate();
 

@@ -22,11 +22,17 @@ public:
     bit::GameTimer refreshTimer;
     bit::Container* equipmentPanel;
     bit::Container* inventoryPanel;
+    unsigned int naviconQuadIndex;
+    bit::Sprite* naviconSprite;
 
     std::vector<InventoryEquipmentSlot*> equipmentSlotBoxes;
     std::vector<InventoryPositionSlot*> positionSlotBoxes;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
+
+    void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
+
+    void updateReals(sf::RenderWindow &window, sf::Time &gameTime);
 
     void buildEquipment();
 

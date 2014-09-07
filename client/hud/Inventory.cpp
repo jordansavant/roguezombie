@@ -46,6 +46,9 @@ Inventory::Inventory(Hud* _hud)
     inventoryPanel->managesOpacity = true;
     addChild(inventoryPanel);
 
+    naviconSprite = hud->state->rogueZombieGame->spriteLoader->getSprite("InventoryNavicon");
+    naviconQuadIndex = hud->interfaceVertexMap.requestVertexIndex();
+
 
     // INVENTORY SLOTS
     int y = 8;
@@ -113,6 +116,26 @@ void Inventory::update(sf::RenderWindow &window, sf::Time &gameTime)
         buildItemList(false);
     }
 }
+
+
+void Inventory::updateTargets(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    HudMenu::updateTargets(window, gameTime);
+
+    bit::Vertex3* quad = &hud->interfaceVertexMap.vertexArray[naviconQuadIndex];
+    bit::VertexHelper::colorQuad(quad, sf::Color(255, 255, 255, opacity * 255));
+}
+
+void Inventory::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    HudMenu::updateReals(window, gameTime);
+
+    float z = Hud::getDrawDepth(Hud::zindex_frames);
+    bit::Vertex3* quad = &hud->interfaceVertexMap.vertexArray[naviconQuadIndex];
+    naviconSprite->applyToQuad(quad);
+    bit::VertexHelper::positionQuad(quad, left, top - naviconSprite->height * elementScale, z, naviconSprite->width, naviconSprite->height, elementScale);
+}
+
 
 void Inventory::buildEquipment()
 {
