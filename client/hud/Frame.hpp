@@ -21,6 +21,7 @@ public:
 
     Hud* hud;
     sf::Color color;
+    float z;
     
     unsigned int topLeftQuadIndex;
     unsigned int topRightQuadIndex;

@@ -15,6 +15,7 @@ Tooltip::Tooltip(Hud* _hud)
     managesOpacity = true;
     opacity = 0;
     color = sf::Color(0, 123, 0);
+    Frame::z = Hud::getDrawDepth(1);
 
     information = new bit::Label(15, 10, 0, 0, bit::Element::AnchorType::TopLeft);
     information->setSfFontSize(20);

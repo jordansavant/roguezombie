@@ -24,6 +24,8 @@ public:
     bit::Container* inventoryPanel;
     unsigned int naviconQuadIndex;
     bit::Sprite* naviconSprite;
+    unsigned int siloQuadIndex;
+    bit::Sprite* siloSprite;
 
     std::vector<InventoryEquipmentSlot*> equipmentSlotBoxes;
     std::vector<InventoryPositionSlot*> positionSlotBoxes;

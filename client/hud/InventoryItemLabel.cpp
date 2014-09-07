@@ -18,7 +18,7 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, ItemClient* item, float relativ
     opacity = 0;
 
     InventoryItemLabel* label = this;
-    makeDraggable(hud->state->rogueZombieGame->inputManager, NULL, [hud, item, label] (bit::Draggable* d, Element* e) -> bool
+    makeDraggable(hud->state->rogueZombieGame->inputManager, [hud](bit::Draggable *d, Element* e){ hud->hideTooltip(); }, [hud, item, label] (bit::Draggable* d, Element* e) -> bool
     {
         // Check the equipment slots to see if it is being hovered when the drop occurs
         for(unsigned int i=0; i < hud->inventory->equipmentPanel->childElements.size(); i++)
@@ -59,8 +59,17 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, ItemClient* item, float relativ
         return false;
     });
 
+    // Icon
     icon = hud->inventoryIconPool.fetch();
     icon->set(std::string("icon_" + Item::getIconName(item->schema.type)));
+
+    // Tooltip
+    InventoryItemLabel* self = this;
+    makeHoverable(hud->state->rogueZombieGame->inputManager, [hud, self](bit::Hoverable* h, bit::Element* me) {
+        hud->displayTooltipAt(Item::getTitle(self->itemSchema.type), me->left + me->width / 2, me->top + 10);
+    }, [hud](bit::Hoverable* h, bit::Element* me) {
+        hud->hideTooltip();
+    });
 }
 
 InventoryItemLabel::~InventoryItemLabel()

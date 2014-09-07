@@ -46,9 +46,13 @@ Inventory::Inventory(Hud* _hud)
     inventoryPanel->managesOpacity = true;
     addChild(inventoryPanel);
 
+    // Icon
     naviconSprite = hud->state->rogueZombieGame->spriteLoader->getSprite("InventoryNavicon");
     naviconQuadIndex = hud->interfaceVertexMap.requestVertexIndex();
 
+    // Equipment silohuette
+    siloSprite = hud->state->rogueZombieGame->spriteLoader->getSprite("Silohuette");
+    siloQuadIndex = hud->interfaceVertexMap.requestVertexIndex();
 
     // INVENTORY SLOTS
     int y = 8;
@@ -70,38 +74,40 @@ Inventory::Inventory(Hud* _hud)
 
 
     // EQUIPMENT BOXES
-    int topOffset = 150;
+    int topOffset = 121;
+    int leftOffset = 40;
+    int size = 64;
     equipmentSlotBoxes.resize(Character::EquipmentSlot::_count, NULL);
 
-    equipmentSlotBoxes[Character::EquipmentSlot::Head] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Head, 0, topOffset + 0, 200, 100, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::Head] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Head, 0 + leftOffset, topOffset + 0, size, size, bit::Element::AnchorType::Top);
     equipmentSlotBoxes[Character::EquipmentSlot::Head]->AcceptedCategoryArmor = ItemCategory::Armor::ArmorHead;
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Head]);
     
-    equipmentSlotBoxes[Character::EquipmentSlot::Chest] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Chest, 0, topOffset + 120, 160, 100, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::Chest] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Chest, 0 + leftOffset, topOffset + 28*1 + size*1, size, size, bit::Element::AnchorType::Top);
     equipmentSlotBoxes[Character::EquipmentSlot::Chest]->AcceptedCategoryArmor = ItemCategory::Armor::ArmorChest;
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Chest]);
     
-    equipmentSlotBoxes[Character::EquipmentSlot::Legs] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Legs, 0, topOffset + 240, 160, 60, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::Legs] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Legs, 0 + leftOffset, topOffset + 28*2 + size*2, size, size, bit::Element::AnchorType::Top);
     equipmentSlotBoxes[Character::EquipmentSlot::Legs]->AcceptedCategoryArmor = ItemCategory::Armor::ArmorLeg;
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Legs]);
     
-    equipmentSlotBoxes[Character::EquipmentSlot::Feet] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Feet, 0, topOffset + 320, 160, 30, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::Feet] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Feet, 0 + leftOffset, topOffset + 28*3 + size*3, size, size, bit::Element::AnchorType::Top);
     equipmentSlotBoxes[Character::EquipmentSlot::Feet]->AcceptedCategoryArmor = ItemCategory::Armor::ArmorFoot;
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Feet]);
     
-    equipmentSlotBoxes[Character::EquipmentSlot::Totem] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Totem, -130, topOffset + 120, 60, 60, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::Totem] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Totem, leftOffset + 62 + 28*1, topOffset + 28*1 + size*1 - 20, size, size, bit::Element::AnchorType::Top);
     equipmentSlotBoxes[Character::EquipmentSlot::Totem]->AcceptedCategoryJewelry = ItemCategory::Jewelry::JewelryTotem;
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Totem]);
     
-    equipmentSlotBoxes[Character::EquipmentSlot::Hands] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Hands, -130, topOffset + 200, 60, 60, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::Hands] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::Hands, leftOffset - 62 - 28*1, topOffset + 28*1 + size*1 + 20, size, size, bit::Element::AnchorType::Top);
     equipmentSlotBoxes[Character::EquipmentSlot::Hands]->AcceptedCategoryArmor = ItemCategory::Armor::ArmorHand;
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::Hands]);
     
-    equipmentSlotBoxes[Character::EquipmentSlot::WeaponPrimary] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::WeaponPrimary, 150, topOffset + 120, 64, 64, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::WeaponPrimary] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::WeaponPrimary, leftOffset - 172, topOffset + 212, size, size, bit::Element::AnchorType::Top);
     equipmentSlotBoxes[Character::EquipmentSlot::WeaponPrimary]->AcceptedCategoryWeapon = ItemCategory::Weapon::WeaponRanged | ItemCategory::Weapon::WeaponMelee;
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::WeaponPrimary]);
     
-    equipmentSlotBoxes[Character::EquipmentSlot::WeaponSecondary] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::WeaponSecondary, 150, topOffset + 240, 64, 64, bit::Element::AnchorType::Top);
+    equipmentSlotBoxes[Character::EquipmentSlot::WeaponSecondary] = new InventoryEquipmentSlot(hud, Character::EquipmentSlot::WeaponSecondary, leftOffset - 172 + size*1, topOffset + 212 + size*1, size, size, bit::Element::AnchorType::Top);
     equipmentSlotBoxes[Character::EquipmentSlot::WeaponSecondary]->AcceptedCategoryWeapon = ItemCategory::Weapon::WeaponRanged | ItemCategory::Weapon::WeaponMelee;
     equipmentPanel->addChild(equipmentSlotBoxes[Character::EquipmentSlot::WeaponSecondary]);
 }
@@ -122,22 +128,36 @@ void Inventory::updateTargets(sf::RenderWindow &window, sf::Time &gameTime)
 {
     HudMenu::updateTargets(window, gameTime);
 
-    bit::Vertex3* quad = &hud->interfaceVertexMap.vertexArray[naviconQuadIndex];
-    bit::VertexHelper::colorQuad(quad, sf::Color(255, 255, 255, opacity * 255));
+    // Navicon
+    bit::Vertex3* naviconQuad = &hud->interfaceVertexMap.vertexArray[naviconQuadIndex];
+    bit::VertexHelper::colorQuad(naviconQuad, sf::Color(255, 255, 255, opacity * 255));
+
+    // Silohuette
+    bit::Vertex3* siloQuad = &hud->interfaceVertexMap.vertexArray[siloQuadIndex];
+    bit::VertexHelper::colorQuad(siloQuad, sf::Color(255, 255, 255, opacity * 255));
 }
 
 void Inventory::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
 {
     HudMenu::updateReals(window, gameTime);
 
-    float z = Hud::getDrawDepth(Hud::zindex_frames);
-    bit::Vertex3* quad = &hud->interfaceVertexMap.vertexArray[naviconQuadIndex];
-    naviconSprite->applyToQuad(quad);
-    bit::VertexHelper::positionQuad(quad, left, top - naviconSprite->height * elementScale, z, naviconSprite->width, naviconSprite->height, elementScale);
+    // Navicon
+    float naviconZ = Hud::getDrawDepth(Hud::zindex_frames);
+    bit::Vertex3* naviconQuad = &hud->interfaceVertexMap.vertexArray[naviconQuadIndex];
+    naviconSprite->applyToQuad(naviconQuad);
+    bit::VertexHelper::positionQuad(naviconQuad, left, top - naviconSprite->height * elementScale, naviconZ, naviconSprite->width, naviconSprite->height, elementScale);
+
+    // Silohuette for Equipment
+    int xOff = 40 * elementScale;
+    int yOff = 72 * elementScale;
+    float siloZ = Hud::getDrawDepth(Hud::zindex_frames);
+    bit::Vertex3* siloQuad = &hud->interfaceVertexMap.vertexArray[siloQuadIndex];
+    siloSprite->applyToQuad(siloQuad);
+    bit::VertexHelper::positionQuad(siloQuad, equipmentPanel->left + xOff, equipmentPanel->top + yOff, siloZ, siloSprite->width, siloSprite->height, elementScale * 2);
 }
 
 
-void Inventory::buildEquipment()
+void Inventory::buildEquipment() 
 {
     LevelClient* levelClient = hud->state->levelClient;
     if(levelClient->playerCharacter == NULL)

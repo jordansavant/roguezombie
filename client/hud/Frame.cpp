@@ -32,6 +32,7 @@ Frame::Frame(Hud* hud, float relativeX, float relativeY, float width, float heig
 void Frame::load()
 {
     opacity = 0;
+    z = Hud::getDrawDepth(Hud::zindex_frames);
 
     // Corners
     topLeftQuadIndex = hud->interfaceVertexMap.requestVertexIndex();
@@ -96,7 +97,6 @@ void Frame::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     Container::updateReals(window, gameTime);
 
     int x, y, w, h;
-    float z = Hud::getDrawDepth(Hud::zindex_frames);
 
     // Top left corner
     x = (int)left;
