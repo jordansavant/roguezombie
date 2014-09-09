@@ -28,6 +28,10 @@ float Hud::zindex_iconsDragged = 1.0f; // icons being dragged
 float Hud::zindex_cells = .1f; // containers for inventory icons
 float Hud::zindex_frames = .1f; // menu frames
 
+int Hud::font_primarySize = 24;
+int Hud::font_noteSize = 20;
+sf::Color Hud::font_primaryColor = sf::Color(0, 255, 0);
+
 Hud::Hud(StateGamePlay* _state)
     : bit::Container(0, 0, _state->rogueZombieGame->targetResolution.x, _state->rogueZombieGame->targetResolution.y, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, this, std::placeholders::_1, std::placeholders::_2,  std::placeholders::_3)),
       state(_state), inventoryIconPool(500, std::bind(&Hud::createInventoryIcon, this))

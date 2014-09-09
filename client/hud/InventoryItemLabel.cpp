@@ -66,9 +66,9 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, ItemClient* item, float relativ
     // Tooltip
     InventoryItemLabel* self = this;
     makeHoverable(hud->state->rogueZombieGame->inputManager, [hud, self](bit::Hoverable* h, bit::Element* me) {
-        hud->displayTooltipAt(Item::getTitle(self->itemSchema.type), me->left + me->width / 2, me->top + 10);
+        hud->inventory->showItemData(self->itemSchema);
     }, [hud](bit::Hoverable* h, bit::Element* me) {
-        hud->hideTooltip();
+        hud->inventory->hideItemData();
     });
 }
 

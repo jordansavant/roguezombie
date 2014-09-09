@@ -355,6 +355,32 @@ std::string Item::getTitle(Type type)
     }
 }
 
+// One line, max 23 chars
+std::string Item::getDescription(Type type)
+{
+    switch(type)
+    {
+        default:
+        case Type::None:
+            return "No description";
+
+        case Type::Backpack:
+            return "It's a backpack";
+
+        case Type::HardHat:
+            return "OSHA mandated protection";
+
+        case Type::Magnum357:
+            return "Are you feelin' lucky?";
+
+        case Type::Z4Rifle:
+            return "Future modern war rifle";
+
+        case Type::Crowbar:
+            return "100% Freeman made";
+    }
+}
+
 std::string Item::getSpriteName(Type type)
 {
     switch(type)

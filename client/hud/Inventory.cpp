@@ -12,6 +12,8 @@
 #include "../CharacterClient.hpp"
 #include "../RogueZombieGame.hpp"
 #include "../mission/MissionClient.hpp"
+#include <string>
+#include <iomanip>
 
 Inventory::Inventory(Hud* _hud)
     : HudMenu(_hud, 0, 0, 691, 728, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), pendingInventoryRequests(0), refreshTimer(5)
@@ -35,7 +37,7 @@ Inventory::Inventory(Hud* _hud)
 
     // PRIMARY PANELS
     // 500 x 720
-    equipmentPanel = new Frame(hud, 0, 0, 400, targetHeight, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    equipmentPanel = new Frame(hud, 0, 0, 400, targetHeight, bit::Element::AnchorType::TopRight, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     equipmentPanel->scaleStyle = ScaleStyle::PowerOfTwo;
     equipmentPanel->managesOpacity = true;
     addChild(equipmentPanel);
@@ -53,6 +55,21 @@ Inventory::Inventory(Hud* _hud)
     // Equipment silohuette
     siloSprite = hud->state->rogueZombieGame->spriteLoader->getSprite("Silohuette");
     siloQuadIndex = hud->interfaceVertexMap.requestVertexIndex();
+
+    // Item Data Panel
+    int itemDataHeight = 250;
+    itemDataPanel = new bit::Container(0, targetHeight - itemDataHeight, 400, itemDataHeight, bit::Element::AnchorType::TopLeft, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    itemDataPanel->scaleStyle = ScaleStyle::PowerOfTwo;
+    itemDataPanel->managesOpacity = true;
+    equipmentPanel->addChild(itemDataPanel);
+
+    itemDataText = new bit::Label(32, 16, 0, 0, AnchorType::TopLeft);
+    itemDataText->setSfFontSize(Hud::font_primarySize);
+    itemDataText->setSfFont(hud->journalFont);
+    itemDataText->setSfFontString(std::string(""));
+    itemDataText->normalColor = Hud::font_primaryColor;
+    itemDataText->scaleStyle = ScaleStyle::PowerOfTwo;
+    itemDataPanel->addChild(itemDataText);
 
     // INVENTORY SLOTS
     int y = 8;
@@ -291,4 +308,20 @@ void Inventory::show()
     relativePosition.x = targetWidth;
     immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, -targetWidth, 0));
     immediateEffect(new bit::FadeEffect(300, Hud::popupOpacity));
+}
+
+void Inventory::showItemData(Item::Schema& itemSchema)
+{
+    std::stringstream ss;
+    ss  << Item::getTitle(itemSchema.type) << "\n"
+        << Item::getDescription(itemSchema.type) << "\n\n"
+        << "Range..............." << itemSchema.effectiveRangeInTiles << "\n"
+        << "Damage.............." << itemSchema.minimumDamage << "-" << itemSchema.maximumDamage << "\n"
+        << "Armor..............." << std::setprecision(4) << itemSchema.armorEffectiveness;
+    itemDataText->setSfFontString(ss.str());
+}
+
+void Inventory::hideItemData()
+{
+    itemDataText->setSfFontString(std::string());
 }

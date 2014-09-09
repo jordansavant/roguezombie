@@ -5,13 +5,14 @@
 Console::Console(Hud* _hud)
     : bit::Container(50, -50, 500, 200, bit::Element::AnchorType::BottomLeft, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(_hud)
 {
+    scaleStyle = ScaleStyle::PowerOfTwo;
 }
 
 void Console::print(std::string &message)
 {
     // Create the new line
     bit::Label* line = new bit::Label(-400, 0, 0, 0, bit::Element::AnchorType::BottomLeft);
-    line->setSfFontSize(24);
+    line->setSfFontSize(Hud::font_primarySize);
     line->setSfFont(hud->journalFont);
     line->normalColor = sf::Color(0, 255, 0);
     line->setSfFontString(message);

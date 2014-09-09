@@ -14,7 +14,7 @@
 #include "InventoryItemLabel.hpp"
 
 LootMenu::LootMenu(Hud* _hud)
-    : HudMenu(_hud, 50, 0, 296, 728, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)),
+    : HudMenu(_hud, 296, 0, 296, 728, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)),
       inventory(), isActive(false), tileId(0)
 {
     scaleStyle = ScaleStyle::PowerOfTwo;

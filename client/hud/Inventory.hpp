@@ -6,9 +6,9 @@
 #include "SFML/Graphics.hpp"
 #include "../../bitengine/Gui.hpp"
 #include "../../bitengine/Graphics.hpp"
+#include "../items/ItemClient.hpp"
 
 class Hud;
-class ItemClient;
 class InventoryItemLabel;
 class InventoryEquipmentSlot;
 class InventoryPositionSlot;
@@ -23,6 +23,8 @@ public:
     bit::GameTimer refreshTimer;
     bit::Container* equipmentPanel;
     bit::Container* inventoryPanel;
+    bit::Container* itemDataPanel;
+    bit::Label* itemDataText;
     unsigned int naviconQuadIndex;
     bit::Sprite* naviconSprite;
     unsigned int siloQuadIndex;
@@ -47,6 +49,9 @@ public:
 
     virtual void show();
 
+    void showItemData(Item::Schema& itemSchema);
+
+    void hideItemData();
 };
 
 #endif
