@@ -14,7 +14,7 @@
 #include "../mission/MissionClient.hpp"
 
 Inventory::Inventory(Hud* _hud)
-    : HudMenu(_hud, 0, 0, 691, 728, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), refreshTimer(5)
+    : HudMenu(_hud, 0, 0, 691, 728, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), pendingInventoryRequests(0), refreshTimer(5)
 {
     scaleStyle = ScaleStyle::PowerOfTwo;
     managesOpacity = true;
@@ -116,7 +116,7 @@ void Inventory::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     HudMenu::update(window, gameTime);
 
-    if(refreshTimer.update(gameTime))
+    if(pendingInventoryRequests == 0 && refreshTimer.update(gameTime))
     {
         buildEquipment();
         buildItemList(false);

@@ -40,6 +40,7 @@ unsigned int InventoryLootSlot::addChild(Element* child)
     InventoryItemLabel* label = static_cast<InventoryItemLabel*>(child);
     equippedItemLabel = label;
     equippedItemLabel->currentLootSlot = this;
+    label->itemSchema.position = position;
     return bit::Container::addChild(child);
 }
 
