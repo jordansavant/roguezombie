@@ -20,6 +20,8 @@ public:
     bit::GameTimer fadeTimer;
     bit::Label* information;
     float requestedOpacity;
+    int requestedDelay;
+    int requestedDuration;
 
     virtual void updateReals(sf::RenderWindow &window, sf::Time &gameTime);
 
@@ -31,7 +33,7 @@ public:
 
     virtual void show();
 
-    void displayAt(std::string &info, int screenX, int screenY, float opacity = 1, int width = -1, int height = -1);
+    void displayAt(std::string &info, int screenX, int screenY, float opacity = 1, int delay = 750, int duration = 3000, int width = -1, int height = -1);
 };
 
 #endif

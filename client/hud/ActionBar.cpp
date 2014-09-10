@@ -38,7 +38,9 @@ ActionBar::ActionBar(Hud* hud)
         }
     };
     attack->makeHoverable(hud->state->rogueZombieGame->inputManager, [hud](bit::Hoverable* h, bit::Element* me) {
-        hud->displayTooltipAt(std::string("Attack"), me->left + me->width / 2, me->top - 5);
+        hud->displayTooltipAt(std::string("Attack"), me->left + me->width / 2, me->top - 10, 1, 0);
+    }, [hud](bit::Hoverable* h, bit::Element* me) {
+        hud->hideTooltip();
     });
     addChild(attack);
     originX += attack->sprite->width + xpadding;
@@ -57,7 +59,9 @@ ActionBar::ActionBar(Hud* hud)
         hud->state->issueCommand(cmd);
     };
     wait->makeHoverable(hud->state->rogueZombieGame->inputManager, [hud](bit::Hoverable* h, bit::Element* me) {
-        hud->displayTooltipAt(std::string("Skip Action"), me->left + me->width / 2, me->top - 5);
+        hud->displayTooltipAt(std::string("Skip Action"), me->left + me->width / 2, me->top - 10, 1, 0);
+    }, [hud](bit::Hoverable* h, bit::Element* me) {
+        hud->hideTooltip();
     });
     addChild(wait);
     originX += wait->sprite->width + xpadding;
@@ -77,7 +81,9 @@ ActionBar::ActionBar(Hud* hud)
         hud->state->issueCommand(cmd);
     };
     swap->makeHoverable(hud->state->rogueZombieGame->inputManager, [hud](bit::Hoverable* h, bit::Element* me) {
-        hud->displayTooltipAt(std::string("Swap Weapons"), me->left + me->width / 2, me->top - 5);
+        hud->displayTooltipAt(std::string("Swap Weapons"), me->left + me->width / 2, me->top - 10, 1, 0);
+    }, [hud](bit::Hoverable* h, bit::Element* me) {
+        hud->hideTooltip();
     });
     addChild(swap);
     originX += swap->sprite->width + xpadding;

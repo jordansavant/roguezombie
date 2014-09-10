@@ -16,7 +16,7 @@ InventoryEquipmentSlot::InventoryEquipmentSlot(Hud* hud, Character::EquipmentSlo
     // Tooltip
     InventoryEquipmentSlot* self = this;
     makeHoverable(hud->state->rogueZombieGame->inputManager, [hud, self](bit::Hoverable* h, bit::Element* me) {
-        hud->displayTooltipAt(Character::getEquipmentSlotTitle(self->slot), self->left + self->width / 2, self->top, .8f);
+        hud->displayTooltipAt(Character::getEquipmentSlotTitle(self->slot), self->left + self->width / 2, self->top, .8f, 1500, 10000);
     }, [hud](bit::Hoverable* h, bit::Element* me) {
         hud->hideTooltip();
     });
