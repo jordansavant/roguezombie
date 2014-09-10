@@ -19,6 +19,7 @@ public:
     bool isActive;
     bit::GameTimer fadeTimer;
     bit::Label* information;
+    float requestedOpacity;
 
     virtual void updateReals(sf::RenderWindow &window, sf::Time &gameTime);
 
@@ -30,7 +31,7 @@ public:
 
     virtual void show();
 
-    void displayAt(std::string &info, int screenX, int screenY);
+    void displayAt(std::string &info, int screenX, int screenY, float opacity = 1, int width = -1, int height = -1);
 };
 
 #endif

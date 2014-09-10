@@ -1526,3 +1526,29 @@ std::string Character::getTitle(Character::Type type)
             return "Hunter";
     }
 }
+
+std::string Character::getEquipmentSlotTitle(Character::EquipmentSlot slot)
+{
+    switch(slot)
+    {
+        default:
+        case EquipmentSlot::_count:
+            return "Undefined";
+        case EquipmentSlot::Head:
+            return "Head";
+        case EquipmentSlot::Chest:
+            return "Chest";
+        case EquipmentSlot::Legs:
+            return "Legs";
+        case EquipmentSlot::Feet:
+            return "Feet";
+        case EquipmentSlot::Hands:
+            return "Hands";
+        case EquipmentSlot::Totem:
+            return "Totem";
+        case EquipmentSlot::WeaponPrimary:
+            return "Primary Weapon";
+        case EquipmentSlot::WeaponSecondary:
+            return "Secondary Weapon";
+    }
+}

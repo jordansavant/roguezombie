@@ -207,9 +207,9 @@ void Hud::displayMessage(std::string &message)
     console->print(message);
 }
 
-void Hud::displayTooltipAt(std::string &info, int screenX, int screenY)
+void Hud::displayTooltipAt(std::string &info, int screenX, int screenY, float opacity, int width, int height)
 {
-    tooltip->displayAt(info, screenX, screenY);
+    tooltip->displayAt(info, screenX, screenY, opacity, width, height);
 }
 
 void Hud::hideTooltip()

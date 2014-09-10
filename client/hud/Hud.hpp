@@ -84,7 +84,7 @@ public:
 
     void displayMessage(std::string &message);
 
-    void displayTooltipAt(std::string &info, int screenX, int screenY);
+    void displayTooltipAt(std::string &info, int screenX, int screenY, float opacity = 1, int width = -1, int height = -1);
 
     void hideTooltip();
 

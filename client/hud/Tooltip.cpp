@@ -13,16 +13,18 @@ Tooltip::Tooltip(Hud* _hud)
 {
     useBottomPointer = true;
     managesOpacity = true;
-    opacity = 0;
+    opacity = requestedOpacity = 0;
     color = sf::Color(0, 255, 0);
     Frame::z = Hud::getDrawDepth(1);
+    scaleStyle = ScaleStyle::PowerOfTwo;
 
-    information = new bit::Label(15, 10, 0, 0, bit::Element::AnchorType::TopLeft);
-    information->setSfFontSize(20);
+    information = new bit::Label(0, 10, 0, 0, bit::Element::AnchorType::TopLeft);
+    information->scaleStyle = ScaleStyle::PowerOfTwo;
+    information->setSfFontSize(Hud::font_noteSize);
     information->setSfFont(hud->journalFont);
     information->normalColor = color;
     information->setSfFontString(std::string(""));
-    information->paddingRight = 10;
+    information->paddingRight = 0;
     information->paddingBottom = 10;
     addChild(information);
 }
@@ -62,26 +64,44 @@ void Tooltip::show()
 {
     canHaveFocus = true;
     clearEffects();
-    queueEffect(new bit::Effect(750))->queueEffect(new bit::FadeEffect(0, 1, bit::Easing::Instant));
+    queueEffect(new bit::Effect(750))->queueEffect(new bit::FadeEffect(0, requestedOpacity, bit::Easing::Instant));
 }
 
-void Tooltip::displayAt(std::string &info, int screenX, int screenY)
+void Tooltip::displayAt(std::string &info, int screenX, int screenY, float opacity, int width, int height)
 {
-    // change tooltip size based on occurences
-    int w = 1;
-    std::vector<std::string> tokens = bit::String::split(info, '\n');
-    int n = tokens.size();
-    for(unsigned int i=0; i < n; i++)
+    int wPad = 30;
+    int hPad = 25;
+    int ttWidth = 0;
+    int ttHeight = 0;
+    this->requestedOpacity = opacity;
+
+    // change tooltip size based on occurences of characters
+    if(width < 0 || height < 0)
     {
-        int wc = tokens[i].size();
-        w = std::max(w, wc);
+        float targetCharWidth = .50f;
+        int w = 1;
+        std::vector<std::string> tokens = bit::String::split(info, '\n');
+        int n = tokens.size();
+        for(unsigned int i=0; i < n; i++)
+        {
+            int wc = tokens[i].size();
+            w = std::max(w, wc);
+        }
+        ttHeight = hPad + information->fontSize * n;
+        ttWidth = wPad + (int)((float)(information->fontSize * w * targetCharWidth));
+    }
+    else
+    {
+        ttWidth = width;
+        ttHeight = height;
     }
 
-    float targetCharWidth = .50f;
-
     information->setSfFontString(info);
-    targetHeight = 30 + information->fontSize * n;
-    targetWidth = 50 + (int)((float)(information->fontSize * w * targetCharWidth));
+    
+    targetWidth = information->targetWidth + wPad;
+    targetHeight = information->targetHeight + hPad;
+    information->relativePosition.x = (targetWidth - information->targetWidth) / 2;
+
     screenY -= targetHeight * elementScale + Frame::bottomPointerSprite->height;
     screenX -= targetWidth * elementScale / 2;
     relativePosition.x = screenX / elementScale;

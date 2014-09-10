@@ -20,10 +20,7 @@ bit::Label::Label(float relativeX, float relativeY, float width, float height, A
 
 void bit::Label::updateTargets(sf::RenderWindow &window, sf::Time &gameTime)
 {
-    // Inverse our targets against our scale since we need to size
-    // fonts by a real character size for aliasing issues in SFML
-    targetWidth = (getLocalBounds().width / elementScale + paddingRight);
-    targetHeight = (getLocalBounds().height / elementScale + paddingBottom);
+    syncSizing();
 }
 
 void bit::Label::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
@@ -32,6 +29,14 @@ void bit::Label::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     // Scale the actual character size, not by transformable scale
     setCharacterSize(elementScale * fontSize);
     setPosition(left + (paddingLeft / 2) * elementScale, top + (paddingTop / 2) * elementScale);
+}
+
+void bit::Label::syncSizing()
+{
+    // Inverse our targets against our scale since we need to size
+    // fonts by a real character size for aliasing issues in SFML
+    targetWidth = (getLocalBounds().width / elementScale + paddingRight);
+    targetHeight = (getLocalBounds().height / elementScale + paddingBottom);
 }
 
 void bit::Label::colorByFocus(bool focus)
@@ -44,16 +49,19 @@ void bit::Label::colorByFocus(bool focus)
 void bit::Label::setSfFont(sf::Font &font)
 {
     setFont(font);
+    syncSizing();
 }
 
 void bit::Label::setSfFontSize(unsigned int size)
 {
     fontSize = size;
+    syncSizing();
 }
 
 void bit::Label::setSfFontString(std::string &string)
 {
     setString(string);
+    syncSizing();
 }
 
 void bit::Label::draw(sf::RenderWindow &window, sf::Time &gameTime)

@@ -22,8 +22,7 @@ void Console::print(std::string &message)
     addChild(line);
 
     // Queue the thing for its own removal;
-    Console* console = this;
-    line->queueEffect(new bit::MoveEffect(500, bit::Easing::OutQuint, 400, 0))->queueEffect(new bit::Effect(2000))->queueEffect(new bit::FadeEffect(500, 0, bit::Easing::Linear, [console] (bit::Element* e, bit::Effect* f){
+    line->queueEffect(new bit::MoveEffect(500, bit::Easing::OutQuint, 400, 0))->queueEffect(new bit::Effect(2000))->queueEffect(new bit::FadeEffect(500, 0, bit::Easing::Linear, [] (bit::Element* e, bit::Effect* f){
         e->removeFromParent = true;
     }));
 

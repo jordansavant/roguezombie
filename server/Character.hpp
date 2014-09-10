@@ -360,6 +360,7 @@ public:
 
     static std::string getTitle(Character::Type type);
 
+    static std::string getEquipmentSlotTitle(Character::EquipmentSlot slot);
 
 protected:
 

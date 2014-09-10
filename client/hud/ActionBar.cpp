@@ -9,22 +9,12 @@ ActionBar::ActionBar(Hud* hud)
     : Frame(hud, 0, 200, 1100, 200, bit::Element::AnchorType::Bottom, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3))
 {
     scaleStyle = bit::Element::ScaleStyle::PowerOfTwo;
+    managesOpacity = true;
+    opacity = 1;
 
     int originX = 20;
     int originY = 10;
     int xpadding = 2;
-    managesOpacity = true;
-    opacity = Hud::hoverlessOpacity;
-
-    makeHoverable(hud->state->rogueZombieGame->inputManager,
-        [](bit::Hoverable* h, bit::Element* e){
-            e->immediateEffect(new bit::FadeEffect(200, 1));
-        },
-        [](bit::Hoverable* h, bit::Element* e){
-            e->immediateEffect(new bit::FadeEffect(200, Hud::hoverlessOpacity));
-        }
-    );
-
 
     attack = new HudElement(originX, originY, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     attack->load(hud, std::string("optionbar_crosshair"));
@@ -113,5 +103,5 @@ void ActionBar::show()
     clearEffects();
     relativePosition.y = targetHeight;
     immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, 0, -targetHeight + 120));
-    immediateEffect(new bit::FadeEffect(300, Hud::hoverlessOpacity));
+    immediateEffect(new bit::FadeEffect(300, 1));
 }
