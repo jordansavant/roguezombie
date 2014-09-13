@@ -14,6 +14,7 @@
 #include "InventoryIcon.hpp"
 #include "../../ResourcePath.h"
 #include "../../bitengine/Input.hpp"
+#include "../../bitengine/Audio.hpp"
 #include "../StateGamePlay.hpp"
 #include "../LevelClient.hpp"
 #include "../RogueZombieGame.hpp"
@@ -91,6 +92,9 @@ Hud::Hud(StateGamePlay* _state)
 
     tooltip = new Tooltip(this);
     addChild(tooltip);
+
+    // Sounds
+    slotDenialSoundId = state->rogueZombieGame->soundManager->loadSound(resourcePath() + "slotbeep_688997_SOUNDDOGS__of.ogg");
 }
 
 Hud::~Hud()
@@ -140,13 +144,11 @@ void Hud::show()
 
 void Hud::onEnterCombat()
 {
-    actionBar->show();
 }
 
 void Hud::onLeaveCombat()
 {
     turnQueue->hide();
-    actionBar->hide();
 }
 
 void Hud::hideAllMenus(Element* except)
@@ -200,6 +202,16 @@ void Hud::deactivateInventory()
     {
         inventory->hide();
     }
+}
+
+void Hud::activateActionBar()
+{
+    actionBar->show();
+}
+
+void Hud::deactivateActionBar()
+{
+    actionBar->hide();
 }
 
 void Hud::displayMessage(std::string &message)
@@ -268,6 +280,11 @@ bool Hud::typicalElementControl(Element* element, sf::RenderWindow* window, sf::
 InventoryIcon* Hud::createInventoryIcon()
 {
     return new InventoryIcon(this);
+}
+
+void Hud::playSlotDenialSound()
+{
+    state->rogueZombieGame->soundManager->play(slotDenialSoundId);
 }
 
 float Hud::getDrawDepth(float targetDepth)

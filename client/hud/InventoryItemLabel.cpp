@@ -28,7 +28,9 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, ItemClient* item, float relativ
             if(slot->isInfocus && slot->equippedItemLabel != e && slot->acceptsLabel(label))
             {
                 // Drop the item into the slot
-                return label->dropOntoEquipmentSlot(slot);
+                bool result = label->dropOntoEquipmentSlot(slot);
+                label->dropResult(result);
+                return result;
             }
         }
 
@@ -40,7 +42,9 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, ItemClient* item, float relativ
             InventoryPositionSlot* slot = static_cast<InventoryPositionSlot*>(hud->inventory->positionSlotBoxes[i]);
             if(slot->isInfocus && slot->equippedItemLabel != e && slot->acceptsLabel(label))
             {
-                return label->dropOntoInventorySlot(slot);
+                bool result = label->dropOntoInventorySlot(slot);
+                label->dropResult(result);
+                return result;
             }
         }
         
@@ -52,7 +56,9 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, ItemClient* item, float relativ
             InventoryLootSlot* slot = static_cast<InventoryLootSlot*>(hud->lootMenu->lootSlotBoxes[i]);
             if(slot->isInfocus && slot->equippedItemLabel != e && slot->acceptsLabel(label))
             {
-                return label->dropOntoLootSlot(slot);
+                bool result = label->dropOntoLootSlot(slot);
+                label->dropResult(result);
+                return result;
             }
         }
 
@@ -103,6 +109,14 @@ void InventoryItemLabel::updateReals(sf::RenderWindow &window, sf::Time &gameTim
     icon->position(left, top, z, 64, 64, elementScale);
 }
 
+
+void InventoryItemLabel::dropResult(bool result)
+{
+    if(result)
+    {
+        hud->playSlotDenialSound();
+    }
+}
 
 
 bool InventoryItemLabel::dropOntoEquipmentSlot(InventoryEquipmentSlot* slot)

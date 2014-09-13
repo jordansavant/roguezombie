@@ -28,6 +28,8 @@ public:
     InventoryPositionSlot* currentPositionSlot;
     InventoryLootSlot* currentLootSlot;
 
+    void dropResult(bool result);
+
     void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
 
     void updateReals(sf::RenderWindow &window, sf::Time &gameTime);

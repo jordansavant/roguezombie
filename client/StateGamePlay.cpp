@@ -278,6 +278,12 @@ void StateGamePlay::onEnterCombat()
     hud->onEnterCombat();
     target.tileId = 0;
     target.bodyId = 0;
+
+    // If I entering combat and I am not in loot or inventory mode, show the actionbar
+    if(mode != Mode::Loot && mode != Mode::Inventory)
+    {
+        hud->activateActionBar();
+    }
 }
 
 void StateGamePlay::onLeaveCombat()
@@ -286,6 +292,12 @@ void StateGamePlay::onLeaveCombat()
     hud->onLeaveCombat();
     target.tileId = 0;
     target.bodyId = 0;
+
+    // If I leaving combat and I am not in loot or inventory mode, hide the actionbar
+    if(mode != Mode::Loot && mode != Mode::Inventory)
+    {
+        hud->deactivateActionBar();
+    }
 }
 
 
@@ -298,6 +310,10 @@ void StateGamePlay::modeOnEnterLoot()
 {
     hud->activateInventory(false);
     hud->lootMenu->activate();
+
+    // If I am opening the inventpry and I am not in combat, show the action bar
+    if(levelClient->levelState == Level::State::Free)
+        hud->activateActionBar();
 }
 
 void StateGamePlay::modeOnExitLoot()
@@ -311,6 +327,12 @@ void StateGamePlay::modeOnExitLoot()
     );
     hud->lootMenu->deactivate();
     hud->deactivateInventory();
+
+    // If I am closing the loot mode and I am not in combat hide the action bar
+    if(levelClient->levelState == Level::State::Free)
+    {
+        hud->deactivateActionBar();
+    }
 }
 
 void StateGamePlay::modeOnUpdateLoot(sf::Time &gameTime)
@@ -372,11 +394,19 @@ void StateGamePlay::modeOnUpdateDialog(sf::Time &gameTime)
 void StateGamePlay::modeOnEnterInventory()
 {
     hud->activateInventory(false);
+
+    // If I am opening the inventpry and I am not in combat, show the action bar
+    if(levelClient->levelState == Level::State::Free)
+        hud->activateActionBar();
 }
 
 void StateGamePlay::modeOnExitInventory()
 {
     hud->deactivateInventory();
+
+    // If I am closing the inventory and I am not in combat hide the action bar
+    if(levelClient->levelState == Level::State::Free)
+        hud->deactivateActionBar();
 }
 
 void StateGamePlay::modeOnUpdateInventory(sf::Time &gameTime)

@@ -48,6 +48,7 @@ public:
     bit::VertexMap interfaceVertexMap;
     sf::Font journalFont;
     bit::Pool<InventoryIcon> inventoryIconPool;
+    unsigned int slotDenialSoundId;
 
     static bool destroying;
     static float hoverlessOpacity;
@@ -78,6 +79,10 @@ public:
 
     void deactivateInventory();
 
+    void activateActionBar();
+
+    void deactivateActionBar();
+
     void onEnterCombat();
 
     void onLeaveCombat();
@@ -93,6 +98,8 @@ public:
     bool typicalElementControl(Element* element, sf::RenderWindow* window, sf::Time* gameTime);
 
     InventoryIcon* createInventoryIcon();
+
+    void playSlotDenialSound();
 
     static float getDrawDepth(float targetDepth);
 };
