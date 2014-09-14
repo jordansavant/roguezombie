@@ -11,7 +11,7 @@
 #include "../../server/ClientRequest.hpp"
 
 InventoryItemLabel::InventoryItemLabel(Hud* hud, ItemClient* item, float relativeX, float relativeY, AnchorType anchorType)
-    : bit::Element(relativeX, relativeY, 64, 64, anchorType), hud(hud), itemSchema(item->schema), icon(NULL), currentEquipmentSlot(NULL), currentPositionSlot(NULL), currentLootSlot(NULL)
+    : bit::Element(relativeX, relativeY, 64, 64, anchorType), hud(hud), itemSchema(item->schema), icon(NULL), currentEquipmentSlot(NULL), currentPositionSlot(NULL), currentLootSlot(NULL), currentActionSlot(NULL)
 {
     scaleStyle = ScaleStyle::PowerOfTwo;
     canHaveFocus = true;

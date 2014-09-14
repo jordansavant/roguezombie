@@ -15,9 +15,9 @@ public:
     {
         None,
         PlayerMoveUp,
-	    PlayerMoveDown,
-	    PlayerMoveLeft,
-	    PlayerMoveRight,
+        PlayerMoveDown,
+        PlayerMoveLeft,
+        PlayerMoveRight,
         PlayerDebug,
         CombatCommand,
         FreeCommand,

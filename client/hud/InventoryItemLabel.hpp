@@ -12,6 +12,7 @@ class InventoryIcon;
 class InventoryEquipmentSlot;
 class InventoryPositionSlot;
 class InventoryLootSlot;
+class ActionBarSlot;
 
 class InventoryItemLabel : public bit::Element
 {
@@ -27,6 +28,7 @@ public:
     InventoryEquipmentSlot* currentEquipmentSlot;
     InventoryPositionSlot* currentPositionSlot;
     InventoryLootSlot* currentLootSlot;
+    ActionBarSlot* currentActionSlot;
 
     void dropResult(bool result);
 
@@ -39,6 +41,8 @@ public:
     bool dropOntoInventorySlot(InventoryPositionSlot* slot);
 
     bool dropOntoLootSlot(InventoryLootSlot* slot);
+
+    bool dropOntoActionSlot(ActionBarSlot* slot);
 
 };
 

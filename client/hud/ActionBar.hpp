@@ -11,6 +11,7 @@
 
 class Hud;
 class HudElement;
+class ActionBarSlot;
 
 class ActionBar : public Frame
 {
@@ -22,6 +23,7 @@ public:
     HudElement* wait;
     HudElement* attack;
     HudElement* swap;
+    std::vector<ActionBarSlot*> slots;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
