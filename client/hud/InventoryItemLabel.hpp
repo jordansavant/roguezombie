@@ -18,7 +18,7 @@ class InventoryItemLabel : public bit::Element
 {
 public:
 
-    InventoryItemLabel(Hud* hud, ItemClient* item, float relativeX, float relativeY, AnchorType anchorType);
+    InventoryItemLabel(Hud* hud, Item::Schema& itemSchema, float relativeX, float relativeY, AnchorType anchorType);
 
     virtual ~InventoryItemLabel();
 

@@ -105,6 +105,7 @@ Hud::~Hud()
 void Hud::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::Container::update(window, gameTime);
+    this->actionBar;
 
     // Minimap
     float scale = bit::Math::roundPowerOf2(state->rogueZombieGame->currentResolutionRatio);

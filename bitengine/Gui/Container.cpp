@@ -64,6 +64,8 @@ void bit::Container::update(sf::RenderWindow &window, sf::Time &gameTime)
         // Remove any that are requested to be removed
         if ((*it)->removeFromParent)
         {
+            if((*it) == focusedChild)
+                clearFocusedChild();
             delete (*it);
             it = childElements.erase(it);
         }

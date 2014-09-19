@@ -284,7 +284,7 @@ void Inventory::buildItemList(bool force)
 
 InventoryItemLabel* Inventory::buildItem(ItemClient* item, float x, float y)
 {
-    return new InventoryItemLabel(hud, item, x, y, bit::Element::AnchorType::TopLeft);
+    return new InventoryItemLabel(hud, item->schema, x, y, bit::Element::AnchorType::TopLeft);
 }
 
 void Inventory::hide()

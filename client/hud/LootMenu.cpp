@@ -193,7 +193,7 @@ void LootMenu::handleInventorySnapshot(bit::ServerPacket &packet, unsigned int t
     for(auto iterator = inventory.itemClients.begin(); iterator != inventory.itemClients.end(); iterator++)
     {
         ItemClient* item = &iterator->second;
-        InventoryItemLabel* option = new InventoryItemLabel(hud, item, 0, 0, bit::Element::AnchorType::TopLeft);
+        InventoryItemLabel* option = new InventoryItemLabel(hud, item->schema, 0, 0, bit::Element::AnchorType::TopLeft);
         lootSlotBoxes[item->schema.position]->addChild(option);
         i++;
     }
