@@ -13,13 +13,31 @@
 #include "../../server/ClientRequest.hpp"
 
 InventoryItemLabel::InventoryItemLabel(Hud* hud, Item::Schema& itemSchema, float relativeX, float relativeY, AnchorType anchorType)
-    : bit::Element(relativeX, relativeY, 64, 64, anchorType), hud(hud), itemSchema(itemSchema), icon(NULL), currentEquipmentSlot(NULL), currentPositionSlot(NULL), currentLootSlot(NULL), currentActionSlot(NULL)
+    : bit::Element(relativeX, relativeY, 64, 64, anchorType, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)),
+      hud(hud), itemSchema(itemSchema), icon(NULL), currentEquipmentSlot(NULL), currentPositionSlot(NULL), currentLootSlot(NULL), currentActionSlot(NULL)
 {
     scaleStyle = ScaleStyle::PowerOfTwo;
     canHaveFocus = true;
     opacity = 0;
 
+    // On Click
     InventoryItemLabel* label = this;
+    onActivate = [hud, label] (bit::Element* e) {
+
+        // If I am in the action bar
+        if(label->currentActionSlot)
+        {
+            // Check if the item can be interracted with
+
+            // Notify the game state of the wish to operate an item based command passing the item
+            hud->state->requestItemCommand(label->itemSchema);
+
+            // The state will handle the targetting and eventual networking if continued
+        }
+
+    };
+
+    // On Drag, On Drop
     makeDraggable(hud->state->rogueZombieGame->inputManager, [hud](bit::Draggable *d, Element* e){ hud->hideTooltip(); }, [hud, label] (bit::Draggable* d, Element* e) -> bool
     {
         // Check the equipment slots to see if it is being hovered when the drop occurs

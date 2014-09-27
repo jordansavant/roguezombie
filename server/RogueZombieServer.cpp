@@ -6,7 +6,7 @@
 #include <sstream>
 
 RogueZombieServer::RogueZombieServer()
-	: bit::Game()
+    : bit::Game()
 {
     Game::stateStack->pushState(stateServerPlay);
 }
@@ -15,7 +15,7 @@ unsigned int RogueZombieServer::stateServerPlay = 1;
 
 void RogueZombieServer::update(sf::Time &gameTime)
 {
-	bit::Game::update(gameTime);
+    bit::Game::update(gameTime);
 }
 
 void RogueZombieServer::registerStates()

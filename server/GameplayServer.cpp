@@ -247,7 +247,7 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
                 player->level->handlePlayerCommand(packet, client, static_cast<Command::Type>(commandType));
                 break;
             case Command::Type::PlayerDebug:
-                player->character->kill();
+                player->character->harm(20);
                 break;
         }
     }

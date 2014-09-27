@@ -69,13 +69,20 @@ void Item::addItem(Item* item)
 
 Item* Item::findItem(unsigned int itemId)
 {
+    return findItemBy([itemId] (Item* item) -> bool {
+        return item->schema.id == itemId;
+    });
+}
+
+Item* Item::findItemBy(std::function<bool(Item*)> inspector)
+{
     // Look through my items
     for(auto it = items.begin(); it != items.end();)
     {
         Item* item = (*it);
 
         // If one of my child items is the match
-        if(item->schema.id == itemId)
+        if(inspector(item))
         {
             // Return the pointer
             return item;
@@ -88,7 +95,7 @@ Item* Item::findItem(unsigned int itemId)
             if(item->items.size() > 0)
             {
                 // Recurse into the child to see if it has the item
-                childItem = item->findItem(itemId);
+                childItem = item->findItemBy(inspector);
             }
 
             // If my recursion found the item
@@ -111,13 +118,20 @@ Item* Item::findItem(unsigned int itemId)
 
 Item* Item::removeItem(unsigned int itemId)
 {
+    return removeItemBy([itemId] (Item* item) -> bool {
+        return item->schema.id == itemId;
+    });
+}
+
+Item* Item::removeItemBy(std::function<bool(Item*)> inspector)
+{
     // Look through my items
     for(auto it = items.begin(); it != items.end();)
     {
         Item* item = (*it);
 
         // If one of my child items is the match
-        if(item->schema.id == itemId)
+        if(inspector(item))
         {
             // Remove it from the list and return the pointer
             item->onBeforeRemoveFromParent();
@@ -133,7 +147,7 @@ Item* Item::removeItem(unsigned int itemId)
             if(item->items.size() > 0)
             {
                 // Recurse into the child to see if it has the item
-                childItem = item->removeItem(itemId);
+                childItem = item->removeItemBy(inspector);
             }
 
             // If my recursion found the item
@@ -323,6 +337,17 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.effectiveRangeInTiles = 1;
 
             break;
+
+        case Type::Medkit:
+
+            i = new Item();
+            i->schema.CategoryBase = ItemCategory::Base::BaseNone;
+            i->schema.CategoryWeapon = ItemCategory::Weapon::WeaponNone;
+            i->schema.weight = 1;
+            i->schema.effectiveRangeInTiles = 0;
+            i->schema.commandType = CommandType::CommandTypeSelf;
+
+            break;
     }
 
     i->schema.id = id;
@@ -352,6 +377,9 @@ std::string Item::getTitle(Type type)
 
         case Type::Crowbar:
             return "Crowbar";
+
+        case Type::Medkit:
+            return "Medkit";
     }
 }
 
@@ -378,6 +406,9 @@ std::string Item::getDescription(Type type)
 
         case Type::Crowbar:
             return "100% Freeman made";
+
+        case Type::Medkit:
+            return "Instantly recover health";
     }
 }
 
@@ -426,4 +457,35 @@ std::string Item::getIconName(Type type)
         case Type::Crowbar:
             return "Crowbar";
     }
+}
+
+void Item::useItemOnSelf(Character* character, Item::Schema &itemSchema)
+{
+    // Find the item in the character inventory
+    Item* item = character->inventory->removeItemBy([&itemSchema] (Item* item) -> bool {
+        return item->schema.type == itemSchema.type;
+    });
+    
+    // Pull it out and apply it
+    if(item && applyItemOnSelf(character,  itemSchema))
+    {
+        delete item;
+    }
+}
+
+
+bool Item::applyItemOnSelf(Character* character, Item::Schema &itemSchema)
+{
+    // A command was issued to apply the item to a character as self command
+    switch(itemSchema.type)
+    {
+        case Medkit:
+        {
+            // Heal the character
+            character->heal(20);
+            return true;
+        }
+    }
+
+    return false;
 }

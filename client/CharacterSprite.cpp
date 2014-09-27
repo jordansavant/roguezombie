@@ -120,7 +120,7 @@ void CharacterSprite::update(sf::Time &gameTime)
 
         bit::VertexHelper::resetQuad(&highlightMap->vertexArray[deathQuadIndex]);
 
-        if(character->level->levelState == Level::State::Combat && character->schema.health < character->schema.maxHealth)
+        if(true || character->level->levelState == Level::State::Combat && character->schema.health < character->schema.maxHealth)
         {
             // HEALTHBAR
             float ratio = (float)character->schema.health / (float)character->schema.maxHealth;

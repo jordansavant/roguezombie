@@ -8,6 +8,7 @@
 #include "../bitengine/Gui.hpp"
 #include "../server/Command.hpp"
 #include "../server/Interaction.hpp"
+#include "../server/items/Item.hpp"
 
 class LevelClient;
 class RogueZombieGame;
@@ -109,6 +110,8 @@ public:
 
     void onEnterCombat();
     void onLeaveCombat();
+
+    void requestItemCommand(Item::Schema &itemSchema);
 
     void issueCommand(Command cmd);
 

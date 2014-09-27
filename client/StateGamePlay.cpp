@@ -488,6 +488,28 @@ void StateGamePlay::modeOnUpdateCommonListener(sf::Time &gameTime)
     }
 }
 
+void StateGamePlay::requestItemCommand(Item::Schema &itemSchema)
+{
+    // Depending on the item command type prepare targetting
+    switch(itemSchema.commandType)
+    {
+        case Item::CommandType::CommandTypeSelf:
+        {
+            // Send immediate command
+            Command cmd;
+            cmd.type = Command::Type::ItemCommand;
+            cmd.pack = [itemSchema] (sf::Packet &packet) {
+                packet << itemSchema;
+            };
+            issueCommand(cmd);
+
+            break;
+        }
+    }
+
+    bool crap = true;
+}
+
 void StateGamePlay::issueCommand(Command cmd)
 {
     commandQueue.push_back(cmd);

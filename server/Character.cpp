@@ -466,6 +466,12 @@ void Character::attack(Character* character)
     }
 }
 
+void Character::heal(int amount)
+{
+    schema.health = bit::Math::clamp(schema.health + amount, 0, schema.maxHealth);
+
+}
+
 void Character::harm(int damage)
 {
     schema.health = bit::Math::clamp(schema.health - damage, 0, schema.maxHealth);

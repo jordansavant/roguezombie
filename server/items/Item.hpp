@@ -7,6 +7,7 @@
 #include "../../bitengine/Network.hpp"
 
 class Body;
+class Character;
 
 class Item
 {
@@ -24,6 +25,16 @@ public:
         Magnum357,
         Z4Rifle,
         Crowbar,
+        Medkit,
+    };
+
+    enum CommandType
+    {
+        CommandTypeNone,
+        CommandTypeSelf,
+        CommandTypeCharacter,
+        CommandTypeStructure,
+        CommandTypeArea,
     };
 
     struct Schema
@@ -31,7 +42,7 @@ public:
         Schema()
             : id(0), position(0), CategoryBase(0), CategoryArmor(0), CategoryWeapon(0), CategoryJewelry(0), CategoryContainer(0),
               type(Type::None), weight(0), minimumDamage(0), maximumDamage(0), effectiveRangeInTiles(1), armorEffectiveness(0),
-              canContainItems(false), itemLimit(0)
+              canContainItems(false), itemLimit(0), commandType(CommandType::CommandTypeNone)
         {
         }
 
@@ -49,6 +60,7 @@ public:
         float armorEffectiveness;
         bool canContainItems;
         unsigned int itemLimit;
+        CommandType commandType;
 
         friend sf::Packet& operator <<(sf::Packet& packet, const Schema &schema)
         {
@@ -65,6 +77,7 @@ public:
             packet << sf::Uint32(schema.minimumDamage);
             packet << sf::Uint32(schema.maximumDamage);
             packet << schema.armorEffectiveness;
+            packet << sf::Uint32(schema.commandType);
             return packet;
         }
 
@@ -83,6 +96,7 @@ public:
             packet >> schema.minimumDamage;
             packet >> schema.maximumDamage;
             packet >> schema.armorEffectiveness;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Item::CommandType>(packet, schema.commandType);
             return packet;
         }
     };
@@ -109,7 +123,11 @@ public:
 
     Item* findItem(unsigned int itemId);
 
+    Item* findItemBy(std::function<bool(Item*)> inspector);
+
     Item* removeItem(unsigned int itemId);
+
+    Item* removeItemBy(std::function<bool(Item*)> inspector);
 
     unsigned int findAvailablePosition();
 
@@ -138,6 +156,10 @@ public:
     static std::string getSpriteName(Type type);
 
     static std::string getIconName(Type type);
+
+    static void useItemOnSelf(Character* character, Item::Schema &itemSchema);
+
+    static bool applyItemOnSelf(Character* character, Item::Schema &itemSchema);
 
 };
 

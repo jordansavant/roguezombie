@@ -228,6 +228,8 @@ public:
 
     virtual void attack(Character* character);
 
+    virtual void heal(int amount);
+
     virtual void harm(int damage);
 
     virtual void detectCombatEnter();

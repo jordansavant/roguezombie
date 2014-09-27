@@ -21,6 +21,7 @@ public:
         PlayerDebug,
         CombatCommand,
         FreeCommand,
+        ItemCommand,
         Combat_AttackCharacter,
     };
 

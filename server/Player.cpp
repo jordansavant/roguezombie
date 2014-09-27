@@ -86,6 +86,9 @@ void Player::setupPlayerCharacter()
     Item* hardhat = Item::create(Item::Type::HardHat, level->server->getNextItemId());
     character->addItemToInventory(hardhat);
 
+    Item* medkit = Item::create(Item::Type::Medkit, level->server->getNextItemId());
+    character->addItemToInventory(medkit);
+
     character->equipFromInventory(Character::EquipmentSlot::WeaponPrimary, magnum->schema.id);
     character->equipFromInventory(Character::EquipmentSlot::WeaponSecondary, crowbar->schema.id);
     character->equipFromInventory(Character::EquipmentSlot::Head, hardhat->schema.id);
@@ -235,6 +238,28 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
                 case Command::Type::PlayerMoveRight:
                     character->moveRight();
                     break;
+
+                // Item Mode Commands
+                case Command::Type::ItemCommand:
+                {
+                    Item::Schema itemSchema;
+                    packet >> itemSchema;
+
+                    switch(itemSchema.commandType)
+                    {
+                        case Item::CommandType::CommandTypeSelf:
+                        {
+                            // Allow the item to apply its operation to the character
+                            if(character)
+                            {
+                                Item::useItemOnSelf(character, itemSchema);
+                            }
+                            break;
+                        }
+                    }
+
+                    break;
+                }
 
                 // Free Mode Commands
                 case Command::Type::FreeCommand:
