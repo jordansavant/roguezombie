@@ -110,6 +110,9 @@ public:
     Item* parentItem;
     Body* parentBody;
     std::vector<Item*> items;
+    std::function<bool(Character*)> applyToCharacter;
+    std::function<bool(Tile*)> applyToArea;
+
 
     bool hasAny(unsigned int currentValue, unsigned int filter);
 
@@ -153,6 +156,12 @@ public:
 
     void prepareServerEventPacket_itemRemoved(bit::ServerPacket &packet);
 
+    static void useItemOnSelf(Character* self, Item::Schema &itemSchema);
+
+    static void useItemOnCharacter(Character* self, Character* other, Item::Schema &itemSchema);
+
+    static void useItemOnTileArea(Character* self, Tile* tile, Item::Schema &itemSchema);
+
     static Item* create(Type type, unsigned int id);
 
     static std::string getTitle(Type type);
@@ -162,18 +171,6 @@ public:
     static std::string getSpriteName(Type type);
 
     static std::string getIconName(Type type);
-
-    static void useItemOnSelf(Character* self, Item::Schema &itemSchema);
-
-    static bool applyItemOnSelf(Character* self, Item::Schema &itemSchema);
-
-    static void useItemOnCharacter(Character* self, Character* other, Item::Schema &itemSchema);
-
-    static bool applyItemOnCharacter(Character* self, Character* other, Item::Schema &itemSchema);
-
-    static void useItemOnTileArea(Character* self, Tile* tile, Item::Schema &itemSchema);
-
-    static bool applyItemOnTileArea(Character* self, Tile* tile, Item::Schema &itemSchema);
 
 };
 
