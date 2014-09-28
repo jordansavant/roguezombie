@@ -19,7 +19,7 @@
 
 LevelClient::LevelClient()
     : state(NULL), levelState(Level::State::Free), tilePool(), characterPool(), doorPool(), chestPool(), hoveredTile(NULL), playerCharacter(NULL), isPlayerDecisionMode(false), isPlayerSpecating(false),
-      selectMode(SelectMode::None), onCharacterSelect(NULL), selectRadius(1)
+      selectMode(SelectMode::None), onCharacterSelect(NULL), selectRange(1), selectRadius(1)
 {
 }
 
@@ -120,16 +120,18 @@ void LevelClient::clearMoveMarkers()
     }
 }
 
-void LevelClient::enterCharacterSelectMode(std::function<void(CharacterClient* characterClient, TileClient* tileCilent)> onSelect)
+void LevelClient::enterCharacterSelectMode(unsigned int range, std::function<void(CharacterClient* characterClient, TileClient* tileCilent)> onSelect)
 {
     selectMode = SelectMode::Character;
     onCharacterSelect = onSelect;
+    selectRange = range;
 }
 
-void LevelClient::enterAreaSelectMode(unsigned int radius, std::function<void(TileClient* tileCilent)> onSelect)
+void LevelClient::enterAreaSelectMode(unsigned int range, unsigned int radius, std::function<void(TileClient* tileCilent)> onSelect)
 {
     selectMode = SelectMode::Area;
     onAreaSelect = onSelect;
+    selectRange = range;
     selectRadius = radius;
 }
 

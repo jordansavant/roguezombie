@@ -519,7 +519,7 @@ void StateGamePlay::requestItemCommand(Item::Schema &itemSchema)
         {
             StateGamePlay* state = this;
             // Enter character targetting mode and when a character is clicked run this
-            levelClient->enterCharacterSelectMode([state, itemSchema] (CharacterClient* character, TileClient* tileClient) {
+            levelClient->enterCharacterSelectMode(itemSchema.effectiveRangeInTiles, [state, itemSchema] (CharacterClient* character, TileClient* tileClient) {
                 Item::Schema itemSchemaX = itemSchema;
 
                 Command cmd;
@@ -537,7 +537,7 @@ void StateGamePlay::requestItemCommand(Item::Schema &itemSchema)
         {
             StateGamePlay* state = this;
             // Enter area targetting mode and when a tile is clicked run this
-            levelClient->enterAreaSelectMode(4, [state, itemSchema] (TileClient* tileClient) {
+            levelClient->enterAreaSelectMode(itemSchema.effectiveRangeInTiles, itemSchema.effectiveRadiusInTiles, [state, itemSchema] (TileClient* tileClient) {
                 Item::Schema itemSchemaX = itemSchema;
 
                 Command cmd;

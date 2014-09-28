@@ -99,15 +99,25 @@ void TileClient::clientUpdate(sf::Time &gameTime)
         case LevelClient::SelectMode::Character:
         {
             // Game is in character selection target mode
-            if(level->hoveredTile == this)
+            if(level->hoveredTile == this && level->playerCharacter)
             {
-                // If I am being hovered color me for the character selection
-                c = sf::Color(255, 255, 0);
-
-                if(level->state->isTileSelectActive && this->hasCharacter && this->characterClient)
+                // If I am being hovered and I am within range of the primary character
+                if(bit::VectorMath::distance(schema.x, schema.y, level->playerCharacter->BodyClient::schema.x, level->playerCharacter->BodyClient::schema.y) <= level->selectRange * schema.width)
                 {
-                    level->onCharacterSelect(characterClient, this);
-                    level->selectMode = LevelClient::SelectMode::None;
+                    // Highlight
+                    c = sf::Color(255, 255, 0);
+
+                    // Listen for selection
+                    if(level->state->isTileSelectActive && this->hasCharacter && this->characterClient)
+                    {
+                        level->onCharacterSelect(characterClient, this);
+                        level->selectMode = LevelClient::SelectMode::None;
+                    }
+                }
+                else
+                {
+                    // Highlight err
+                    c = sf::Color(255, 0, 0);
                 }
             }
             break;
@@ -116,21 +126,37 @@ void TileClient::clientUpdate(sf::Time &gameTime)
         case LevelClient::SelectMode::Area:
         {
             // Its targetting me
-            if(level->hoveredTile == this)
+            if(level->hoveredTile == this && level->playerCharacter)
             {
-                // If I am being hovered color me for the character selection
-                c = sf::Color(255, 255, 0);
-
-                if(level->state->isTileSelectActive)
+                // If I am being hovered and I am within range of the primary character
+                if(bit::VectorMath::distance(schema.x, schema.y, level->playerCharacter->BodyClient::schema.x, level->playerCharacter->BodyClient::schema.y) <= level->selectRange * schema.width)
                 {
-                    level->onAreaSelect(this);
-                    level->selectMode = LevelClient::SelectMode::None;
+                    // Highlight
+                    c = sf::Color(255, 255, 0);
+
+                    // Listen for selection
+                    if(level->state->isTileSelectActive)
+                    {
+                        level->onAreaSelect(this);
+                        level->selectMode = LevelClient::SelectMode::None;
+                    }
+                }
+                else
+                {
+                    // Highlight err
+                    c = sf::Color(255, 0, 0);
                 }
             }
             // Its targetting a neighbor
             else if(level->hoveredTile && bit::VectorMath::distance(schema.x, schema.y, level->hoveredTile->schema.x, level->hoveredTile->schema.y) <= level->selectRadius * schema.width)
             {
-                c = sf::Color(255, 255, 255);
+                // If the primary is within range
+                if(bit::VectorMath::distance(level->hoveredTile->schema.x, level->hoveredTile->schema.y, level->playerCharacter->BodyClient::schema.x, level->playerCharacter->BodyClient::schema.y) <= level->selectRange * schema.width)
+                {
+                    // Highlight auxilliary select color
+                    c = sf::Color(255, 255, 255);
+                }
+                // No highlight otherwise
             }
             break;
         }

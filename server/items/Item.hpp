@@ -44,7 +44,7 @@ public:
     {
         Schema()
             : id(0), position(0), CategoryBase(0), CategoryArmor(0), CategoryWeapon(0), CategoryJewelry(0), CategoryContainer(0),
-              type(Type::None), weight(0), minimumDamage(0), maximumDamage(0), effectiveRangeInTiles(1), armorEffectiveness(0),
+              type(Type::None), weight(0), minimumDamage(0), maximumDamage(0), effectiveRangeInTiles(1), effectiveRadiusInTiles(1), armorEffectiveness(0),
               canContainItems(false), itemLimit(0), commandType(CommandType::CommandTypeNone)
         {
         }
@@ -59,6 +59,7 @@ public:
         Type type;
         float weight;
         unsigned int effectiveRangeInTiles;
+        unsigned int effectiveRadiusInTiles;
         unsigned int minimumDamage, maximumDamage;
         float armorEffectiveness;
         bool canContainItems;
@@ -77,6 +78,7 @@ public:
             packet << sf::Uint32(schema.type);
             packet << schema.weight;
             packet << sf::Uint32(schema.effectiveRangeInTiles);
+            packet << sf::Uint32(schema.effectiveRadiusInTiles);
             packet << sf::Uint32(schema.minimumDamage);
             packet << sf::Uint32(schema.maximumDamage);
             packet << schema.armorEffectiveness;
@@ -96,6 +98,7 @@ public:
             bit::NetworkHelper::unpackEnum<sf::Uint32, Item::Type>(packet, schema.type);
             packet >> schema.weight;
             packet >> schema.effectiveRangeInTiles;
+            packet >> schema.effectiveRadiusInTiles;
             packet >> schema.minimumDamage;
             packet >> schema.maximumDamage;
             packet >> schema.armorEffectiveness;

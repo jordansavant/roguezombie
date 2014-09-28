@@ -62,6 +62,7 @@ public:
     SelectMode selectMode;
     std::function<void(CharacterClient*, TileClient*)> onCharacterSelect;
     std::function<void(TileClient*)> onAreaSelect;
+    unsigned int selectRange;
     unsigned int selectRadius;
 
     // Spritesheet 01;
@@ -85,9 +86,9 @@ public:
 
     void clearMoveMarkers();
 
-    void enterCharacterSelectMode(std::function<void(CharacterClient* characterClient, TileClient* tileCilent)>);
+    void enterCharacterSelectMode(unsigned int range, std::function<void(CharacterClient* characterClient, TileClient* tileCilent)>);
 
-    void enterAreaSelectMode(unsigned int radius, std::function<void(TileClient* tileCilent)>);
+    void enterAreaSelectMode(unsigned int range, unsigned int radius, std::function<void(TileClient* tileCilent)>);
 
     void onEnterCombat();
 
