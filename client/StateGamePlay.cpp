@@ -23,7 +23,7 @@
 #include <sstream>
 
 StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, bool isClient, bool isHost)
-    : bit::ClientServerState(stack, _game, isClient, isHost), rogueZombieGame(_game), levelClient(NULL), mode(Mode::Init), endGameReason(EndGameReason::Quit), fps()
+    : bit::ClientServerState(stack, _game, isClient, isHost), rogueZombieGame(_game), levelClient(NULL), mode(Mode::Init), endGameReason(EndGameReason::Quit), fps(), isTileSelectActive(false)
 {
     levelClient = new LevelClient();
     std::string fpsFontPath(resourcePath() + "Agency.ttf");
@@ -180,6 +180,12 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
         cmd.type = Command::Type::PlayerMoveRight;
         issueCommand(cmd);
     }
+
+
+
+    // Global Input Mappings
+    isTileSelectActive = rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left);
+
 
     switch(levelClient->levelState)
     {
@@ -503,6 +509,24 @@ void StateGamePlay::requestItemCommand(Item::Schema &itemSchema)
             };
             issueCommand(cmd);
 
+            break;
+        }
+
+        case Item::CommandType::CommandTypeCharacter:
+        {
+            StateGamePlay* state = this;
+            // Enter character targetting mode and when a character is clicked run this
+            levelClient->enterCharacterSelectMode([state, itemSchema] (CharacterClient* character, TileClient* tileClient) {
+                Item::Schema itemSchemaX = itemSchema;
+
+                Command cmd;
+                cmd.type = Command::Type::ItemCommand;
+                cmd.pack = [itemSchemaX, tileClient] (sf::Packet &packet) {
+                    packet << itemSchemaX;
+                    packet << sf::Uint32(tileClient->schema.id);
+                };
+                state->issueCommand(cmd);
+            });
             break;
         }
     }

@@ -92,7 +92,29 @@ void TileClient::clientUpdate(sf::Time &gameTime)
         level->hoveredTile = NULL;
     }
 
-    if(level->state->mode == StateGamePlay::Mode::Free)
+
+    // Targetting helpers
+    switch(level->selectMode)
+    {
+        case LevelClient::SelectMode::Character:
+        {
+            // Game is in character selection target mode
+            if(level->hoveredTile == this)
+            {
+                // If I am being hovered color me for the character selection
+                c = sf::Color(255, 255, 0);
+
+                if(level->state->isTileSelectActive && this->hasCharacter && this->characterClient)
+                {
+                    level->onCharacterSelect(characterClient, this);
+                }
+            }
+            break;
+        }
+    }
+
+
+    if(false && level->state->mode == StateGamePlay::Mode::Free)
     {
         // If we are playing in free mode
         if(level->levelState == Level::State::Free)

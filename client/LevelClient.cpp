@@ -18,7 +18,8 @@
 #include <map>
 
 LevelClient::LevelClient()
-    : state(NULL), levelState(Level::State::Free), tilePool(), characterPool(), doorPool(), chestPool(), hoveredTile(NULL), playerCharacter(NULL), isPlayerDecisionMode(false), isPlayerSpecating(false)
+    : state(NULL), levelState(Level::State::Free), tilePool(), characterPool(), doorPool(), chestPool(), hoveredTile(NULL), playerCharacter(NULL), isPlayerDecisionMode(false), isPlayerSpecating(false),
+      selectMode(SelectMode::None), onCharacterSelect(NULL)
 {
 }
 
@@ -117,6 +118,12 @@ void LevelClient::clearMoveMarkers()
     {
         moveMarkers[i].hide();
     }
+}
+
+void LevelClient::enterCharacterSelectMode(std::function<void(CharacterClient* characterClient, TileClient* tileCilent)> onSelect)
+{
+    selectMode = SelectMode::Character;
+    onCharacterSelect = onSelect;
 }
 
 void LevelClient::onEnterCombat()

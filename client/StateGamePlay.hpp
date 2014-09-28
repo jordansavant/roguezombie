@@ -67,6 +67,7 @@ public:
     std::vector<Command> commandQueue;
     sf::Vector2f mousePositionInLevel;
     bit::FrameTimer fps;
+    bool isTileSelectActive;
     Target target;
 
     // Test Gui

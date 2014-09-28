@@ -30,6 +30,14 @@ public:
 
     virtual ~LevelClient();
 
+    enum SelectMode
+    {
+        None,
+        Character,
+        Structure,
+        Area,
+    };
+
     StateGamePlay* state;
     unsigned int levelId;
     Level::State levelState;
@@ -49,6 +57,10 @@ public:
     std::vector<MoveMarker> moveMarkers;
     bool isPlayerDecisionMode;
     bool isPlayerSpecating;
+
+    // Selection
+    SelectMode selectMode;
+    std::function<void(CharacterClient*, TileClient*)> onCharacterSelect;
 
     // Spritesheet 01;
     sf::Texture texture_spritesheetCharacters;
@@ -70,6 +82,8 @@ public:
     void update(sf::Time &gameTime);
 
     void clearMoveMarkers();
+
+    void enterCharacterSelectMode(std::function<void(CharacterClient* characterClient, TileClient* tileCilent)>);
 
     void onEnterCombat();
 

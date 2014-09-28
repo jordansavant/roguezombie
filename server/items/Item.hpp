@@ -26,6 +26,7 @@ public:
         Z4Rifle,
         Crowbar,
         Medkit,
+        Brick,
     };
 
     enum CommandType
@@ -157,9 +158,13 @@ public:
 
     static std::string getIconName(Type type);
 
-    static void useItemOnSelf(Character* character, Item::Schema &itemSchema);
+    static void useItemOnSelf(Character* self, Item::Schema &itemSchema);
 
-    static bool applyItemOnSelf(Character* character, Item::Schema &itemSchema);
+    static bool applyItemOnSelf(Character* self, Item::Schema &itemSchema);
+
+    static void useItemOnCharacter(Character* self, Character* other, Item::Schema &itemSchema);
+
+    static bool applyItemOnCharacter(Character* self, Character* other, Item::Schema &itemSchema);
 
 };
 

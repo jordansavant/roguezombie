@@ -89,6 +89,9 @@ void Player::setupPlayerCharacter()
     Item* medkit = Item::create(Item::Type::Medkit, level->server->getNextItemId());
     character->addItemToInventory(medkit);
 
+    Item* brick = Item::create(Item::Type::Brick, level->server->getNextItemId());
+    character->addItemToInventory(brick);
+
     character->equipFromInventory(Character::EquipmentSlot::WeaponPrimary, magnum->schema.id);
     character->equipFromInventory(Character::EquipmentSlot::WeaponSecondary, crowbar->schema.id);
     character->equipFromInventory(Character::EquipmentSlot::Head, hardhat->schema.id);
@@ -253,6 +256,25 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
                             if(character)
                             {
                                 Item::useItemOnSelf(character, itemSchema);
+                            }
+                            break;
+                        }
+
+                        case Item::CommandType::CommandTypeCharacter:
+                        {
+                            // Packet will contain the target tile
+                            unsigned int tileId;
+                            packet >> tileId;
+
+                            if(character)
+                            {
+                                // Find the tile
+                                Tile* t = level->tiles[tileId];
+                                if(t && t->body && t->body->schema.type == Body::Type::Character)
+                                {
+                                    Character* other = static_cast<Character*>(t->body);
+                                    Item::useItemOnCharacter(character, other, itemSchema);
+                                }
                             }
                             break;
                         }

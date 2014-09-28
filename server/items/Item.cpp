@@ -350,6 +350,19 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.commandType = CommandType::CommandTypeSelf;
 
             break;
+
+        case Type::Brick:
+
+            i = new Item();
+            i->schema.CategoryBase = ItemCategory::Base::BaseNone;
+            i->schema.CategoryWeapon = ItemCategory::Weapon::WeaponNone;
+            i->schema.weight = 5;
+            i->schema.effectiveRangeInTiles = 5;
+            i->schema.minimumDamage = 5;
+            i->schema.maximumDamage = 10;
+            i->schema.commandType = CommandType::CommandTypeCharacter;
+
+            break;
     }
 
     i->schema.id = id;
@@ -382,6 +395,9 @@ std::string Item::getTitle(Type type)
 
         case Type::Medkit:
             return "Medkit";
+
+        case Type::Brick:
+            return "Brick";
     }
 }
 
@@ -411,6 +427,9 @@ std::string Item::getDescription(Type type)
 
         case Type::Medkit:
             return "Instantly recover health";
+
+        case Type::Brick:
+            return "Throw at people";
     }
 }
 
@@ -464,22 +483,22 @@ std::string Item::getIconName(Type type)
     }
 }
 
-void Item::useItemOnSelf(Character* character, Item::Schema &itemSchema)
+void Item::useItemOnSelf(Character* self, Item::Schema &itemSchema)
 {
     // Find the item in the character inventory
-    Item* item = character->inventory->removeItemBy([&itemSchema] (Item* item) -> bool {
+    Item* item = self->inventory->removeItemBy([&itemSchema] (Item* item) -> bool {
         return item->schema.type == itemSchema.type;
     });
     
     // Pull it out and apply it
-    if(item && applyItemOnSelf(character,  itemSchema))
+    if(item && applyItemOnSelf(self, itemSchema))
     {
         delete item;
     }
 }
 
 
-bool Item::applyItemOnSelf(Character* character, Item::Schema &itemSchema)
+bool Item::applyItemOnSelf(Character* self, Item::Schema &itemSchema)
 {
     // A command was issued to apply the item to a character as self command
     switch(itemSchema.type)
@@ -487,7 +506,38 @@ bool Item::applyItemOnSelf(Character* character, Item::Schema &itemSchema)
         case Medkit:
         {
             // Heal the character
-            character->heal(bit::Math::random(itemSchema.minimumDamage, itemSchema.maximumDamage));
+            self->heal(bit::Math::random(itemSchema.minimumDamage, itemSchema.maximumDamage));
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void Item::useItemOnCharacter(Character* self, Character* other, Item::Schema &itemSchema)
+{
+    // Find the item in the character inventory
+    Item* item = self->inventory->removeItemBy([&itemSchema] (Item* item) -> bool {
+        return item->schema.type == itemSchema.type;
+    });
+    
+    // Pull it out and apply it
+    if(item && applyItemOnCharacter(self, other, itemSchema))
+    {
+        delete item;
+    }
+}
+
+
+bool Item::applyItemOnCharacter(Character* self, Character* other, Item::Schema &itemSchema)
+{
+    // A command was issued to apply the item to a character as self command
+    switch(itemSchema.type)
+    {
+        case Brick:
+        {
+            // Hurt the character
+            other->harm(bit::Math::random(itemSchema.minimumDamage, itemSchema.maximumDamage));
             return true;
         }
     }
