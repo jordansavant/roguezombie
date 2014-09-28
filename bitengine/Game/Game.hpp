@@ -16,32 +16,32 @@ namespace bit
     class GameComponent;
     class StateStack;
 
-	class Game
-	{
-	public:
- 		Game();
+    class Game
+    {
+    public:
+        Game();
 
         virtual ~Game();
 
         StateStack* stateStack;
-		std::vector<GameComponent*> gameComponents;
-		sf::Clock clock;
-		float FPS;
+        std::vector<GameComponent*> gameComponents;
+        sf::Clock clock;
+        float FPS;
 
-		void run();
+        void run();
 
-		virtual void update(sf::Time &gameTime);
+        virtual void update(sf::Time &gameTime);
 
         virtual void registerStates();
 
         void quit();
 
-	protected:
-		float actualTime;
-		float dt;
-		float timer;
+    protected:
+        float actualTime;
+        float dt;
+        float timer;
         bool running;
-	};
+    };
 }
 
 #endif

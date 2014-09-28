@@ -345,6 +345,8 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.CategoryWeapon = ItemCategory::Weapon::WeaponNone;
             i->schema.weight = 1;
             i->schema.effectiveRangeInTiles = 0;
+            i->schema.minimumDamage = 10;
+            i->schema.maximumDamage = 20;
             i->schema.commandType = CommandType::CommandTypeSelf;
 
             break;
@@ -432,7 +434,7 @@ std::string Item::getSpriteName(Type type)
         case Type::Z4Rifle:
             return "Z4Rifle";
 
-        case Type::Crowbar: 
+        case Type::Crowbar:
             return "Crowbar";
     }
 }
@@ -456,6 +458,9 @@ std::string Item::getIconName(Type type)
 
         case Type::Crowbar:
             return "Crowbar";
+
+        case Type::Medkit:
+            return "Medkit";
     }
 }
 
@@ -482,7 +487,7 @@ bool Item::applyItemOnSelf(Character* character, Item::Schema &itemSchema)
         case Medkit:
         {
             // Heal the character
-            character->heal(20);
+            character->heal(bit::Math::random(itemSchema.minimumDamage, itemSchema.maximumDamage));
             return true;
         }
     }

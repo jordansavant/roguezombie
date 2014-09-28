@@ -32,7 +32,8 @@ void ActionBarSlot::removeItemLabel()
 
 bool ActionBarSlot::acceptsLabel(InventoryItemLabel* label)
 {
-    return true;
+    // Must be an interacteable item type
+    return label->itemSchema.commandType != Item::CommandType::CommandTypeNone;
 }
 
 unsigned int ActionBarSlot::addChild(Element* child)

@@ -27,12 +27,8 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, Item::Schema& itemSchema, float
         // If I am in the action bar
         if(label->currentActionSlot)
         {
-            // Check if the item can be interracted with
-
             // Notify the game state of the wish to operate an item based command passing the item
             hud->state->requestItemCommand(label->itemSchema);
-
-            // The state will handle the targetting and eventual networking if continued
         }
 
     };
