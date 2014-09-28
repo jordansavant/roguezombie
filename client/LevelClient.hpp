@@ -61,6 +61,8 @@ public:
     // Selection
     SelectMode selectMode;
     std::function<void(CharacterClient*, TileClient*)> onCharacterSelect;
+    std::function<void(TileClient*)> onAreaSelect;
+    unsigned int selectRadius;
 
     // Spritesheet 01;
     sf::Texture texture_spritesheetCharacters;
@@ -84,6 +86,8 @@ public:
     void clearMoveMarkers();
 
     void enterCharacterSelectMode(std::function<void(CharacterClient* characterClient, TileClient* tileCilent)>);
+
+    void enterAreaSelectMode(unsigned int radius, std::function<void(TileClient* tileCilent)>);
 
     void onEnterCombat();
 

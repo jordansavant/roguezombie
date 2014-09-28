@@ -191,33 +191,36 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
     {
         case Level::State::Free:
         {
-            // Explore Mode Commands
-            if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
+            if(levelClient->selectMode == LevelClient::SelectMode::None)
             {
-                // See if a tile is being hovered over
-                if(levelClient->hoveredTile)
+                // Explore Mode Commands
+                if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
                 {
-                    TileClient* t = levelClient->hoveredTile;
+                    // See if a tile is being hovered over
+                    if(levelClient->hoveredTile)
+                    {
+                        TileClient* t = levelClient->hoveredTile;
 
-                    // If the tile has a body and it is adjacent run interactions
-                    if(t->schema.bodyId > 0)
-                    {
-                        if(t->isCardinallyAdjacent(levelClient->playerCharacter))
-                            requestInteractionsForTile(t->schema.id);
+                        // If the tile has a body and it is adjacent run interactions
+                        if(t->schema.bodyId > 0)
+                        {
+                            if(t->isCardinallyAdjacent(levelClient->playerCharacter))
+                                requestInteractionsForTile(t->schema.id);
+                            else
+                                displayMessage(std::string("Too far away"));
+                        }
+                        // Else issue command to move to tile
                         else
-                            displayMessage(std::string("Too far away"));
-                    }
-                    // Else issue command to move to tile
-                    else
-                    {
-                        Command cmd;
-                        cmd.type = Command::Type::FreeCommand;
-                        cmd.pack = [t] (sf::Packet &packet) {
-                            packet << sf::Uint32(Command::Target::Tile);
-                            packet << sf::Uint32(t->schema.id);
-                            packet << sf::Uint32(Command::TargetTileCommand::Move);
-                        };
-                        issueCommand(cmd);
+                        {
+                            Command cmd;
+                            cmd.type = Command::Type::FreeCommand;
+                            cmd.pack = [t] (sf::Packet &packet) {
+                                packet << sf::Uint32(Command::Target::Tile);
+                                packet << sf::Uint32(t->schema.id);
+                                packet << sf::Uint32(Command::TargetTileCommand::Move);
+                            };
+                            issueCommand(cmd);
+                        }
                     }
                 }
             }
@@ -529,9 +532,25 @@ void StateGamePlay::requestItemCommand(Item::Schema &itemSchema)
             });
             break;
         }
-    }
 
-    bool crap = true;
+        case Item::CommandType::CommandTypeArea:
+        {
+            StateGamePlay* state = this;
+            // Enter area targetting mode and when a tile is clicked run this
+            levelClient->enterAreaSelectMode(4, [state, itemSchema] (TileClient* tileClient) {
+                Item::Schema itemSchemaX = itemSchema;
+
+                Command cmd;
+                cmd.type = Command::Type::ItemCommand;
+                cmd.pack = [itemSchemaX, tileClient] (sf::Packet &packet) {
+                    packet << itemSchemaX;
+                    packet << sf::Uint32(tileClient->schema.id);
+                };
+                state->issueCommand(cmd);
+            });
+            break;
+        }
+    }
 }
 
 void StateGamePlay::issueCommand(Command cmd)
@@ -993,7 +1012,7 @@ void StateGamePlay::preparePacket_ClientUpdate(bit::ClientPacket &packet)
     for(unsigned int i=0; i < commandQueue.size(); i++)
     {
         // Push commands onto packet, oldest first
-        packet << static_cast<sf::Uint8>(commandQueue[i].type);
+        packet << static_cast<sf::Uint32>(commandQueue[i].type);
         commandQueue[i].pack(packet);
     }
 

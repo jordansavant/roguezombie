@@ -8,6 +8,7 @@
 
 class Body;
 class Character;
+class Tile;
 
 class Item
 {
@@ -27,6 +28,7 @@ public:
         Crowbar,
         Medkit,
         Brick,
+        Grenade,
     };
 
     enum CommandType
@@ -165,6 +167,10 @@ public:
     static void useItemOnCharacter(Character* self, Character* other, Item::Schema &itemSchema);
 
     static bool applyItemOnCharacter(Character* self, Character* other, Item::Schema &itemSchema);
+
+    static void useItemOnTileArea(Character* self, Tile* tile, Item::Schema &itemSchema);
+
+    static bool applyItemOnTileArea(Character* self, Tile* tile, Item::Schema &itemSchema);
 
 };
 

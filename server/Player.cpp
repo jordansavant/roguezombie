@@ -86,11 +86,9 @@ void Player::setupPlayerCharacter()
     Item* hardhat = Item::create(Item::Type::HardHat, level->server->getNextItemId());
     character->addItemToInventory(hardhat);
 
-    Item* medkit = Item::create(Item::Type::Medkit, level->server->getNextItemId());
-    character->addItemToInventory(medkit);
-
-    Item* brick = Item::create(Item::Type::Brick, level->server->getNextItemId());
-    character->addItemToInventory(brick);
+    character->addItemToInventory(Item::create(Item::Type::Medkit, level->server->getNextItemId()));
+    character->addItemToInventory(Item::create(Item::Type::Brick, level->server->getNextItemId()));
+    character->addItemToInventory(Item::create(Item::Type::Grenade, level->server->getNextItemId()));
 
     character->equipFromInventory(Character::EquipmentSlot::WeaponPrimary, magnum->schema.id);
     character->equipFromInventory(Character::EquipmentSlot::WeaponSecondary, crowbar->schema.id);
@@ -274,6 +272,24 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
                                 {
                                     Character* other = static_cast<Character*>(t->body);
                                     Item::useItemOnCharacter(character, other, itemSchema);
+                                }
+                            }
+                            break;
+                        }
+
+                        case Item::CommandType::CommandTypeArea:
+                        {
+                            // Packet will contain the target tile
+                            unsigned int tileId;
+                            packet >> tileId;
+
+                            if(character)
+                            {
+                                // Find the tile
+                                Tile* t = level->tiles[tileId];
+                                if(t)
+                                {
+                                    Item::useItemOnTileArea(character, t, itemSchema);
                                 }
                             }
                             break;

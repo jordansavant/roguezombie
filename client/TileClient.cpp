@@ -107,7 +107,30 @@ void TileClient::clientUpdate(sf::Time &gameTime)
                 if(level->state->isTileSelectActive && this->hasCharacter && this->characterClient)
                 {
                     level->onCharacterSelect(characterClient, this);
+                    level->selectMode = LevelClient::SelectMode::None;
                 }
+            }
+            break;
+        }
+
+        case LevelClient::SelectMode::Area:
+        {
+            // Its targetting me
+            if(level->hoveredTile == this)
+            {
+                // If I am being hovered color me for the character selection
+                c = sf::Color(255, 255, 0);
+
+                if(level->state->isTileSelectActive)
+                {
+                    level->onAreaSelect(this);
+                    level->selectMode = LevelClient::SelectMode::None;
+                }
+            }
+            // Its targetting a neighbor
+            else if(level->hoveredTile && bit::VectorMath::distance(schema.x, schema.y, level->hoveredTile->schema.x, level->hoveredTile->schema.y) <= level->selectRadius * schema.width)
+            {
+                c = sf::Color(255, 255, 255);
             }
             break;
         }

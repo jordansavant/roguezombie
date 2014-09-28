@@ -237,14 +237,14 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
     for(unsigned int i=0; i < commandCount; i++)
     {
         // Get command
-        sf::Uint8 commandType;
-        packet >> commandType;
+        Command::Type commandType;
+        bit::NetworkHelper::unpackEnum<sf::Uint32, Command::Type>(packet, commandType);
 
         // Determine how to handle
         switch(commandType)
         {
             default:
-                player->level->handlePlayerCommand(packet, client, static_cast<Command::Type>(commandType));
+                player->level->handlePlayerCommand(packet, client, commandType);
                 break;
             case Command::Type::PlayerDebug:
                 player->character->harm(20);

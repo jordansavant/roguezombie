@@ -5,6 +5,7 @@
 #include "../ServerEvent.hpp"
 #include "../Body.hpp"
 #include "../Character.hpp"
+#include "../Tile.hpp"
 #include "../Player.hpp"
 #include "../Level.hpp"
 #include "../GameplayServer.hpp"
@@ -363,6 +364,19 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.commandType = CommandType::CommandTypeCharacter;
 
             break;
+
+        case Type::Grenade:
+
+            i = new Item();
+            i->schema.CategoryBase = ItemCategory::Base::BaseNone;
+            i->schema.CategoryWeapon = ItemCategory::Weapon::WeaponNone;
+            i->schema.weight = 1;
+            i->schema.effectiveRangeInTiles = 5;
+            i->schema.minimumDamage = 20;
+            i->schema.maximumDamage = 30;
+            i->schema.commandType = CommandType::CommandTypeArea;
+
+            break;
     }
 
     i->schema.id = id;
@@ -398,6 +412,9 @@ std::string Item::getTitle(Type type)
 
         case Type::Brick:
             return "Brick";
+
+        case Type::Grenade:
+            return "Grenade";
     }
 }
 
@@ -430,6 +447,9 @@ std::string Item::getDescription(Type type)
 
         case Type::Brick:
             return "Throw at people";
+
+        case Type::Grenade:
+            return "Explodes in a radius";
     }
 }
 
@@ -538,6 +558,49 @@ bool Item::applyItemOnCharacter(Character* self, Character* other, Item::Schema 
         {
             // Hurt the character
             other->harm(bit::Math::random(itemSchema.minimumDamage, itemSchema.maximumDamage));
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void Item::useItemOnTileArea(Character* self, Tile* tile, Item::Schema &itemSchema)
+{
+    // Find the item in the character inventory
+    Item* item = self->inventory->removeItemBy([&itemSchema] (Item* item) -> bool {
+        return item->schema.type == itemSchema.type;
+    });
+    
+    // Pull it out and apply it
+    if(item && applyItemOnTileArea(self, tile, itemSchema))
+    {
+        delete item;
+    }
+}
+
+
+bool Item::applyItemOnTileArea(Character* self, Tile* tile, Item::Schema &itemSchema)
+{
+    // A command was issued to apply the item to a character as self command
+    switch(itemSchema.type)
+    {
+        case Grenade:
+        {
+            tile->level->iterateTiles([itemSchema, tile, self] (unsigned int index, unsigned int x, unsigned int y, Tile* inspectedTile)
+            {
+                // If the tile is in the radius
+                if(bit::VectorMath::distance(tile->schema.x, tile->schema.y, inspectedTile->schema.x, inspectedTile->schema.y) < 4 * tile->level->tileWidth)
+                {
+                    // If there is a character on it, hurt it
+                    if(inspectedTile->body && inspectedTile->body->schema.type == Body::Type::Character)
+                    {
+                        Character* other = static_cast<Character*>(inspectedTile->body);
+                        other->harm(bit::Math::random(itemSchema.minimumDamage, itemSchema.maximumDamage));
+                    }
+                }
+            });
+
             return true;
         }
     }
