@@ -106,7 +106,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
             // get the current tile information
             int index = i + j * tileColumns;
             LevelLoader::Tile tileDef = levelDef.getTileByIndex(index);
-            Tile::Type tileType = Tile::Type::Ground; // TODO cast this out
+            Tile::Type tileType = static_cast<Tile::Type>(tileDef.type);
 
             // Its position on the map
             float originX = i * tileWidth;

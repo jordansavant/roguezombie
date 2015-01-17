@@ -21,6 +21,7 @@ public:
 
     enum Type
     {
+        None,
         Ground,
     };
 
