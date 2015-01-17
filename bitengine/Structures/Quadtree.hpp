@@ -27,10 +27,10 @@ namespace bit
             bounds.height = height;
 
             shape.setPosition(x, y);
-	        shape.setSize(sf::Vector2f(width, height));
-	        shape.setFillColor(sf::Color(0, 0, 0, 0));
-	        shape.setOutlineThickness(2.0f);
-	        shape.setOutlineColor(sf::Color(64, 128, 255));
+            shape.setSize(sf::Vector2f(width, height));
+            shape.setFillColor(sf::Color(0, 0, 0, 0));
+            shape.setOutlineThickness(2.0f);
+            shape.setOutlineColor(sf::Color(64, 128, 255));
 
             if(level == 0)
             {
@@ -268,10 +268,10 @@ namespace bit
             shape.setSize(sf::Vector2f(bounds.width, bounds.height));
             shape.setPosition(camera.translateXToCameraX(bounds.left), camera.translateYToCameraY(bounds.top));
 
-	        //std::stringstream ss;
-	        //ss << objects.size();
-	        //std::string numObjectsStr = ss.str();
-	        window.draw(shape);
+            //std::stringstream ss;
+            //ss << objects.size();
+            //std::string numObjectsStr = ss.str();
+            window.draw(shape);
 
             for(int i = 0; i < nodes.size(); i++)
             {

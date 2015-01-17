@@ -15,7 +15,7 @@
 
 LootMenu::LootMenu(Hud* _hud)
     : HudMenu(_hud, 296, 0, 296, 728, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)),
-      inventory(), isActive(false), tileId(0)
+      inventory(), isActive(false), tileId(0), maxInventoryCount(40)
 {
     scaleStyle = ScaleStyle::PowerOfTwo;
     managesOpacity = true;
@@ -29,7 +29,7 @@ LootMenu::LootMenu(Hud* _hud)
     int width = 64;
     int pad = 8;
     int x = pad;
-    for(unsigned int j=0; j < 40; j++)
+    for(unsigned int j=0; j < maxInventoryCount; j++)
     {
         if(x + width + pad > targetWidth)
         {
@@ -192,9 +192,12 @@ void LootMenu::handleInventorySnapshot(bit::ServerPacket &packet, unsigned int t
     unsigned int i=0;
     for(auto iterator = inventory.itemClients.begin(); iterator != inventory.itemClients.end(); iterator++)
     {
-        ItemClient* item = &iterator->second;
-        InventoryItemLabel* option = new InventoryItemLabel(hud, item->schema, 0, 0, bit::Element::AnchorType::TopLeft);
-        lootSlotBoxes[item->schema.position]->addChild(option);
+        if(i < maxInventoryCount)
+        {
+            ItemClient* item = &iterator->second;
+            InventoryItemLabel* option = new InventoryItemLabel(hud, item->schema, 0, 0, bit::Element::AnchorType::TopLeft);
+            lootSlotBoxes[item->schema.position]->addChild(option);
+        }
         i++;
     }
 }

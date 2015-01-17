@@ -644,10 +644,10 @@ void Level::removePlayer(Player* player)
 void Level::deletePlayer(Player* player)
 {
     // Move any spectators
-    // TODO: this was moved up here because the method is dumb needing an active character
     if(player->character)
-        for(unsigned int i=0; i < player->character->spectators.size(); i++)
-            player->character->spectators[i]->spectateNext();
+    {
+        player->character->clearSpectators();
+    }
 
     // Remove player
     removePlayer(player);
@@ -869,8 +869,10 @@ void Level::raycastTiles(float startX, float startY, float endX, float endY, std
 
 Tile* Level::getAvailableEntranceTile(unsigned int entranceId)
 {
-    // TODO, replace this with a better map version
     // Get all tiles and their entrances that match
+    // This could be optimized into into a map of tiles, keyed by each entrance id if I need
+    // to not iterate a big list, the maps populated at level load, but thats over-optimization
+    // at this point
     std::vector<std::pair<Tile*, unsigned int>> availableTiles;
     iterateTiles([&entranceId, &availableTiles] (unsigned int index, unsigned int x, unsigned int y, Tile* t){
         if(!t->isOccupied() && t->hasEntrance(entranceId))

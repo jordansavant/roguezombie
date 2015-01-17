@@ -171,7 +171,6 @@ Item* Item::removeItemBy(std::function<bool(Item*)> inspector)
 
 unsigned int Item::findAvailablePosition()
 {
-    // TODO - horrid
     unsigned int position = 0;
     while(true)
     {
@@ -571,5 +570,8 @@ std::string Item::getIconName(Type type)
 
         case Type::Medkit:
             return "Medkit";
+
+        case Type::Brick:
+            return "Brick";
     }
 }

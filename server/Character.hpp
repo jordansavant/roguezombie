@@ -353,6 +353,8 @@ public:
 
     void unsetSpectatingPlayer(Player* player);
 
+    void clearSpectators();
+
     void getAvailableInteractions(std::vector<Interaction::Type> &fill);
 
     void prepareSnapshot(bit::ServerPacket &packet, bool full = false);

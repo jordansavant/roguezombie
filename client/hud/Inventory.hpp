@@ -29,6 +29,7 @@ public:
     bit::Sprite* naviconSprite;
     unsigned int siloQuadIndex;
     bit::Sprite* siloSprite;
+    unsigned int maxInventoryCount;
 
     std::vector<InventoryEquipmentSlot*> equipmentSlotBoxes;
     std::vector<InventoryPositionSlot*> positionSlotBoxes;

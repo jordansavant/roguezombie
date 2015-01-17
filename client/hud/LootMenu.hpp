@@ -25,6 +25,7 @@ public:
     unsigned int tileId;
     unsigned int naviconQuadIndex;
     bit::Sprite* naviconSprite;
+    unsigned int maxInventoryCount;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 

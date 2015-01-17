@@ -79,8 +79,8 @@ void CharacterSprite::update(sf::Time &gameTime)
     int bb = character->BodyClient::schema.bshade * character->BodyClient::schema.illumination;
     sf::Color color(rr, gg, bb);
 
-    // TODO: Remove primary character color hack or turn into spectate highlight
-    if(character->level->playerCharacter == character && character->level->isPlayerSpecating)
+    // If someone is spectating this character illuminate
+    if(character->level->isPlayerSpecating)
         color = sf::Color(0, 255, 255);
 
     if(!character->schema.isDead())

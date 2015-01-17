@@ -16,7 +16,8 @@
 #include <iomanip>
 
 Inventory::Inventory(Hud* _hud)
-    : HudMenu(_hud, 0, 0, 691, 728, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), pendingInventoryRequests(0), refreshTimer(5)
+    : HudMenu(_hud, 0, 0, 691, 728, bit::Element::AnchorType::Right, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)),
+      pendingInventoryRequests(0), refreshTimer(5), maxInventoryCount(40)
 {
     scaleStyle = ScaleStyle::PowerOfTwo;
     managesOpacity = true;
@@ -76,7 +77,7 @@ Inventory::Inventory(Hud* _hud)
     int width = 64;
     int pad = 8;
     int x = pad;
-    for(unsigned int j=0; j < 40; j++)
+    for(unsigned int j=0; j < maxInventoryCount; j++)
     {
         if(x + width + pad > inventoryPanel->targetWidth)
         {
@@ -274,11 +275,16 @@ void Inventory::buildItemList(bool force)
         positionSlotBoxes[i]->clearChildren();
     }
     // rebuild
+    unsigned int i=0;
     for(auto iterator = levelClient->playerCharacter->inventoryClient.itemClients.begin(); iterator != levelClient->playerCharacter->inventoryClient.itemClients.end(); iterator++)
     {
-        ItemClient* item = &iterator->second;
-        InventoryItemLabel* option = buildItem(item, 0, 0);
-        positionSlotBoxes[item->schema.position]->addChild(option);
+        if(i < maxInventoryCount)
+        {
+            ItemClient* item = &iterator->second;
+            InventoryItemLabel* option = buildItem(item, 0, 0);
+            positionSlotBoxes[item->schema.position]->addChild(option);
+        }
+        i++;
     }
 }
 

@@ -1461,6 +1461,14 @@ void Character::unsetSpectatingPlayer(Player* player)
     spectators.erase(std::remove(spectators.begin(), spectators.end(), player), spectators.end());
 }
 
+void Character::clearSpectators()
+{
+    for(unsigned int i=0; i < spectators.size(); i++)
+    {
+        spectators[i]->spectateNext();
+    }
+}
+
 void Character::getAvailableInteractions(std::vector<Interaction::Type> &fill)
 {
     if(schema.health > 0)
