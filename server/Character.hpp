@@ -121,9 +121,9 @@ public:
             packet << schema.direction.y;
 
             // Stats
-            packet << sf::Uint32(schema.maxActionPoints);
-            packet << sf::Uint32(schema.currentActionPoints);
-            packet << sf::Uint32(schema.maxHealth);
+            packet << sf::Int32(schema.maxActionPoints);
+            packet << sf::Int32(schema.currentActionPoints);
+            packet << sf::Int32(schema.maxHealth);
             packet << sf::Int32(schema.health);
             packet << sf::Int32(schema.speed);
             if(schema.isPlayerCharacter)

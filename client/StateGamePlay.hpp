@@ -75,6 +75,8 @@ public:
 
     virtual void load();
 
+    void switchLevels(unsigned int newId);
+
     void now();
 
     void changeMode(Mode);

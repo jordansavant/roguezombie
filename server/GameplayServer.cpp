@@ -85,9 +85,8 @@ void GameplayServer::update(sf::Time &gameTime)
             // Add them to their new level
             levels[indexTo].addPlayer(pm->player, pm->toEntranceId);
             
-            // Tell player to get full snapshot
-            pm->player->requestFullSnapshot = true;
-            // If the player character has spectators tell them as well
+            // If the player character has spectators tell them as well, but we are sending an immediate packet to player
+            // This used to request a player full snapshot but we are sending it immediately in the packet
             for(unsigned int i=0; i < pm->player->character->spectators.size(); i++)
             {
                 Player* spectator = pm->player->character->spectators[i];
@@ -95,9 +94,14 @@ void GameplayServer::update(sf::Time &gameTime)
             }
 
             // Notify client of transition
-            sendEventToClient(*pm->player->client, [](bit::ServerPacket &packet){
+            Level* level = &levels[indexTo];
+            bit::RemoteClient* client = pm->player->client;
+            sendEventToClient(*pm->player->client, [level, client](bit::ServerPacket &packet){
                 packet << sf::Uint32(ServerEvent::ArrivedLevel);
+                packet << sf::Uint32(level->id);
+                level->prepareSnapshot(packet, *client, true);
             });
+
 
             pm->complete = true;
         }

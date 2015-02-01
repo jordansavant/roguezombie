@@ -76,7 +76,7 @@ namespace bit
 
         sf::Time now();
 
-        void handlePacket(sf::Int32 packetType, ServerPacket &packet);
+        void handlePacket(sf::Uint32 packetType, ServerPacket &packet);
 
         virtual void disconnect();
 

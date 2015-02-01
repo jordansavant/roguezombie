@@ -91,7 +91,7 @@ bool bit::ClientServerState::update(sf::Time &gameTime)
             {
                 // Pull the header type and pass into handlePacket
                 timeSinceLastPacket = sf::seconds(0.0f);
-                sf::Int32 packetType;
+                sf::Uint32 packetType;
                 packet >> packetType;
                 handlePacket(packetType, packet);
             }
@@ -111,7 +111,7 @@ bool bit::ClientServerState::update(sf::Time &gameTime)
             {
                 // Send client update packet with last acknowledged snapshot id
                 bit::ClientPacket packet;
-                packet << static_cast<sf::Int32>(Server::ClientPacketType::ClientUpdate) << lastSnapshotId;
+                packet << static_cast<sf::Uint32>(Server::ClientPacketType::ClientUpdate) << lastSnapshotId;
                 preparePacket_ClientUpdate(packet);
                 socket.send(packet);
             }
@@ -141,13 +141,13 @@ void bit::ClientServerState::disconnect()
     {
         awaitingDisconnect = true;
         bit::ClientPacket packet;
-        packet << static_cast<sf::Int32>(Server::ClientPacketType::Quit);
+        packet << static_cast<sf::Uint32>(Server::ClientPacketType::Quit);
         preparePacket_ClientDisconnect(packet);
         socket.send(packet);
     }
 }
 
-void bit::ClientServerState::handlePacket(sf::Int32 packetType, bit::ServerPacket &packet)
+void bit::ClientServerState::handlePacket(sf::Uint32 packetType, bit::ServerPacket &packet)
 {
     if(isClient)
     {

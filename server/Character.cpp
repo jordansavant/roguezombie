@@ -1362,6 +1362,7 @@ void Character::sendCombatTurnStart()
     // Send game event to player for start of turn
     if(schema.isPlayerCharacter)
     {
+        bit::Output::Debug("Sending TURN BEGINS");
         level->server->sendEventToClient(*schema.player->client, [](bit::ServerPacket &packet){
             packet << sf::Uint32(ServerEvent::CombatTurnStart);
         });

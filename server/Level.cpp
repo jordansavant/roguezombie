@@ -35,11 +35,6 @@
 Level::Level()
     : server(NULL), id(0), state(State::Free), tileWidth(0), tileHeight(0), tileRows(0), tileColumns(0), tileCount(0), characterInTurn(NULL)
 {
-    bit::Event<std::function<void(Character* c)>> g;
-    g += [](Character* c){
-        bit::Output::Debug("YO +=");
-    };
-    g.trigger<Character*>(NULL);
 }
 
 Level::~Level()

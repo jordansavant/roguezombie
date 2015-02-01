@@ -82,6 +82,14 @@ void StateGamePlay::load()
     levelClient->load(this);
 }
 
+void StateGamePlay::switchLevels(unsigned int newId)
+{
+    delete levelClient;
+    levelClient = new LevelClient();
+    levelClient->levelId = newId;
+    levelClient->load(this);
+}
+
 void StateGamePlay::changeMode(Mode _mode)
 {
     if(_mode != mode)
@@ -766,10 +774,7 @@ void StateGamePlay::handlePacket_ServerUpdate(bit::ServerPacket &packet)
 
     if(levelClient->levelId != levelId)
     {
-        delete levelClient;
-        levelClient = new LevelClient();
-        levelClient->levelId = levelId;
-        levelClient->load(this);
+        switchLevels(levelId);
     }
 
     if(isFullSnapshot) bit::Output::Debug("received full");
@@ -781,9 +786,9 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
 {
     bit::Output::Debug("Client handle server event");
 
-    unsigned int eventTypeInt;
-    packet >> eventTypeInt;
-    ServerEvent eventType = static_cast<ServerEvent>(eventTypeInt);
+    ServerEvent eventType;
+    bit::NetworkHelper::unpackEnum<sf::Uint32, ServerEvent>(packet, eventType);
+    bit::Output::Debug((unsigned int)eventType);
 
     if(levelClient->playerCharacter)
     {
@@ -794,6 +799,10 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 break;
             case ServerEvent::ArrivedLevel:
                 displayMessage(std::string("Arrived at level"));
+                unsigned int levelId;
+                packet >> levelId;
+                switchLevels(levelId);
+                levelClient->handleSnapshot(packet, true);
                 break;
             case ServerEvent::CannotTransitionInCombat:
                 displayMessage(std::string("Cannot leave level in combat"));
@@ -838,6 +847,7 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
 
             case ServerEvent::CombatTurnStart:
                 displayMessage(std::string("Turn begins"));
+                bit::Output::Debug("Received TURN BEGINS");
 
                 // If the targetted body is not the same, reset it
                 if(target.active())
