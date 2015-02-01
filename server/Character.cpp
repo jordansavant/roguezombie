@@ -15,7 +15,8 @@
 #include "RpgSystem.hpp"
 
 Character::Character()
-    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), actionDelayTimer(1), hostilityCheckAi(NULL), combatDetectionAi(NULL), combatDecisionAi(NULL), isHostileCombatDetected(false), targetEnemy(NULL), combatTilesTraversed(0), moveTimer(.67f), equipment(), schema(), visionRadius(30)
+    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), actionDelayTimer(1), hostilityCheckAi(NULL), combatDetectionAi(NULL), combatDecisionAi(NULL),
+      isHostileCombatDetected(false), targetEnemy(NULL), combatTilesTraversed(0), moveTimer(.67f), equipment(), schema(), visionRadius(30)
 {
     equipment.resize(EquipmentSlot::_count, NULL);
 }
@@ -1388,27 +1389,6 @@ void Character::sendCombatDecisionStart()
         level->server->sendEventToClient(*schema.player->client, [character] (bit::ServerPacket &packet){
             packet << sf::Uint32(ServerEvent::CombatDecisionStart);
             
-            // We need to send the available movement radius, flood fill the region
-            // for traversable locations within the speed of the character
-            Character* characterX = character;
-            int originX = character->Body::schema.x / character->level->tileWidth;
-            int originY = character->Body::schema.y / character->level->tileHeight;
-            int maxDistance = character->schema.speed;
-            std::vector<Tile*> traversables;
-
-            // Flood fill
-            character->inspectCombatReachableTiles([&traversables] (Tile* t) {
-                traversables.push_back(t);
-            });
-            packet << sf::Uint32(traversables.size());
-            for(unsigned int i=0; i < traversables.size(); i++)
-            {
-                // Send basic tile information for the move markers
-                packet << sf::Uint32(traversables[i]->schema.id);
-                packet << sf::Uint32(traversables[i]->schema.x);
-                packet << sf::Uint32(traversables[i]->schema.y);
-            }
-
             // Calculate chance of hit for local enemies
             std::vector<Character*> characters;
             character->inspectVisibleCharacters([&characters](Character* c){
@@ -1421,7 +1401,6 @@ void Character::sendCombatDecisionStart()
                 packet << sf::Uint32(characters[i]->Body::schema.id);
                 packet << RpgSystem::Combat::calculateChanceOfHit(character, characters[i]);
             }
-
         });
     }
 }

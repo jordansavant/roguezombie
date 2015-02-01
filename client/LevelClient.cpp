@@ -13,12 +13,13 @@
 #include "../bitengine/Math.hpp"
 #include "../bitengine/Network.hpp"
 #include "../ResourcePath.h"
+#include "../bitengine/System.hpp"
 #include "SFML/Network.hpp"
 #include "MoveMarker.hpp"
 #include <map>
 
 LevelClient::LevelClient()
-    : state(NULL), levelState(Level::State::Free), tilePool(), characterPool(), doorPool(), chestPool(), hoveredTile(NULL), playerCharacter(NULL), isPlayerDecisionMode(false), isPlayerSpecating(false),
+    : state(NULL), tileCount(0), tileRows(0), tileColumns(0), tileWidth(0), tileHeight(0), levelState(Level::State::Free), tilePool(), characterPool(), doorPool(), chestPool(), hoveredTile(NULL), playerTile(NULL), playerCharacter(NULL), isPlayerDecisionMode(false), isPlayerSpecating(false),
       selectMode(SelectMode::None), onCharacterSelect(NULL), selectRange(1), selectRadius(1)
 {
 }
@@ -45,7 +46,7 @@ void LevelClient::load(StateGamePlay* _state)
     outlineShader.loadFromFile(resourcePath() + "Outline.frag", sf::Shader::Fragment);
 
     // Load game runners
-    runners.push_back(new LevelClientRunner<TileClient>(this, &tiles, &tilePool, 2000));
+    runners.push_back(new LevelClientTileRunner<TileClient>(this, &tiles, &tilePool, 2000, &tileMap));
     runners.push_back(new LevelClientRunner<CharacterClient>(this, &characters, &characterPool, 10));
     runners.push_back(new LevelClientRunner<WallClient>(this, &walls, &wallPool, 200));
     runners.push_back(new LevelClientRunner<DoorClient>(this, &doors, &doorPool, 10));
@@ -112,6 +113,15 @@ void LevelClient::draw(sf::RenderTarget& target, sf::RenderStates states) const
     bit::VideoGame::depthTestEnd();
 }
 
+TileClient* LevelClient::getTileAtIndices(int x, int y)
+{
+    unsigned int index = x + (tileColumns * y);
+
+    if(index < tileMap.size())
+        return tileMap[index];
+    return NULL;
+}
+
 void LevelClient::clearMoveMarkers()
 {
     for(unsigned int i=0; i < moveMarkers.size(); i++)
@@ -149,22 +159,31 @@ void LevelClient::onLeaveCombat()
 void LevelClient::handleCombatDecisionStart(bit::ServerPacket &packet)
 {
     isPlayerDecisionMode = true;
-    // unpack the move markers
-    unsigned int size;
-    packet >> size;
-    for(unsigned int i=0; i < size; i++)
-    {
-        // unpack basic tile information
-        unsigned int tileId;
-        int x, y;
-        packet >> tileId >> x >> y;
 
-        // Render movement marker
-        if(i > 0)
-        {
-            sf::Color w(255, 255, 255);
-            moveMarkers[i].renderAt(x, y, w);
-        }
+    // build move markers via floodfill from player tile
+    if(playerTile && playerCharacter)
+    {
+        unsigned int i=0;
+        LevelClient* lc = this;
+        bit::FloodFill::compute(playerTile->schema.x / tileWidth, playerTile->schema.y / tileHeight,
+            [lc, &i] (int x, int y, int depth) {
+                TileClient* tile = lc->getTileAtIndices(x, y);
+                bit::Output::Debug(x);
+                bit::Output::Debug(y);
+                if(tile && tile->metadata_floodfillId != bit::FloodFill::floodfillId)
+                {
+                    tile->metadata_floodfillId = bit::FloodFill::floodfillId;
+
+                    sf::Color w(255, 255, 255);
+                    lc->moveMarkers[i].renderAt(x * lc->tileWidth, y * lc->tileHeight, w);
+                    i++;
+                }
+            },
+            [lc] (int x, int y, int depth) -> bool {
+                TileClient* tile = lc->getTileAtIndices(x, y);
+                return !tile || depth > lc->playerCharacter->schema.speed || (tile->hasBody && tile->bodyClient != lc->playerCharacter);
+            }
+        );
     }
 
     // unpack the chance of hit
@@ -194,6 +213,17 @@ void LevelClient::handleCombatDecisionEnd(bit::ServerPacket &packet)
 void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
     // Game state
+    packet >> tileCount;
+    packet >> tileRows;
+    packet >> tileColumns;
+    packet >> tileWidth;
+    packet >> tileHeight;
+    if(full)
+    {
+        // For full world snapshots prep vectors
+        tileMap.resize(tileCount, NULL);
+    }
+
     Level::State lstate;
     bit::NetworkHelper::unpackEnum<sf::Uint32, Level::State>(packet, lstate);
     if(lstate != levelState)
@@ -226,12 +256,19 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
     packet >> playerBodyId;
 
     // Update / Create all entities
-    unsigned int tileCount;
-    packet >> tileCount;
-    for(unsigned int i=0; i < tileCount; i++)
+    unsigned int packetTileCount;
+    packet >> packetTileCount;
+    for(unsigned int i=0; i < packetTileCount; i++)
     {
         bool addMini = true;
+
+        // unpack tile
         TileClient* t = unpackNetworkEntity<TileClient>(packet, full, tiles, tilePool);
+        if(!tileMap[t->schema.id])
+        {
+            // add to tile map
+            tileMap[t->schema.id] = t;
+        }
 
         // unpack body
         unsigned int bodyType;
@@ -250,8 +287,10 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
                 if(c->BodyClient::schema.id == playerBodyId)
                 {
                     playerCharacter = c;
+                    playerTile = t;
                 }
 
+                // Tile occupant data
                 t->hasBody = true;
                 t->hasCharacter = true;
                 t->bodyClient = c;
@@ -279,6 +318,7 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
                         break;
                 }
 
+                // Tile occupant data
                 t->hasBody = true;
                 t->hasStructure = false;
                 t->bodyClient = s;
@@ -289,6 +329,7 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
             default:
             case Body::Type::None:
             {
+                // Tile occupant data
                 t->hasBody = false;
                 t->hasCharacter = false;
                 t->hasStructure = false;
@@ -296,6 +337,7 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
             }
         }
 
+        // Mini map tracker for viewed tiles
         if(addMini)
         {
             //state->hud->minimap.addPoint(t->schema.id, t->schema.x, t->schema.y);

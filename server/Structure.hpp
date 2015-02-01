@@ -29,7 +29,7 @@ public:
     struct Schema
     {
         Schema()
-            : type(Type::None)
+            :type(Type::None)
         {
         }
 

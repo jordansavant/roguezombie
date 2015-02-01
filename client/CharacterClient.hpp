@@ -24,6 +24,7 @@ public:
     std::vector<ItemClient> equipment;
     std::map<unsigned int, MissionClient> missionClients;
     float chanceOfHit;
+    unsigned int visionRadius;
     
     virtual void clientLoad(LevelClient* level);
 

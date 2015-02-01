@@ -960,6 +960,11 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
     Player* p = players[client.id];
 
     // Current level state
+    packet << sf::Uint32(tileCount);
+    packet << sf::Uint32(tileRows);
+    packet << sf::Uint32(tileColumns);
+    packet << sf::Uint32(tileWidth);
+    packet << sf::Uint32(tileHeight);
     packet << sf::Uint32(state);
 
     // State specific data

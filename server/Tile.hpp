@@ -38,7 +38,7 @@ public:
         {
         }
 
-        unsigned int id;
+        unsigned int id; // is map index too
         float x, y;
         float centerX, centerY;
         unsigned int width, height;

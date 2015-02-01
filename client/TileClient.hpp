@@ -38,6 +38,8 @@ public:
     BodyClient* bodyClient;
     CharacterClient* characterClient;
     StructureClient* structureClient;
+    unsigned int metadata_shadowcastId;
+    unsigned int metadata_floodfillId;
 
     bool isCardinallyAdjacent(BodyClient* body);
 

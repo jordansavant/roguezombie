@@ -38,10 +38,13 @@ public:
         Area,
     };
 
+    unsigned int tileCount, tileRows, tileColumns;
+    unsigned int tileWidth, tileHeight;
     StateGamePlay* state;
     unsigned int levelId;
     Level::State levelState;
     std::vector<BaseLevelClientRunner*> runners;
+    std::vector<TileClient*> tileMap;
     std::map<unsigned int, CharacterClient*> characters;
     std::map<unsigned int, TileClient*> tiles;
     std::map<unsigned int, WallClient*> walls;
@@ -53,6 +56,7 @@ public:
     bit::Pool<DoorClient> doorPool;
     bit::Pool<ChestClient> chestPool;
     TileClient* hoveredTile;
+    TileClient* playerTile;
     CharacterClient* playerCharacter;
     std::vector<MoveMarker> moveMarkers;
     bool isPlayerDecisionMode;
@@ -84,6 +88,8 @@ public:
 
     void update(sf::Time &gameTime);
 
+    TileClient* getTileAtIndices(int x, int y);
+
     void clearMoveMarkers();
 
     void enterCharacterSelectMode(unsigned int range, std::function<void(CharacterClient* characterClient, TileClient* tileCilent)>);
@@ -110,6 +116,7 @@ public:
         auto itr = map.find(id);
         if(itr != map.end())
         {
+            // Update the located entity
             entity = itr->second;
             entity->level = this;
             entity->lastSnapshotId = state->lastSnapshotId; // update snapshot id
@@ -117,6 +124,7 @@ public:
         }
         else
         {
+            // Create the entity
             entity = pool.fetch();
             map.insert(std::pair<unsigned int, T*>(id, entity));
             entity->level = this;

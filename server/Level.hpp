@@ -57,7 +57,9 @@ public:
     std::vector<Tile*> tiles;
     std::vector<Light*> lights;
     std::map<unsigned int, Player*> players;
-    unsigned int tileWidth, tileHeight, tileRows, tileColumns, tileCount, mapWidth, mapHeight;
+    unsigned int tileWidth, tileHeight; // size of individual tile e.g. 32, 32
+    unsigned int tileRows, tileColumns, tileCount; // number of tiles in units e.g. 100, 100, 10000
+    unsigned int mapWidth, mapHeight; // size of map in tile dimesions 3200, 3200
     std::vector<BaseLevelRunner*> runners;
 
     Character* characterInTurn;
