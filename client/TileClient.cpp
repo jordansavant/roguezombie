@@ -3,6 +3,7 @@
 #include "LevelClient.hpp"
 #include "BodyClient.hpp"
 #include "CharacterClient.hpp"
+#include "StructureClient.hpp"
 #include "StateGamePlay.hpp"
 #include "RogueZombieGame.hpp"
 #include "RZConfig.hpp"
@@ -27,7 +28,18 @@ TileClient::~TileClient()
 
 bool TileClient::hasTargetableCharacter()
 {
+    // Has a character that is not dead nor is the player
     return (hasCharacter && !characterClient->schema.isDead() && characterClient != level->playerCharacter);
+}
+
+bool TileClient::hasInteractableBody()
+{
+    // Has a character taht is not the player
+    bool interactWithCharacter = (hasCharacter && characterClient != level->playerCharacter);
+
+    bool interactWithStructure = (hasStructure && structureClient->isOfInteractableType());
+
+    return interactWithCharacter || interactWithStructure;
 }
 
 bool TileClient::isCardinallyAdjacent(BodyClient* body)
@@ -164,7 +176,7 @@ void TileClient::clientUpdate(sf::Time &gameTime)
     }
 
 
-    if(false && level->state->mode == StateGamePlay::Mode::Free)
+    if(level->state->mode == StateGamePlay::Mode::Free)
     {
         // If we are playing in free mode
         if(level->levelState == Level::State::Free)

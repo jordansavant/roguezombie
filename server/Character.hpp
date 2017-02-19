@@ -323,6 +323,8 @@ public:
 
     void pathToPosition(float x, float y);
 
+    bool canPathToPosition(float x, float y);
+
     bool moveToTile(Tile* tile);
 
     bool canMoveToPosition(Level* targetLevel, float x, float y);

@@ -108,8 +108,8 @@ void AiRoutines::Combat::Hunter_DecideCombat(Character* character)
     // If I have an enemy
     if(closestEnemy)
     {
-        int x1 = character->Body::schema.x;
-        int y1 = character->Body::schema.y;
+        int x1 = (int)character->Body::schema.x;
+        int y1 = (int)character->Body::schema.y;
         int width1 = character->Body::schema.width;
         int height1 = character->Body::schema.height;
         int x2 = closestEnemy->Body::schema.x;
@@ -125,12 +125,21 @@ void AiRoutines::Combat::Hunter_DecideCombat(Character* character)
             // If I am directly next to them, attack them
             character->combat_DecideAction_AttackCharacter(closestEnemy);
         }
-        else if(xDistance <= character->level->tileWidth * 3 && yDistance <= character->level->tileWidth * 3)
+        else if(xDistance <= character->level->tileWidth * 1 && yDistance <= character->level->tileWidth * 1)
         {
             // If I am within 3 tiles move away from them
             int xDiff = x1 - x2;
             int yDiff = y1 - y2;
-            character->combat_DecideAction_MoveToLocation(x1 + xDiff, y1 + yDiff);
+
+            // If i can move, do so, else im in a corner so attack
+            if(character->canPathToPosition(x1 + xDiff, y1 + yDiff)) // TODO: Expensive
+            {
+                character->combat_DecideAction_MoveToLocation(x1 + xDiff, y1 + yDiff);
+            }
+            else
+            {
+                character->combat_DecideAction_AttackCharacter(closestEnemy);
+            }
         }
         else if(xDistance <= character->level->tileWidth * 6 && yDistance <= character->level->tileWidth * 6)
         {

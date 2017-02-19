@@ -320,7 +320,7 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 
                 // Tile occupant data
                 t->hasBody = true;
-                t->hasStructure = false;
+                t->hasStructure = true;
                 t->bodyClient = s;
                 t->structureClient = s;
 

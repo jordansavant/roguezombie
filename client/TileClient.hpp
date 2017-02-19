@@ -44,6 +44,8 @@ public:
     bool isCardinallyAdjacent(BodyClient* body);
 
     bool hasTargetableCharacter();
+
+    bool hasInteractableBody();
     
     void clientLoad(LevelClient* level);
 

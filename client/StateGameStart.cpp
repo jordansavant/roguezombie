@@ -30,6 +30,7 @@ bool StateGameStart::update(sf::Time &gameTime)
     {
         requestStackPush(RogueZombieGame::stateGamePlayHost);
     }
+    // TODO: REMOVE
     else if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Tilde))
     {
         rogueZombieGame->errorMessage = "Testing error message.";

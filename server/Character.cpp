@@ -1306,6 +1306,27 @@ void Character::pathToPosition(float x, float y)
         path);
 }
 
+bool Character::canPathToPosition(float x, float y)
+{
+    std::vector<Tile*> v;
+    level->getShortestPath(
+        Body::schema.x,
+        Body::schema.y,
+        x,
+        y,
+        std::bind(
+            &Character::isTileBlockedForPathfinding,
+            this,
+            std::placeholders::_1),
+        std::bind(
+            &Level::getCardinalTiles,
+            level,
+            std::placeholders::_1,
+            std::placeholders::_2),
+        v);
+    return v.size() > 0;
+}
+
 bool Character::isTileBlocked(Tile* tile)
 {
     return (!tile || (tile->body && tile->body != this));

@@ -13,11 +13,13 @@ class StructureClient : public BodyClient
 {
 public:
 
-    StructureClient();
+	StructureClient();
 
 	Structure::Schema schema;
 
-    virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
+	virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
+
+	bool isOfInteractableType();
 };
 
 #endif

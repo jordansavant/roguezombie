@@ -20,6 +20,9 @@ void Hunter::load(Level* _level, unsigned int _id, float _x, float _y)
 {
     Character::load(_level, _id, Character::Type::Hunter, _x, _y, _level->tileWidth, _level->tileHeight);
 
+    schema.maxHealth = 35;
+    schema.health = 35;
+
     Item* rifle = Item::create(Item::Z4Rifle, level->server->getNextItemId());
     equip(Character::EquipmentSlot::WeaponPrimary, rifle);
 }

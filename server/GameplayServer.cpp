@@ -30,7 +30,7 @@ GameplayServer::~GameplayServer()
 void GameplayServer::load()
 {
     // Load the level pack definitions
-    levelLoader.load("RZ2.xml");
+    levelLoader.load("Demo.xml");
 
     // Build all levels for this level pack
     levels.resize(levelLoader.levelDefs.size());
@@ -250,6 +250,7 @@ void GameplayServer::handlePacket_ClientUpdate(bit::ClientPacket &packet, bit::R
             default:
                 player->level->handlePlayerCommand(packet, client, commandType);
                 break;
+            // TODO: Debug something else?
             case Command::Type::PlayerDebug:
                 player->character->harm(20);
                 break;

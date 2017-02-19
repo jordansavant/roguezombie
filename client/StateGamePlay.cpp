@@ -214,8 +214,9 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
                         {
                             if(t->isCardinallyAdjacent(levelClient->playerCharacter))
                                 requestInteractionsForTile(t->schema.id);
-                            else
+                            else if(t->hasInteractableBody())
                                 displayMessage(std::string("Too far away"));
+                            // Else we ignore the command
                         }
                         // Else issue command to move to tile
                         else
@@ -626,6 +627,7 @@ bit::Server* StateGamePlay::newServer()
 
 std::string StateGamePlay::getServerIpAddress()
 {
+    // TODO: Hardcoded
     return "192.168.0.100";
 }
 

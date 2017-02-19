@@ -6,27 +6,19 @@
 
 int main(int argc, char* argv[])
 {
-    // test tinyxml
-    tinyxml2::XMLDocument doc;
-    tinyxml2::XMLError err = doc.LoadFile((resourcePath() + "RZ2.xml").c_str());
-    tinyxml2::XMLElement* lp = doc.FirstChildElement( "levelpack" );
-    tinyxml2::XMLElement* nameElement = lp->FirstChildElement( "name" );
-	const char* title = nameElement->GetText();
-    bit::Output::Debug(std::string(title));
-
     bit::Output::Debug(argc);
     srand(time(NULL));
 
-    if(true || argc == 1)
+    if(argc == 1)
     {
-	    RogueZombieGame game;
-	    game.run();
+        RogueZombieGame game;
+        game.run();
     }
     else
     {
-	    RogueZombieServer server;
+        RogueZombieServer server;
         server.run();
     }
 
-	return 0;
+    return 0;
 }

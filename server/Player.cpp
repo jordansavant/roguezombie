@@ -74,25 +74,29 @@ void Player::setupPlayerCharacter()
     //p->character->assignMission(root);
 
     // Items
-    Item* magnum = Item::create(Item::Type::Magnum357, level->server->getNextItemId());
-    character->addItemToInventory(magnum);
+    //Item* magnum = Item::create(Item::Type::Magnum357, level->server->getNextItemId());
+    //character->addItemToInventory(magnum);
+    //
+    //Item* rifle = Item::create(Item::Type::Z4Rifle, level->server->getNextItemId());
+    //character->addItemToInventory(rifle);
+    //
+    //Item* crowbar = Item::create(Item::Type::Crowbar, level->server->getNextItemId());
+    //character->addItemToInventory(crowbar);
+    //
+    //Item* hardhat = Item::create(Item::Type::HardHat, level->server->getNextItemId());
+    //character->addItemToInventory(hardhat);
+    //
+    //character->addItemToInventory(Item::create(Item::Type::Medkit, level->server->getNextItemId()));
+    //character->addItemToInventory(Item::create(Item::Type::Brick, level->server->getNextItemId()));
+    //character->addItemToInventory(Item::create(Item::Type::Grenade, level->server->getNextItemId()));
+    //
+    //character->equipFromInventory(Character::EquipmentSlot::WeaponPrimary, magnum->schema.id);
+    //character->equipFromInventory(Character::EquipmentSlot::WeaponSecondary, crowbar->schema.id);
+    //character->equipFromInventory(Character::EquipmentSlot::Head, hardhat->schema.id);
 
-    Item* rifle = Item::create(Item::Type::Z4Rifle, level->server->getNextItemId());
-    character->addItemToInventory(rifle);
-
-    Item* crowbar = Item::create(Item::Type::Crowbar, level->server->getNextItemId());
-    character->addItemToInventory(crowbar);
-
-    Item* hardhat = Item::create(Item::Type::HardHat, level->server->getNextItemId());
-    character->addItemToInventory(hardhat);
-
-    character->addItemToInventory(Item::create(Item::Type::Medkit, level->server->getNextItemId()));
-    character->addItemToInventory(Item::create(Item::Type::Brick, level->server->getNextItemId()));
-    character->addItemToInventory(Item::create(Item::Type::Grenade, level->server->getNextItemId()));
-
-    character->equipFromInventory(Character::EquipmentSlot::WeaponPrimary, magnum->schema.id);
-    character->equipFromInventory(Character::EquipmentSlot::WeaponSecondary, crowbar->schema.id);
-    character->equipFromInventory(Character::EquipmentSlot::Head, hardhat->schema.id);
+    character->schema.dexterity = 2; //TODO make me a better shot
+    character->schema.maxHealth = 200;
+    character->schema.health = 200;
 }
 
 // When a player dies

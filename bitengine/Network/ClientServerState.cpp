@@ -50,7 +50,7 @@ void bit::ClientServerState::load()
     {
         server = newServer();
         server->start();
-        ipAddress = "127.0.0.1";
+        ipAddress = "127.0.0.1"; // TODO: HardCoded
         port = getServerPort();
     }
     else if(isClient)
