@@ -59,6 +59,7 @@ public:
     TileClient* playerTile;
     CharacterClient* playerCharacter;
     std::vector<MoveMarker> moveMarkers;
+    bool renderMoveMarkersOnNextSnapshot;
     bool isPlayerDecisionMode;
     bool isPlayerSpecating;
 
@@ -89,6 +90,8 @@ public:
     void update(sf::Time &gameTime);
 
     TileClient* getTileAtIndices(int x, int y);
+
+    void renderMoveMarkers();
 
     void clearMoveMarkers();
 

@@ -20,7 +20,7 @@
 
 LevelClient::LevelClient()
     : state(NULL), tileCount(0), tileRows(0), tileColumns(0), tileWidth(0), tileHeight(0), levelState(Level::State::Free), tilePool(), characterPool(), doorPool(), chestPool(), hoveredTile(NULL), playerTile(NULL), playerCharacter(NULL), isPlayerDecisionMode(false), isPlayerSpecating(false),
-      selectMode(SelectMode::None), onCharacterSelect(NULL), selectRange(1), selectRadius(1)
+      selectMode(SelectMode::None), onCharacterSelect(NULL), selectRange(1), selectRadius(1), renderMoveMarkersOnNextSnapshot(false)
 {
 }
 
@@ -122,12 +122,37 @@ TileClient* LevelClient::getTileAtIndices(int x, int y)
     return NULL;
 }
 
+void LevelClient::renderMoveMarkers()
+{
+    unsigned int i=0;
+    LevelClient* lc = this;
+    bit::FloodFill::compute(playerTile->schema.x / tileWidth, playerTile->schema.y / tileHeight,
+        [lc, &i] (int x, int y, int depth) {
+            TileClient* tile = lc->getTileAtIndices(x, y);
+            if(tile && tile->metadata_floodfillId != bit::FloodFill::floodfillId)
+            {
+                tile->metadata_floodfillId = bit::FloodFill::floodfillId;
+
+                sf::Color w(255, 255, 255);
+                lc->moveMarkers[i].renderAt(x * lc->tileWidth, y * lc->tileHeight, w);
+                i++;
+            }
+        },
+        [lc] (int x, int y, int depth) -> bool {
+            TileClient* tile = lc->getTileAtIndices(x, y);
+            return !tile || depth > lc->playerCharacter->schema.speed || (tile->hasBody && tile->bodyClient != lc->playerCharacter);
+        }
+    );
+}
+
 void LevelClient::clearMoveMarkers()
 {
     for(unsigned int i=0; i < moveMarkers.size(); i++)
     {
         moveMarkers[i].hide();
     }
+
+    renderMoveMarkersOnNextSnapshot = false; // dont delay render if we were planning to
 }
 
 void LevelClient::cancelSelectMode()
@@ -184,27 +209,9 @@ void LevelClient::handleCombatDecisionStart(bit::ServerPacket &packet)
     // build move markers via floodfill from player tile
     if(playerTile && playerCharacter)
     {
-        unsigned int i=0;
-        LevelClient* lc = this;
-        bit::FloodFill::compute(playerTile->schema.x / tileWidth, playerTile->schema.y / tileHeight,
-            [lc, &i] (int x, int y, int depth) {
-                TileClient* tile = lc->getTileAtIndices(x, y);
-                bit::Output::Debug(x);
-                bit::Output::Debug(y);
-                if(tile && tile->metadata_floodfillId != bit::FloodFill::floodfillId)
-                {
-                    tile->metadata_floodfillId = bit::FloodFill::floodfillId;
-
-                    sf::Color w(255, 255, 255);
-                    lc->moveMarkers[i].renderAt(x * lc->tileWidth, y * lc->tileHeight, w);
-                    i++;
-                }
-            },
-            [lc] (int x, int y, int depth) -> bool {
-                TileClient* tile = lc->getTileAtIndices(x, y);
-                return !tile || depth > lc->playerCharacter->schema.speed || (tile->hasBody && tile->bodyClient != lc->playerCharacter);
-            }
-        );
+        // Delay rendering until we get our next update for the character
+        // This is because the combat decision event can come before position data that caused it (such as them moving into combat)
+        renderMoveMarkersOnNextSnapshot = true;
     }
 
     // unpack the chance of hit
@@ -369,5 +376,12 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
     for(unsigned int i=0; i < runners.size(); i++)
     {
         runners[i]->diffNetwork();
+    }
+
+    // Render move markers if needed
+    if(renderMoveMarkersOnNextSnapshot)
+    {
+        renderMoveMarkersOnNextSnapshot = false;
+        renderMoveMarkers();
     }
 }
