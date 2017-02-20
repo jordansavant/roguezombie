@@ -98,6 +98,10 @@ public:
 
     void enterAreaSelectMode(unsigned int range, unsigned int radius, std::function<void(TileClient* tileCilent)>);
 
+    void runSelectCharacter(CharacterClient* characterClient, TileClient* tileClient);
+
+    void runSelectArea(TileClient* tileClient);
+
     void onEnterCombat();
 
     void onLeaveCombat();

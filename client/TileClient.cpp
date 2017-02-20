@@ -107,77 +107,7 @@ void TileClient::clientUpdate(sf::Time &gameTime)
     int b = schema.bshade * schema.illumination;
     c = sf::Color(r, g, b);
 
-    // Targetting helpers
-    switch(level->selectMode)
-    {
-        case LevelClient::SelectMode::Character: // such as I am throwing a brick at someone
-        {
-            // Game is in character selection target mode
-            if(level->hoveredTile == this && level->playerCharacter)
-            {
-                // If I am being hovered and I am within range of the primary character
-                if(bit::VectorMath::distance(schema.x, schema.y, level->playerCharacter->BodyClient::schema.x, level->playerCharacter->BodyClient::schema.y) <= level->selectRange * schema.width)
-                {
-                    // Highlight myself if I am within range
-                    c = sf::Color(255, 255, 0);
-
-                    // Listen for selection input
-                    if(level->state->isTileSelectActive && this->hasCharacter && this->characterClient)
-                    {
-                        // Run the character select operation
-                        level->onCharacterSelect(characterClient, this);
-                        level->selectMode = LevelClient::SelectMode::None;
-                    }
-                }
-                else
-                {
-                    // Highlight err because I am out of range
-                    c = sf::Color(255, 0, 0);
-                }
-            }
-            break;
-        }
-
-        case LevelClient::SelectMode::Area:
-        {
-            // Its targetting me
-            if(level->hoveredTile == this && level->playerCharacter)
-            {
-                // If I am being hovered and I am within range of the primary character
-                if(bit::VectorMath::distance(schema.x, schema.y, level->playerCharacter->BodyClient::schema.x, level->playerCharacter->BodyClient::schema.y) <= level->selectRange * schema.width)
-                {
-                    // Highlight
-                    c = sf::Color(255, 255, 0);
-
-                    // Listen for selection
-                    if(level->state->isTileSelectActive)
-                    {
-                        level->onAreaSelect(this);
-                        level->selectMode = LevelClient::SelectMode::None;
-                    }
-                }
-                else
-                {
-                    // Highlight err
-                    c = sf::Color(255, 0, 0);
-                }
-            }
-            // Its targetting a neighbor
-            else if(level->hoveredTile && bit::VectorMath::distance(schema.x, schema.y, level->hoveredTile->schema.x, level->hoveredTile->schema.y) <= level->selectRadius * schema.width)
-            {
-                // If the primary is within range
-                if(bit::VectorMath::distance(level->hoveredTile->schema.x, level->hoveredTile->schema.y, level->playerCharacter->BodyClient::schema.x, level->playerCharacter->BodyClient::schema.y) <= level->selectRange * schema.width)
-                {
-                    // Highlight auxilliary select color
-                    c = sf::Color(255, 255, 255);
-                }
-                // No highlight otherwise
-            }
-            break;
-        }
-    }
-
-
+    // Highlighting based on game mode
     switch(level->state->mode)
     {
         // Normal game play mode (not in menus etc, just in exploration or combat)
@@ -235,6 +165,76 @@ void TileClient::clientUpdate(sf::Time &gameTime)
 
             break;
     }
+    
+    // Targeting helpers and highlighting based on Targeting mode
+    switch(level->selectMode)
+    {
+        case LevelClient::SelectMode::Character: // such as I am throwing a brick at someone
+        {
+            // Game is in character selection target mode
+            if(level->hoveredTile == this && level->playerCharacter)
+            {
+                // If I am being hovered and I am within range of the primary character
+                if(bit::VectorMath::distance(schema.x, schema.y, level->playerCharacter->BodyClient::schema.x, level->playerCharacter->BodyClient::schema.y) <= level->selectRange * schema.width)
+                {
+                    // Highlight myself if I am within range
+                    c = getInRangeColor();
+
+                    // Listen for selection input
+                    if(level->state->isTileSelectActive && this->hasCharacter && this->characterClient)
+                    {
+                        // Run the character select operation
+                        level->runSelectCharacter(characterClient, this);
+                    }
+                }
+                else
+                {
+                    // Highlight err because I am out of range
+                    c = getOutOfRangeColor();
+                }
+            }
+            break;
+        }
+
+        case LevelClient::SelectMode::Area:
+        {
+            // Its targetting me
+            if(level->hoveredTile == this && level->playerCharacter)
+            {
+                // If I am being hovered and I am within range of the primary character
+                if(bit::VectorMath::distance(schema.x, schema.y, level->playerCharacter->BodyClient::schema.x, level->playerCharacter->BodyClient::schema.y) <= level->selectRange * schema.width)
+                {
+                    // Highlight
+                    c = getInRangeColor();
+
+                    // Listen for selection
+                    if(level->state->isTileSelectActive)
+                    {
+                        level->runSelectArea(this);
+                    }
+                }
+                else
+                {
+                    // Highlight err out of range
+                    c = getOutOfRangeColor();
+                }
+            }
+            // If I am not hovered but it is targeting a neighbor
+            else if(level->hoveredTile && bit::VectorMath::distance(schema.x, schema.y, level->hoveredTile->schema.x, level->hoveredTile->schema.y) <= level->selectRadius * schema.width)
+            {
+                // If the primary targeted tile is within range
+                float distanceToTargetedTile = bit::VectorMath::distance(schema.x, schema.y, level->hoveredTile->schema.x, level->hoveredTile->schema.y);
+                float rangeOfCenterTargetTile = bit::VectorMath::distance(level->hoveredTile->schema.x, level->hoveredTile->schema.y, level->playerCharacter->BodyClient::schema.x, level->playerCharacter->BodyClient::schema.y);
+                if(rangeOfCenterTargetTile <= level->selectRange * schema.width)
+                {
+                    // Highlight auxilliary select color
+                    c = getInRangeRadiusColor(distanceToTargetedTile, level->selectRadius);
+                }
+                // No highlight otherwise
+            }
+            break;
+        }
+    }
 
     // Apply chosen coloring
     bit::VertexHelper::colorQuad(quad, c);
@@ -267,5 +267,34 @@ sf::Color TileClient::getInteractColor()
     int moveR = bit::Math::clamp(RZConfig::tileInteractColor.r * schema.illumination * 4, 0, 255);
     int moveG = bit::Math::clamp(RZConfig::tileInteractColor.g * schema.illumination * 4, 0, 255);
     int moveB = bit::Math::clamp(RZConfig::tileInteractColor.b * schema.illumination * 4, 0, 255);
+    return sf::Color(moveR, moveG, moveB);
+}
+
+sf::Color TileClient::getOutOfRangeColor()
+{
+    int moveR = bit::Math::clamp(RZConfig::tileTargetOutOfRange.r * schema.illumination * 4, 0, 255);
+    int moveG = bit::Math::clamp(RZConfig::tileTargetOutOfRange.g * schema.illumination * 4, 0, 255);
+    int moveB = bit::Math::clamp(RZConfig::tileTargetOutOfRange.b * schema.illumination * 4, 0, 255);
+    return sf::Color(moveR, moveG, moveB);
+}
+
+sf::Color TileClient::getInRangeColor()
+{
+    int moveR = bit::Math::clamp(RZConfig::tileTargetInRange.r * schema.illumination * 4, 0, 255);
+    int moveG = bit::Math::clamp(RZConfig::tileTargetInRange.g * schema.illumination * 4, 0, 255);
+    int moveB = bit::Math::clamp(RZConfig::tileTargetInRange.b * schema.illumination * 4, 0, 255);
+    return sf::Color(moveR, moveG, moveB);
+}
+
+sf::Color TileClient::getInRangeRadiusColor(float distanceToCenter, unsigned int radius)
+{
+    int r = schema.rshade * schema.illumination;
+    int g = schema.gshade * schema.illumination;
+    int b = schema.bshade * schema.illumination;
+
+    float illumination = 1 - (distanceToCenter / (float)(radius * schema.width));
+    int moveR = bit::Math::clamp(RZConfig::tileTargetInRangeRadius.r * illumination * 2.5, r, 255);
+    int moveG = bit::Math::clamp(RZConfig::tileTargetInRangeRadius.g * illumination * 2.5, g, 255);
+    int moveB = bit::Math::clamp(RZConfig::tileTargetInRangeRadius.b * illumination * 2.5, b, 255);
     return sf::Color(moveR, moveG, moveB);
 }

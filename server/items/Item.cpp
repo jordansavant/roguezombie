@@ -426,8 +426,8 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.CategoryBase = ItemCategory::Base::BaseNone;
             i->schema.CategoryWeapon = ItemCategory::Weapon::WeaponNone;
             i->schema.weight = 1;
-            i->schema.effectiveRangeInTiles = 5;
-            i->schema.effectiveRadiusInTiles = 3;
+            i->schema.effectiveRangeInTiles = 7;
+            i->schema.effectiveRadiusInTiles = 7;
             i->schema.minimumDamage = 20;
             i->schema.maximumDamage = 30;
             i->schema.commandType = CommandType::CommandTypeArea;

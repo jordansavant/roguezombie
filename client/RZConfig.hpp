@@ -20,6 +20,9 @@ public:
     static sf::Color tileInteractColor;
     static sf::Color tileTargetedColor;
     static sf::Color tileMoveColor;
+    static sf::Color tileTargetOutOfRange;
+    static sf::Color tileTargetInRange;
+    static sf::Color tileTargetInRangeRadius;
 
     static float getDrawDepthForGameplay(float yPosition);
 };

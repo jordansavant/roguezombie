@@ -63,6 +63,12 @@ private:
 
     sf::Color getInteractColor();
 
+    sf::Color getOutOfRangeColor();
+
+    sf::Color getInRangeColor();
+
+    sf::Color getInRangeRadiusColor(float distanceToCenter, unsigned int radius);
+
 };
 
 #endif

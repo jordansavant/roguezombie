@@ -154,6 +154,18 @@ void LevelClient::enterAreaSelectMode(unsigned int range, unsigned int radius, s
     selectRadius = radius;
 }
 
+void LevelClient::runSelectCharacter(CharacterClient* characterClient, TileClient* tileClient)
+{
+    onCharacterSelect(characterClient, tileClient);
+    cancelSelectMode();
+}
+
+void LevelClient::runSelectArea(TileClient* tileClient)
+{
+    onAreaSelect(tileClient);
+    cancelSelectMode();
+}
+
 void LevelClient::onEnterCombat()
 {
     state->onEnterCombat();
