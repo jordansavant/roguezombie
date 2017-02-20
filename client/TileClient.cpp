@@ -80,18 +80,11 @@ void TileClient::clientUpdate(sf::Time &gameTime)
     centerRenderX = renderX + width / 2;
     centerRenderY = renderY + height / 2;
 
-    // Test Mouse translation
+    // Mouse translation
     float mx = std::floor((float)level->mousePositionInWorld.x / (float)schema.width);
     float my = std::floor((float)level->mousePositionInWorld.y / (float)schema.height);
     float tx = std::floor((float)schema.x / (float)schema.width);
     float ty = std::floor((float)schema.y / (float)schema.height);
-
-    // Default coloring to the lighting engine
-    sf::Color c;
-    int r = schema.rshade * schema.illumination;
-    int g = schema.gshade * schema.illumination;
-    int b = schema.bshade * schema.illumination;
-    c = sf::Color(r, g, b);
 
     // If I am being hovered
     if(tx == mx && ty == my)
@@ -105,6 +98,12 @@ void TileClient::clientUpdate(sf::Time &gameTime)
         level->hoveredTile = NULL;
     }
 
+    // Default coloring to the lighting engine
+    sf::Color c;
+    int r = schema.rshade * schema.illumination;
+    int g = schema.gshade * schema.illumination;
+    int b = schema.bshade * schema.illumination;
+    c = sf::Color(r, g, b);
 
     // Targetting helpers
     switch(level->selectMode)
@@ -177,40 +176,69 @@ void TileClient::clientUpdate(sf::Time &gameTime)
     }
 
 
-    if(level->state->mode == StateGamePlay::Mode::Free)
+    switch(level->state->mode)
     {
-        // If we are playing in free mode
-        if(level->levelState == Level::State::Free)
-        {
-            // If I am being hovered over, highlight me depending on if I am a body interactor or just an empty tile
-            if(level->hoveredTile == this)
+        // Normal game play mode (not in menus etc, just in exploration or combat)
+        case StateGamePlay::Mode::Free:
+
+            switch(level->levelState)
             {
-                int s = bit::Math::clamp(255 * schema.illumination * 4, 0, 255);
-                sf::Color move(s, s, s);
-                sf::Color interact(0, 255, 0);
-                c = schema.bodyId > 0 ? interact : move;
+                // Not in combat, just exploring
+                case Level::State::Free:
+
+                    // If I am being hovered over, highlight me depending on if I am a body interactor or just an empty tile
+                    if(level->hoveredTile == this)
+                    {
+                        int s = bit::Math::clamp(255 * schema.illumination * 4, 0, 255);
+                        sf::Color move(s, s, s);
+                        sf::Color interact(0, 255, 0);
+
+                        // If I have something on me but its not a player character
+                        if(schema.bodyId > 0)
+                        {
+                            if(level->playerCharacter != NULL && hasCharacter && characterClient == level->playerCharacter)
+                                c = move;
+                            else
+                                c = interact;
+                        }
+                        else
+                        {
+                            c = move;
+                        }
+                    }
+
+                    break;
+
+                // In combat
+                case Level::State::Combat:
+
+                    // If its the players turn
+                    if(level->isPlayerDecisionMode)
+                    {
+                        // If the player has an active target, see if its me and highlight me
+                        if(level->state->target.tileId == schema.id)
+                        {
+                            c = sf::Color(0, 255, 0);
+                        }
+                        // If am being hovered highlight white if not a body on top of it
+                        else if(level->hoveredTile == this && schema.bodyId == 0)
+                        {
+                            // fade
+                            int s = bit::Math::clamp(175 * schema.illumination * 4, 0, 175);
+                            c = sf::Color(s, s, s);
+                        }
+                        // Color the tile to indicate I can target what is on here
+                        else if(level->hoveredTile == this && hasTargetableCharacter())
+                        {
+                            int s = bit::Math::clamp(175 * schema.illumination * 4, 0, 175);
+                            c = sf::Color(0, s, 0);
+                        }
+                    }
+
+                    break;
             }
-        }
-        // If we are playing in combat mode
-        else if(level->levelState == Level::State::Combat && level->isPlayerDecisionMode)
-        {
-            // If I am the currently targetted tile, highlight me
-            if(level->state->target.tileId == schema.id)
-            {
-                c = sf::Color(0, 255, 0);
-            }
-            // If hovered highlight white if not a body (if moevable)
-            else if(level->hoveredTile == this && schema.bodyId == 0)
-            {
-                int s = bit::Math::clamp(175 * schema.illumination * 4, 0, 175);
-                c = sf::Color(s, s, s);
-            }
-            else if(level->hoveredTile == this && hasTargetableCharacter())
-            {
-                int s = bit::Math::clamp(175 * schema.illumination * 4, 0, 175);
-                c = sf::Color(0, s, 0);
-            }
-        }
+
+            break;
     }
 
     // Apply chosen coloring
