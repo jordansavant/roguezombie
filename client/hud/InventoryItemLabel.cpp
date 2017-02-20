@@ -29,7 +29,13 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, Item::Schema& itemSchema, float
         if(label->currentActionSlot && label->canIssueItemCommand())
         {
             // Notify the game state of the wish to operate an item based command passing the item
-            hud->state->requestItemCommand(label->itemSchema);
+            // On complete of command being issued I would remove myself
+            InventoryItemLabel* labelx = label;
+            hud->state->requestItemCommand(label->itemSchema, [labelx] () {
+                labelx->currentActionSlot->equippedItemLabel = NULL;
+                labelx->currentActionSlot = NULL;
+                labelx->removeFromParent = true;
+            });
         }
 
     };
@@ -97,7 +103,7 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, Item::Schema& itemSchema, float
         // If I am coming from an action bar slot, check if I have dragged outside of a certain range and trigger the removal
         if(label->currentActionSlot)
         {
-            if(!hud->actionBar->contains(label->left, label->top))
+            if(!hud->actionBar->intersects(*label))
             {
                 label->currentActionSlot->equippedItemLabel = NULL;
                 label->currentActionSlot = NULL;

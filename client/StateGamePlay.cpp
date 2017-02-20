@@ -520,7 +520,7 @@ void StateGamePlay::modeOnUpdateCommonListener(sf::Time &gameTime)
     }
 }
 
-void StateGamePlay::requestItemCommand(Item::Schema &itemSchema)
+void StateGamePlay::requestItemCommand(Item::Schema &itemSchema, std::function<void()> onComplete)
 {
     // Depending on the item command type prepare targetting
     switch(itemSchema.commandType)
@@ -535,6 +535,12 @@ void StateGamePlay::requestItemCommand(Item::Schema &itemSchema)
             };
             issueCommand(cmd);
 
+            // Notify callback that the command has been issued
+            if(onComplete)
+            {
+                onComplete();
+            }
+
             break;
         }
 
@@ -542,7 +548,7 @@ void StateGamePlay::requestItemCommand(Item::Schema &itemSchema)
         {
             StateGamePlay* state = this;
             // Enter character targetting mode and when a character is clicked run this
-            levelClient->enterCharacterSelectMode(itemSchema.effectiveRangeInTiles, [state, itemSchema] (CharacterClient* character, TileClient* tileClient) {
+            levelClient->enterCharacterSelectMode(itemSchema.effectiveRangeInTiles, [state, itemSchema, onComplete] (CharacterClient* character, TileClient* tileClient) {
                 Item::Schema itemSchemaX = itemSchema;
 
                 Command cmd;
@@ -552,6 +558,12 @@ void StateGamePlay::requestItemCommand(Item::Schema &itemSchema)
                     packet << sf::Uint32(tileClient->schema.id);
                 };
                 state->issueCommand(cmd);
+
+                // Notify callback that the command has been issued
+                if(onComplete)
+                {
+                    onComplete();
+                }
             });
             break;
         }
@@ -560,7 +572,7 @@ void StateGamePlay::requestItemCommand(Item::Schema &itemSchema)
         {
             StateGamePlay* state = this;
             // Enter area targetting mode and when a tile is clicked run this
-            levelClient->enterAreaSelectMode(itemSchema.effectiveRangeInTiles, itemSchema.effectiveRadiusInTiles, [state, itemSchema] (TileClient* tileClient) {
+            levelClient->enterAreaSelectMode(itemSchema.effectiveRangeInTiles, itemSchema.effectiveRadiusInTiles, [state, itemSchema, onComplete] (TileClient* tileClient) {
                 Item::Schema itemSchemaX = itemSchema;
 
                 Command cmd;
@@ -570,6 +582,12 @@ void StateGamePlay::requestItemCommand(Item::Schema &itemSchema)
                     packet << sf::Uint32(tileClient->schema.id);
                 };
                 state->issueCommand(cmd);
+
+                // Notify callback that the command has been issued
+                if(onComplete)
+                {
+                    onComplete();
+                }
             });
             break;
         }

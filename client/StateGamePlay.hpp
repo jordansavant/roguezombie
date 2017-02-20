@@ -114,7 +114,7 @@ public:
     void onEnterCombat();
     void onLeaveCombat();
 
-    void requestItemCommand(Item::Schema &itemSchema);
+    void requestItemCommand(Item::Schema &itemSchema, std::function<void()> onComplete = NULL);
 
     void issueCommand(Command cmd);
 
