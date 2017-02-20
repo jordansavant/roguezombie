@@ -42,11 +42,11 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, Item::Schema& itemSchema, float
 
     // On Drag, On Drop
     makeDraggable(hud->state->rogueZombieGame->inputManager,
+        // what we do when we start dragging
         [hud](bit::Draggable *d, Element* e){
             hud->hideTooltip();
-
-            // center label at mouse position
         },
+        // what we do when we stop dragging, check to see if we can drop on slots etc
         [hud, label] (bit::Draggable* d, Element* e) -> bool
         {
             // Check the equipment slots to see if it is being hovered when the drop occurs
@@ -118,6 +118,14 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, Item::Schema& itemSchema, float
                 }
             }
 
+            return false;
+        },
+        // disallow dragging unless we are in inventory mode
+        [hud, label](bit::Draggable *d, Element* e) -> bool {
+            if(hud->state->mode == StateGamePlay::Mode::Inventory)
+            {
+                return true;
+            }
             return false;
         },
         true // center on mouse when dragging item

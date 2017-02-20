@@ -1,7 +1,7 @@
 #include "Draggable.hpp"
 
 bit::Draggable::Draggable(bit::InputManager* inputManager)
-    : inputManager(inputManager), isDragging(false), centerOnMouse(false), dragOriginX(0), dragOriginY(0), elementOriginX(0), elementOriginY(0), centerOffsetX(0), centerOffsetY(0), onDragStart(NULL), onDragStop(NULL)
+    : inputManager(inputManager), isDragging(false), centerOnMouse(false), dragOriginX(0), dragOriginY(0), elementOriginX(0), elementOriginY(0), centerOffsetX(0), centerOffsetY(0), onDragStart(NULL), onDragStop(NULL), checkDraggable(NULL)
 {
 }
 
@@ -12,30 +12,34 @@ void bit::Draggable::update(bit::Element* element, sf::RenderWindow &window, sf:
     // If we are not dragging, recognize the drag
     if(!isDragging)
     {
-        // If the mouse is hovering
-        if(element->contains(mousePositionInScreen.x, mousePositionInScreen.y))
+        // See if our element is currently allowing us to drag
+        if(checkDraggable == NULL || checkDraggable(this, element))
         {
-            // If the mouse is pressed
-            if(inputManager->isButtonPressed(sf::Mouse::Left))
+            // If the mouse is hovering
+            if(element->contains(mousePositionInScreen.x, mousePositionInScreen.y))
             {
-                isDragging = true;
-
-                dragOriginX = mousePositionInScreen.x;
-                dragOriginY = mousePositionInScreen.y;
-
-                if(centerOnMouse)
+                // If the mouse is pressed
+                if(inputManager->isButtonPressed(sf::Mouse::Left))
                 {
-                    // If we are supposed to center the label on the mouse, record offset for that
-                    centerOffsetX = mousePositionInScreen.x - (element->left + element->width / 2);
-                    centerOffsetY = mousePositionInScreen.y - (element->top + element->height / 2);
-                }
+                    isDragging = true;
 
-                elementOriginX = element->relativePosition.x;
-                elementOriginY = element->relativePosition.y;
+                    dragOriginX = mousePositionInScreen.x;
+                    dragOriginY = mousePositionInScreen.y;
 
-                if(onDragStart)
-                {
-                    onDragStart(this, element);
+                    if(centerOnMouse)
+                    {
+                        // If we are supposed to center the label on the mouse, record offset for that
+                        centerOffsetX = mousePositionInScreen.x - (element->left + element->width / 2);
+                        centerOffsetY = mousePositionInScreen.y - (element->top + element->height / 2);
+                    }
+
+                    elementOriginX = element->relativePosition.x;
+                    elementOriginY = element->relativePosition.y;
+
+                    if(onDragStart)
+                    {
+                        onDragStart(this, element);
+                    }
                 }
             }
         }

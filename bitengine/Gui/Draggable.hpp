@@ -23,6 +23,7 @@ namespace bit
         float centerOffsetX, centerOffsetY;
         std::function<void(Draggable*, bit::Element*)> onDragStart;
         std::function<bool(Draggable*, bit::Element*)> onDragStop;
+        std::function<bool(Draggable*, bit::Element*)> checkDraggable;
 
         void update(bit::Element* element, sf::RenderWindow &window, sf::Time &gameTime);
     };

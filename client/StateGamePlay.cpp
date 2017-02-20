@@ -822,7 +822,6 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
 
     ServerEvent eventType;
     bit::NetworkHelper::unpackEnum<sf::Uint32, ServerEvent>(packet, eventType);
-    bit::Output::Debug((unsigned int)eventType);
 
     if(levelClient->playerCharacter)
     {

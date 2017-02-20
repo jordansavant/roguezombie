@@ -267,7 +267,7 @@ sf::Vector2f bit::Element::calculateAnchor(sf::RenderWindow &window)
     }
 }
 
-void bit::Element::makeDraggable(bit::InputManager* inputManager, std::function<void(Draggable*, bit::Element*)> onDragStart, std::function<bool(Draggable*, bit::Element*)> onDragStop, bool centerOnMouse)
+void bit::Element::makeDraggable(bit::InputManager* inputManager, std::function<void(Draggable*, bit::Element*)> onDragStart, std::function<bool(Draggable*, bit::Element*)> onDragStop, std::function<bool(Draggable*, bit::Element*)> checkDrag, bool centerOnMouse)
 {
     if(draggable == NULL)
     {
@@ -275,6 +275,7 @@ void bit::Element::makeDraggable(bit::InputManager* inputManager, std::function<
         draggable->centerOnMouse = centerOnMouse;
         draggable->onDragStart = onDragStart;
         draggable->onDragStop = onDragStop;
+        draggable->checkDraggable = checkDrag;
     }
 }
 
