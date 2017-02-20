@@ -155,6 +155,12 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
                     combat_PerformAction_SwapWeapon(gameTime);
 
                     break;
+
+                case CombatAction::UsedItem:
+
+                    combat_PerformAction_UsedItem(gameTime);
+
+                    break;
             }
 
             break;
@@ -299,6 +305,22 @@ void Character::combat_PerformAction_SwapWeapon(sf::Time &gameTime)
     swapWeapons();
     combat_SwitchStateDelay();
 }
+
+void Character::combat_DecideAction_UsedItem()
+{
+    // used an item external to the character
+    schema.currentActionPoints--;
+    combatAction = CombatAction::UsedItem;
+    combat_SwitchStatePerform();
+}
+
+void Character::combat_PerformAction_UsedItem(sf::Time &gameTime)
+{
+    // used an item external to the character
+    combat_SwitchStateDelay();
+}
+
+
 
 void Character::combat_SwitchStateWaiting()
 {

@@ -4,6 +4,7 @@
 #include "HudElement.hpp"
 #include "../../server/Command.hpp"
 #include "../StateGamePlay.hpp"
+#include "../LevelClient.hpp"
 #include "../RogueZombieGame.hpp"
 
 ActionBar::ActionBar(Hud* hud)
@@ -20,22 +21,25 @@ ActionBar::ActionBar(Hud* hud)
     attack = new HudElement(originX, originY, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     attack->load(hud, std::string("optionbar_crosshair"));
     attack->onActivate = [hud] (Element* e) {
-        // Attack Command
-        if(hud->state->target.active())
+        if(hud->state->levelClient->isPlayerDecisionMode)
         {
-            Hud* hudx = hud;
-            Command cmd;
-            cmd.type = Command::Type::CombatCommand;
-            cmd.pack = [hudx] (sf::Packet &packet) {
-                packet << sf::Uint32(Command::Target::Character);
-                packet << sf::Uint32(hudx->state->target.tileId);
-                packet << sf::Uint32(Command::TargetCharacterCommand::Attack);
-            };
-            hud->state->issueCommand(cmd);
-        }
-        else
-        {
-            hud->displayMessage(std::string("No target to attack"));
+            // Attack Command
+            if(hud->state->target.active())
+            {
+                Hud* hudx = hud;
+                Command cmd;
+                cmd.type = Command::Type::CombatCommand;
+                cmd.pack = [hudx] (sf::Packet &packet) {
+                    packet << sf::Uint32(Command::Target::Character);
+                    packet << sf::Uint32(hudx->state->target.tileId);
+                    packet << sf::Uint32(Command::TargetCharacterCommand::Attack);
+                };
+                hud->state->issueCommand(cmd);
+            }
+            else
+            {
+                hud->displayMessage(std::string("No target to attack"));
+            }
         }
     };
     attack->makeHoverable(hud->state->rogueZombieGame->inputManager, [hud](bit::Hoverable* h, bit::Element* me) {
@@ -49,15 +53,18 @@ ActionBar::ActionBar(Hud* hud)
     wait = new HudElement(originX, originY, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     wait->load(hud, std::string("optionbar_hourglass"));
     wait->onActivate = [hud] (Element* e) {
-        // Skip Command
-        Command cmd;
-        cmd.type = Command::Type::CombatCommand;
-        cmd.pack = [] (sf::Packet &packet) {
-            packet << sf::Uint32(Command::Target::NoTarget);
-            packet << sf::Uint32(Command::NonTargetCommand::Skip);
-        };
-        hud->displayMessage(std::string("Player skips action"));
-        hud->state->issueCommand(cmd);
+        if(hud->state->levelClient->isPlayerDecisionMode)
+        {
+            // Skip Command
+            Command cmd;
+            cmd.type = Command::Type::CombatCommand;
+            cmd.pack = [] (sf::Packet &packet) {
+                packet << sf::Uint32(Command::Target::NoTarget);
+                packet << sf::Uint32(Command::NonTargetCommand::Skip);
+            };
+            hud->displayMessage(std::string("Player skips action"));
+            hud->state->issueCommand(cmd);
+        }
     };
     wait->makeHoverable(hud->state->rogueZombieGame->inputManager, [hud](bit::Hoverable* h, bit::Element* me) {
         hud->displayTooltipAt(std::string("Skip Action"), me->left + me->width / 2, me->top - 10, 1, 0);
@@ -70,16 +77,19 @@ ActionBar::ActionBar(Hud* hud)
     swap = new HudElement(originX, originY, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     swap->load(hud, std::string("optionbar_swap"));
     swap->onActivate = [hud] (Element* e) {
-        // Attack Command
-        Hud* hudx = hud;
-        Command cmd;
-        cmd.type = Command::Type::CombatCommand;
-        cmd.pack = [hudx] (sf::Packet &packet) {
-            packet << sf::Uint32(Command::Target::NoTarget);
-            packet << sf::Uint32(Command::NonTargetCommand::SwapWeapon);
-        };
-        hud->displayMessage(std::string("Player swaps weapon"));
-        hud->state->issueCommand(cmd);
+        if(hud->state->levelClient->isPlayerDecisionMode)
+        {
+            // Swap Command
+            Hud* hudx = hud;
+            Command cmd;
+            cmd.type = Command::Type::CombatCommand;
+            cmd.pack = [hudx] (sf::Packet &packet) {
+                packet << sf::Uint32(Command::Target::NoTarget);
+                packet << sf::Uint32(Command::NonTargetCommand::SwapWeapon);
+            };
+            hud->displayMessage(std::string("Player swaps weapon"));
+            hud->state->issueCommand(cmd);
+        }
     };
     swap->makeHoverable(hud->state->rogueZombieGame->inputManager, [hud](bit::Hoverable* h, bit::Element* me) {
         hud->displayTooltipAt(std::string("Swap Weapons"), me->left + me->width / 2, me->top - 10, 1, 0);

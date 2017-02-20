@@ -142,7 +142,8 @@ bool InventoryItemLabel::canIssueItemCommand()
     // If I am in an action slot then I may be able to issue
     if(this->currentActionSlot)
     {
-        if(itemSchema.canCommandInCombat && hud->state->levelClient->levelState == Level::State::Combat)
+        // If I am in combat and I am making a decision
+        if(itemSchema.canCommandInCombat && hud->state->levelClient->isPlayerDecisionMode)
         {
             return true;
         }

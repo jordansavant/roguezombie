@@ -250,17 +250,32 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
                     Item::Schema itemSchema;
                     packet >> itemSchema;
 
+                    // Validate that we can issue the command
                     switch(itemSchema.commandType)
                     {
                         case Item::CommandType::CommandTypeSelf:
                         {
-                            // Allow the item to apply its operation to the character
-                            if(character)
+                            // Apply the item to myself if I am allowed given the current game mode
+                            switch(level->state)
                             {
-                                Item::useItemOnSelf(character, itemSchema);
+                                case Level::State::Combat:
+                                    if(itemSchema.canCommandInCombat && this->validateCombat())
+                                    {
+                                        // Allow the item to apply its operation to the character
+                                        Item::useItemOnSelf(character, itemSchema);
+                                        character->combat_DecideAction_UsedItem();
+                                    }
+                                    break;
+                                case Level::State::Free:
+                                    if(itemSchema.canCommandInFree && this->validateFree())
+                                    {
+                                        // Allow the item to apply its operation to the character
+                                        Item::useItemOnSelf(character, itemSchema);
+                                    }
+                                    break;
                             }
                             break;
-                        }
+                        } // eo case CommandTypeSelf
 
                         case Item::CommandType::CommandTypeCharacter:
                         {
@@ -268,18 +283,34 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
                             unsigned int tileId;
                             packet >> tileId;
 
-                            if(character)
+                            // If I have a valid target character to use the item on
+                            Tile* t = level->tiles[tileId];
+                            if(t && t->body && t->body->schema.type == Body::Type::Character)
                             {
-                                // Find the tile
-                                Tile* t = level->tiles[tileId];
-                                if(t && t->body && t->body->schema.type == Body::Type::Character)
+                                Character* other = static_cast<Character*>(t->body);
+
+                                // Apply the item to other character if I am allowed given the current game mode
+                                switch(level->state)
                                 {
-                                    Character* other = static_cast<Character*>(t->body);
-                                    Item::useItemOnCharacter(character, other, itemSchema);
+                                    case Level::State::Combat:
+                                        if(itemSchema.canCommandInCombat && this->validateCombat())
+                                        {
+                                            // Allow the item to apply its operation to the character
+                                            Item::useItemOnCharacter(character, other, itemSchema);
+                                            character->combat_DecideAction_UsedItem();
+                                        }
+                                        break;
+                                    case Level::State::Free:
+                                        if(itemSchema.canCommandInFree && this->validateFree())
+                                        {
+                                            // Allow the item to apply its operation to the character
+                                            Item::useItemOnCharacter(character, other, itemSchema);
+                                        }
+                                        break;
                                 }
+                                break;
                             }
-                            break;
-                        }
+                        } // eo case CommandTypeCharacter
 
                         case Item::CommandType::CommandTypeArea:
                         {
@@ -287,21 +318,38 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
                             unsigned int tileId;
                             packet >> tileId;
 
-                            if(character)
+                            // If I have a valid tile
+                            Tile* t = level->tiles[tileId];
+                            if(t)
                             {
-                                // Find the tile
-                                Tile* t = level->tiles[tileId];
-                                if(t)
+                                // Apply the item to the tile if I am allowed given the current game mode
+                                switch(level->state)
                                 {
-                                    Item::useItemOnTileArea(character, t, itemSchema);
+                                    case Level::State::Combat:
+                                        if(itemSchema.canCommandInCombat && this->validateCombat())
+                                        {
+                                            // Allow the item to apply its operation
+                                            Item::useItemOnTileArea(character, t, itemSchema);
+                                            character->combat_DecideAction_UsedItem();
+                                        }
+                                        break;
+                                    case Level::State::Free:
+                                        if(itemSchema.canCommandInFree && this->validateFree())
+                                        {
+                                            // Allow the item to apply its operation
+                                            Item::useItemOnTileArea(character, t, itemSchema);
+                                        }
+                                        break;
                                 }
+                                break;
                             }
                             break;
-                        }
-                    }
+                        } // eo case CommandTypeArea
+
+                    } // eo switch Item::CommandType
 
                     break;
-                }
+                } // eo case CommandType::ItemCommand
 
                 // Free Mode Commands
                 case Command::Type::FreeCommand:
@@ -341,7 +389,7 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
                             break;
                         }
                     }
-                }
+                } // eo case Command::Type::FreeCommand
 
                 // Combat Commands
                 case Command::Type::CombatCommand:
@@ -444,7 +492,7 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
                     }
 
                     break;
-                }
+                } // eo case Command::Type::CombatCommand
             }
             break;
         }

@@ -9,6 +9,7 @@
 class Body;
 class Character;
 class Tile;
+class Level;
 
 class Item
 {
