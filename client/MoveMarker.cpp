@@ -14,7 +14,7 @@ void MoveMarker::load(LevelClient* _level)
     level = _level;
 
     // Game quad
-    map = &level->vertexMap_charactersConstIlluminated;
+    map = &level->vertexMap_charactersToggleIlluminated;
     sprite = level->state->rogueZombieGame->spriteLoader->getSprite("MoveMarker");
     quadIndex = map->requestVertexIndex();
     bit::VertexHelper::resetQuad(&map->vertexArray[quadIndex]);
