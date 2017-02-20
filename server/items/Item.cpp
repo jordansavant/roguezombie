@@ -579,5 +579,8 @@ std::string Item::getIconName(Type type)
 
         case Type::Brick:
             return "Brick";
+
+        case Type::Grenade:
+            return "Grenade";
     }
 }
