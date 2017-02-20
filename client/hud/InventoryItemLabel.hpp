@@ -30,6 +30,8 @@ public:
     InventoryLootSlot* currentLootSlot;
     ActionBarSlot* currentActionSlot;
 
+    bool canIssueItemCommand();
+
     void dropResult(bool result);
 
     void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);

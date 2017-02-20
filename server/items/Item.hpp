@@ -45,7 +45,7 @@ public:
         Schema()
             : id(0), position(0), CategoryBase(0), CategoryArmor(0), CategoryWeapon(0), CategoryJewelry(0), CategoryContainer(0),
               type(Type::None), weight(0), minimumDamage(0), maximumDamage(0), effectiveRangeInTiles(1), effectiveRadiusInTiles(1), armorEffectiveness(0),
-              canContainItems(false), itemLimit(0), commandType(CommandType::CommandTypeNone)
+              canContainItems(false), itemLimit(0), commandType(CommandType::CommandTypeNone), canCommandInCombat(false), canCommandInFree(false)
         {
         }
 
@@ -65,6 +65,8 @@ public:
         bool canContainItems;
         unsigned int itemLimit;
         CommandType commandType;
+        bool canCommandInCombat;
+        bool canCommandInFree;
 
         friend sf::Packet& operator <<(sf::Packet& packet, const Schema &schema)
         {
@@ -83,6 +85,8 @@ public:
             packet << sf::Uint32(schema.maximumDamage);
             packet << schema.armorEffectiveness;
             packet << sf::Uint32(schema.commandType);
+            packet << schema.canCommandInCombat;
+            packet << schema.canCommandInFree;
             return packet;
         }
 
@@ -103,6 +107,8 @@ public:
             packet >> schema.maximumDamage;
             packet >> schema.armorEffectiveness;
             bit::NetworkHelper::unpackEnum<sf::Uint32, Item::CommandType>(packet, schema.commandType);
+            packet >> schema.canCommandInCombat;
+            packet >> schema.canCommandInFree;
             return packet;
         }
     };

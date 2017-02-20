@@ -9,6 +9,7 @@
 #include "ActionBar.hpp"
 #include "Hud.hpp"
 #include "../StateGamePlay.hpp"
+#include "../LevelClient.hpp"
 #include "../RogueZombieGame.hpp"
 #include "../../server/ClientRequest.hpp"
 
@@ -24,8 +25,8 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, Item::Schema& itemSchema, float
     InventoryItemLabel* label = this;
     onActivate = [hud, label] (bit::Element* e) {
 
-        // If I am in the action bar
-        if(label->currentActionSlot)
+        // If I am in the action bar and I am able to issue a command in the current game mode
+        if(label->currentActionSlot && label->canIssueItemCommand())
         {
             // Notify the game state of the wish to operate an item based command passing the item
             hud->state->requestItemCommand(label->itemSchema);
@@ -136,11 +137,37 @@ InventoryItemLabel::~InventoryItemLabel()
     }
 }
 
+bool InventoryItemLabel::canIssueItemCommand()
+{
+    // If I am in an action slot then I may be able to issue
+    if(this->currentActionSlot)
+    {
+        if(itemSchema.canCommandInCombat && hud->state->levelClient->levelState == Level::State::Combat)
+        {
+            return true;
+        }
+
+        if(itemSchema.canCommandInFree && hud->state->levelClient->levelState == Level::State::Free)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void InventoryItemLabel::updateTargets(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::Element::updateTargets(window, gameTime);
 
     float o = opacity;
+
+    // fade out action bar items that cannot issue commands
+    if(this->currentActionSlot && !this->canIssueItemCommand())
+    {
+        o /= 2; // 50% less visible
+    }
+    
     icon->color.a = (char)(o * 255);
 }
 

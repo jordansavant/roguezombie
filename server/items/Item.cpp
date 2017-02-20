@@ -390,6 +390,8 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.minimumDamage = 10;
             i->schema.maximumDamage = 20;
             i->schema.commandType = CommandType::CommandTypeSelf;
+            i->schema.canCommandInCombat = true;
+            i->schema.canCommandInFree = true;
             i->applyToCharacter = [i] (Character* self) -> bool
             {
                 self->heal(bit::Math::random(i->schema.minimumDamage, i->schema.maximumDamage));
@@ -408,6 +410,8 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.minimumDamage = 5;
             i->schema.maximumDamage = 10;
             i->schema.commandType = CommandType::CommandTypeCharacter;
+            i->schema.canCommandInCombat = true;
+            i->schema.canCommandInFree = false;
             i->applyToCharacter = [i] (Character* other) -> bool
             {
                 other->harm(bit::Math::random(i->schema.minimumDamage, i->schema.maximumDamage));
@@ -427,6 +431,8 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.minimumDamage = 20;
             i->schema.maximumDamage = 30;
             i->schema.commandType = CommandType::CommandTypeArea;
+            i->schema.canCommandInCombat = true;
+            i->schema.canCommandInFree = false;
             i->applyToArea = [i] (Tile* tile) -> bool
             {
                 Item* ix = i;
