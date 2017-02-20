@@ -17,8 +17,10 @@ namespace bit
 
         bit::InputManager* inputManager;
         bool isDragging;
+        bool centerOnMouse;
         float dragOriginX, dragOriginY;
         float elementOriginX, elementOriginY;
+        float centerOffsetX, centerOffsetY;
         std::function<void(Draggable*, bit::Element*)> onDragStart;
         std::function<bool(Draggable*, bit::Element*)> onDragStop;
 

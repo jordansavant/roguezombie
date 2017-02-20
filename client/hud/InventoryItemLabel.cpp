@@ -41,79 +41,87 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, Item::Schema& itemSchema, float
     };
 
     // On Drag, On Drop
-    makeDraggable(hud->state->rogueZombieGame->inputManager, [hud](bit::Draggable *d, Element* e){ hud->hideTooltip(); }, [hud, label] (bit::Draggable* d, Element* e) -> bool
-    {
-        // Check the equipment slots to see if it is being hovered when the drop occurs
-        for(unsigned int i=0; i < hud->inventory->equipmentPanel->childElements.size(); i++)
+    makeDraggable(hud->state->rogueZombieGame->inputManager,
+        [hud](bit::Draggable *d, Element* e){
+            hud->hideTooltip();
+
+            // center label at mouse position
+        },
+        [hud, label] (bit::Draggable* d, Element* e) -> bool
         {
-            // If the slot is not already equipped with the item and its of an acceptable type
-            InventoryEquipmentSlot* slot = static_cast<InventoryEquipmentSlot*>(hud->inventory->equipmentPanel->childElements[i]);
-            if(slot->isInfocus && slot->equippedItemLabel != e && slot->acceptsLabel(label))
+            // Check the equipment slots to see if it is being hovered when the drop occurs
+            for(unsigned int i=0; i < hud->inventory->equipmentPanel->childElements.size(); i++)
             {
-                // Drop the item into the slot
-                bool result = label->dropOntoEquipmentSlot(slot);
-                label->dropResult(result);
-                return result;
+                // If the slot is not already equipped with the item and its of an acceptable type
+                InventoryEquipmentSlot* slot = static_cast<InventoryEquipmentSlot*>(hud->inventory->equipmentPanel->childElements[i]);
+                if(slot->isInfocus && slot->equippedItemLabel != e && slot->acceptsLabel(label))
+                {
+                    // Drop the item into the slot
+                    bool result = label->dropOntoEquipmentSlot(slot);
+                    label->dropResult(result);
+                    return result;
+                }
             }
-        }
 
 
-        // Check the inventory slots to see if it is being hovered when the drop occurs
-        for(unsigned int i=0; i < hud->inventory->positionSlotBoxes.size(); i++)
-        {
-            // If the slot is not already equipped with the item and its of an acceptable type
-            InventoryPositionSlot* slot = static_cast<InventoryPositionSlot*>(hud->inventory->positionSlotBoxes[i]);
-            if(slot->isInfocus && slot->equippedItemLabel != e && slot->acceptsLabel(label))
+            // Check the inventory slots to see if it is being hovered when the drop occurs
+            for(unsigned int i=0; i < hud->inventory->positionSlotBoxes.size(); i++)
             {
-                bool result = label->dropOntoInventorySlot(slot);
-                label->dropResult(result);
-                return result;
+                // If the slot is not already equipped with the item and its of an acceptable type
+                InventoryPositionSlot* slot = static_cast<InventoryPositionSlot*>(hud->inventory->positionSlotBoxes[i]);
+                if(slot->isInfocus && slot->equippedItemLabel != e && slot->acceptsLabel(label))
+                {
+                    bool result = label->dropOntoInventorySlot(slot);
+                    label->dropResult(result);
+                    return result;
+                }
             }
-        }
         
 
-        // Check the loot slots to see if it is being hovered when the drop occurs
-        for(unsigned int i=0; i < hud->lootMenu->lootSlotBoxes.size(); i++)
-        {
-            // If the slot is not already equipped with the item and its of an acceptable type
-            InventoryLootSlot* slot = static_cast<InventoryLootSlot*>(hud->lootMenu->lootSlotBoxes[i]);
-            if(slot->isInfocus && slot->equippedItemLabel != e && slot->acceptsLabel(label))
+            // Check the loot slots to see if it is being hovered when the drop occurs
+            for(unsigned int i=0; i < hud->lootMenu->lootSlotBoxes.size(); i++)
             {
-                bool result = label->dropOntoLootSlot(slot);
-                label->dropResult(result);
-                return result;
+                // If the slot is not already equipped with the item and its of an acceptable type
+                InventoryLootSlot* slot = static_cast<InventoryLootSlot*>(hud->lootMenu->lootSlotBoxes[i]);
+                if(slot->isInfocus && slot->equippedItemLabel != e && slot->acceptsLabel(label))
+                {
+                    bool result = label->dropOntoLootSlot(slot);
+                    label->dropResult(result);
+                    return result;
+                }
             }
-        }
 
         
-        // Check the action bar slots to see if it is being hovered when the drop occurs
-        for(unsigned int i=0; i < hud->actionBar->slots.size(); i++)
-        {
-            // If the slot is not already equipped with the item and its of an acceptable type
-            ActionBarSlot* slot = static_cast<ActionBarSlot*>(hud->actionBar->slots[i]);
-            if(slot->isInfocus && slot->equippedItemLabel != e && slot->acceptsLabel(label))
+            // Check the action bar slots to see if it is being hovered when the drop occurs
+            for(unsigned int i=0; i < hud->actionBar->slots.size(); i++)
             {
-                bool result = label->dropOntoActionSlot(slot);
-                label->dropResult(result);
-                return result;
+                // If the slot is not already equipped with the item and its of an acceptable type
+                ActionBarSlot* slot = static_cast<ActionBarSlot*>(hud->actionBar->slots[i]);
+                if(slot->isInfocus && slot->equippedItemLabel != e && slot->acceptsLabel(label))
+                {
+                    bool result = label->dropOntoActionSlot(slot);
+                    label->dropResult(result);
+                    return result;
+                }
             }
-        }
 
 
-        // If I am coming from an action bar slot, check if I have dragged outside of a certain range and trigger the removal
-        if(label->currentActionSlot)
-        {
-            if(!hud->actionBar->intersects(*label))
+            // If I am coming from an action bar slot, check if I have dragged outside of a certain range and trigger the removal
+            if(label->currentActionSlot)
             {
-                label->currentActionSlot->equippedItemLabel = NULL;
-                label->currentActionSlot = NULL;
-                label->removeFromParent = true;
-                return false;
+                if(!hud->actionBar->intersects(*label))
+                {
+                    label->currentActionSlot->equippedItemLabel = NULL;
+                    label->currentActionSlot = NULL;
+                    label->removeFromParent = true;
+                    return false;
+                }
             }
-        }
 
-        return false;
-    });
+            return false;
+        },
+        true // center on mouse when dragging item
+    );
 
     // Icon
     icon = hud->inventoryIconPool.fetch();

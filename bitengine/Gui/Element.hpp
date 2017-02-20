@@ -111,7 +111,7 @@ namespace bit
 
         sf::Vector2f calculateAnchor(sf::RenderWindow &window);
 
-        void makeDraggable(InputManager*, std::function<void(Draggable*, bit::Element*)> onDragStart = NULL, std::function<bool(Draggable*, bit::Element*)> onDragStop = NULL);
+        void makeDraggable(InputManager*, std::function<void(Draggable*, bit::Element*)> onDragStart = NULL, std::function<bool(Draggable*, bit::Element*)> onDragStop = NULL, bool centerOnMouse = false);
 
         void makeHoverable(InputManager*, std::function<void(Hoverable*, bit::Element*)> onHoverEnter = NULL, std::function<void(Hoverable*, bit::Element*)> onHoverLeave = NULL);
     };
