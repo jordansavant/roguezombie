@@ -143,6 +143,7 @@ void StateGamePlay::modeOnEnterFree()
 
 void StateGamePlay::modeOnExitFree()
 {
+    levelClient->cancelSelectMode();
 }
 
 void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
@@ -282,10 +283,20 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
     // Menu Hot Keys
     modeOnUpdateCommonListener(gameTime);
 
-    // Exit
+    // Escape operation
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
     {
-        endGame(EndGameReason::Quit);
+        // If I am interacting with a selection then cancel it
+        if(levelClient->selectMode != LevelClient::SelectMode::None)
+        {
+            levelClient->cancelSelectMode();
+        }
+        // Otherwise exit the game
+        // TODO: Go to options menu to quit
+        else
+        {
+            endGame(EndGameReason::Quit);
+        }
     }
 }
 
@@ -513,7 +524,7 @@ void StateGamePlay::requestItemCommand(Item::Schema &itemSchema)
     {
         case Item::CommandType::CommandTypeSelf:
         {
-            // Send immediate command
+            // Send immediate command to use item on self
             Command cmd;
             cmd.type = Command::Type::ItemCommand;
             cmd.pack = [itemSchema] (sf::Packet &packet) {

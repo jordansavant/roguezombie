@@ -139,8 +139,8 @@ InventoryItemLabel::~InventoryItemLabel()
 
 bool InventoryItemLabel::canIssueItemCommand()
 {
-    // If I am in an action slot then I may be able to issue
-    if(this->currentActionSlot)
+    // If I am in an action slot then I may be able to issue if we are in Free mode (not in a menu)
+    if(this->currentActionSlot && this->hud->state->mode == StateGamePlay::Mode::Free)
     {
         // If I am in combat and I am making a decision
         if(itemSchema.canCommandInCombat && hud->state->levelClient->isPlayerDecisionMode)

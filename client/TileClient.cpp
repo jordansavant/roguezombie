@@ -109,7 +109,7 @@ void TileClient::clientUpdate(sf::Time &gameTime)
     // Targetting helpers
     switch(level->selectMode)
     {
-        case LevelClient::SelectMode::Character:
+        case LevelClient::SelectMode::Character: // such as I am throwing a brick at someone
         {
             // Game is in character selection target mode
             if(level->hoveredTile == this && level->playerCharacter)
@@ -117,19 +117,20 @@ void TileClient::clientUpdate(sf::Time &gameTime)
                 // If I am being hovered and I am within range of the primary character
                 if(bit::VectorMath::distance(schema.x, schema.y, level->playerCharacter->BodyClient::schema.x, level->playerCharacter->BodyClient::schema.y) <= level->selectRange * schema.width)
                 {
-                    // Highlight
+                    // Highlight myself if I am within range
                     c = sf::Color(255, 255, 0);
 
-                    // Listen for selection
+                    // Listen for selection input
                     if(level->state->isTileSelectActive && this->hasCharacter && this->characterClient)
                     {
+                        // Run the character select operation
                         level->onCharacterSelect(characterClient, this);
                         level->selectMode = LevelClient::SelectMode::None;
                     }
                 }
                 else
                 {
-                    // Highlight err
+                    // Highlight err because I am out of range
                     c = sf::Color(255, 0, 0);
                 }
             }

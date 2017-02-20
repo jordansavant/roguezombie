@@ -130,6 +130,15 @@ void LevelClient::clearMoveMarkers()
     }
 }
 
+void LevelClient::cancelSelectMode()
+{
+    onCharacterSelect = NULL;
+    onAreaSelect = NULL;
+    selectRadius = 0;
+    selectRange = 0;
+    selectMode = SelectMode::None;
+}
+
 void LevelClient::enterCharacterSelectMode(unsigned int range, std::function<void(CharacterClient* characterClient, TileClient* tileCilent)> onSelect)
 {
     selectMode = SelectMode::Character;

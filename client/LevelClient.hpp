@@ -92,6 +92,8 @@ public:
 
     void clearMoveMarkers();
 
+    void cancelSelectMode();
+
     void enterCharacterSelectMode(unsigned int range, std::function<void(CharacterClient* characterClient, TileClient* tileCilent)>);
 
     void enterAreaSelectMode(unsigned int range, unsigned int radius, std::function<void(TileClient* tileCilent)>);
