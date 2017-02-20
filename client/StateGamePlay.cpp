@@ -203,7 +203,7 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
             if(levelClient->selectMode == LevelClient::SelectMode::None)
             {
                 // Explore Mode Commands
-                if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
+                if(isTileSelectActive)
                 {
                     // See if a tile is being hovered over
                     if(levelClient->hoveredTile)
@@ -238,39 +238,42 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
         }
         case Level::State::Combat:
         {
-            // Combat Mode Commands
-            if(rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
+            if(levelClient->selectMode == LevelClient::SelectMode::None)
             {
-                // Always deactivate the stat bubble if something is clicked
-                hud->statBubble->deactivate();
-
-                // See if a tile is being hovered over
-                if(levelClient->hoveredTile)
+                // Combat Mode Commands
+                if(isTileSelectActive)
                 {
-                    TileClient* t = levelClient->hoveredTile;
+                    // Always deactivate the stat bubble if something is clicked
+                    hud->statBubble->deactivate();
 
-                    // If the tile has a body and it is adjacent run interactions
-                    if(t->schema.bodyId > 0)
+                    // See if a tile is being hovered over
+                    if(levelClient->hoveredTile)
                     {
-                        if(t->hasTargetableCharacter())
+                        TileClient* t = levelClient->hoveredTile;
+
+                        // If the tile has a body and it is adjacent run interactions
+                        if(t->schema.bodyId > 0)
                         {
-                            target.tileId = t->schema.id;
-                            target.bodyId = t->schema.bodyId;
-                            hud->statBubble->handleStats(t->schema.id);
+                            if(t->hasTargetableCharacter())
+                            {
+                                target.tileId = t->schema.id;
+                                target.bodyId = t->schema.bodyId;
+                                hud->statBubble->handleStats(t->schema.id);
+                            }
                         }
-                    }
-                    // Else issue command to move to tile
-                    else
-                    {
-                        Command cmd;
-                        cmd.type = Command::Type::CombatCommand;
-                        cmd.pack = [t] (sf::Packet &packet) {
-                            packet << sf::Uint32(Command::Target::Tile);
-                            packet << sf::Uint32(t->schema.id);
-                            packet << sf::Uint32(Command::TargetTileCommand::Move);
-                        };
-                        displayMessage(std::string("Player moves"));
-                        issueCommand(cmd);
+                        // Else issue command to move to tile
+                        else
+                        {
+                            Command cmd;
+                            cmd.type = Command::Type::CombatCommand;
+                            cmd.pack = [t] (sf::Packet &packet) {
+                                packet << sf::Uint32(Command::Target::Tile);
+                                packet << sf::Uint32(t->schema.id);
+                                packet << sf::Uint32(Command::TargetTileCommand::Move);
+                            };
+                            displayMessage(std::string("Player moves"));
+                            issueCommand(cmd);
+                        }
                     }
                 }
             }
