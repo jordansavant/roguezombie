@@ -2,6 +2,8 @@
 #ifndef RZ_RZCONFIG_H
 #define RZ_RZCONFIG_H
 
+#include "SFML/Graphics.hpp"
+
 class RZConfig
 {
 public:
@@ -14,6 +16,10 @@ public:
 
     static float zrenderInterfaceLowerbound;
     static float zrenderInterfaceUpperbound;
+
+    static sf::Color tileInteractColor;
+    static sf::Color tileTargetedColor;
+    static sf::Color tileMoveColor;
 
     static float getDrawDepthForGameplay(float yPosition);
 };

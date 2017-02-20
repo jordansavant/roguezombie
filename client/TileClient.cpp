@@ -99,6 +99,8 @@ void TileClient::clientUpdate(sf::Time &gameTime)
     }
 
     // Default coloring to the lighting engine
+    sf::Color moveColor = getMoveColor();
+    sf::Color interactColor = getInteractColor();
     sf::Color c;
     int r = schema.rshade * schema.illumination;
     int g = schema.gshade * schema.illumination;
@@ -189,21 +191,17 @@ void TileClient::clientUpdate(sf::Time &gameTime)
                     // If I am being hovered over, highlight me depending on if I am a body interactor or just an empty tile
                     if(level->hoveredTile == this)
                     {
-                        int s = bit::Math::clamp(255 * schema.illumination * 4, 0, 255);
-                        sf::Color move(s, s, s);
-                        sf::Color interact(0, 255, 0);
-
                         // If I have something on me but its not a player character
                         if(schema.bodyId > 0)
                         {
                             if(level->playerCharacter != NULL && hasCharacter && characterClient == level->playerCharacter)
-                                c = move;
+                                c = moveColor;
                             else
-                                c = interact;
+                                c = interactColor;
                         }
                         else
                         {
-                            c = move;
+                            c = moveColor;
                         }
                     }
 
@@ -218,20 +216,17 @@ void TileClient::clientUpdate(sf::Time &gameTime)
                         // If the player has an active target, see if its me and highlight me
                         if(level->state->target.tileId == schema.id)
                         {
-                            c = sf::Color(0, 255, 0);
+                            c = RZConfig::tileTargetedColor;
                         }
                         // If am being hovered highlight white if not a body on top of it
                         else if(level->hoveredTile == this && schema.bodyId == 0)
                         {
-                            // fade
-                            int s = bit::Math::clamp(175 * schema.illumination * 4, 0, 175);
-                            c = sf::Color(s, s, s);
+                            c = moveColor;
                         }
                         // Color the tile to indicate I can target what is on here
                         else if(level->hoveredTile == this && hasTargetableCharacter())
                         {
-                            int s = bit::Math::clamp(175 * schema.illumination * 4, 0, 175);
-                            c = sf::Color(0, s, 0);
+                            c = interactColor;
                         }
                     }
 
@@ -257,4 +252,20 @@ void TileClient::reset()
 void TileClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
     packet >> schema;
+}
+
+sf::Color TileClient::getMoveColor()
+{
+    int moveR = bit::Math::clamp(RZConfig::tileMoveColor.r * schema.illumination * 4, 0, 255);
+    int moveG = bit::Math::clamp(RZConfig::tileMoveColor.g * schema.illumination * 4, 0, 255);
+    int moveB = bit::Math::clamp(RZConfig::tileMoveColor.b * schema.illumination * 4, 0, 255);
+    return sf::Color(moveR, moveG, moveB);
+}
+
+sf::Color TileClient::getInteractColor()
+{
+    int moveR = bit::Math::clamp(RZConfig::tileInteractColor.r * schema.illumination * 4, 0, 255);
+    int moveG = bit::Math::clamp(RZConfig::tileInteractColor.g * schema.illumination * 4, 0, 255);
+    int moveB = bit::Math::clamp(RZConfig::tileInteractColor.b * schema.illumination * 4, 0, 255);
+    return sf::Color(moveR, moveG, moveB);
 }

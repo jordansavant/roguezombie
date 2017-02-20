@@ -56,6 +56,13 @@ public:
     void reset();
 
     virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
+
+private:
+
+    sf::Color getMoveColor();
+
+    sf::Color getInteractColor();
+
 };
 
 #endif
