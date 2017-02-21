@@ -5,10 +5,11 @@
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Intelligence.hpp"
+#include "LevelRunnable.hpp"
 
 class Level;
 
-class Light
+class Light : public LevelRunnable
 {
 public:
 

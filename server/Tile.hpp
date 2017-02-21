@@ -7,11 +7,12 @@
 #include "../bitengine/Intelligence.hpp"
 #include "../bitengine/Structures.hpp"
 #include <functional>
+#include "LevelRunnable.hpp"
 
 class Level;
 class Body;
 
-class Tile : public bit::Node
+class Tile : public bit::Node, public LevelRunnable
 {
 public:
 

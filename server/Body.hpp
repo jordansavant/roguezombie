@@ -7,6 +7,7 @@
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Network.hpp"
 #include "Interaction.hpp"
+#include "LevelRunnable.hpp"
 #include <map>
 #include <functional>
 
@@ -15,7 +16,7 @@ class Item;
 class DialogNode;
 class Light;
 
-class Body
+class Body : public LevelRunnable
 {
 public:
 
