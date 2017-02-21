@@ -180,6 +180,8 @@ public:
 
     static std::string getIconName(Type type);
 
+    static void visualizeWeaponFire(Character* user);
+
 };
 
 #endif

@@ -354,6 +354,7 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.minimumDamage = 6;
             i->schema.maximumDamage = 9;
             i->schema.effectiveRangeInTiles = 5;
+            i->onUse = Item::visualizeWeaponFire;
 
             break;
 
@@ -599,3 +600,12 @@ std::string Item::getIconName(Type type)
             return "Grenade";
     }
 }
+
+void Item::visualizeWeaponFire(Character* user)
+{
+    // Firing flare
+    sf::Color s = sf::Color::Yellow;;
+    sf::Color e = sf::Color::Black;
+    user->level->createLightFlare(user->Body::schema.x, user->Body::schema.y, 1, s, e, 2, 2, 1, 0);
+}
+
