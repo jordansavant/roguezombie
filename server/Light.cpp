@@ -39,73 +39,51 @@ void Light::setVisible(int x, int y, float distance)
     {
         t->metadata_shadowcastId = bit::Shadowcaster::shadowcastId;
 
-        // Calculate brightness
-        float currentLight = t->schema.illumination;
-        float addition = (1 - distance) * brightness;
-        float combinedLight = currentLight + addition;
-        float newLight = bit::Math::clamp(combinedLight, currentLight, 1.0f);
-        t->schema.illumination = newLight;
+        float bgA = t->schema.illumination;
+        float bgR = (float)t->schema.rshade / 255;
+        float bgG = (float)t->schema.gshade / 255;
+        float bgB = (float)t->schema.bshade / 255;
+
+        float fgA = (1 - distance) * brightness;
+        float fgR = (float)color.r / 255;
+        float fgG = (float)color.g / 255;
+        float fgB = (float)color.b / 255;
+
+        float rA = 0;
+        float rR = 0;
+        float rG = 0;
+        float rB = 0;
+
+        // mix colors additively
+        if(bgA != 0 || fgA != 0)
+        {
+            rA = 1 - (1 - fgA) * (1 - bgA);
+            rR = fgR * fgA / rA + bgR * bgA * (1 - fgA) / rA;
+            rG = fgG * fgA / rA + bgG * bgA * (1 - fgA) / rA;
+            rB = fgB * fgA / rA + bgB * bgA * (1 - fgA) / rA;
+        }
+
+        t->schema.illumination = rA;
+        t->schema.rshade = rR * 255;
+        t->schema.gshade = rG * 255;
+        t->schema.bshade = rB * 255;
 
         if(t->body)
         {
-            t->body->schema.illumination = newLight;
+            t->body->schema.illumination = rA;
+            t->body->schema.rshade = rR * 255;
+            t->body->schema.gshade = rG * 255;
+            t->body->schema.bshade = rB * 255;
+        }
+        if(t->door)
+        {
+            t->door->schema.illumination = rA;
+            t->door->schema.rshade = rR * 255;
+            t->door->schema.gshade = rG * 255;
+            t->door->schema.bshade = rB * 255;
         }
 
-        // Calculate color shades based on brightness dominance and lighting
-        // aF = aB / eB
-        // eF = 1 - aB /eB + 1
-        // if eB == .8 and aB == .2, the first lighting is brighter and should be more dominant,
-        //   .2 / .8 = .25 correct
-        //   1 - .25 + 1 = 1.75 correct
-        // if eB == 1 and aB == 1
-        //   1 / 1 = 1
-        //   1 - 1 + 1 = 1
-        // if eB == .9 and aB == 1
-        //   aF = 1 / .9 = 1.11
-        //   eF = 1 - 1.11 + 1 = .89
-        // if eB == 0 and aB == .2
-        //   aF = .2 / 0
-        // if aB == .625 anf eB = .25
-        //   aF = .625 / .25 = 2.5
-        //   eF = 1 - 2.5 + 1 = -.5
-        float existingBrightness = currentLight;
-        float applyingBrightness = addition;
-        float aF = 1;
-        float eF = 1;
-        if(existingBrightness == 0 && applyingBrightness == 0)
-        {
-            aF = 0;
-            eF = 0;
-        }
-        else if(existingBrightness == 0)
-        {
-            aF = 1;
-            eF = 0;
-        }
-        else if(applyingBrightness == 0)
-        {
-            aF = 0;
-            eF = 1;
-        }
-        else
-        {
-            aF = applyingBrightness / existingBrightness;
-            eF = 1 - aF + 1;
-        }
-
-        unsigned char r = bit::Math::clamp(((float)color.r * aF + (float)t->schema.rshade * eF) / (t->schema.rshade > 0 && color.r > 0 ? 2 : 1), 0,255);
-        unsigned char g = bit::Math::clamp(((float)color.g * aF + (float)t->schema.gshade * eF) / (t->schema.gshade > 0 && color.g > 0 ? 2 : 1), 0, 255);
-        unsigned char b = bit::Math::clamp(((float)color.b * aF + (float)t->schema.bshade * eF) / (t->schema.bshade > 0 && color.b > 0 ? 2 : 1), 0, 255);
-        t->schema.rshade = r;
-        t->schema.gshade = g;
-        t->schema.bshade = b;
-
-        if(t->body)
-        {
-            t->body->schema.rshade = r;
-            t->body->schema.gshade = g;
-            t->body->schema.bshade = b;
-        }
+        return;
     }
 }
 
