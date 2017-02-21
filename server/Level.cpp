@@ -11,6 +11,7 @@
 #include "structures/Chest.hpp"
 #include "levels/Interior.hpp"
 #include "items/Item.hpp"
+#include "lights/Flare.hpp"
 #include "dialog/DialogEntry.hpp"
 #include "dialog/DialogNode.hpp"
 #include "GameplayServer.hpp"
@@ -915,6 +916,13 @@ void Level::iterateCharacters(std::function<void(Character* character)> inspecto
     {
         inspector(characters[i]);
     }
+}
+
+void Level::createLightFlareAtTile(Tile* tile, float seconds, sf::Color &startColor, sf::Color &endColor, float startRadius, float endRadius, float startBrightness, float endBrightness)
+{
+    Flare* flare = new Flare();
+    flare->load(this, tile->schema.x, tile->schema.y, seconds, startColor, endColor, startRadius, endRadius, startBrightness, endBrightness);
+    lights.push_back(flare);
 }
 
 

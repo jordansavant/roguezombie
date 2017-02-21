@@ -134,6 +134,8 @@ public:
 
     void iterateCharacters(std::function<void(Character* character)> inspector);
 
+    void createLightFlareAtTile(Tile* tile, float seconds, sf::Color &startColor, sf::Color &endColor, float startRadius, float endRadius, float startBrightness, float endBrightness = 0);
+
 
     // Networking
 

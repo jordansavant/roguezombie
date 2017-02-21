@@ -331,6 +331,11 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
                                             // Allow the item to apply its operation
                                             Item::useItemOnTileArea(character, t, itemSchema);
                                             character->combat_DecideAction_UsedItem();
+
+                                            //TODO: Testing flares, temporary code
+                                            sf::Color s = sf::Color::Red;
+                                            sf::Color e = sf::Color::Black;
+                                            character->level->createLightFlareAtTile(t, 5, s, e, 5, 1, 1, 0);
                                         }
                                         break;
                                     case Level::State::Free:
