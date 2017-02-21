@@ -272,6 +272,7 @@ void Inventory::buildItemList(bool force)
     // clean up
     for(unsigned int i=0; i < positionSlotBoxes.size(); i++)
     {
+        positionSlotBoxes[i]->equippedItemLabel = NULL;
         positionSlotBoxes[i]->clearChildren();
     }
     // rebuild

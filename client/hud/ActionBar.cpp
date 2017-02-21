@@ -154,9 +154,9 @@ bool ActionBar::hasItem(unsigned int itemId)
 
 void ActionBar::emptyByItem(unsigned int itemId)
 {
-    for(int i = 0; i < childElements.size(); i++)
+    for(int i = 0; i < slots.size(); i++)
     {
-        ActionBarSlot* slot = static_cast<ActionBarSlot*>(childElements[i]);
+        ActionBarSlot* slot = slots[i];
         if(slot->equippedItemLabel && slot->equippedItemLabel->itemSchema.id == itemId)
         {
             slot->removeItemLabel();

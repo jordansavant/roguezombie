@@ -611,7 +611,7 @@ bool InventoryItemLabel::dropOntoLootSlot(InventoryLootSlot* slot)
     // 2. Dropping from an inventory cell into this loot cell
     if(currentPositionSlot)
     {
-        // Clean action bar
+        // Remove item from action bar (if its there)
         hud->actionBar->emptyByItem(itemSchema.id);
 
         // Visual prediction:
