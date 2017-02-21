@@ -1,6 +1,6 @@
 #pragma once
-#ifndef RZ_WORLDRUNNER_H
-#define RZ_WORLDRUNNER_H
+#ifndef RZ_LEVELRUNNER_H
+#define RZ_LEVELRUNNER_H
 
 #include "SFML/Graphics.hpp"
 #include <map>
@@ -44,14 +44,38 @@ public:
     virtual void update(sf::Time &gameTime)
     {
         // Update all runners
-        for(unsigned int i=0; i < list->size(); i++)
+        //for(unsigned int i=0; i < list->size(); i++)
+        //{
+        //    (*list)[i]->update(gameTime);
+        //
+        //    if(distributedUpdateCounter == i)
+        //    {
+        //        (*list)[i]->distributedUpdate(gameTime);
+        //    }
+        //}
+
+        // Update with allowance for adding / removing entities mid loop
+        unsigned int i = 0;
+        for(auto it = list->begin(); it != list->end();)
         {
-            (*list)[i]->update(gameTime);
+            (*it)->update(gameTime);
 
             if(distributedUpdateCounter == i)
             {
-                (*list)[i]->distributedUpdate(gameTime);
+                (*it)->distributedUpdate(gameTime);
             }
+
+            i++; // iterate tracking index
+            ++it; // iterate list pointer
+            //if ((*it)->removeFromLevel)
+            //{
+            //    delete (*it);
+            //    it = childElements.erase(it);
+            //}
+            //else
+            //{
+            //    ++it;
+            //}
         }
 
         // Support for load distributed updates
@@ -60,6 +84,7 @@ public:
         {
             distributedUpdateCounter = 0;
         }
+
     }
 };
 
