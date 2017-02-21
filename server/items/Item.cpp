@@ -8,6 +8,7 @@
 #include "../Tile.hpp"
 #include "../Player.hpp"
 #include "../Level.hpp"
+#include "../lights/Flare.hpp"
 #include "../GameplayServer.hpp"
 
 Item::Item()
@@ -435,6 +436,7 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.canCommandInFree = false;
             i->applyToArea = [i] (Tile* tile) -> bool
             {
+                // Effect tiles
                 Item* ix = i;
                 tile->level->iterateTiles([ix, tile] (unsigned int index, unsigned int x, unsigned int y, Tile* inspectedTile)
                 {
@@ -449,6 +451,12 @@ Item* Item::create(Type type, unsigned int id)
                         }
                     }
                 });
+
+                // Visual effects
+                sf::Color s = sf::Color(255, 155, 0);
+                sf::Color e = sf::Color::Black;
+                tile->level->createLightFlareAtTile(tile, 2, s, e, ix->schema.effectiveRadiusInTiles, ix->schema.effectiveRadiusInTiles, 1, 0);
+
                 return true;
             };
 

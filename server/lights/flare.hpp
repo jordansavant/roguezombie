@@ -15,6 +15,7 @@ public:
     float startRadius, endRadius;
     float startBrightness, endBrightness;
     bit::GameTimer timer;
+    bool timerComplete;
 
     virtual void load(Level* level, float x, float y, float seconds, sf::Color &startColor, sf::Color &endColor, float startRadius, float endRadius, float startBrightness, float endBrightness);
 

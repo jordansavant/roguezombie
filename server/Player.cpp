@@ -89,6 +89,9 @@ void Player::setupPlayerCharacter()
     character->addItemToInventory(Item::create(Item::Type::Medkit, level->server->getNextItemId()));
     character->addItemToInventory(Item::create(Item::Type::Brick, level->server->getNextItemId()));
     character->addItemToInventory(Item::create(Item::Type::Grenade, level->server->getNextItemId()));
+    character->addItemToInventory(Item::create(Item::Type::Grenade, level->server->getNextItemId()));
+    character->addItemToInventory(Item::create(Item::Type::Grenade, level->server->getNextItemId()));
+    character->addItemToInventory(Item::create(Item::Type::Grenade, level->server->getNextItemId()));
     
     character->equipFromInventory(Character::EquipmentSlot::WeaponPrimary, magnum->schema.id);
     character->equipFromInventory(Character::EquipmentSlot::WeaponSecondary, crowbar->schema.id);
@@ -331,11 +334,6 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
                                             // Allow the item to apply its operation
                                             Item::useItemOnTileArea(character, t, itemSchema);
                                             character->combat_DecideAction_UsedItem();
-
-                                            //TODO: Testing flares, temporary code
-                                            sf::Color s = sf::Color::Red;
-                                            sf::Color e = sf::Color::Black;
-                                            character->level->createLightFlareAtTile(t, 5, s, e, 5, 1, 1, 0);
                                         }
                                         break;
                                     case Level::State::Free:

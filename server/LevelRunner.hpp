@@ -66,16 +66,17 @@ public:
             }
 
             i++; // iterate tracking index
-            ++it; // iterate list pointer
-            //if ((*it)->removeFromLevel)
-            //{
-            //    delete (*it);
-            //    it = childElements.erase(it);
-            //}
-            //else
-            //{
-            //    ++it;
-            //}
+            
+            // See if we need to remove the element
+            if ((*it)->removeFromLevel)
+            {
+                delete (*it);
+                it = list->erase(it);
+            }
+            else
+            {
+                ++it; // iterate list pointer
+            }
         }
 
         // Support for load distributed updates
