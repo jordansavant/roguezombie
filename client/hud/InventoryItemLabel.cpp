@@ -161,18 +161,29 @@ InventoryItemLabel::~InventoryItemLabel()
 
 bool InventoryItemLabel::canIssueItemCommand()
 {
-    // If I am in an action slot then I may be able to issue if we are in Free mode (not in a menu)
-    if(this->currentActionSlot && this->hud->state->mode == StateGamePlay::Mode::Free)
+    if(this->currentActionSlot)
     {
-        // If I am in combat and I am making a decision
-        if(itemSchema.canCommandInCombat && hud->state->levelClient->isPlayerDecisionMode)
+        // If this is an item that can be used at any time
+        if(itemSchema.canCommandInFree && itemSchema.canCommandInCombat)
         {
-            return true;
+            // Allow it to be used in Free or Inventory or Loot mode
+            return this->hud->state->mode == StateGamePlay::Mode::Free || this->hud->state->mode == StateGamePlay::Mode::Inventory || this->hud->state->mode == StateGamePlay::Mode::Loot;
         }
 
-        if(itemSchema.canCommandInFree && hud->state->levelClient->levelState == Level::State::Free)
+        // If this is a combat only item
+        if(itemSchema.canCommandInCombat && !itemSchema.canCommandInFree)
         {
-            return true;
+            // Only allow it if we are in combat and in free mode
+            return hud->state->levelClient->isPlayerDecisionMode && hud->state->mode == StateGamePlay::Mode::Free;
+        }
+
+        // If this is a free mode only item
+        if(itemSchema.canCommandInFree && !itemSchema.canCommandInCombat)
+        {
+            // Only allow it to be used if we are in inventory, free or loot mode while not in combat in the level
+            bool isInInventoryModes = this->hud->state->mode == StateGamePlay::Mode::Free || this->hud->state->mode == StateGamePlay::Mode::Inventory || this->hud->state->mode == StateGamePlay::Mode::Loot;
+            bool isInFreeExplore = hud->state->levelClient->levelState == Level::State::Free;
+            return isInInventoryModes && isInFreeExplore;
         }
     }
 
