@@ -918,10 +918,10 @@ void Level::iterateCharacters(std::function<void(Character* character)> inspecto
     }
 }
 
-void Level::createLightFlareAtTile(Tile* tile, float seconds, sf::Color &startColor, sf::Color &endColor, float startRadius, float endRadius, float startBrightness, float endBrightness)
+void Level::createLightFlare(float x, float y, float seconds, sf::Color &startColor, sf::Color &endColor, float startRadius, float endRadius, float startBrightness, float endBrightness)
 {
     Flare* flare = new Flare();
-    flare->load(this, tile->schema.x, tile->schema.y, seconds, startColor, endColor, startRadius, endRadius, startBrightness, endBrightness);
+    flare->load(this, x, y, seconds, startColor, endColor, startRadius, endRadius, startBrightness, endBrightness);
     lights.push_back(flare);
 }
 

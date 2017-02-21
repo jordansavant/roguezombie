@@ -119,6 +119,7 @@ public:
     std::vector<Item*> items;
     std::function<bool(Character*)> applyToCharacter;
     std::function<bool(Tile*)> applyToArea;
+    std::function<void(Character*)> onUse;
 
 
     bool hasAny(unsigned int currentValue, unsigned int filter);

@@ -441,6 +441,13 @@ void Character::attack(Character* character)
 {
     float CoH = RpgSystem::Combat::calculateChanceOfHit(this, character);
 
+    // Visualize attack
+    Item* weapon = equipment[Character::EquipmentSlot::WeaponPrimary];
+    if(weapon && weapon->onUse)
+    {
+        weapon->onUse(this);
+    }
+
     if(bit::Math::randomFloat() < CoH)
     {
         float damage = RpgSystem::Combat::calculateAttackDamage(this, character);

@@ -12,7 +12,7 @@
 #include "../GameplayServer.hpp"
 
 Item::Item()
-    : schema(), parentItem(NULL), parentBody(NULL), applyToCharacter(NULL), applyToArea(NULL)
+    : schema(), parentItem(NULL), parentBody(NULL), applyToCharacter(NULL), applyToArea(NULL), onUse(NULL)
 {
 }
 
@@ -366,6 +366,13 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.minimumDamage = 4;
             i->schema.maximumDamage = 15;
             i->schema.effectiveRangeInTiles = 15;
+            i->onUse = [i] (Character* user) -> void
+            {
+                // Visualize
+                sf::Color s = sf::Color::Yellow;;
+                sf::Color e = sf::Color::Black;
+                user->level->createLightFlare(user->Body::schema.x, user->Body::schema.y, 1, s, e, 2, 2, 1, 0);
+            };
 
             break;
 
@@ -455,7 +462,7 @@ Item* Item::create(Type type, unsigned int id)
                 // Visual effects
                 sf::Color s = sf::Color(255, 155, 0);
                 sf::Color e = sf::Color::Black;
-                tile->level->createLightFlareAtTile(tile, 2, s, e, ix->schema.effectiveRadiusInTiles, ix->schema.effectiveRadiusInTiles, 1, 0);
+                tile->level->createLightFlare(tile->schema.x, tile->schema.y, 2, s, e, ix->schema.effectiveRadiusInTiles, ix->schema.effectiveRadiusInTiles, 1, 0);
 
                 return true;
             };
