@@ -12,6 +12,7 @@
 class Hud;
 class HudElement;
 class ActionBarSlot;
+class InventoryItemLabel;
 
 class ActionBar : public Frame
 {
@@ -30,6 +31,10 @@ public:
     virtual void hide();
 
     virtual void show();
+
+    bool hasItem(unsigned int itemId);
+
+    void emptyByItem(unsigned int itemId);
 };
 
 #endif

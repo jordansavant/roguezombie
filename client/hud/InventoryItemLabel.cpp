@@ -734,6 +734,9 @@ bool InventoryItemLabel::dropOntoActionSlot(ActionBarSlot* slot)
     // 1. Dropping from an inventory cell into this action bar cell
     if(currentPositionSlot)
     {
+        // If this item is present on the action bar elsewhere, remove it
+        hud->actionBar->emptyByItem(this->itemSchema.id);
+
         // Visual prediction:
         // existing item label
         if(slot->equippedItemLabel)

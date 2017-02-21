@@ -1,5 +1,6 @@
 #include "ActionBar.hpp"
 #include "ActionBarSlot.hpp"
+#include "InventoryItemLabel.hpp"
 #include "Hud.hpp"
 #include "HudElement.hpp"
 #include "../../server/Command.hpp"
@@ -135,4 +136,30 @@ void ActionBar::show()
     relativePosition.y = targetHeight;
     immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, 0, -targetHeight + 120));
     immediateEffect(new bit::FadeEffect(300, 1));
+}
+
+bool ActionBar::hasItem(unsigned int itemId)
+{
+    for(int i = 0; i < childElements.size(); i++)
+    {
+        ActionBarSlot* slot = static_cast<ActionBarSlot*>(childElements[i]);
+        if(slot->equippedItemLabel && slot->equippedItemLabel->itemSchema.id == itemId)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void ActionBar::emptyByItem(unsigned int itemId)
+{
+    for(int i = 0; i < childElements.size(); i++)
+    {
+        ActionBarSlot* slot = static_cast<ActionBarSlot*>(childElements[i]);
+        if(slot->equippedItemLabel && slot->equippedItemLabel->itemSchema.id == itemId)
+        {
+            slot->removeItemLabel();
+        }
+    }
 }
