@@ -122,7 +122,7 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, Item::Schema& itemSchema, float
         },
         // disallow dragging unless we are in inventory mode
         [hud, label](bit::Draggable *d, Element* e) -> bool {
-            if(hud->state->mode == StateGamePlay::Mode::Inventory)
+            if(hud->canMoveInventory())
             {
                 return true;
             }
@@ -611,6 +611,9 @@ bool InventoryItemLabel::dropOntoLootSlot(InventoryLootSlot* slot)
     // 2. Dropping from an inventory cell into this loot cell
     if(currentPositionSlot)
     {
+        // Clean action bar
+        hud->actionBar->emptyByItem(itemSchema.id);
+
         // Visual prediction:
         if(slot->equippedItemLabel)
         {

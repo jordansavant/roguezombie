@@ -230,6 +230,11 @@ void Hud::hideTooltip()
     tooltip->deactivate();
 }
 
+bool Hud::canMoveInventory()
+{
+    return state->mode == StateGamePlay::Mode::Inventory || state->mode == StateGamePlay::Mode::Loot;
+}
+
 bool Hud::typicalContainerControl(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime)
 {
     bit::Container* container = static_cast<bit::Container*>(element);

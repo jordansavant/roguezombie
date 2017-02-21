@@ -93,6 +93,8 @@ public:
 
     void hideTooltip();
 
+    bool canMoveInventory();
+
     bool typicalContainerControl(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime);
 
     bool typicalElementControl(Element* element, sf::RenderWindow* window, sf::Time* gameTime);
