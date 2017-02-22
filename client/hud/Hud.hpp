@@ -9,6 +9,7 @@
 
 class StateGamePlay;
 class HudMenu;
+class HudElement;
 class OptionsBar;
 class Journal;
 class Inventory;
@@ -49,6 +50,7 @@ public:
     sf::Font journalFont;
     bit::Pool<InventoryIcon> inventoryIconPool;
     unsigned int slotDenialSoundId;
+    HudElement* closeIconElement;
 
     static bool destroying;
     static float hoverlessOpacity;
@@ -82,6 +84,10 @@ public:
     void activateActionBar();
 
     void deactivateActionBar();
+
+    void showCloseButton();
+
+    void hideCloseButton();
 
     void onEnterCombat();
 

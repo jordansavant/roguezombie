@@ -59,3 +59,23 @@ void HudElement::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
     Element::draw(window, gameTime);
 }
+
+void HudElement::hide(bit::Effect* effect)
+{
+    canHaveFocus = false;
+    clearEffects();
+    if(effect)
+    {
+        immediateEffect(effect);
+    }
+}
+
+void HudElement::show(bit::Effect* effect)
+{
+    canHaveFocus = true;
+    clearEffects();
+    if(effect)
+    {
+        immediateEffect(effect);
+    }
+}

@@ -35,7 +35,6 @@ public:
         Loot,
         Inventory,
         Journal,
-        Trade,
         _count
     };
 
@@ -78,6 +77,8 @@ public:
     void switchLevels(unsigned int newId);
 
     void now();
+
+    void exitInventoryModes();
 
     void changeMode(Mode);
 

@@ -104,6 +104,17 @@ void StateGamePlay::changeMode(Mode _mode)
     }
 }
 
+void StateGamePlay::exitInventoryModes()
+{
+    switch(mode)
+    {
+        case Mode::Inventory:
+        case Mode::Loot:
+            changeMode(Mode::Free);
+            break;
+    }
+}
+
 
 
 

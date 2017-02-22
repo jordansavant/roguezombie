@@ -29,6 +29,10 @@ public:
     void updateReals(sf::RenderWindow &window, sf::Time &gameTime);
 
     void draw(sf::RenderWindow &window, sf::Time &gameTime);
+
+    void hide(bit::Effect* effect = NULL);
+
+    void show(bit::Effect* effect = NULL);
 };
 
 #endif

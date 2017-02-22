@@ -3,6 +3,7 @@
 #include "InventoryItemLabel.hpp"
 #include "InventoryEquipmentSlot.hpp"
 #include "InventoryPositionSlot.hpp"
+#include "InventoryIcon.hpp"
 #include "../../bitengine/Input.hpp"
 #include "../../bitengine/System.hpp"
 #include "../../server/ClientRequest.hpp"

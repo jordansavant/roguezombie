@@ -41,7 +41,7 @@ void Light::setVisible(int x, int y, float distance)
         t->metadata_shadowcastId = bit::Shadowcaster::shadowcastId;
 
         bit::ColorMixer colorMixer((float)t->schema.rshade / 255, (float)t->schema.gshade / 255, (float)t->schema.bshade / 255, t->schema.illumination);
-        colorMixer.mix((float)color.r / 255, (float)color.g / 255, (float)color.b / 255, (1 - distance) * brightness);
+        colorMixer.mixAdditive((float)color.r / 255, (float)color.g / 255, (float)color.b / 255, (1 - distance) * brightness);
 
         t->schema.illumination = colorMixer.a;
         t->schema.rshade = colorMixer.r * 255;

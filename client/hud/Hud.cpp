@@ -1,4 +1,5 @@
 #include "Hud.hpp"
+#include "HudElement.hpp"
 #include "Minimap.hpp"
 #include "OptionsBar.hpp"
 #include "Journal.hpp"
@@ -95,6 +96,15 @@ Hud::Hud(StateGamePlay* _state)
 
     // Sounds
     slotDenialSoundId = state->rogueZombieGame->soundManager->loadSound(resourcePath() + "slotbeep_688997_SOUNDDOGS__of.ogg");
+
+    // Close
+    closeIconElement = new HudElement(0, -392, 0, 0, bit::Element::AnchorType::Right, std::bind(&Hud::typicalElementControl, this, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    closeIconElement->load(this, std::string("optionbar_x"));
+    closeIconElement->onActivate = [this] (Element* e) -> void {
+        this->state->exitInventoryModes();
+    };
+    closeIconElement->opacity = 0;
+    addChild(closeIconElement);
 }
 
 Hud::~Hud()
@@ -161,6 +171,8 @@ void Hud::hideAllMenus(Element* except)
             submenus[i]->hide();
         }
     }
+
+    hideCloseButton();
 }
 
 void Hud::activateJournal(bool hideIfShowing)
@@ -169,6 +181,7 @@ void Hud::activateJournal(bool hideIfShowing)
     {
         hideAllMenus(journal);
         journal->show();
+        showCloseButton();
     }
     else if(hideIfShowing)
     {
@@ -181,6 +194,7 @@ void Hud::deactivateJournal()
     if(journal->isShown)
     {
         journal->hide();
+        hideCloseButton();
     }
 }
 
@@ -190,6 +204,7 @@ void Hud::activateInventory(bool hideIfShowing)
     {
         hideAllMenus(inventory);
         inventory->show();
+        showCloseButton();
     }
     else if(hideIfShowing)
     {
@@ -202,6 +217,7 @@ void Hud::deactivateInventory()
     if(inventory->isShown)
     {
         inventory->hide();
+        hideCloseButton();
     }
 }
 
@@ -213,6 +229,20 @@ void Hud::activateActionBar()
 void Hud::deactivateActionBar()
 {
     actionBar->hide();
+}
+
+void Hud::showCloseButton()
+{
+    closeIconElement->relativePosition.x = 100;
+    closeIconElement->show(new bit::FadeEffect(150, 1));
+    closeIconElement->immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, -100, 0));
+}
+
+void Hud::hideCloseButton()
+{
+    closeIconElement->relativePosition.x = 0;
+    closeIconElement->hide(new bit::FadeEffect(150, 0));
+    closeIconElement->immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, 100, 0));
 }
 
 void Hud::displayMessage(std::string &message)

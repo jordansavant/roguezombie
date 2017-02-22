@@ -10,7 +10,7 @@ bit::ColorMixer::ColorMixer(float r, float g, float b, float a)
 {
 }
 
-void bit::ColorMixer::mix(float newR, float newG, float newB, float newA)
+void bit::ColorMixer::mixAdditive(float newR, float newG, float newB, float newA)
 {
     float rA = 0;
     float rR = 0;

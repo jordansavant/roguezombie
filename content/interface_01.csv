@@ -27,9 +27,10 @@ optionbar_map,362,68,64,64,0,0,64,64,false
 optionbar_options,296,123,64,64,0,0,64,64,false
 optionbar_primary,2,196,104,104,0,0,104,104,false
 optionbar_swap,428,68,64,64,0,0,64,64,false
+optionbar_x,362,134,48,48,0,0,48,48,false
 tq_Hunter_active,108,262,48,32,0,0,48,32,false
-tq_Hunter_inactive,362,134,48,32,0,0,48,32,false
-tq_Ogre_active,412,134,48,32,0,0,48,32,false
-tq_Ogre_inactive,462,134,48,32,0,0,48,32,false
-tq_Zombie_active,362,168,48,32,0,0,48,32,false
-tq_Zombie_inactive,412,168,48,32,0,0,48,32,false
+tq_Hunter_inactive,412,134,48,32,0,0,48,32,false
+tq_Ogre_active,462,134,48,32,0,0,48,32,false
+tq_Ogre_inactive,412,168,48,32,0,0,48,32,false
+tq_Zombie_active,362,184,48,32,0,0,48,32,false
+tq_Zombie_inactive,462,168,48,32,0,0,48,32,false

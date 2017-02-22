@@ -9,6 +9,7 @@
 #include "../items/ItemClient.hpp"
 
 class Hud;
+class HudElement;
 class InventoryItemLabel;
 class InventoryEquipmentSlot;
 class InventoryPositionSlot;

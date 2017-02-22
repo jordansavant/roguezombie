@@ -15,7 +15,12 @@ namespace bit
         float r, g, b;
         float a;
 
-        void mix(float newR, float newG, float newB, float newA);
+        // Mixes like light, additively
+        void mixAdditive(float newR, float newG, float newB, float newA);
+
+        // Mix average TBD
+
+        // Mix subtractive TBD
     };
 }
 
