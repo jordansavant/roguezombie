@@ -129,13 +129,13 @@ void bit::Element::update(sf::RenderWindow &window, sf::Time &gameTime)
     // Draggable
     if(draggable)
     {
-        draggable->update(this, window, gameTime);
+        draggable->update(window, gameTime);
     }
 
     // Hoverable
     if(hoverable)
     {
-        hoverable->update(this, window, gameTime);
+        hoverable->update(window, gameTime);
     }
 
     // Custom updater
@@ -271,7 +271,7 @@ void bit::Element::makeDraggable(bit::InputManager* inputManager, std::function<
 {
     if(draggable == NULL)
     {
-        draggable = new Draggable(inputManager);
+        draggable = new Draggable(inputManager, this);
         draggable->centerOnMouse = centerOnMouse;
         draggable->onDragStart = onDragStart;
         draggable->onDragStop = onDragStop;
@@ -283,7 +283,7 @@ void bit::Element::makeHoverable(bit::InputManager* inputManager, std::function<
 {
     if(hoverable == NULL)
     {
-        hoverable = new Hoverable(inputManager);
+        hoverable = new Hoverable(inputManager, this);
     }
     hoverable->onHoverEnter = onHoverEnter;
     hoverable->onHoverLeave = onHoverLeave;

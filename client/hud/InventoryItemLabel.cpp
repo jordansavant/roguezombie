@@ -30,14 +30,28 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, Item::Schema& itemSchema, float
         {
             // Shift click
 
+            if(label->draggable)
+                label->draggable->cancel();
+
             // If I am in the inventory
             if(label->currentPositionSlot)
             {
                 // If there is an open loot window
-                if(hud->state->mode = StateGamePlay::Mode::Loot)
+                if(hud->state->mode == StateGamePlay::Mode::Loot)
                 {
                     // attempt to move this item from this window to that window (in first available position)
-                    label->sendClientRequest_QuickMoveInventoryItemToLoot();
+
+                    // Visualization
+
+                    // Networking
+                    //label->sendClientRequest_QuickMoveInventoryItemToLoot();
+                    
+                    InventoryLootSlot* slot = hud->lootMenu->getOpenSlot();
+                    if(slot && slot->acceptsLabel(label))
+                    {
+                        bool result = label->dropOntoLootSlot(slot);
+                        label->dropResult(result);
+                    }
                 }
                 // If there is no open loot window
                 else

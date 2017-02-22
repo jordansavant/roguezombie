@@ -201,3 +201,17 @@ void LootMenu::handleInventorySnapshot(bit::ServerPacket &packet, unsigned int t
         i++;
     }
 }
+
+InventoryLootSlot* LootMenu::getOpenSlot()
+{
+    // Find first unused slot
+    for(unsigned int i=0; i < lootSlotBoxes.size(); i++)
+    {
+        if(!lootSlotBoxes[i]->equippedItemLabel)
+        {
+            return lootSlotBoxes[i];
+        }
+    }
+
+    return NULL;
+}

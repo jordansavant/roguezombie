@@ -44,6 +44,8 @@ public:
     void syncInventory();
 
     void handleInventorySnapshot(bit::ServerPacket &packet, unsigned int tileId);
+
+    InventoryLootSlot* getOpenSlot();
 };
 
 #endif

@@ -1,11 +1,11 @@
 #include "Hoverable.hpp"
 
-bit::Hoverable::Hoverable(bit::InputManager* inputManager)
-    : inputManager(inputManager), isHovering(false), onHoverEnter(NULL), onHoverLeave(NULL)
+bit::Hoverable::Hoverable(bit::InputManager* inputManager, bit::Element* element)
+    : inputManager(inputManager), element(element), isHovering(false), onHoverEnter(NULL), onHoverLeave(NULL)
 {
 }
 
-void bit::Hoverable::update(bit::Element* element, sf::RenderWindow &window, sf::Time &gameTime)
+void bit::Hoverable::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     sf::Vector2i mousePositionInScreen = sf::Mouse::getPosition(window);
 

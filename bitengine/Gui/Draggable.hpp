@@ -13,9 +13,10 @@ namespace bit
     {
     public:
 
-        Draggable(bit::InputManager* inputManager);
+        Draggable(bit::InputManager* inputManager, bit::Element* element);
 
         bit::InputManager* inputManager;
+        bit::Element* element;
         bool isDragging;
         bool centerOnMouse;
         float dragOriginX, dragOriginY;
@@ -25,7 +26,9 @@ namespace bit
         std::function<bool(Draggable*, bit::Element*)> onDragStop;
         std::function<bool(Draggable*, bit::Element*)> checkDraggable;
 
-        void update(bit::Element* element, sf::RenderWindow &window, sf::Time &gameTime);
+        void update(sf::RenderWindow &window, sf::Time &gameTime);
+        
+        void cancel();
     };
 }
 

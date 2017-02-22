@@ -13,14 +13,15 @@ namespace bit
     {
     public:
 
-        Hoverable(bit::InputManager* inputManager);
+        Hoverable(bit::InputManager* inputManager, bit::Element* element);
 
         bit::InputManager* inputManager;
-	    bool isHovering;
+        bit::Element* element;
+        bool isHovering;
         std::function<void(Hoverable*, bit::Element*)> onHoverEnter;
         std::function<void(Hoverable*, bit::Element*)> onHoverLeave;
-	
-        void update(bit::Element* element, sf::RenderWindow &window, sf::Time &gameTime);
+    
+        void update(sf::RenderWindow &window, sf::Time &gameTime);
     };
 }
 

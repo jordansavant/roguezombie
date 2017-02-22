@@ -1,11 +1,11 @@
 #include "Draggable.hpp"
 
-bit::Draggable::Draggable(bit::InputManager* inputManager)
-    : inputManager(inputManager), isDragging(false), centerOnMouse(false), dragOriginX(0), dragOriginY(0), elementOriginX(0), elementOriginY(0), centerOffsetX(0), centerOffsetY(0), onDragStart(NULL), onDragStop(NULL), checkDraggable(NULL)
+bit::Draggable::Draggable(bit::InputManager* inputManager, bit::Element* element)
+    : inputManager(inputManager), element(element), isDragging(false), centerOnMouse(false), dragOriginX(0), dragOriginY(0), elementOriginX(0), elementOriginY(0), centerOffsetX(0), centerOffsetY(0), onDragStart(NULL), onDragStop(NULL), checkDraggable(NULL)
 {
 }
 
-void bit::Draggable::update(bit::Element* element, sf::RenderWindow &window, sf::Time &gameTime)
+void bit::Draggable::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
     sf::Vector2i mousePositionInScreen = sf::Mouse::getPosition(window);
 
@@ -69,5 +69,15 @@ void bit::Draggable::update(bit::Element* element, sf::RenderWindow &window, sf:
                 element->relativePosition.y = elementOriginY;
             }
         }
+    }
+}
+
+void bit::Draggable::cancel()
+{
+    if(isDragging)
+    {
+        isDragging = false;
+        element->relativePosition.x = elementOriginX;
+        element->relativePosition.y = elementOriginY;
     }
 }
