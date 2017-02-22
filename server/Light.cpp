@@ -4,6 +4,7 @@
 #include "Body.hpp"
 #include "../bitengine/Math.hpp"
 #include "../bitengine/Intelligence.hpp"
+#include "../bitengine/Graphics.hpp"
 #include <functional>
 
 Light::Light()
@@ -39,48 +40,27 @@ void Light::setVisible(int x, int y, float distance)
     {
         t->metadata_shadowcastId = bit::Shadowcaster::shadowcastId;
 
-        float bgA = t->schema.illumination;
-        float bgR = (float)t->schema.rshade / 255;
-        float bgG = (float)t->schema.gshade / 255;
-        float bgB = (float)t->schema.bshade / 255;
+        bit::ColorMixer colorMixer((float)t->schema.rshade / 255, (float)t->schema.gshade / 255, (float)t->schema.bshade / 255, t->schema.illumination);
+        colorMixer.mix((float)color.r / 255, (float)color.g / 255, (float)color.b / 255, (1 - distance) * brightness);
 
-        float fgA = (1 - distance) * brightness;
-        float fgR = (float)color.r / 255;
-        float fgG = (float)color.g / 255;
-        float fgB = (float)color.b / 255;
-
-        float rA = 0;
-        float rR = 0;
-        float rG = 0;
-        float rB = 0;
-
-        // mix colors additively
-        if(bgA != 0 || fgA != 0)
-        {
-            rA = 1 - (1 - fgA) * (1 - bgA);
-            rR = fgR * fgA / rA + bgR * bgA * (1 - fgA) / rA;
-            rG = fgG * fgA / rA + bgG * bgA * (1 - fgA) / rA;
-            rB = fgB * fgA / rA + bgB * bgA * (1 - fgA) / rA;
-        }
-
-        t->schema.illumination = rA;
-        t->schema.rshade = rR * 255;
-        t->schema.gshade = rG * 255;
-        t->schema.bshade = rB * 255;
+        t->schema.illumination = colorMixer.a;
+        t->schema.rshade = colorMixer.r * 255;
+        t->schema.gshade = colorMixer.g * 255;
+        t->schema.bshade = colorMixer.b * 255;
 
         if(t->body)
         {
-            t->body->schema.illumination = rA;
-            t->body->schema.rshade = rR * 255;
-            t->body->schema.gshade = rG * 255;
-            t->body->schema.bshade = rB * 255;
+            t->body->schema.illumination = colorMixer.a;
+            t->body->schema.rshade = colorMixer.r * 255;
+            t->body->schema.gshade = colorMixer.g * 255;
+            t->body->schema.bshade = colorMixer.b * 255;
         }
         if(t->door)
         {
-            t->door->schema.illumination = rA;
-            t->door->schema.rshade = rR * 255;
-            t->door->schema.gshade = rG * 255;
-            t->door->schema.bshade = rB * 255;
+            t->door->schema.illumination = colorMixer.a;
+            t->door->schema.rshade = colorMixer.r * 255;
+            t->door->schema.gshade = colorMixer.g * 255;
+            t->door->schema.bshade = colorMixer.b * 255;
         }
 
         return;
