@@ -103,9 +103,6 @@ enum ClientRequest
 
     // Moves a loot item to another position within the loot inventory (rearrange)
     MoveLootItemToLootPosition,
-
-    // Moves an inventory item to the loot inventory at the first available slot
-    QuickMoveInventoryItemToLoot,
 };
 
 #endif

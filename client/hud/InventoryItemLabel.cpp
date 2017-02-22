@@ -30,8 +30,11 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, Item::Schema& itemSchema, float
         {
             // Shift click
 
+            // cancel  drag operation so it does not consider a Drop event
             if(label->draggable)
+            {
                 label->draggable->cancel();
+            }
 
             // If I am in the inventory
             if(label->currentPositionSlot)
@@ -40,12 +43,6 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, Item::Schema& itemSchema, float
                 if(hud->state->mode == StateGamePlay::Mode::Loot)
                 {
                     // attempt to move this item from this window to that window (in first available position)
-
-                    // Visualization
-
-                    // Networking
-                    //label->sendClientRequest_QuickMoveInventoryItemToLoot();
-                    
                     InventoryLootSlot* slot = hud->lootMenu->getOpenSlot();
                     if(slot && slot->acceptsLabel(label))
                     {
@@ -902,34 +899,6 @@ void InventoryItemLabel::sendClientRequest_MoveInventoryItemToLootPosition(unsig
             requestPacket << sf::Uint32(ClientRequest::MoveInventoryItemToLootPosition);
             requestPacket << sf::Uint32(schema.id);
             requestPacket << sf::Uint32(slotPosition);
-
-            hudx->inventory->pendingInventoryRequests++;
-        },
-        [hudx, schema](bit::ServerPacket& responsePacket)
-        {
-            bool success;
-            responsePacket >> success;
-            hudx->lootMenu->syncInventory();
-
-            hudx->inventory->pendingInventoryRequests--;
-        }
-    );
-}
-
-
-void InventoryItemLabel::sendClientRequest_QuickMoveInventoryItemToLoot()
-{
-    // Networking:
-    // 1. Request the server move the item, which includes the swap process
-    // 2. This will naturally send one or two item updates which include the positioning information
-    // 3. Response is moot
-    Item::Schema schema = itemSchema;
-    Hud* hudx = hud;
-    hud->state->serverRequest(
-        [hudx, schema](bit::ClientPacket& requestPacket)
-        {
-            requestPacket << sf::Uint32(ClientRequest::QuickMoveInventoryItemToLoot);
-            requestPacket << sf::Uint32(schema.id);
 
             hudx->inventory->pendingInventoryRequests++;
         },

@@ -65,8 +65,6 @@ public:
 
     void sendClientRequest_MoveInventoryItemToLootPosition(unsigned int position);
 
-    void sendClientRequest_QuickMoveInventoryItemToLoot();
-
 };
 
 #endif

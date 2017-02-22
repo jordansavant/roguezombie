@@ -1147,23 +1147,6 @@ bool Character::moveEquipmentToLootPosition(EquipmentSlot slot, unsigned int pos
     return false;
 }
 
-bool Character::quickMoveInventoryItemToLoot(unsigned int itemId)
-{
-    // If I have an inventory host
-    if(inventoryHost)
-    {
-        Item* myItem = removeItemFromInventory(itemId);
-        if(myItem)
-        {
-            // Add my item to their inventory
-            inventoryHost->addItemToInventory(myItem);
-            return true;
-        }
-    }
-
-    return false;
-}
-
 
 void Character::sendInventoryUpdate()
 {

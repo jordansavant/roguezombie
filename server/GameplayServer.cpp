@@ -537,18 +537,6 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
 
             break;
         }
-
-        case ClientRequest::QuickMoveInventoryItemToLoot:
-        {
-            bit::Output::Debug("Server detect request quick move inventory to loot");
-
-            unsigned int itemId;
-            packet >> itemId;
-
-            responsePacket << player->character->quickMoveInventoryItemToLoot(itemId);
-
-            break;
-        }
     }
 }
 
