@@ -618,11 +618,20 @@ bool StateGamePlay::handleInput(sf::Time &gameTime)
     {
         levelClient->captureInput(gameTime);
 
+        // Global input checking
+        captureModelessInput(gameTime);
+
         // Update gameplay mode input
         modeUpdate[mode](gameTime);
     }
 
     return true;
+}
+
+void StateGamePlay::captureModelessInput(sf::Time &gameTime)
+{
+    // This is input that is captured regardless of mode
+    isShiftModifierDown = rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::LShift);
 }
 
 bool StateGamePlay::update(sf::Time &gameTime)

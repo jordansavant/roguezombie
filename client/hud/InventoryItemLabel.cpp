@@ -25,19 +25,52 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, Item::Schema& itemSchema, float
     InventoryItemLabel* label = this;
     onActivate = [hud, label] (bit::Element* e) {
 
-        // If I am in the action bar and I am able to issue a command in the current game mode
-        if(label->currentActionSlot && label->canIssueItemCommand())
+        // Listen to any relevant modifiers, i.e. Shift is down then this is a Shift Click
+        if(hud->state->isShiftModifierDown)
         {
-            // Notify the game state of the wish to operate an item based command passing the item
-            // On complete of command being issued I would remove myself
-            InventoryItemLabel* labelx = label;
-            hud->state->requestItemCommand(label->itemSchema, [labelx] () {
-                labelx->currentActionSlot->equippedItemLabel = NULL;
-                labelx->currentActionSlot = NULL;
-                labelx->removeFromParent = true;
-            });
-        }
+            // Shift click
 
+            // If I am in the inventory
+            if(label->currentPositionSlot)
+            {
+                // If there is an open loot window
+                if(hud->state->mode = StateGamePlay::Mode::Loot)
+                {
+                    // attempt to move this item from this window to that window (in first available position)
+                    label->sendClientRequest_QuickMoveInventoryItemToLoot();
+                }
+                // If there is no open loot window
+                else
+                {
+                    // If the item can issue commands
+                        // attempt to add this item to the action bar if an open position exists
+                    // If the item is equipment
+                        // assign the item to the relevant equipment slot (swapping if need be)
+                        // Weapons always swap into primary slot
+                }
+            }
+            // If I am in the loot bar
+            else if(label->currentLootSlot)
+            {
+                // Attempt to move this item from the loot window to the inventory
+            }
+            // We don't shift modify anything in the action bar
+        }
+        else
+        {
+            // If I am in the action bar and I am able to issue a command in the current game mode
+            if(label->currentActionSlot && label->canIssueItemCommand())
+            {
+                // Notify the game state of the wish to operate an item based command passing the item
+                // On complete of command being issued I would remove myself
+                InventoryItemLabel* labelx = label;
+                hud->state->requestItemCommand(label->itemSchema, [labelx] () {
+                    labelx->currentActionSlot->equippedItemLabel = NULL;
+                    labelx->currentActionSlot = NULL;
+                    labelx->removeFromParent = true;
+                });
+            }
+        }
     };
 
     // On Drag, On Drop
@@ -253,26 +286,9 @@ bool InventoryItemLabel::dropOntoEquipmentSlot(InventoryEquipmentSlot* slot)
         relativePosition.x = 0;
         relativePosition.y = 0;
 
-        // Send the request to change the equipment
-        Item::Schema schema = itemSchema;
-        Hud* hudx = hud;
-        hud->state->serverRequest(
-            [hudx, schema, slot](bit::ClientPacket& requestPacket)
-            {
-                requestPacket << sf::Uint32(ClientRequest::EquipItemFromInventoryToSlot);
-                requestPacket << sf::Uint32(slot->slot);
-                requestPacket << sf::Uint32(schema.id);
+        // Networking
+        sendClientRequest_EquipItemFromInventoryToSlot(slot->slot);
 
-                hudx->inventory->pendingInventoryRequests++;
-            },
-            [hudx, schema](bit::ServerPacket& responsePacket)
-            {
-                bool success;
-                responsePacket >> success;
-
-                hudx->inventory->pendingInventoryRequests--;
-            }
-        );
         return true;
     }
 
@@ -310,29 +326,8 @@ bool InventoryItemLabel::dropOntoEquipmentSlot(InventoryEquipmentSlot* slot)
         relativePosition.x = 0;
         relativePosition.y = 0;
 
-        // Networking:
-        // 1. Request the server move the item, which includes the swap process
-        // 2. This will naturally send one or two item updates which include the positioning information
-        // 3. Response is moot
-        Item::Schema schema = itemSchema;
-        Hud* hudx = hud;
-        hud->state->serverRequest(
-            [hudx, schema, slot, slotA, slotB](bit::ClientPacket& requestPacket)
-            {
-                requestPacket << sf::Uint32(ClientRequest::SwapEquipmentBySlot);
-                requestPacket << sf::Uint32(slotA);
-                requestPacket << sf::Uint32(slotB);
-
-                hudx->inventory->pendingInventoryRequests++;
-            },
-            [hudx, schema](bit::ServerPacket& responsePacket)
-            {
-                bool success;
-                responsePacket >> success;
-
-                hudx->inventory->pendingInventoryRequests--;
-            }
-        );
+        // Networking
+        sendClientRequest_SwapEquipmentBySlot(slotA, slotB);
 
         return true;
     }
@@ -360,27 +355,9 @@ bool InventoryItemLabel::dropOntoEquipmentSlot(InventoryEquipmentSlot* slot)
         relativePosition.x = 0;
         relativePosition.y = 0;
 
-        // Send the request to change the equipment
-        Item::Schema schema = itemSchema;
-        Hud* hudx = hud;
-        hud->state->serverRequest(
-            [hudx, schema, slot](bit::ClientPacket& requestPacket)
-            {
-                requestPacket << sf::Uint32(ClientRequest::EquipItemFromLootToSlot);
-                requestPacket << sf::Uint32(slot->slot);
-                requestPacket << sf::Uint32(schema.id);
-
-                hudx->inventory->pendingInventoryRequests++;
-            },
-            [hudx, schema](bit::ServerPacket& responsePacket)
-            {
-                bool success;
-                responsePacket >> success;
-                hudx->lootMenu->syncInventory();
-
-                hudx->inventory->pendingInventoryRequests--;
-            }
-        );
+        // Networking
+        sendClientRequest_EquipItemFromLootToSlot(slot->slot);
+        
         return true;
     }
 
@@ -419,29 +396,8 @@ bool InventoryItemLabel::dropOntoInventorySlot(InventoryPositionSlot* slot)
         relativePosition.x = 0;
         relativePosition.y = 0;
 
-        // Networking:
-        // 1. Request the server move the item, which includes the swap process
-        // 2. This will naturally send one or two item updates which include the positioning information
-        // 3. Response is moot
-        Item::Schema schema = itemSchema;
-        Hud* hudx = hud;
-        hud->state->serverRequest(
-            [hudx, schema, slot](bit::ClientPacket& requestPacket)
-            {
-                requestPacket << sf::Uint32(ClientRequest::MoveInventoryItemToPosition);
-                requestPacket << sf::Uint32(schema.id);
-                requestPacket << sf::Uint32(slot->position);
-
-                hudx->inventory->pendingInventoryRequests++;
-            },
-            [hudx, schema](bit::ServerPacket& responsePacket)
-            {
-                bool success;
-                responsePacket >> success;
-
-                hudx->inventory->pendingInventoryRequests--;
-            }
-        );
+        // Networking
+        sendClientRequest_MoveInventoryItemToPosition(slot->position);
 
         return true;
     }
@@ -479,29 +435,8 @@ bool InventoryItemLabel::dropOntoInventorySlot(InventoryPositionSlot* slot)
         relativePosition.x = 0;
         relativePosition.y = 0;
 
-        // Networking:
-        // 1. Request the server move the item, which includes the swap process
-        // 2. This will naturally send one or two item updates which include the positioning information
-        // 3. Response is moot
-        Item::Schema schema = itemSchema;
-        Hud* hudx = hud;
-        hud->state->serverRequest(
-            [hudx, schema, slot, equipmentSlot](bit::ClientPacket& requestPacket)
-            {
-                requestPacket << sf::Uint32(ClientRequest::MoveEquippedItemToInventoryPosition);
-                requestPacket << sf::Uint32(equipmentSlot);
-                requestPacket << sf::Uint32(slot->position);
-
-                hudx->inventory->pendingInventoryRequests++;
-            },
-            [hudx, schema](bit::ServerPacket& responsePacket)
-            {
-                bool success;
-                responsePacket >> success;
-
-                hudx->inventory->pendingInventoryRequests--;
-            }
-        );
+        // Networking
+        sendClientRequest_MoveEquippedItemToInventoryPosition(equipmentSlot, slot->position);
 
         return true;
     }
@@ -529,30 +464,8 @@ bool InventoryItemLabel::dropOntoInventorySlot(InventoryPositionSlot* slot)
         relativePosition.x = 0;
         relativePosition.y = 0;
 
-        // Networking:
-        // 1. Request the server move the item, which includes the swap process
-        // 2. This will naturally send one or two item updates which include the positioning information
-        // 3. Response is moot
-        Item::Schema schema = itemSchema;
-        Hud* hudx = hud;
-        hud->state->serverRequest(
-            [hudx, schema, slot](bit::ClientPacket& requestPacket)
-            {
-                requestPacket << sf::Uint32(ClientRequest::MoveLootItemToInventoryPosition);
-                requestPacket << sf::Uint32(schema.id);
-                requestPacket << sf::Uint32(slot->position);
-
-                hudx->inventory->pendingInventoryRequests++;
-            },
-            [hudx, schema](bit::ServerPacket& responsePacket)
-            {
-                bool success;
-                responsePacket >> success;
-                hudx->lootMenu->syncInventory();
-
-                hudx->inventory->pendingInventoryRequests--;
-            }
-        );
+        // Networking
+        sendClientRequest_MoveLootItemToInventoryPosition(slot->position);
 
         return true;
     }
@@ -591,30 +504,8 @@ bool InventoryItemLabel::dropOntoLootSlot(InventoryLootSlot* slot)
         relativePosition.x = 0;
         relativePosition.y = 0;
 
-        // Networking:
-        // 1. Request the server move the item, which includes the swap process
-        // 2. This will naturally send one or two item updates which include the positioning information
-        // 3. Response is moot
-        Item::Schema schema = itemSchema;
-        Hud* hudx = hud;
-        hud->state->serverRequest(
-            [hudx, schema, slot](bit::ClientPacket& requestPacket)
-            {
-                requestPacket << sf::Uint32(ClientRequest::MoveLootItemToLootPosition);
-                requestPacket << sf::Uint32(schema.id);
-                requestPacket << sf::Uint32(slot->position);
-
-                hudx->inventory->pendingInventoryRequests++;
-            },
-            [hudx, schema](bit::ServerPacket& responsePacket)
-            {
-                bool success;
-                responsePacket >> success;
-                hudx->lootMenu->syncInventory();
-
-                hudx->inventory->pendingInventoryRequests--;
-            }
-        );
+        // Networking
+        sendClientRequest_MoveLootItemToLootPosition(slot->position);
 
         return true;
     }
@@ -645,30 +536,8 @@ bool InventoryItemLabel::dropOntoLootSlot(InventoryLootSlot* slot)
         relativePosition.x = 0;
         relativePosition.y = 0;
 
-        // Networking:
-        // 1. Request the server move the item, which includes the swap process
-        // 2. This will naturally send one or two item updates which include the positioning information
-        // 3. Response is moot
-        Item::Schema schema = itemSchema;
-        Hud* hudx = hud;
-        hud->state->serverRequest(
-            [hudx, schema, slot](bit::ClientPacket& requestPacket)
-            {
-                requestPacket << sf::Uint32(ClientRequest::MoveInventoryItemToLootPosition);
-                requestPacket << sf::Uint32(schema.id);
-                requestPacket << sf::Uint32(slot->position);
-
-                hudx->inventory->pendingInventoryRequests++;
-            },
-            [hudx, schema](bit::ServerPacket& responsePacket)
-            {
-                bool success;
-                responsePacket >> success;
-                hudx->lootMenu->syncInventory();
-
-                hudx->inventory->pendingInventoryRequests--;
-            }
-        );
+        // Networking
+        sendClientRequest_MoveInventoryItemToLootPosition(slot->position);
 
         return true;
     }
@@ -706,30 +575,8 @@ bool InventoryItemLabel::dropOntoLootSlot(InventoryLootSlot* slot)
         relativePosition.x = 0;
         relativePosition.y = 0;
 
-        // Networking:
-        // 1. Request the server move the item, which includes the swap process
-        // 2. This will naturally send one or two item updates which include the positioning information
-        // 3. Response is moot
-        Item::Schema schema = itemSchema;
-        Hud* hudx = hud;
-        hud->state->serverRequest(
-            [hudx, schema, slot, equipmentSlot](bit::ClientPacket& requestPacket)
-            {
-                requestPacket << sf::Uint32(ClientRequest::MoveEquippedItemToLootPosition);
-                requestPacket << sf::Uint32(equipmentSlot);
-                requestPacket << sf::Uint32(slot->position);
-
-                hudx->inventory->pendingInventoryRequests++;
-            },
-            [hudx, schema](bit::ServerPacket& responsePacket)
-            {
-                bool success;
-                responsePacket >> success;
-                hudx->lootMenu->syncInventory();
-
-                hudx->inventory->pendingInventoryRequests--;
-            }
-        );
+        // Networking
+        sendClientRequest_MoveEquippedItemToLootPosition(equipmentSlot, slot->position);
 
         return true;
     }
@@ -803,4 +650,282 @@ bool InventoryItemLabel::dropOntoActionSlot(ActionBarSlot* slot)
     }
 
     return false;
+}
+
+
+
+void InventoryItemLabel::sendClientRequest_EquipItemFromInventoryToSlot(Character::EquipmentSlot equipmentSlot)
+{
+    Item::Schema schema = itemSchema;
+    Hud* hudx = hud;
+    hud->state->serverRequest(
+        [hudx, schema, equipmentSlot](bit::ClientPacket& requestPacket)
+        {
+            requestPacket << sf::Uint32(ClientRequest::EquipItemFromInventoryToSlot);
+            requestPacket << sf::Uint32(equipmentSlot);
+            requestPacket << sf::Uint32(schema.id);
+
+            hudx->inventory->pendingInventoryRequests++;
+        },
+        [hudx, schema](bit::ServerPacket& responsePacket)
+        {
+            bool success;
+            responsePacket >> success;
+
+            hudx->inventory->pendingInventoryRequests--;
+        }
+    );
+}
+
+
+void InventoryItemLabel::sendClientRequest_SwapEquipmentBySlot(Character::EquipmentSlot equipmentSlotA, Character::EquipmentSlot equipmentSlotB)
+{
+    // Networking:
+    // 1. Request the server move the item, which includes the swap process
+    // 2. This will naturally send one or two item updates which include the positioning information
+    // 3. Response is moot
+    Item::Schema schema = itemSchema;
+    Hud* hudx = hud;
+    hud->state->serverRequest(
+        [hudx, schema, equipmentSlotA, equipmentSlotB](bit::ClientPacket& requestPacket)
+        {
+            requestPacket << sf::Uint32(ClientRequest::SwapEquipmentBySlot);
+            requestPacket << sf::Uint32(equipmentSlotA);
+            requestPacket << sf::Uint32(equipmentSlotB);
+
+            hudx->inventory->pendingInventoryRequests++;
+        },
+        [hudx, schema](bit::ServerPacket& responsePacket)
+        {
+            bool success;
+            responsePacket >> success;
+
+            hudx->inventory->pendingInventoryRequests--;
+        }
+    );
+}
+
+
+void InventoryItemLabel::sendClientRequest_EquipItemFromLootToSlot(Character::EquipmentSlot equipmentSlot)
+{
+    Item::Schema schema = itemSchema;
+    Hud* hudx = hud;
+    hud->state->serverRequest(
+        [hudx, schema, equipmentSlot](bit::ClientPacket& requestPacket)
+        {
+            requestPacket << sf::Uint32(ClientRequest::EquipItemFromLootToSlot);
+            requestPacket << sf::Uint32(equipmentSlot);
+            requestPacket << sf::Uint32(schema.id);
+
+            hudx->inventory->pendingInventoryRequests++;
+        },
+        [hudx, schema](bit::ServerPacket& responsePacket)
+        {
+            bool success;
+            responsePacket >> success;
+            hudx->lootMenu->syncInventory();
+
+            hudx->inventory->pendingInventoryRequests--;
+        }
+    );
+}
+
+
+void InventoryItemLabel::sendClientRequest_MoveInventoryItemToPosition(unsigned int slotPosition)
+{
+    // Networking:
+    // 1. Request the server move the item, which includes the swap process
+    // 2. This will naturally send one or two item updates which include the positioning information
+    // 3. Response is moot
+    Item::Schema schema = itemSchema;
+    Hud* hudx = hud;
+    hud->state->serverRequest(
+        [hudx, schema, slotPosition](bit::ClientPacket& requestPacket)
+        {
+            requestPacket << sf::Uint32(ClientRequest::MoveInventoryItemToPosition);
+            requestPacket << sf::Uint32(schema.id);
+            requestPacket << sf::Uint32(slotPosition);
+
+            hudx->inventory->pendingInventoryRequests++;
+        },
+        [hudx, schema](bit::ServerPacket& responsePacket)
+        {
+            bool success;
+            responsePacket >> success;
+
+            hudx->inventory->pendingInventoryRequests--;
+        }
+    );
+}
+
+
+void InventoryItemLabel::sendClientRequest_MoveEquippedItemToInventoryPosition(Character::EquipmentSlot equipmentSlot, unsigned int position)
+{
+    // Networking:
+    // 1. Request the server move the item, which includes the swap process
+    // 2. This will naturally send one or two item updates which include the positioning information
+    // 3. Response is moot
+    Item::Schema schema = itemSchema;
+    Hud* hudx = hud;
+    hud->state->serverRequest(
+        [hudx, schema, position, equipmentSlot](bit::ClientPacket& requestPacket)
+        {
+            requestPacket << sf::Uint32(ClientRequest::MoveEquippedItemToInventoryPosition);
+            requestPacket << sf::Uint32(equipmentSlot);
+            requestPacket << sf::Uint32(position);
+
+            hudx->inventory->pendingInventoryRequests++;
+        },
+        [hudx, schema](bit::ServerPacket& responsePacket)
+        {
+            bool success;
+            responsePacket >> success;
+
+            hudx->inventory->pendingInventoryRequests--;
+        }
+    );
+}
+
+
+void InventoryItemLabel::sendClientRequest_MoveLootItemToInventoryPosition(unsigned int position)
+{
+    // Networking:
+    // 1. Request the server move the item, which includes the swap process
+    // 2. This will naturally send one or two item updates which include the positioning information
+    // 3. Response is moot
+    Item::Schema schema = itemSchema;
+    Hud* hudx = hud;
+    hud->state->serverRequest(
+        [hudx, schema, position](bit::ClientPacket& requestPacket)
+        {
+            requestPacket << sf::Uint32(ClientRequest::MoveLootItemToInventoryPosition);
+            requestPacket << sf::Uint32(schema.id);
+            requestPacket << sf::Uint32(position);
+
+            hudx->inventory->pendingInventoryRequests++;
+        },
+        [hudx, schema](bit::ServerPacket& responsePacket)
+        {
+            bool success;
+            responsePacket >> success;
+            hudx->lootMenu->syncInventory();
+
+            hudx->inventory->pendingInventoryRequests--;
+        }
+    );
+}
+
+
+void InventoryItemLabel::sendClientRequest_MoveLootItemToLootPosition(unsigned int position)
+{
+    // Networking:
+    // 1. Request the server move the item, which includes the swap process
+    // 2. This will naturally send one or two item updates which include the positioning information
+    // 3. Response is moot
+    Item::Schema schema = itemSchema;
+    Hud* hudx = hud;
+    hud->state->serverRequest(
+        [hudx, schema, position](bit::ClientPacket& requestPacket)
+        {
+            requestPacket << sf::Uint32(ClientRequest::MoveLootItemToLootPosition);
+            requestPacket << sf::Uint32(schema.id);
+            requestPacket << sf::Uint32(position);
+
+            hudx->inventory->pendingInventoryRequests++;
+        },
+        [hudx, schema](bit::ServerPacket& responsePacket)
+        {
+            bool success;
+            responsePacket >> success;
+            hudx->lootMenu->syncInventory();
+
+            hudx->inventory->pendingInventoryRequests--;
+        }
+    );
+}
+
+
+void InventoryItemLabel::sendClientRequest_MoveEquippedItemToLootPosition(Character::EquipmentSlot equipmentSlot, unsigned int position)
+{
+    // Networking:
+    // 1. Request the server move the item, which includes the swap process
+    // 2. This will naturally send one or two item updates which include the positioning information
+    // 3. Response is moot
+    Item::Schema schema = itemSchema;
+    Hud* hudx = hud;
+    hud->state->serverRequest(
+        [hudx, schema, position, equipmentSlot](bit::ClientPacket& requestPacket)
+        {
+            requestPacket << sf::Uint32(ClientRequest::MoveEquippedItemToLootPosition);
+            requestPacket << sf::Uint32(equipmentSlot);
+            requestPacket << sf::Uint32(position);
+
+            hudx->inventory->pendingInventoryRequests++;
+        },
+        [hudx, schema](bit::ServerPacket& responsePacket)
+        {
+            bool success;
+            responsePacket >> success;
+            hudx->lootMenu->syncInventory();
+
+            hudx->inventory->pendingInventoryRequests--;
+        }
+    );
+}
+
+
+void InventoryItemLabel::sendClientRequest_MoveInventoryItemToLootPosition(unsigned int slotPosition)
+{
+    // Networking:
+    // 1. Request the server move the item, which includes the swap process
+    // 2. This will naturally send one or two item updates which include the positioning information
+    // 3. Response is moot
+    Item::Schema schema = itemSchema;
+    Hud* hudx = hud;
+    hud->state->serverRequest(
+        [hudx, schema, slotPosition](bit::ClientPacket& requestPacket)
+        {
+            requestPacket << sf::Uint32(ClientRequest::MoveInventoryItemToLootPosition);
+            requestPacket << sf::Uint32(schema.id);
+            requestPacket << sf::Uint32(slotPosition);
+
+            hudx->inventory->pendingInventoryRequests++;
+        },
+        [hudx, schema](bit::ServerPacket& responsePacket)
+        {
+            bool success;
+            responsePacket >> success;
+            hudx->lootMenu->syncInventory();
+
+            hudx->inventory->pendingInventoryRequests--;
+        }
+    );
+}
+
+
+void InventoryItemLabel::sendClientRequest_QuickMoveInventoryItemToLoot()
+{
+    // Networking:
+    // 1. Request the server move the item, which includes the swap process
+    // 2. This will naturally send one or two item updates which include the positioning information
+    // 3. Response is moot
+    Item::Schema schema = itemSchema;
+    Hud* hudx = hud;
+    hud->state->serverRequest(
+        [hudx, schema](bit::ClientPacket& requestPacket)
+        {
+            requestPacket << sf::Uint32(ClientRequest::QuickMoveInventoryItemToLoot);
+            requestPacket << sf::Uint32(schema.id);
+
+            hudx->inventory->pendingInventoryRequests++;
+        },
+        [hudx, schema](bit::ServerPacket& responsePacket)
+        {
+            bool success;
+            responsePacket >> success;
+            hudx->lootMenu->syncInventory();
+
+            hudx->inventory->pendingInventoryRequests--;
+        }
+    );
 }

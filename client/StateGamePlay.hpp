@@ -67,6 +67,7 @@ public:
     sf::Vector2f mousePositionInLevel;
     bit::FrameTimer fps;
     bool isTileSelectActive;
+    bool isShiftModifierDown;
     Target target;
 
     // Test Gui
@@ -120,6 +121,8 @@ public:
     void issueCommand(Command cmd);
 
     virtual bool handleInput(sf::Time &gameTime);
+
+    void captureModelessInput(sf::Time &gameTime);
 
     virtual bool update(sf::Time &gameTime);
 

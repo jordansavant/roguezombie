@@ -7,6 +7,7 @@
 #include "../../bitengine/Gui.hpp"
 #include "../../bitengine/Graphics.hpp"
 #include "../items/ItemClient.hpp"
+#include "../../server/Character.hpp"
 
 class InventoryIcon;
 class InventoryEquipmentSlot;
@@ -45,6 +46,26 @@ public:
     bool dropOntoLootSlot(InventoryLootSlot* slot);
 
     bool dropOntoActionSlot(ActionBarSlot* slot);
+
+    void sendClientRequest_EquipItemFromInventoryToSlot(Character::EquipmentSlot equipmentSlot);
+
+    void sendClientRequest_SwapEquipmentBySlot(Character::EquipmentSlot equipmentSlotA, Character::EquipmentSlot equipmentSlotB);
+
+    void sendClientRequest_EquipItemFromLootToSlot(Character::EquipmentSlot equipmentSlot);
+
+    void sendClientRequest_MoveInventoryItemToPosition(unsigned int position);
+
+    void sendClientRequest_MoveEquippedItemToInventoryPosition(Character::EquipmentSlot equipmentSlot, unsigned int position);
+
+    void sendClientRequest_MoveLootItemToInventoryPosition(unsigned int position);
+
+    void sendClientRequest_MoveLootItemToLootPosition(unsigned int position);
+
+    void sendClientRequest_MoveEquippedItemToLootPosition(Character::EquipmentSlot equipmentSlot, unsigned int position);
+
+    void sendClientRequest_MoveInventoryItemToLootPosition(unsigned int position);
+
+    void sendClientRequest_QuickMoveInventoryItemToLoot();
 
 };
 
