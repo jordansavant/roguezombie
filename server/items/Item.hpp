@@ -33,7 +33,8 @@ public:
         FootballPads,
         CombatBoots,
         RacingPants,
-        CleaningGloves
+        CleaningGloves,
+        GoldMedal,
     };
 
     enum CommandType

@@ -23,8 +23,6 @@ Its possible that an enemy can face the wrong direction when firing
 
 RZ Features
 
-IMPLEMENT TOTEMS (finish equipment)
-
 When a character attacks we should show graphics for attack and harm as well as sounds
 
 Need to ambient music, environmental sounds

@@ -38,6 +38,7 @@ public:
         Item::Type type;
         bit::Sprite* sprite;
         unsigned int quadIndex;
+        Character::EquipmentSlot slot;
     };
 
     // Equipment spriting
@@ -86,6 +87,8 @@ public:
     void syncSprites();
 
     static std::string getSpriteMoniker(Character::Type);
+
+    static bool isEquipmentRenderable(Character::EquipmentSlot e);
 
 };
 

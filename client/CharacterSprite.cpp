@@ -110,7 +110,7 @@ void CharacterSprite::update(sf::Time &gameTime)
         // EQUIPMENT SPRITES
         for(unsigned int i=0; i < equipmentProfiles.size(); i++)
         {
-            if(equipmentProfiles[i].sprite && i != Character::EquipmentSlot::WeaponSecondary && i != Character::EquipmentSlot::Totem)
+            if(equipmentProfiles[i].sprite && isEquipmentRenderable(equipmentProfiles[i].slot))
             {
                 bit::VertexHelper::positionQuad(&highlightMap->vertexArray[equipmentProfiles[i].quadIndex], r.x, r.y, z - zlayerAdd, spriteWidth, spriteHeight);
                 bit::VertexHelper::colorQuad(&highlightMap->vertexArray[equipmentProfiles[i].quadIndex], color);
@@ -200,8 +200,11 @@ void CharacterSprite::syncronizeEquipment()
         // If the character has a slot and its not the same as ours, change it
         if(character->hasEquipment[slot] && character->equipment[slot].schema.type != profile->type)
         {
-            unsetEquipmentSprite(slot);
-            setEquipmentSprite(slot, character->equipment[slot].schema.type);
+            if(isEquipmentRenderable(slot))
+            {
+                unsetEquipmentSprite(slot);
+                setEquipmentSprite(slot, character->equipment[slot].schema.type);
+            }
         }
         // If the character does not have a slot but we are rendering on, remove it
         else if(!character->hasEquipment[slot] && profile->sprite)
@@ -216,6 +219,7 @@ void CharacterSprite::setEquipmentSprite(Character::EquipmentSlot slot, Item::Ty
     equipmentProfiles[slot].type = type;
     equipmentProfiles[slot].sprite = spriteLoader->getSprite(Item::getSpriteName(type));
     equipmentProfiles[slot].sprite->applyToQuad(&highlightMap->vertexArray[equipmentProfiles[slot].quadIndex]);
+    equipmentProfiles[slot].slot = slot;
 }
 void CharacterSprite::unsetEquipmentSprite(Character::EquipmentSlot slot)
 {
@@ -291,4 +295,15 @@ std::string CharacterSprite::getSpriteMoniker(Character::Type t)
         case Character::Type::Ogre:
             return "Ogre";
     }
+}
+
+bool CharacterSprite::isEquipmentRenderable(Character::EquipmentSlot e)
+{
+    switch(e)
+    {
+        case Character::EquipmentSlot::WeaponSecondary:
+        case Character::EquipmentSlot::Totem:
+            return false;
+    }
+    return true;
 }

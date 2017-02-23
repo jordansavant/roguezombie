@@ -517,6 +517,16 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.armorEffectiveness = .1f;
 
             break;
+
+        case Type::GoldMedal:
+
+            i = new Item();
+            i->schema.CategoryBase = ItemCategory::Base::BaseJewelry;
+            i->schema.CategoryJewelry = ItemCategory::Jewelry::JewelryTotem;
+            i->schema.weight = .01;
+            i->schema.armorEffectiveness = 0;
+
+            break;
     }
 
     i->schema.id = id;
@@ -567,6 +577,9 @@ std::string Item::getTitle(Type type)
 
         case Type::CleaningGloves:
             return "Cleaning Gloves";
+
+        case Type::GoldMedal:
+            return "Gold Medal";
     }
 }
 
@@ -614,6 +627,9 @@ std::string Item::getDescription(Type type)
 
         case Type::CleaningGloves:
             return "Keep it clean";
+
+        case Type::GoldMedal:
+            return "Congrats you're #1";
     }
 }
 
@@ -694,6 +710,9 @@ std::string Item::getIconName(Type type)
 
         case Type::CleaningGloves:
             return "CleaningGloves";
+
+        case Type::GoldMedal:
+            return "GoldMedal";
     }
 }
 
