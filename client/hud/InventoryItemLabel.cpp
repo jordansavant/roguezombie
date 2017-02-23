@@ -90,6 +90,18 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, Item::Schema& itemSchema, float
                     label->dropResult(result);
                 }
             }
+            // If I am in an equipment slot
+            else if(label->currentEquipmentSlot)
+            {
+                // Attempt to move this item from its equipment slot to the inventory
+                InventoryPositionSlot* slot = hud->inventory->getOpenSlot();
+                if(slot && slot->acceptsLabel(label))
+                {
+                    bool result = label->dropOntoInventorySlot(slot);
+                    label->dropResult(result);
+                }
+            }
+
             // We don't shift modify anything in the action bar
         }
         else
