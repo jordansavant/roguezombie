@@ -60,6 +60,7 @@ void CharacterSprite::update(sf::Time &gameTime)
     facingRight = character->schema.direction.x > 0 || character->schema.direction.y < 0;
 
     // Calculate render position given sprite information and the isometric rendering
+    float zlayerAdd = .00001;
     float spriteWidth = (float)width;
     float spriteHeight = (float)height;
     float xFootOffset = (float)baseOffsetX;
@@ -111,7 +112,7 @@ void CharacterSprite::update(sf::Time &gameTime)
         {
             if(equipmentProfiles[i].sprite && i != Character::EquipmentSlot::WeaponSecondary)
             {
-                bit::VertexHelper::positionQuad(&highlightMap->vertexArray[equipmentProfiles[i].quadIndex], r.x, r.y, z, spriteWidth, spriteHeight);
+                bit::VertexHelper::positionQuad(&highlightMap->vertexArray[equipmentProfiles[i].quadIndex], r.x, r.y, z - zlayerAdd, spriteWidth, spriteHeight);
                 bit::VertexHelper::colorQuad(&highlightMap->vertexArray[equipmentProfiles[i].quadIndex], color);
                 equipmentProfiles[i].sprite->applyToQuad(&highlightMap->vertexArray[equipmentProfiles[i].quadIndex]);
                 bit::VertexHelper::flipQuad(&highlightMap->vertexArray[equipmentProfiles[i].quadIndex], !facingRight, false);

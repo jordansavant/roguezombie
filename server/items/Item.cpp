@@ -484,7 +484,37 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.CategoryBase = ItemCategory::Base::BaseArmor;
             i->schema.CategoryArmor = ItemCategory::Armor::ArmorChest;
             i->schema.weight = 5;
-            i->schema.armorEffectiveness = .8f;
+            i->schema.armorEffectiveness = .4f;
+
+            break;
+
+        case Type::CombatBoots:
+
+            i = new Item();
+            i->schema.CategoryBase = ItemCategory::Base::BaseArmor;
+            i->schema.CategoryArmor = ItemCategory::Armor::ArmorFoot;
+            i->schema.weight = 2;
+            i->schema.armorEffectiveness = .5f;
+
+            break;
+
+        case Type::RacingPants:
+
+            i = new Item();
+            i->schema.CategoryBase = ItemCategory::Base::BaseArmor;
+            i->schema.CategoryArmor = ItemCategory::Armor::ArmorLeg;
+            i->schema.weight = 2;
+            i->schema.armorEffectiveness = .3f;
+
+            break;
+
+        case Type::CleaningGloves:
+
+            i = new Item();
+            i->schema.CategoryBase = ItemCategory::Base::BaseArmor;
+            i->schema.CategoryArmor = ItemCategory::Armor::ArmorHand;
+            i->schema.weight = .2;
+            i->schema.armorEffectiveness = .1f;
 
             break;
     }
@@ -528,6 +558,15 @@ std::string Item::getTitle(Type type)
 
         case Type::FootballPads:
             return "Football Pads";
+
+        case Type::CombatBoots:
+            return "Combat Boots";
+
+        case Type::RacingPants:
+            return "Racing Pants";
+
+        case Type::CleaningGloves:
+            return "Cleaning Gloves";
     }
 }
 
@@ -566,6 +605,15 @@ std::string Item::getDescription(Type type)
 
         case Type::FootballPads:
             return "American that is...";
+
+        case Type::CombatBoots:
+            return "Function over form";
+
+        case Type::RacingPants:
+            return "Protection and badassery";
+
+        case Type::CleaningGloves:
+            return "Keep it clean";
     }
 }
 
@@ -594,6 +642,15 @@ std::string Item::getSpriteName(Type type)
 
         case Type::FootballPads:
             return "FootballPads";
+
+        case Type::CombatBoots:
+            return "CombatBoots";
+
+        case Type::RacingPants:
+            return "RacingPants";
+
+        case Type::CleaningGloves:
+            return "CleaningGloves";
     }
 }
 
@@ -628,6 +685,15 @@ std::string Item::getIconName(Type type)
 
         case Type::FootballPads:
             return "FootballPads";
+
+        case Type::CombatBoots:
+            return "CombatBoots";
+
+        case Type::RacingPants:
+            return "RacingPants";
+
+        case Type::CleaningGloves:
+            return "CleaningGloves";
     }
 }
 

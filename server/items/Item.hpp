@@ -31,6 +31,9 @@ public:
         Brick,
         Grenade,
         FootballPads,
+        CombatBoots,
+        RacingPants,
+        CleaningGloves
     };
 
     enum CommandType
