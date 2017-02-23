@@ -110,7 +110,7 @@ void CharacterSprite::update(sf::Time &gameTime)
         // EQUIPMENT SPRITES
         for(unsigned int i=0; i < equipmentProfiles.size(); i++)
         {
-            if(equipmentProfiles[i].sprite && i != Character::EquipmentSlot::WeaponSecondary)
+            if(equipmentProfiles[i].sprite && i != Character::EquipmentSlot::WeaponSecondary && i != Character::EquipmentSlot::Totem)
             {
                 bit::VertexHelper::positionQuad(&highlightMap->vertexArray[equipmentProfiles[i].quadIndex], r.x, r.y, z - zlayerAdd, spriteWidth, spriteHeight);
                 bit::VertexHelper::colorQuad(&highlightMap->vertexArray[equipmentProfiles[i].quadIndex], color);
