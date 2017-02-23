@@ -220,6 +220,12 @@ void Inventory::buildItemList(bool force)
     // Check if it matches before jacking with the GUI
     if(!force)
     {
+        // Make sure we dont have pending equipment packets
+        if(pendingInventoryRequests > 0)
+        {
+            return;
+        }
+
         bool match = true;
 
         // Check that all items on the player are correct in the GUI
