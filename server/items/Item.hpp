@@ -30,6 +30,7 @@ public:
         Medkit,
         Brick,
         Grenade,
+        FootballPads,
     };
 
     enum CommandType

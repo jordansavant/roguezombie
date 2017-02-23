@@ -477,6 +477,16 @@ Item* Item::create(Type type, unsigned int id)
             };
 
             break;
+
+        case Type::FootballPads:
+
+            i = new Item();
+            i->schema.CategoryBase = ItemCategory::Base::BaseArmor;
+            i->schema.CategoryArmor = ItemCategory::Armor::ArmorChest;
+            i->schema.weight = 5;
+            i->schema.armorEffectiveness = .8f;
+
+            break;
     }
 
     i->schema.id = id;
@@ -515,6 +525,9 @@ std::string Item::getTitle(Type type)
 
         case Type::Grenade:
             return "Grenade";
+
+        case Type::FootballPads:
+            return "Football Pads";
     }
 }
 
@@ -550,6 +563,9 @@ std::string Item::getDescription(Type type)
 
         case Type::Grenade:
             return "Explodes in a radius";
+
+        case Type::FootballPads:
+            return "American that is...";
     }
 }
 
@@ -575,6 +591,9 @@ std::string Item::getSpriteName(Type type)
 
         case Type::Crowbar:
             return "Crowbar";
+
+        case Type::FootballPads:
+            return "FootballPads";
     }
 }
 
@@ -606,6 +625,9 @@ std::string Item::getIconName(Type type)
 
         case Type::Grenade:
             return "Grenade";
+
+        case Type::FootballPads:
+            return "FootballPads";
     }
 }
 
