@@ -99,13 +99,13 @@ void TileClient::clientUpdate(sf::Time &gameTime)
     }
 
     // Default coloring to the lighting engine
-    sf::Color moveColor = getMoveColor();
-    sf::Color interactColor = getInteractColor();
-    sf::Color c;
     int r = schema.rshade * schema.illumination;
     int g = schema.gshade * schema.illumination;
     int b = schema.bshade * schema.illumination;
-    c = sf::Color(r, g, b);
+    sf::Color moveColor = getMoveColor();
+    sf::Color interactColor = getInteractColor();
+    sf::Color c(r, g, b);
+    sf::Color defaultColor(r, g, b);
 
     // Highlighting based on game mode
     switch(level->state->mode)
@@ -205,7 +205,7 @@ void TileClient::clientUpdate(sf::Time &gameTime)
                 if(bit::VectorMath::distance(schema.x, schema.y, level->playerCharacter->BodyClient::schema.x, level->playerCharacter->BodyClient::schema.y) <= level->selectRange * schema.width)
                 {
                     // Highlight
-                    c = getInRangeColor();
+                    c = RZConfig::tileTargetInRangeRadius;
 
                     // Listen for selection
                     if(level->state->isTileSelectActive)
@@ -237,7 +237,9 @@ void TileClient::clientUpdate(sf::Time &gameTime)
     }
 
     // Apply chosen coloring
-    bit::VertexHelper::colorQuad(quad, c);
+    bit::ColorMixer cm(defaultColor);
+    cm.mixAdditive(c);
+    bit::VertexHelper::colorQuad(quad, cm.toColor());
 }
 
 void TileClient::reinitialize()
@@ -256,33 +258,33 @@ void TileClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 
 sf::Color TileClient::getMoveColor()
 {
-    int moveR = bit::Math::clamp(RZConfig::tileMoveColor.r * schema.illumination * 4, 0, 255);
-    int moveG = bit::Math::clamp(RZConfig::tileMoveColor.g * schema.illumination * 4, 0, 255);
-    int moveB = bit::Math::clamp(RZConfig::tileMoveColor.b * schema.illumination * 4, 0, 255);
+    int moveR = bit::Math::clamp((float)RZConfig::tileMoveColor.r * schema.illumination * 4, 0, 255);
+    int moveG = bit::Math::clamp((float)RZConfig::tileMoveColor.g * schema.illumination * 4, 0, 255);
+    int moveB = bit::Math::clamp((float)RZConfig::tileMoveColor.b * schema.illumination * 4, 0, 255);
     return sf::Color(moveR, moveG, moveB);
 }
 
 sf::Color TileClient::getInteractColor()
 {
-    int moveR = bit::Math::clamp(RZConfig::tileInteractColor.r * schema.illumination * 4, 0, 255);
-    int moveG = bit::Math::clamp(RZConfig::tileInteractColor.g * schema.illumination * 4, 0, 255);
-    int moveB = bit::Math::clamp(RZConfig::tileInteractColor.b * schema.illumination * 4, 0, 255);
+    int moveR = bit::Math::clamp((float)RZConfig::tileInteractColor.r * schema.illumination * 4, 0, 255);
+    int moveG = bit::Math::clamp((float)RZConfig::tileInteractColor.g * schema.illumination * 4, 0, 255);
+    int moveB = bit::Math::clamp((float)RZConfig::tileInteractColor.b * schema.illumination * 4, 0, 255);
     return sf::Color(moveR, moveG, moveB);
 }
 
 sf::Color TileClient::getOutOfRangeColor()
 {
-    int moveR = bit::Math::clamp(RZConfig::tileTargetOutOfRange.r * schema.illumination * 4, 0, 255);
-    int moveG = bit::Math::clamp(RZConfig::tileTargetOutOfRange.g * schema.illumination * 4, 0, 255);
-    int moveB = bit::Math::clamp(RZConfig::tileTargetOutOfRange.b * schema.illumination * 4, 0, 255);
+    int moveR = bit::Math::clamp((float)RZConfig::tileTargetOutOfRange.r * schema.illumination * 4, 0, 255);
+    int moveG = bit::Math::clamp((float)RZConfig::tileTargetOutOfRange.g * schema.illumination * 4, 0, 255);
+    int moveB = bit::Math::clamp((float)RZConfig::tileTargetOutOfRange.b * schema.illumination * 4, 0, 255);
     return sf::Color(moveR, moveG, moveB);
 }
 
 sf::Color TileClient::getInRangeColor()
 {
-    int moveR = bit::Math::clamp(RZConfig::tileTargetInRange.r * schema.illumination * 4, 0, 255);
-    int moveG = bit::Math::clamp(RZConfig::tileTargetInRange.g * schema.illumination * 4, 0, 255);
-    int moveB = bit::Math::clamp(RZConfig::tileTargetInRange.b * schema.illumination * 4, 0, 255);
+    int moveR = bit::Math::clamp((float)RZConfig::tileTargetInRange.r * schema.illumination * 4, 0, 255);
+    int moveG = bit::Math::clamp((float)RZConfig::tileTargetInRange.g * schema.illumination * 4, 0, 255);
+    int moveB = bit::Math::clamp((float)RZConfig::tileTargetInRange.b * schema.illumination * 4, 0, 255);
     return sf::Color(moveR, moveG, moveB);
 }
 
@@ -292,9 +294,10 @@ sf::Color TileClient::getInRangeRadiusColor(float distanceToCenter, unsigned int
     int g = schema.gshade * schema.illumination;
     int b = schema.bshade * schema.illumination;
 
-    float illumination = 1 - (distanceToCenter / (float)(radius * schema.width));
-    int moveR = bit::Math::clamp(RZConfig::tileTargetInRangeRadius.r * illumination * 2.5, r, 255);
-    int moveG = bit::Math::clamp(RZConfig::tileTargetInRangeRadius.g * illumination * 2.5, g, 255);
-    int moveB = bit::Math::clamp(RZConfig::tileTargetInRangeRadius.b * illumination * 2.5, b, 255);
+    float ratio = 1 - (distanceToCenter / (float)(radius * schema.width));
+    float illumination = bit::Math::lerp(.1, .3, ratio);
+    int moveR = bit::Math::clamp((float)RZConfig::tileTargetInRangeRadius.r * illumination * 2.5, r, 255);
+    int moveG = bit::Math::clamp((float)RZConfig::tileTargetInRangeRadius.g * illumination * 2.5, g, 255);
+    int moveB = bit::Math::clamp((float)RZConfig::tileTargetInRangeRadius.b * illumination * 2.5, b, 255);
     return sf::Color(moveR, moveG, moveB);
 }

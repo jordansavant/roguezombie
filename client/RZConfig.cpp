@@ -15,7 +15,7 @@ sf::Color RZConfig::tileInteractColor(0, 255, 0);
 sf::Color RZConfig::tileTargetedColor(0, 255, 0);
 sf::Color RZConfig::tileMoveColor(255, 255, 255);
 sf::Color RZConfig::tileTargetOutOfRange(255, 0, 0);
-sf::Color RZConfig::tileTargetInRange(255, 255, 0);
+sf::Color RZConfig::tileTargetInRange(255, 0, 0);
 sf::Color RZConfig::tileTargetInRangeRadius(255, 255, 0);
 
 float RZConfig::getDrawDepthForGameplay(float yPosition)

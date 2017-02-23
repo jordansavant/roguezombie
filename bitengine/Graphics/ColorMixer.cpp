@@ -10,6 +10,16 @@ bit::ColorMixer::ColorMixer(float r, float g, float b, float a)
 {
 }
 
+bit::ColorMixer::ColorMixer(sf::Color &color)
+    : r((float)color.r / 255), g((float)color.g / 255), b((float)color.b / 255), a((float)color.a / 255)
+{
+}
+
+void bit::ColorMixer::mixAdditive(sf::Color &color)
+{
+    return mixAdditive((float)color.r / 255, (float)color.g / 255, (float)color.b / 255, (float)color.a / 255);
+}
+
 void bit::ColorMixer::mixAdditive(float newR, float newG, float newB, float newA)
 {
     float rA = 0;
@@ -30,4 +40,9 @@ void bit::ColorMixer::mixAdditive(float newR, float newG, float newB, float newA
     r = rR;
     g = rG;
     b = rB;
+}
+
+sf::Color bit::ColorMixer::toColor()
+{
+    return sf::Color(r * 255, g * 255, b * 255, a * 255);
 }
