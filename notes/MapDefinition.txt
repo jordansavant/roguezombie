@@ -1,0 +1,185 @@
+<map>
+	<rows>2</rows>
+	<columns>2</columns>
+	<tileMap>1, 2, 3, 4</tileMap>
+	<structureMap>0, 0, 1, 2</structureMap>
+	<characterMap>1, 2, 0, 0</characterMap>
+	<lightMap>0, 0, 1, 0</lightMap>
+	<tiles>
+		<tile>
+			<type>1</type>
+		</tile>
+		<tile>
+			<type>1</type>
+		</tile>
+		<tile>
+			<type>2</type>
+		</tile>
+		<tile>
+			<type>2</type>
+		</tile>
+	</tile>
+	<structures>
+		<structure>
+			<type>1</type>
+			<isOpen>0</isOpen>
+			<isLocked>0</isLocked>
+			<inventory></inventory>
+			<lights>
+				<light>
+					<radius>5</radius>
+					<red>255</red>
+					<green>50</green>
+					<blue>255</blue>
+					<brightness>.35</brightness>
+				</light>
+			</lights>
+		</structure>
+		<structure>
+			<type>2</type>
+			<isOpen>0</isOpen>
+			<isLocked>1</isLocked>
+			<inventory>
+				<slot>
+					<position>2</position>
+					<item>
+						<type>12</type>
+					</item>
+				</slot>
+			</inventory>
+			<lights></lights>
+		</structure>
+	</structures>
+	<characters>
+		<character>
+			<type>5</type>
+			<inventory>
+				<slot>
+					<position>2</position>
+					<item>
+						<type>10</type>
+					</item>
+				</slot>
+			</inventory>
+			<lights>
+				<light>
+					<radius>5</radius>
+					<red>255</red>
+					<green>50</green>
+					<blue>255</blue>
+					<brightness>.35</brightness>
+				</light>
+			</lights>
+			<headItem>
+				<type>1</type>
+			</headItem>
+			<chestItem>
+				<type>2</type>
+			</chestItem>
+			<legItem>
+				<type>3</type>
+			</legItem>
+			<handsItem>
+				<type>4</type>
+			</handsItem>
+			<feetItem>
+				<type>5</type>
+			</feetItem>
+			<totemItem>
+				<type>6</type>
+			</totemItem>
+		</character>
+	</characters>
+</map>
+	
+
+Level Definition
+{
+	Rows - Number of rows in the map
+	Columns - Number of columns in the map
+	Tile Map
+		- A 2-dimensional array in rows and columns size
+		- Each element is an integer that corresponds to the tile definition id
+		- 0 represents a void tile
+	Structure Map
+		- A 2-dimensional array in rows and columns size
+		- Each element is an integer that corresponds to the structure definition id
+		- 0 represents no structure
+	Character Map
+		- A 2-dimensional array in rows and columns size
+		- Each element is an integer that corresponds to the character definition id
+		- 0 represents no character
+	Light Map
+		- A 2-dimensional array in rows and columns size
+		- Each element is an integer that corresponds to the light definiton id
+		- 0 represents no light
+}
+	
+Tile Definition
+{
+	Type - The type of ground tile this is, e.g. water or concrete
+}
+
+Structure Definition
+{
+	Type - The type of structure tile
+  // States, a union of all states used by structures
+	IsLocked
+	IsOpened
+  // Inventory and Lights, see corresponding definitions
+	HasInventory
+	Inventory
+	HasLights
+	LightCollection
+}
+
+
+Character Definition
+{
+	Type - The type of character
+  // Inventory and Lights, see corresponding definitions
+	HasInventory
+	Inventory
+	HasLights
+	LightCollection
+  // Item definitions for equipped items
+	HeadItem
+	ChestItem
+	LegItem
+	FeetItem
+	HandsItem
+	TotemItem
+  // Stats and are factory built
+}
+
+
+Item Definition
+{
+	Type - The type of item, e.g. Hardhat
+  // Categories and stats are factory built
+}
+Inventory Definition
+{
+  // A collection of items and a corresponding inventory position
+	{
+		Position
+		Item
+	},
+	...
+}
+
+Light Definition
+{
+	Radius - Number of tiles that the light will radiate
+	Red - unsigned char of red attribute
+	Green
+	Blue
+	Brightness - 0-1 range of luminescence the light has
+}
+LightCollection Definition
+{
+	{
+		Light
+	},
+	...
+}

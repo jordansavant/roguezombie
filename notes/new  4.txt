@@ -1,0 +1,21 @@
+A PHP Webapp for the level editor
+
+Requirements
+	- Ability to create and edit a collection of maps known as a tower
+	- The tower will load the maps into a drop down that will load the editor you can move back and forth from
+	- The Map Editor
+		- Must be able to define number of rows and colums
+		- Must print the map as a 2D tile
+			- backdrop is all black cells
+			- a cell with a tile has a dark gray color (extendable for types)
+			- a cell with a struture has a white color (extendable for types)
+			- a cell with a character has a green color (extendable for types)
+		- Must be able to toggle the visibility of tiles, structures and characters
+		- Must be able to click and edit a tile
+		- The Tile Editor
+			- Form for editing a tile
+			- Form for editing the structure of a tile
+			- Form for editing the character of a tile
+			- Saving the form will create/remove/update the entity based on the form inputs
+			- It will write the map file
+		

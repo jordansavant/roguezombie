@@ -1,0 +1,137 @@
+#include "InteractionMenu.hpp"
+#include "Hud.hpp"
+#include "Frame.hpp"
+#include "../../server/ClientRequest.hpp"
+#include "../../bitengine/Input.hpp"
+#include "../../bitengine/Network.hpp"
+#include "../StateGamePlay.hpp"
+#include "../LevelClient.hpp"
+#include "../CharacterClient.hpp"
+#include "../RogueZombieGame.hpp"
+#include "../mission/MissionClient.hpp"
+#include "../../server/Interaction.hpp"
+#include "../TileClient.hpp"
+
+InteractionMenu::InteractionMenu(Hud* _hud)
+    : Frame(_hud, 50, 0, 300, 200, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), isActive(false), tileId(0), tileClient(NULL)
+{
+    useBottomPointer = true;
+    managesOpacity = true;
+    opacity = 0;
+    canHaveFocus = false;
+
+}
+
+void InteractionMenu::update(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    bit::Container::update(window, gameTime);
+}
+
+void InteractionMenu::updateTargets(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    Frame::updateTargets(window, gameTime);
+}
+
+void InteractionMenu::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    if(tileClient)
+    {
+        sf::Vector2i mapping = window.mapCoordsToPixel(sf::Vector2f(tileClient->centerRenderX, tileClient->centerRenderY));
+        left = mapping.x - width / 2;
+        top = mapping.y - height - tileClient->height;
+    }
+    else
+    {
+        left = 100000;
+    }
+    Frame::updateReals(window, gameTime);
+}
+
+void InteractionMenu::activate()
+{
+    isActive = true;
+    show();
+}
+
+void InteractionMenu::deactivate()
+{
+    tileId = 0;
+    tileClient = NULL;
+    isActive = false;
+    clearChildren();
+
+    hide();
+}
+
+void InteractionMenu::hide()
+{
+    canHaveFocus = false;
+    clearEffects();
+    immediateEffect(new bit::FadeEffect(150, .5, bit::Easing::Linear));
+}
+
+void InteractionMenu::show()
+{
+    canHaveFocus = true;
+    clearEffects();
+    immediateEffect(new bit::FadeEffect(150, Hud::popupOpacity));
+}
+
+void InteractionMenu::handleInteractionTree(bit::ServerPacket &packet, unsigned int tileId)
+{
+    unsigned int optionSize;
+    packet >> optionSize;
+
+    clearChildren();
+
+    this->tileId = tileId;
+    this->tileClient = hud->state->levelClient->tiles[tileId];
+    
+    int y = 10;
+    int w = 1;
+    int fontSize = 24;
+    for(unsigned int i=0; i < optionSize; i++)
+    {
+        InteractionMenu* m = this;
+        Interaction::Type it;
+        bit::NetworkHelper::unpackEnum<sf::Uint32, Interaction::Type>(packet, it);
+        
+        bit::Label* option = new bit::Label(15, y, 0, 0, bit::Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+        option->setSfFontSize(fontSize);
+        option->setSfFont(hud->journalFont);
+        option->normalColor = sf::Color(0, 255, 0);
+        option->focusedColor = sf::Color(255, 255, 255);
+        option->setSfFontString(Interaction::getTitle(it));
+        option->canHaveFocus = true;
+        option->paddingRight = 10;
+        option->paddingBottom = 10;
+        option->opacity = 0;
+        option->onActivate = [it, m, tileId] (Element* e){
+            InteractionMenu* mx = m;
+            Interaction::Type itx(it);
+            unsigned int tileIdx = tileId;
+            m->hud->state->serverRequest(
+                [itx, tileIdx, mx] (bit::ClientPacket &packet) {
+                    packet << sf::Uint32(ClientRequest::ProcessInteractionForBodyOnTile);
+                    packet << sf::Uint32(itx);
+                    packet << sf::Uint32(tileIdx);
+                },
+                [itx, tileIdx, mx] (bit::ServerPacket &packet) {
+                    mx->hud->state->handleInteractionResponse(tileIdx, itx, packet);
+                }
+            );
+        };
+        addChild(option);
+
+        int wc = Interaction::getTitle(it).size();
+        w = std::max(w, wc);
+
+        y += 30;
+    }
+
+
+    // change size based on occurences
+    float targetCharWidth = .55f;
+    targetHeight = 40 + fontSize * optionSize;
+    targetWidth = 60 + (int)((float)(fontSize * w * targetCharWidth));
+}

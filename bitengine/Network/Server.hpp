@@ -47,9 +47,9 @@ namespace bit
             Request,                    // tell server of a request that guarantees a response
         };
 
-		void start();
+        void start();
 
-		void stop();
+        void stop();
 
         // Server Event Packets
 
@@ -69,7 +69,7 @@ namespace bit
         sf::Time clientTimeoutTime;
         unsigned int maxConnectedClients;
         unsigned int connectedClients;
-		unsigned int clientIdentifier;
+        unsigned int clientIdentifier;
         std::vector<RemoteClient*> clients;
 
         void setListeningState(bool state);
@@ -88,17 +88,17 @@ namespace bit
 
         void handleIncomingPackets();
 
-        void handlePacket(ClientPacket &packet, RemoteClient &receivingClient);
-
         void handleConnections();
+
+        void handlePacket(ClientPacket &packet, RemoteClient &receivingClient);
 
         void handleDisconnections();
 
-        void broadcastMessage(std::string &message);
+        void handleNewClient(RemoteClient &client);
+
+        void sendWorldInitialization(RemoteClient &client);
 
         void sendToAllClients(ServerPacket &packet);
-
-        void handleNewClient(RemoteClient &client);
 
         void kickClient(bit::RemoteClient &client, unsigned int kickCode);
 

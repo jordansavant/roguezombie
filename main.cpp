@@ -1,22 +1,23 @@
 #include "bitengine/System.hpp"
-#include "game/RogueZombieGame.hpp"
-#include "game/RogueZombieServer.hpp"
+#include "bitengine/System/tinyxml2.h"
+#include "client/RogueZombieGame.hpp"
+#include "server/RogueZombieServer.hpp"
+#include "ResourcePath.h"
 
 int main(int argc, char* argv[])
 {
-    bit::Output::Debug(argc);
     srand(time(NULL));
 
-    if(true || argc == 1)
+    if(argc == 1)
     {
-	    RogueZombieGame game;
-	    game.run();
+        RogueZombieGame game;
+        game.run();
     }
     else
     {
-	    RogueZombieServer server;
+        RogueZombieServer server;
         server.run();
     }
 
-	return 0;
+    return 0;
 }

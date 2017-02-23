@@ -1,0 +1,110 @@
+All levels can have Entrances and Exits
+
+Exit
+	- When the tile is entered will unload the character from the current level
+	- After unload they will be moved to the next level
+	- Every exit points to a next level and an Entrance for that level
+	
+Entrance
+	- The tile that a player is loaded on to if they enter the level
+	- All level entry needs to designate *what* entrance to appear at
+	- An entrance can consist of one or more tiles in a set that allow for multiple characters
+	  to enter for an overflow
+
+Level
+	- Can have 0 or more Entrances and Exits
+	- Transitioning a character from one level to another transfers the in-memory instance
+		- this reduces copy complexity
+	- ExitCharacter(Character*, ToLevelId, ToEntranceId)
+		- Removes the character from all management lists
+		- Hands the character to the server to make the transition server.TransitionCharacter()
+	- EnterCharacter(Character*, EntranceId)
+		- Searches all tiles for an open one with the entrance id, and loads the character there
+			- Also places character in management lists if successful
+			- If no room in the inn, reject the operation and keep the server in queue?
+	// Player versions
+	- ExitPlayer() // same but also moves the player
+	- EnterPlayer() // same but accepts a player
+	
+Server
+	- TransitionCharacter(Character*, ToLevelId, ToEntranceId)
+		- Queues the transition request
+		- Searches for the level, if not found, loads it into memory
+		- Tells the level to enter the character
+			- If it is rejected, requeue the request
+	- TransitionPlayer(Player*, ToLevelId, ToEntranceId) // similar but allows for networking interrupts
+
+	
+Game Starting Entrances
+- A level pack can have a starting level and starting entrance id
+- This is used to drop newly created players into the world
+
+Game Victory Exits
+- A level should support exits that are specially wired to run game over events
+- These do not point to other levels but should point to custom client routines
+	- An example routine
+		- Blacken the screen
+		- Disconnect from server gracefully
+		- Go to endGameState
+- This operation can be supported by a special game victory packet event
+- These tiles if they act as game victories need to not signify transitioning levels, but ending the game
+
+Game Death and Spectation Support
+- A concept is to allow a player to see from the eyes of another player?
+	- This means that the player detaches from the character when the character dies
+	- Right now only 1-1 relationships exist between characters and players
+	- Removes entire workflow of ghost actions and game mode
+	- Removes workflow of visible tiles for spectation, they just see the other player
+	- If we coded in a spectator mode, which was a secondary, nullable character on the player
+		- We could support loading and tracking that character in the level they are in
+		- Has event baggage for level transitions (not too bad a deal)
+	- When their character dies it can be nullified "de-playered"
+		- It is still managed by the game as a corpse but has no attached character
+	- When a player heart is resurrected, we simply build them a new character and wire it up
+	- For networking, if a player has no character but has a spectation, just run LoS on it and pack it over
+	- Also allows for the possibility of spectating NPCs! Cool!
+- Also, what if we wanted a player to be a ghost character of some type?
+	- If they were a character, then our current binding situation of player and character is not an issue
+	- We are guaranteed a player character, we just now support a special ghost state
+	- They could end up only being able to traverse levels up to maximum explored sight of another character
+		- Or more if we allow them? Would they take turns? How would that work?
+		- Lots of complication with this
+- What if they could peruse all levels regardless?
+	- If we supported the nullification of characters (for deaths) and did not support spectation
+	- We would need to support a special game mode that listened to controls for spectation mode
+	- This would allow them to traverse all loaded levels in memory
+	- We would need to mark all tiles that have been explored by players LoS to limit them in the presentation to spectators
+	- For fully explored levels you would never be sending a subset of data, could be non-performant
+- I think the Player Spectating another Player Character is the best bet right now
+
+In order for Tiles to support the ability to be connected with entrances and exits
+they need special structure defs to support in game. A tile can support more than one entrance so that
+multiple entrances can overflow into one another. For instance a ladder and a vent can be near eachother
+the ladders closest tile can have two entrances, one for the ladder and one for the vent, but the ladder
+has priority 0 and the vent priority 1, meaning that if a character enters via ladder he pops out there,
+a second player would.. you get the picture sheesh...
+
+TileDef:
+	Type // visual type
+	EnterEvents // custom events the game can use to run special routines on entering the tile
+	ExitEvents // custom events the game can use to run special routings on exiting the tile (not commonly used)
+	Entrances // collection of supported entrances (multiple entrances can overlap the same tile)
+
+EntranceDef
+	Id
+	Priority // 0+ priority for spawn placement (e.g. overflow tiles)
+	
+EventDef:
+	Type // type of event
+	// collection of all supported properties of events
+	TargetLevelId // used for GoToLevel
+	TargetEntranceId // usef for GoToLevel
+	
+EventTypes:
+	- GameVictory
+	- GameDefeat
+	- GoToLevel
+	
+	
+	
+	

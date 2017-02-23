@@ -1,0 +1,49 @@
+
+Server Level State
+
+	Free
+	
+	Combat
+	
+	
+Client State
+		
+	PlayMode
+		onEnter
+		onUpdate
+			- listenToCameraControls()
+			FreeMode
+				- listenToClickMoveCommands()
+			CombatMode
+				- listenToClickCombatCommands()
+		onExit
+		
+	InteractionMode
+		- NA
+	
+	DialogMode
+		- NA
+	
+	LootMode
+		onEnter
+			- Open Inventory HUD
+			- Open Loot HUD
+		onUpdate
+			- listenToHotkeys()
+			- Generally allows UI operations to make API requests related to inventory
+		onExit
+			- API::CloseInventory
+			- Close Inventory HUD
+			- Close Loot HUD
+			
+	InventoryMode
+		onEnter
+			- Open Inventory HUD
+		onUpdate
+			- listenToHotKeys()
+			- Generally allow UI operations to make API requests related to inventory
+		onExit
+			- Close Inventory HUD
+	
+	OptionsMode
+		- NA

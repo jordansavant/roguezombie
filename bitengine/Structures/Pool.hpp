@@ -16,42 +16,42 @@ namespace bit
         {
         }
 
-	    Pool(int count)
+        Pool(int count)
             : maximumCreated(0), factoryMethod(NULL)
-	    {
-		    add(count);
-	    }
+        {
+            add(count);
+        }
 
         Pool(int count, std::function<T*(void)> factoryMethod)
             : maximumCreated(0), factoryMethod(factoryMethod)
-	    {
-		    add(count);
-	    }
+        {
+            add(count);
+        }
 
-	    ~Pool()
-	    {
+        ~Pool()
+        {
             for(unsigned int i = 0; i < pool.size(); i++)
-		    {
-			    delete pool[i];
-		    }
-	    }
+            {
+                delete pool[i];
+            }
+        }
 
-	    std::vector<T*> pool;
+        std::vector<T*> pool;
         unsigned int maximumCreated;
         std::function<T*(void)> factoryMethod;
 
-	    void add(int count)
-	    {
+        void add(int count)
+        {
             for(int i = 0; i < count; i++)
-		    {
-			    T* ob = create();
-			    pool.push_back(ob);
+            {
+                T* ob = create();
+                pool.push_back(ob);
                 maximumCreated = std::max((unsigned int)maximumCreated, (unsigned int)pool.size());
-		    }
-	    }
+            }
+        }
 
-	    T* fetch()
-	    {
+        T* fetch()
+        {
             T* ob = NULL;
 
             if(pool.size() > 0)
@@ -64,15 +64,15 @@ namespace bit
                 ob = create();
             }
 
-		    return ob;
-	    }
+            return ob;
+        }
 
-	    void recycle(T* ob)
-	    {
-		    ob->reset();
+        void recycle(T* ob)
+        {
+            ob->reset();
             pool.push_back(ob);
             maximumCreated = std::max((unsigned int)maximumCreated, (unsigned int)pool.size());
-	    }
+        }
 
         T* create()
         {

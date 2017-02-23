@@ -10,10 +10,10 @@ bit::Server::Server()
       thread(&Server::executionThread, this),
       waitingThreadEnd(false),
       isListening(false),
-      clientTimeoutTime(sf::seconds(5)),
+      clientTimeoutTime(sf::seconds(20)),
       maxConnectedClients(16),
       connectedClients(0),
-	  clientIdentifier(0),
+      clientIdentifier(0),
       clients(1)
 {
     listenerSocket.setBlocking(false);
@@ -36,14 +36,14 @@ bit::Server::~Server()
 
 void bit::Server::start()
 {
-	thread.launch();
+    thread.launch();
 }
 
 void bit::Server::stop()
 {
     // Send server shutdown packet
     ServerPacket packet;
-    packet << static_cast<sf::Int32>(Server::ServerPacketType::Shutdown);
+    packet << static_cast<sf::Uint32>(Server::ServerPacketType::Shutdown);
     preparePacket_Shutdown(packet);
     sendToAllClients(packet);
 
@@ -134,7 +134,7 @@ void bit::Server::tick()
         if(client->isConfirmed)
         {
             ServerPacket packet;
-            packet << static_cast<sf::Int32>(Server::ServerPacketType::ServerUpdate);
+            packet << static_cast<sf::Uint32>(Server::ServerPacketType::ServerUpdate);
             packet << snapshotId;
             preparePacket_ServerUpdate(packet, *client);
             client->socket.send(packet);
@@ -154,13 +154,13 @@ unsigned short bit::Server::getServerPort()
 
 void bit::Server::handleIncomingPackets()
 {
-    bool detectedDisconnection = false;
-
+    // Traverse all available or active connections
     for(unsigned int i=0; i < clients.size(); i++)
     {
         RemoteClient* client = clients[i];
 
-        if(client->isConnected)
+        // If this is a connected client, not a pending client slot
+        if(client->isNetworkConnected)
         {
             ClientPacket packet;
             while(client->socket.receive(packet) == sf::Socket::Done)
@@ -177,7 +177,6 @@ void bit::Server::handleIncomingPackets()
             if(now() >= client->lastPacketTime + clientTimeoutTime)
             {
                 client->hasTimedOut = true;
-                detectedDisconnection = true;
 
                 handle_ClientTimeout(*client);
             }
@@ -187,43 +186,49 @@ void bit::Server::handleIncomingPackets()
     handleDisconnections();
 }
 
+void bit::Server::handleConnections()
+{
+    // If we are not accepting connections, skip
+    if(!isListening)
+        return;
+
+    // If our ready and waiting client's socket starts being awesome
+    if(listenerSocket.accept(clients[connectedClients]->socket) == sf::TcpListener::Done)
+    {
+        RemoteClient* client = clients[connectedClients];
+
+        // Mark the new client as ready
+        client->isNetworkConnected = true;
+        client->lastPacketTime = now();
+        client->id = ++clientIdentifier;
+
+        // Close connection slots or add a new one
+        connectedClients++;
+        if(connectedClients >= maxConnectedClients)
+        {
+            setListeningState(false);
+        }
+        else
+        {
+            clients.push_back(new RemoteClient());
+        }
+
+        // Add our player to the world
+        handleNewClient(*client);
+    }
+}
+
 void bit::Server::handlePacket(ClientPacket &packet, RemoteClient &client)
 {
-    sf::Int32 packetType;
+    sf::Uint32 packetType;
     packet >> packetType;
 
     switch(packetType)
     {
-        case Server::ClientPacketType::Quit:
-        {
-            // Mark client as disconnection received
-            client.hasDisconnected = true;
-
-            handlePacket_ClientDisconnect(packet, client);
-
-            // Send them the quit ack packet
-            bit::ServerPacket ackPacket;
-            ackPacket << static_cast<sf::Int32>(Server::ServerPacketType::DisconnectAcknowledged);
-            preparePacket_DisconnectAcknowledge(ackPacket, client);
-            client.socket.send(ackPacket);
-
-            break;
-        }
         case Server::ClientPacketType::ClientInformation:
         {
-            // Confirm them
-            client.isConfirmed = true;
-
+            // Begin processing their information
             handlePacket_ClientInformation(packet, client);
-
-            if(!client.badConnection())
-            {
-                // Send them the full world
-                bit::ServerPacket worldPacket;
-                worldPacket << static_cast<sf::Int32>(Server::ServerPacketType::InitializeWorld);
-                preparePacket_InitializeWorld(worldPacket, client);
-                client.socket.send(worldPacket);
-            }
 
             break;
         }
@@ -250,7 +255,7 @@ void bit::Server::handlePacket(ClientPacket &packet, RemoteClient &client)
 
             // Build a response packet
             bit::ServerPacket responsePacket;
-            responsePacket << static_cast<sf::Int32>(Server::ServerPacketType::Response);
+            responsePacket << static_cast<sf::Uint32>(Server::ServerPacketType::Response);
             responsePacket << requestId;
 
             // Allow the game to handle the request and form a response
@@ -261,38 +266,21 @@ void bit::Server::handlePacket(ClientPacket &packet, RemoteClient &client)
 
             break;
         }
-    }
-}
-
-void bit::Server::handleConnections()
-{
-    // If we are not accepting connections, skip
-    if(!isListening)
-        return;
-
-    // If our ready and waiting client's socket starts being awesome
-    if(listenerSocket.accept(clients[connectedClients]->socket) == sf::TcpListener::Done)
-    {
-        RemoteClient* client = clients[connectedClients];
-
-        // Mark the new client as ready
-        client->isConnected = true;
-        client->lastPacketTime = now();
-		client->id = ++clientIdentifier;
-
-        // Close connection slots or add a new one
-        connectedClients++;
-        if(connectedClients >= maxConnectedClients)
+        case Server::ClientPacketType::Quit:
         {
-            setListeningState(false);
-        }
-        else
-        {
-            clients.push_back(new RemoteClient());
-        }
+            // Mark client as disconnection received
+            client.hasDisconnected = true;
 
-        // Add our player to the world
-        handleNewClient(*client);
+            handlePacket_ClientDisconnect(packet, client);
+
+            // Send them the quit ack packet
+            bit::ServerPacket ackPacket;
+            ackPacket << static_cast<sf::Uint32>(Server::ServerPacketType::DisconnectAcknowledged);
+            preparePacket_DisconnectAcknowledge(ackPacket, client);
+            client.socket.send(ackPacket);
+
+            break;
+        }
     }
 }
 
@@ -314,7 +302,7 @@ void bit::Server::handleDisconnections()
             // Erase client
             client->socket.disconnect();
             delete client;
-			itr = clients.erase(itr);
+            itr = clients.erase(itr);
 
             // Return to listening state
             if(connectedClients < maxConnectedClients)
@@ -326,7 +314,7 @@ void bit::Server::handleDisconnections()
             {
                 // Inform other clients of disconnection
                 ServerPacket packet_PeerClientDisconnected;
-                packet_PeerClientDisconnected << static_cast<sf::Int32>(Server::ServerPacketType::PeerClientDisconnected);
+                packet_PeerClientDisconnected << static_cast<sf::Uint32>(Server::ServerPacketType::PeerClientDisconnected);
                 preparePacket_PeerClientDisconnected(packet_PeerClientDisconnected);
                 sendToAllClients(packet_PeerClientDisconnected);
             }
@@ -338,34 +326,34 @@ void bit::Server::handleDisconnections()
     }
 }
 
-void bit::Server::broadcastMessage(std::string &message)
-{
-    // send broadcast packet to every connected client
-    for(unsigned int i=0; i < clients.size(); i++)
-    {
-        RemoteClient* client = clients[i];
-
-        if(client->isConnected)
-        {
-            ServerPacket packet_broadcastMessage;
-            packet_broadcastMessage << static_cast<sf::Int32>(Server::ServerPacketType::Broadcast);
-            packet_broadcastMessage << message;
-
-            client->socket.send(packet_broadcastMessage);
-        }
-    }
-}
-
 void bit::Server::kickClient(bit::RemoteClient &client, unsigned int kickCode)
 {
     bit::Output::Debug("Server prepare server kick client");
 
-    bit::ServerPacket packet;
-    packet << static_cast<sf::Int32>(Server::ServerPacketType::Kick);
-    packet << sf::Uint32(kickCode);
-    client.socket.send(packet);
+    if(client.canReceiveGamePackets())
+    {
+        bit::ServerPacket packet;
+        packet << static_cast<sf::Uint32>(Server::ServerPacketType::Kick);
+        packet << sf::Uint32(kickCode);
+        client.socket.send(packet);
 
-    client.hasBeenKicked = true;
+        client.hasBeenKicked = true;
+    }
+}
+
+void bit::Server::sendWorldInitialization(bit::RemoteClient &client)
+{
+    if(!client.badConnection())
+    {
+        // Set the client as confirmed for communication
+        client.isConfirmed = true;
+
+        // Send them the full world
+        bit::ServerPacket worldPacket;
+        worldPacket << static_cast<sf::Uint32>(Server::ServerPacketType::InitializeWorld);
+        preparePacket_InitializeWorld(worldPacket, client);
+        client.socket.send(worldPacket);
+    }
 }
 
 void bit::Server::sendToAllClients(ServerPacket &packet)
@@ -374,7 +362,7 @@ void bit::Server::sendToAllClients(ServerPacket &packet)
     {
         RemoteClient* client = clients[i];
 
-        if(client->isConfirmed)
+        if(client->canReceiveGamePackets())
         {
             client->socket.send(packet);
         }
@@ -385,30 +373,33 @@ void bit::Server::handleNewClient(RemoteClient &client)
 {
     // Send initialize player packet
     ServerPacket packet_InitializeSelf;
-    packet_InitializeSelf << static_cast<sf::Int32>(Server::ServerPacketType::InitializeSelf);
+    packet_InitializeSelf << static_cast<sf::Uint32>(Server::ServerPacketType::InitializeSelf);
     packet_InitializeSelf << sf::Uint32(client.id);
     preparePacket_InitializeSelf(packet_InitializeSelf, client);
     client.socket.send(packet_InitializeSelf);
 
     // Notify all other clients of new connection
     ServerPacket packet_clientConnected;
-    packet_clientConnected << static_cast<sf::Int32>(Server::ServerPacketType::PeerClientConnected);
+    packet_clientConnected << static_cast<sf::Uint32>(Server::ServerPacketType::PeerClientConnected);
     preparePacket_PeerClientConnected(packet_clientConnected);
     sendToAllClients(packet_clientConnected);
 }
 
 void bit::Server::sendEventToClient(bit::RemoteClient &client, std::function<void(ServerPacket&)> prepare)
 {
-    ServerPacket packet;
-    packet << static_cast<sf::Int32>(Server::ServerPacketType::Event);
-    prepare(packet);
-    client.socket.send(packet);
+    if(client.canReceiveGamePackets())
+    {
+        ServerPacket packet;
+        packet << static_cast<sf::Uint32>(Server::ServerPacketType::Event);
+        prepare(packet);
+        client.socket.send(packet);
+    }
 }
 
 void bit::Server::sendEventToAllClients(std::function<void(ServerPacket&)> prepare)
 {
     ServerPacket packet;
-    packet << static_cast<sf::Int32>(Server::ServerPacketType::Event);
+    packet << static_cast<sf::Uint32>(Server::ServerPacketType::Event);
     prepare(packet);
     sendToAllClients(packet);
 }

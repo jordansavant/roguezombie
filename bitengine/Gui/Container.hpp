@@ -20,9 +20,23 @@ namespace bit
 
         virtual ~Container();
 
+        // Child Management
         std::vector<Element*> childElements;
-        bool managesOpacity;
+
+        // Position and size helper
         bool fullscreen;
+
+        // Added property to help control child opacity without updating all of them
+        bool managesOpacity;
+
+        // Input Management
+        Element* focusedChild;
+        int focusedChildIndex;
+
+        // Added property to help move child elements between containers
+        Element* transferChild;
+
+        static bool debugMode;
 
         virtual void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
 
@@ -34,7 +48,7 @@ namespace bit
 
         virtual bool listenForInput(sf::RenderWindow &window, sf::Time &gameTime);
 
-		virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
+        virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
 
         virtual unsigned int addChild(Element* child);
 
@@ -54,10 +68,8 @@ namespace bit
 
         virtual void moveChild(Container* other, Element* child);
 
-    private:
-        Element* focusedChild;
-        int focusedChildIndex;
-        Element* transferChild;
+        virtual unsigned int findChildIndex(Element* child);
+
     };
 }
 #endif

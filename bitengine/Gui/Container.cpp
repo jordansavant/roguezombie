@@ -5,6 +5,8 @@
 #include "../Game/VideoGame.hpp"
 #include "../Math/Math.hpp"
 
+bool bit::Container::debugMode = false;
+
 bit::Container::Container()
     : Element(), childElements(), managesOpacity(false), focusedChild(NULL), focusedChildIndex(-1), transferChild(NULL), fullscreen(false)
 {
@@ -62,12 +64,31 @@ void bit::Container::update(sf::RenderWindow &window, sf::Time &gameTime)
         // Remove any that are requested to be removed
         if ((*it)->removeFromParent)
         {
+            if((*it) == focusedChild)
+                clearFocusedChild();
             delete (*it);
             it = childElements.erase(it);
         }
         // Something is taking over so remove it from the list but dont delete it
         else if((*it)->transitFromParent)
         {
+            // Immediately add to the other parent
+            // Hierarchy bug, see below
+            if((*it)->transferToParent && (*it)->transferToParent != this)
+            {
+                bit::Container* otherParent = static_cast<bit::Container*>((*it)->transferToParent);
+                otherParent->addChild((*it));
+                otherParent->transferChild->transitFromParent = false;
+                otherParent->transferChild->transferToParent = NULL;
+                if(otherParent->transferChild->onTransmit)
+                {
+                    otherParent->transferChild->onTransmit(transferChild);
+                    otherParent->transferChild->onTransmit = NULL;
+                }
+                otherParent->transferChild = NULL;
+            }
+
+            // Remove
             it = childElements.erase(it);
         }
         else
@@ -76,10 +97,37 @@ void bit::Container::update(sf::RenderWindow &window, sf::Time &gameTime)
         }
     }
 
+    // If I have an incoming transfer child and it was not deleted from its old parent
+    // Should only fire on swaps where moveChild is called on two containers
+    // NOTE, THIS WILL EXPLODE IF I AM TRANSFERRING UP THE CONTAINER TREE, SOMEDAY FIX ALL OF THESE SHENANIGANS
+    if(transferChild && transferChild->parentElement && transferChild->parentElement != this)
+    {
+        bit::Container* otherParent = static_cast<bit::Container*>(transferChild->parentElement);
+        for(auto it = otherParent->childElements.begin(); it != otherParent->childElements.end();)
+        {
+            if((*it) == transferChild)
+            {
+                it = otherParent->childElements.erase(it);
+                break;
+            }
+            else
+            {
+                ++it;
+            }
+        }
+    }
+
+    // If I have a transfer child, they should not be in the other container's list of children anymore
     if(transferChild)
     {
         addChild(transferChild);
         transferChild->transitFromParent = false;
+        transferChild->transferToParent = NULL;
+        if(transferChild->onTransmit)
+        {
+            transferChild->onTransmit(transferChild);
+            transferChild->onTransmit = NULL;
+        }
         transferChild = NULL;
     }
 
@@ -112,15 +160,19 @@ bool bit::Container::listenForInput(sf::RenderWindow &window, sf::Time &gameTime
 
 void bit::Container::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
-    //debugRect.setPosition(left, top);
-    //debugRect.setFillColor(sf::Color(230, 0, 255, bit::Math::clamp(255 * opacity, 0, 80)));
-    //debugRect.setSize(sf::Vector2f(width, height));
-    //debugRect.setOutlineColor(sf::Color(255, 255, 255, bit::Math::clamp(255 * opacity, 0, 80)));
-    //if(isInfocus)
-    //    debugRect.setOutlineThickness(2);
-    //else
-    //    debugRect.setOutlineThickness(0);
-    //window.draw(debugRect);
+    if(debugMode)
+    {
+        float o = std::max(opacity, .2f);
+        debugRect.setPosition(left, top);
+        debugRect.setFillColor(sf::Color(230, 0, 255, bit::Math::clamp(255 * o, 0, 80)));
+        debugRect.setSize(sf::Vector2f(width, height));
+        debugRect.setOutlineColor(sf::Color(255, 255, 255, bit::Math::clamp(255 * o, 0, 80)));
+        if(isInfocus)
+            debugRect.setOutlineThickness(2);
+        else
+            debugRect.setOutlineThickness(0);
+        window.draw(debugRect);
+    }
 
     for(unsigned int i = 0; i < childElements.size(); i++)
     {
@@ -219,6 +271,7 @@ void bit::Container::clearChildren()
 void bit::Container::removeChild(unsigned int index)
 {
     delete childElements[index];
+    childElements.erase(childElements.begin() + index);
 }
 
 void bit::Container::moveChild(Container* other, unsigned int index)
@@ -232,6 +285,7 @@ void bit::Container::moveChild(Container* other, unsigned int index)
 
     child->transitFromParent = true;
     other->transferChild = child;
+    child->transferToParent = other;
 }
 
 void bit::Container::moveChild(Container* other, Element* child)
@@ -252,4 +306,17 @@ void bit::Container::moveChild(Container* other, Element* child)
     {
         moveChild(other, location);
     }
+}
+
+unsigned int bit::Container::findChildIndex(Element* child)
+{
+    for(unsigned int i=0; i < childElements.size(); i++)
+    {
+        if(childElements[i] == child)
+        {
+            return i;
+        }
+    }
+
+    return 999999; // err
 }

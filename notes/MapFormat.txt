@@ -1,0 +1,164 @@
+<tower>
+	... collection of <level> elements ...
+</tower>
+
+<level>
+	<rows>2</rows>
+	<columns>2</columns>
+	<tileMap>1, 2, 3, 4</tileMap>
+	<structureMap>0, 0, 1, 2</structureMap>
+	<characterMap>1, 2, 0, 0</characterMap>
+	<lightMap>0, 0, 1, 0</lightMap>
+	<tiles>
+		... collection of <tile> elements ...
+	</tile>
+	<structures>
+		... collection of <structure> elements ...
+	</structures>
+	<characters>
+		... collection of <character> elements ...
+	</characters>
+</level>
+
+<tile>
+	<type>1</type>
+</tile>
+
+<structure>
+	<type>1</type>
+	<isOpen>0</isOpen>
+	<isLocked>0</isLocked>
+	<items>
+		... collection of <item> elements ...
+	</items>
+	<lights>
+		... collection of <light> elements ...
+	</lights>
+</structure>
+
+<character>
+	<type>5</type>
+	<items>
+		... collection of <item> elements ...
+	</items>
+	<lights>
+		... collection of <light> elements ...
+	</lights>
+	<equipment>
+		... collection of <equipmentSlot> elements ...
+	</equipment>
+</character>
+
+<item>
+	<type>2</type>
+	<slot>x</slot> // if used for equipment
+	<position></position // used for inventories
+</item>
+
+<light>
+	<radius>5</radius>
+	<red>255</red>
+	<green>50</green>
+	<blue>255</blue>
+	<brightness>.35</brightness>
+</light>
+
+
+
+
+
+
+
+<map>
+	<rows>2</rows>
+	<columns>2</columns>
+	<tileMap>1, 2, 3, 4</tileMap>
+	<structureMap>0, 0, 1, 2</structureMap>
+	<characterMap>1, 2, 0, 0</characterMap>
+	<lightMap>0, 0, 1, 0</lightMap>
+	<tiles>
+		<tile>
+			<type>1</type>
+		</tile>
+		<tile>
+			<type>1</type>
+		</tile>
+		<tile>
+			<type>2</type>
+		</tile>
+		<tile>
+			<type>2</type>
+		</tile>
+	</tile>
+	<structures>
+		<structure>
+			<type>1</type>
+			<isOpen>0</isOpen>
+			<isLocked>0</isLocked>
+			<inventory></inventory>
+			<lights>
+				<light>
+					<radius>5</radius>
+					<red>255</red>
+					<green>50</green>
+					<blue>255</blue>
+					<brightness>.35</brightness>
+				</light>
+			</lights>
+		</structure>
+		<structure>
+			<type>2</type>
+			<isOpen>0</isOpen>
+			<isLocked>1</isLocked>
+			<inventory>
+				<slot>
+					<position>2</position>
+					<item>
+						<type>12</type>
+					</item>
+				</slot>
+			</inventory>
+			<lights></lights>
+		</structure>
+	</structures>
+	<characters>
+		<character>
+			<type>5</type>
+			<inventory>
+				<slot>
+					<position>2</position>
+					<item>
+						<type>10</type>
+					</item>
+				</slot>
+			</inventory>
+			<lights>
+				<light>
+					<radius>5</radius>
+					<red>255</red>
+					<green>50</green>
+					<blue>255</blue>
+					<brightness>.35</brightness>
+				</light>
+			</lights>
+			<headItem>
+				<type>1</type>
+			</headItem>
+			<chestItem>
+				<type>2</type>
+			</chestItem>
+			<legItem>
+				<type>3</type>
+			</legItem>
+			<handsItem>
+				<type>4</type>
+			</handsItem>
+			<feetItem>
+				<type>5</type>
+			</feetItem>
+			<totemItem>
+				<type>6</type>
+			</totemItem>
+		</character>
+	</characters>
+</map>

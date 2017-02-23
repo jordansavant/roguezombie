@@ -51,6 +51,7 @@ namespace bit
 
         virtual ~Element();
 
+        // Positioning
         Element* parentElement;
         sf::Vector2f relativePosition;
         AnchorType anchorType;
@@ -58,25 +59,39 @@ namespace bit
         float targetWidth, targetHeight;
         float opacity;
         float elementScale;
+        sf::RectangleShape debugRect; // debug
+
+        // Input Activation
         bool isInfocus;
         bool canHaveFocus;
         std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput;
-        std::function<void(Element*, sf::RenderWindow*, sf::Time*)> onAfterUpdate;
         std::function<void(Element*)> onActivate;
+
+        // Blarb
+        std::function<void(Element*, sf::RenderWindow*, sf::Time*)> onAfterUpdate;
+
+        // Effects
         std::deque<Effect*> effectQueue;
         std::list<Effect*> concurrentEffects;
-        sf::RectangleShape debugRect; // debug
+
+        // Helper properties for Containers
         bool hasPositioned;
         bool removeFromParent;
         bool transitFromParent;
+        bit::Element* transferToParent;
+        std::function<void(Element*)> onTransmit;
+
+        // Manipulation
         Draggable* draggable;
         Hoverable* hoverable;
+
+        static bool debugMode;
 
         virtual void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
 
         virtual void updateReals(sf::RenderWindow &window, sf::Time &gameTime);
 
-		virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
+        virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
 
         virtual Element* queueEffect(Effect* effect);
 
@@ -96,7 +111,7 @@ namespace bit
 
         sf::Vector2f calculateAnchor(sf::RenderWindow &window);
 
-        void makeDraggable(InputManager*, std::function<void(Draggable*, bit::Element*)> onDragStart = NULL, std::function<bool(Draggable*, bit::Element*)> onDragStop = NULL);
+        void makeDraggable(InputManager*, std::function<void(Draggable*, bit::Element*)> onDragStart = NULL, std::function<bool(Draggable*, bit::Element*)> onDragStop = NULL, std::function<bool(Draggable*, bit::Element*)> checkDrag = NULL, bool centerOnMouse = false);
 
         void makeHoverable(InputManager*, std::function<void(Hoverable*, bit::Element*)> onHoverEnter = NULL, std::function<void(Hoverable*, bit::Element*)> onHoverLeave = NULL);
     };

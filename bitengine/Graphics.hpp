@@ -3,6 +3,7 @@
 
 #include "Graphics/Animation.hpp"
 #include "Graphics/Camera.hpp"
+#include "Graphics/ColorMixer.hpp"
 #include "Graphics/Sprite.hpp"
 #include "Graphics/SpriteLoader.hpp"
 #include "Graphics/Vertex3.hpp"

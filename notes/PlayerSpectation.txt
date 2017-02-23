@@ -1,0 +1,45 @@
+
+Character Changes
+	+ onDeath event for spectation - done
+	+ support list of spectators (no need for schema) - done
+	
+Player Changes
+	+ support spectating character - done
+
+DONE: When a player dies
+	* Character needs to be dettached - done
+	* Player needs to attach to character as a spectator - done
+	* Event needs to be sent to change to spectate mode - done
+	* checkPlayersForDefeat()
+
+DONE: When a player switches levels
+	Character is de-managed from current level
+	Player is flagged to send full world snapshot
+	* Flag all character spectators for full world snapshot - done
+	Character is remanaged for new level
+	
+DONE: When a player disconnects
+	* Move all character spectators to another character - preferably another player - done
+	Player character is demanaged on level
+	Player character is deleted from level
+	Player is deleted
+	* checkPlayersForDefeat()
+	
+DONE: When a spectator disconnects
+	* Player tells spectatee to erase them from their spectator list - done
+	* Player is deleted - done
+	
+DONE: When a player is networked
+	If they have a character, network that character - done
+	* Else If they have a spectatee network that character - done
+
+DONE: When a spectator switches characters
+	* Recognize input - done
+	* Detach from existing spectatee - done
+	* Attach to new spectatee - done
+	
+checkPlayersForDefeat() {
+	Iterate all players on all levels
+	If all player characters are dead or are missing
+	End game in defeat
+}

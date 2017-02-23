@@ -2,7 +2,7 @@
 #include "SFML/Network.hpp"
 
 bit::RemoteClient::RemoteClient()
-    : id(0), isConnected(false), isConfirmed(false), hasTimedOut(false), hasDisconnected(false), hasBeenKicked(false), lastAcknowledgedSnapshotId(0)
+    : id(0), isNetworkConnected(false), isConfirmed(false), hasTimedOut(false), hasDisconnected(false), hasBeenKicked(false), lastAcknowledgedSnapshotId(0)
 {
     socket.setBlocking(false);
 }
@@ -10,4 +10,9 @@ bit::RemoteClient::RemoteClient()
 bool bit::RemoteClient::badConnection()
 {
     return hasTimedOut || hasDisconnected || hasBeenKicked;
+}
+
+bool bit::RemoteClient::canReceiveGamePackets()
+{
+    return !badConnection() && isNetworkConnected && isConfirmed;
 }
