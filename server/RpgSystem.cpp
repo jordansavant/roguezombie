@@ -80,13 +80,13 @@ float RpgSystem::Combat::calculateChanceOfHit(Character* attacker, Character* de
     if(weapon)
     {
         // If it is ranged
-        if(weapon->isOfWeaponType(ItemCategory::Weapon::WeaponRanged))
+        if(weapon->schema.isOfWeaponType(ItemCategory::Weapon::WeaponRanged))
         {
             return calculateRangedChanceOfHit(weapon, attacker, defender);
         }
         
         // If it is melee
-        if(weapon->isOfWeaponType(ItemCategory::Weapon::WeaponMelee))
+        if(weapon->schema.isOfWeaponType(ItemCategory::Weapon::WeaponMelee))
         {
             return calculateMeleeChanceOfHit(weapon, attacker, defender);
         }
@@ -223,13 +223,13 @@ float RpgSystem::Combat::calculateAttackDamage(Character* attacker, Character* d
     if(weapon)
     {
         // If it is ranged
-        if(weapon->isOfWeaponType(ItemCategory::Weapon::WeaponRanged))
+        if(weapon->schema.isOfWeaponType(ItemCategory::Weapon::WeaponRanged))
         {
             return calculateRangedAttackDamage(weapon, attacker, defender);
         }
         
         // If it is melee
-        if(weapon->isOfWeaponType(ItemCategory::Weapon::WeaponMelee))
+        if(weapon->schema.isOfWeaponType(ItemCategory::Weapon::WeaponMelee))
         {
             return calculateMeleeAttackDamage(weapon, attacker, defender);
         }

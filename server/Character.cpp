@@ -541,7 +541,7 @@ bool Character::canDodge()
 
 bool Character::canBlock()
 {
-    return (equipment[EquipmentSlot::WeaponPrimary] && equipment[EquipmentSlot::WeaponPrimary]->isOfWeaponType(ItemCategory::Weapon::WeaponMelee));
+    return (equipment[EquipmentSlot::WeaponPrimary] && equipment[EquipmentSlot::WeaponPrimary]->schema.isOfWeaponType(ItemCategory::Weapon::WeaponMelee));
 }
 
 

@@ -112,6 +112,20 @@ public:
             packet >> schema.canCommandInFree;
             return packet;
         }
+
+        bool hasAny(unsigned int currentValue, unsigned int filter);
+
+        bool hasAll(unsigned int currentValue, unsigned int filter);
+
+        bool isOfBaseType(ItemCategory::Base);
+
+        bool isOfWeaponType(ItemCategory::Weapon);
+
+        bool isOfArmorType(ItemCategory::Armor);
+    
+        bool isOfJewelryType(ItemCategory::Jewelry);
+    
+        bool isOfContainerType(ItemCategory::Container);
     };
     Schema schema;
     Item* parentItem;
@@ -120,21 +134,6 @@ public:
     std::function<bool(Character*)> applyToCharacter;
     std::function<bool(Tile*)> applyToArea;
     std::function<void(Character*)> onUse;
-
-
-    bool hasAny(unsigned int currentValue, unsigned int filter);
-
-    bool hasAll(unsigned int currentValue, unsigned int filter);
-
-    bool isOfBaseType(ItemCategory::Base);
-
-    bool isOfWeaponType(ItemCategory::Weapon);
-
-    bool isOfArmorType(ItemCategory::Armor);
-    
-    bool isOfJewelryType(ItemCategory::Jewelry);
-    
-    bool isOfContainerType(ItemCategory::Container);
 
     void addItem(Item* item);
 
@@ -163,6 +162,8 @@ public:
     void prepareServerEventPacket_itemAdded(bit::ServerPacket &packet);
 
     void prepareServerEventPacket_itemRemoved(bit::ServerPacket &packet);
+
+    static bool isEquippable(Item::Schema &schema);
 
     static void useItemOnSelf(Character* self, Item::Schema &itemSchema);
 

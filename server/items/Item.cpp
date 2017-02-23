@@ -24,39 +24,39 @@ Item::~Item()
     }
 }
 
-bool Item::hasAny(unsigned int attribute, unsigned int filter)
+bool Item::Schema::hasAny(unsigned int attribute, unsigned int filter)
 {
     return bit::Math::bitwiseHasAny(attribute, filter);
 }
 
-bool Item::hasAll(unsigned int attribute, unsigned int filter)
+bool Item::Schema::hasAll(unsigned int attribute, unsigned int filter)
 {
     return bit::Math::bitwiseHasAll(attribute, filter);
 }
 
-bool Item::isOfBaseType(ItemCategory::Base category)
+bool Item::Schema::isOfBaseType(ItemCategory::Base category)
 {
-    return hasAny(schema.CategoryBase, category);
+    return hasAny(CategoryBase, category);
 }
 
-bool Item::isOfWeaponType(ItemCategory::Weapon category)
+bool Item::Schema::isOfWeaponType(ItemCategory::Weapon category)
 {
-    return hasAny(schema.CategoryWeapon, category);
+    return hasAny(CategoryWeapon, category);
 }
 
-bool Item::isOfArmorType(ItemCategory::Armor category)
+bool Item::Schema::isOfArmorType(ItemCategory::Armor category)
 {
-    return hasAny(schema.CategoryArmor, category);
+    return hasAny(CategoryArmor, category);
 }
     
-bool Item::isOfJewelryType(ItemCategory::Jewelry category)
+bool Item::Schema::isOfJewelryType(ItemCategory::Jewelry category)
 {
-    return hasAny(schema.CategoryJewelry, category);
+    return hasAny(CategoryJewelry, category);
 }
     
-bool Item::isOfContainerType(ItemCategory::Container category)
+bool Item::Schema::isOfContainerType(ItemCategory::Container category)
 {
-    return hasAny(schema.CategoryContainer, category);
+    return hasAny(CategoryContainer, category);
 }
 
 void Item::addItem(Item* item)
@@ -274,6 +274,14 @@ void Item::prepareServerEventPacket_itemRemoved(bit::ServerPacket &packet)
     packet << sf::Uint32(ServerEvent::ItemRemoved);
     packIdHierarchy(packet);
     prepareSnapshot(packet);
+}
+
+bool Item::isEquippable(Item::Schema &schema)
+{
+    return
+        bit::Math::bitwiseHasAny(schema.CategoryBase, ItemCategory::Base::BaseArmor) ||
+        bit::Math::bitwiseHasAny(schema.CategoryBase, ItemCategory::Base::BaseWeapon) ||
+        bit::Math::bitwiseHasAny(schema.CategoryBase, ItemCategory::Base::BaseJewelry);
 }
 
 void Item::useItemOnSelf(Character* self, Item::Schema &itemSchema)

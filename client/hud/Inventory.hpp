@@ -56,6 +56,22 @@ public:
     void hideItemData();
 
     InventoryPositionSlot* getOpenSlot();
+
+    InventoryEquipmentSlot* getEquipmentPrimaryWeaponSlot();
+
+    InventoryEquipmentSlot* getEquipmentSecondaryWeaponSlot();
+
+    InventoryEquipmentSlot* getEquipmentHeadSlot();
+
+    InventoryEquipmentSlot* getEquipmentChestSlot();
+
+    InventoryEquipmentSlot* getEquipmentLegsSlot();
+
+    InventoryEquipmentSlot* getEquipmentFeetSlot();
+
+    InventoryEquipmentSlot* getEquipmentHandsSlot();
+
+    InventoryEquipmentSlot* getEquipmentTotemSlot();
 };
 
 #endif

@@ -347,3 +347,43 @@ InventoryPositionSlot* Inventory::getOpenSlot()
 
     return NULL;
 }
+
+InventoryEquipmentSlot* Inventory::getEquipmentPrimaryWeaponSlot()
+{
+    return equipmentSlotBoxes[Character::EquipmentSlot::WeaponPrimary];
+}
+
+InventoryEquipmentSlot* Inventory::getEquipmentSecondaryWeaponSlot()
+{
+    return equipmentSlotBoxes[Character::EquipmentSlot::WeaponSecondary];
+}
+
+InventoryEquipmentSlot* Inventory::getEquipmentHeadSlot()
+{
+    return equipmentSlotBoxes[Character::EquipmentSlot::Head];
+}
+
+InventoryEquipmentSlot* Inventory::getEquipmentChestSlot()
+{
+    return equipmentSlotBoxes[Character::EquipmentSlot::Chest];
+}
+
+InventoryEquipmentSlot* Inventory::getEquipmentLegsSlot()
+{
+    return equipmentSlotBoxes[Character::EquipmentSlot::Legs];
+}
+
+InventoryEquipmentSlot* Inventory::getEquipmentFeetSlot()
+{
+    return equipmentSlotBoxes[Character::EquipmentSlot::Feet];
+}
+
+InventoryEquipmentSlot* Inventory::getEquipmentHandsSlot()
+{
+    return equipmentSlotBoxes[Character::EquipmentSlot::Hands];
+}
+
+InventoryEquipmentSlot* Inventory::getEquipmentTotemSlot()
+{
+    return equipmentSlotBoxes[Character::EquipmentSlot::Totem];
+}

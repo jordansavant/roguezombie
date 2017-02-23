@@ -92,6 +92,8 @@ void Player::setupPlayerCharacter()
     character->addItemToInventory(Item::create(Item::Type::Grenade, level->server->getNextItemId()));
     character->addItemToInventory(Item::create(Item::Type::Grenade, level->server->getNextItemId()));
     character->addItemToInventory(Item::create(Item::Type::Grenade, level->server->getNextItemId()));
+    character->addItemToInventory(Item::create(Item::Type::HardHat, level->server->getNextItemId()));
+    character->addItemToInventory(Item::create(Item::Type::HardHat, level->server->getNextItemId()));
     
     character->equipFromInventory(Character::EquipmentSlot::WeaponPrimary, magnum->schema.id);
     character->equipFromInventory(Character::EquipmentSlot::WeaponSecondary, crowbar->schema.id);
