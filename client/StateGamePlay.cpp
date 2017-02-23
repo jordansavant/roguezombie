@@ -874,7 +874,7 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 
             case ServerEvent::InventoryUpdate:
                 levelClient->playerCharacter->handleServerEventPacket_inventoryUpdate(packet);
-                hud->inventory->buildItemList();
+                hud->inventory->buildItemList(false);
                 break;
             case ServerEvent::ItemAdded:
                 levelClient->playerCharacter->handleServerEventPacket_itemAdded(packet);

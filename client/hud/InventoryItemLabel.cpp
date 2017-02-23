@@ -50,9 +50,10 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, Item::Schema& itemSchema, float
                         label->dropResult(result);
                     }
                 }
-                // If there is no open loot window
+                // If there is no open loot window, Aciton Bar or Equipment
                 else
                 {
+                    // Action Bar
                     // If the item can issue commands and its not already in the bar
                     if(label->itemSchema.commandType != Item::CommandType::CommandTypeNone && !hud->actionBar->hasItem(label->itemSchema.id))
                     {
@@ -64,97 +65,18 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, Item::Schema& itemSchema, float
                             label->dropResult(result);
                         }
                     }
-
                     // Equipment
-                    if(label->itemSchema.isOfBaseType(ItemCategory::Base::BaseWeapon))
+                    else
                     {
-                        // WEAPONS
-                        // See if we have an open weapon slot
-                        InventoryEquipmentSlot* primaryWeaponSlot = hud->inventory->getEquipmentPrimaryWeaponSlot();
-                        InventoryEquipmentSlot* secondaryWeaponSlot = hud->inventory->getEquipmentSecondaryWeaponSlot();
+                        InventoryEquipmentSlot* equipmentSlot = hud->inventory->getEquipmentSlotForItemQuickEquip(label->itemSchema);
+                        if(equipmentSlot && equipmentSlot->acceptsLabel(label))
+                        {
+                            bool result = label->dropOntoEquipmentSlot(equipmentSlot);
+                            label->dropResult(result);
+                        }
+                    }
 
-                        if(!primaryWeaponSlot->equippedItemLabel)
-                        {
-                            if(primaryWeaponSlot->acceptsLabel(label))
-                            {
-                                bool result = label->dropOntoEquipmentSlot(primaryWeaponSlot);
-                                label->dropResult(result);
-                            }
-                        }
-                        else if(!secondaryWeaponSlot->equippedItemLabel)
-                        {
-                            if(secondaryWeaponSlot->acceptsLabel(label))
-                            {
-                                bool result = label->dropOntoEquipmentSlot(secondaryWeaponSlot);
-                                label->dropResult(result);
-                            }
-                        }
-                        else
-                        {
-                            // Swap with the primary weapon
-                            bool result = label->dropOntoEquipmentSlot(primaryWeaponSlot);
-                            label->dropResult(result);
-                        }
-                    }
-                    else if(label->itemSchema.isOfBaseType(ItemCategory::Base::BaseArmor))
-                    {
-                        // ARMORS
-                        if(label->itemSchema.isOfArmorType(ItemCategory::Armor::ArmorHead))
-                        {
-                            InventoryEquipmentSlot* headSlot = hud->inventory->getEquipmentHeadSlot();
-                            if(headSlot->acceptsLabel(label))
-                            {
-                                bool result = label->dropOntoEquipmentSlot(headSlot);
-                                label->dropResult(result);
-                            }
-                        }
-                        else if(label->itemSchema.isOfArmorType(ItemCategory::Armor::ArmorChest))
-                        {
-                            InventoryEquipmentSlot* chestSlot = hud->inventory->getEquipmentChestSlot();
-                            if(chestSlot->acceptsLabel(label))
-                            {
-                                bool result = label->dropOntoEquipmentSlot(chestSlot);
-                                label->dropResult(result);
-                            }
-                        }
-                        else if(label->itemSchema.isOfArmorType(ItemCategory::Armor::ArmorLeg))
-                        {
-                            InventoryEquipmentSlot* legsSlot = hud->inventory->getEquipmentLegsSlot();
-                            if(legsSlot->acceptsLabel(label))
-                            {
-                                bool result = label->dropOntoEquipmentSlot(legsSlot);
-                                label->dropResult(result);
-                            }
-                        }
-                        else if(label->itemSchema.isOfArmorType(ItemCategory::Armor::ArmorFoot))
-                        {
-                            InventoryEquipmentSlot* feetSlot = hud->inventory->getEquipmentFeetSlot();
-                            if(feetSlot->acceptsLabel(label))
-                            {
-                                bool result = label->dropOntoEquipmentSlot(feetSlot);
-                                label->dropResult(result);
-                            }
-                        }
-                        else if(label->itemSchema.isOfArmorType(ItemCategory::Armor::ArmorHand))
-                        {
-                            InventoryEquipmentSlot* handsSlot = hud->inventory->getEquipmentHandsSlot();
-                            if(handsSlot->acceptsLabel(label))
-                            {
-                                bool result = label->dropOntoEquipmentSlot(handsSlot);
-                                label->dropResult(result);
-                            }
-                        }
-                    }
-                    else if(label->itemSchema.isOfBaseType(ItemCategory::Base::BaseJewelry))
-                    {
-                        // JEWELRY TOTEM
-                        InventoryEquipmentSlot* totemSlot = hud->inventory->getEquipmentTotemSlot();
-                        if(totemSlot->acceptsLabel(label))
-                        {
-                            bool result = label->dropOntoEquipmentSlot(totemSlot);
-                            label->dropResult(result);
-                        }
-                    }
+                    
                 }
             }
             // If I am in the loot bar

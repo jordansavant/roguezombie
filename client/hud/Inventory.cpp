@@ -387,3 +387,58 @@ InventoryEquipmentSlot* Inventory::getEquipmentTotemSlot()
 {
     return equipmentSlotBoxes[Character::EquipmentSlot::Totem];
 }
+
+InventoryEquipmentSlot* Inventory::getEquipmentSlotForItemQuickEquip(Item::Schema &itemSchema)
+{
+    // Equipment
+    if(itemSchema.isOfBaseType(ItemCategory::Base::BaseWeapon))
+    {
+        // WEAPONS
+        // See if we have an open weapon slot
+        InventoryEquipmentSlot* primaryWeaponSlot = hud->inventory->getEquipmentPrimaryWeaponSlot();
+        InventoryEquipmentSlot* secondaryWeaponSlot = hud->inventory->getEquipmentSecondaryWeaponSlot();
+
+        if(!primaryWeaponSlot->equippedItemLabel)
+        {
+            return primaryWeaponSlot;
+        }
+        else if(!secondaryWeaponSlot->equippedItemLabel)
+        {
+            return secondaryWeaponSlot;
+        }
+        else
+        {
+            // Swap with the primary weapon
+            return primaryWeaponSlot;
+        }
+    }
+    else if(itemSchema.isOfBaseType(ItemCategory::Base::BaseArmor))
+    {
+        // ARMORS
+        if(itemSchema.isOfArmorType(ItemCategory::Armor::ArmorHead))
+        {
+            return hud->inventory->getEquipmentHeadSlot();
+        }
+        else if(itemSchema.isOfArmorType(ItemCategory::Armor::ArmorChest))
+        {
+            return hud->inventory->getEquipmentChestSlot();
+        }
+        else if(itemSchema.isOfArmorType(ItemCategory::Armor::ArmorLeg))
+        {
+            return hud->inventory->getEquipmentLegsSlot();
+        }
+        else if(itemSchema.isOfArmorType(ItemCategory::Armor::ArmorFoot))
+        {
+            return hud->inventory->getEquipmentFeetSlot();
+        }
+        else if(itemSchema.isOfArmorType(ItemCategory::Armor::ArmorHand))
+        {
+            return hud->inventory->getEquipmentHandsSlot();
+        }
+    }
+    else if(itemSchema.isOfBaseType(ItemCategory::Base::BaseJewelry))
+    {
+        // JEWELRY TOTEM
+        return hud->inventory->getEquipmentTotemSlot();
+    }
+}

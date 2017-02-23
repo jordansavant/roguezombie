@@ -72,6 +72,8 @@ public:
     InventoryEquipmentSlot* getEquipmentHandsSlot();
 
     InventoryEquipmentSlot* getEquipmentTotemSlot();
+
+    InventoryEquipmentSlot* getEquipmentSlotForItemQuickEquip(Item::Schema &itemSchema);
 };
 
 #endif
