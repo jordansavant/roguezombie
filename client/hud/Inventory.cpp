@@ -333,3 +333,17 @@ void Inventory::hideItemData()
 {
     itemDataText->setSfFontString(std::string());
 }
+
+InventoryPositionSlot* Inventory::getOpenSlot()
+{
+    // Find first unused slot
+    for(unsigned int i=0; i < positionSlotBoxes.size(); i++)
+    {
+        if(!positionSlotBoxes[i]->equippedItemLabel)
+        {
+            return positionSlotBoxes[i];
+        }
+    }
+
+    return NULL;
+}

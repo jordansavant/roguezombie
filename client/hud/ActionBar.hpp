@@ -35,6 +35,8 @@ public:
     bool hasItem(unsigned int itemId);
 
     void emptyByItem(unsigned int itemId);
+
+    ActionBarSlot* getOpenSlot();
 };
 
 #endif

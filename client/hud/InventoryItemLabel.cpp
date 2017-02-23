@@ -53,17 +53,31 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, Item::Schema& itemSchema, float
                 // If there is no open loot window
                 else
                 {
-                    // If the item can issue commands
+                    // If the item can issue commands and its not already in the bar
+                    if(label->itemSchema.commandType != Item::CommandType::CommandTypeNone && !hud->actionBar->hasItem(label->itemSchema.id))
+                    {
                         // attempt to add this item to the action bar if an open position exists
-                    // If the item is equipment
-                        // assign the item to the relevant equipment slot (swapping if need be)
-                        // Weapons always swap into primary slot
+                        ActionBarSlot* slot = hud->actionBar->getOpenSlot();
+                        if(slot && slot->acceptsLabel(label))
+                        {
+                            bool result = label->dropOntoActionSlot(slot);
+                            label->dropResult(result);
+                        }
+                    }
+
+                    // Ignore equipment
                 }
             }
             // If I am in the loot bar
             else if(label->currentLootSlot)
             {
                 // Attempt to move this item from the loot window to the inventory
+                InventoryPositionSlot* slot = hud->inventory->getOpenSlot();
+                if(slot && slot->acceptsLabel(label))
+                {
+                    bool result = label->dropOntoInventorySlot(slot);
+                    label->dropResult(result);
+                }
             }
             // We don't shift modify anything in the action bar
         }

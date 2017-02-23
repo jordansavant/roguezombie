@@ -54,6 +54,8 @@ public:
     void showItemData(Item::Schema& itemSchema);
 
     void hideItemData();
+
+    InventoryPositionSlot* getOpenSlot();
 };
 
 #endif
