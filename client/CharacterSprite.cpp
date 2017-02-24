@@ -59,6 +59,9 @@ void CharacterSprite::update(sf::Time &gameTime)
     }
     facingRight = character->schema.direction.x > 0 || character->schema.direction.y < 0;
 
+    sf::Vector2f facing = bit::VectorMath::normalToIsometric(character->schema.direction.x, character->schema.direction.y);
+    facingRight = facing.x > 0;
+
     // Calculate render position given sprite information and the isometric rendering
     float zlayerAdd = .00001;
     float spriteWidth = (float)width;

@@ -9,24 +9,6 @@ Tooltips dont appear sometimes, like over action icons
 - When an exit event hides it will propogate after the enter event for the nearby element
 - If we support a Pool of tooltips we can throw one away and grab a new one on each request
 
-Can't drag usable items off of the action bar
-- e.g. medkit, I made it where you can use it in free mode
-- If you try and drag it away it will treat it like a click activation
-- I tried adding drag checks and ignoring activation and it did not work most of the time
-- This is because
-	- draggable is updated (and onDragDrop is run) in the element->update
-	- element->update is called in the primary container loop
-	- after the loop for the container updateInput is called which checks activation on focused child
-	- when the update runs, drop event fires which in turn causes the child to be moved to a new parent slot
-	- if the slot is later down the update list in their shared parent it will transfer the child into its custody
-	- once in its custody it will run updateInput for its own children which will fire the activation routine, meanwhile the update operation has cleared any drag details
-- going to try
-	- instead of running updateInput after the big loop im going to check for child focus and run it inline
-	- this is a pretty risky change
-
-Its possible that an enemy can face the wrong direction when firing
-- Inthe demo level, last two guys, stand in the doorway and the top one will face the wrong way
-
 Move colors out of RZConfig since its Client Specific
 
 Hunters firing after dead
