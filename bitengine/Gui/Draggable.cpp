@@ -1,7 +1,12 @@
 #include "Draggable.hpp"
 
+float bit::Draggable::significantDragSeconds = .2;
+float bit::Draggable::signficantDragDistance = 3;
+
 bit::Draggable::Draggable(bit::InputManager* inputManager, bit::Element* element)
-    : inputManager(inputManager), element(element), isDragging(false), centerOnMouse(false), dragOriginX(0), dragOriginY(0), elementOriginX(0), elementOriginY(0), centerOffsetX(0), centerOffsetY(0), onDragStart(NULL), onDragStop(NULL), checkDraggable(NULL)
+    : inputManager(inputManager), element(element), isDragging(false), centerOnMouse(false), dragTime(), dragDistance(0),
+      dragOriginX(0), dragOriginY(0), elementOriginX(0), elementOriginY(0), centerOffsetX(0), centerOffsetY(0),
+      onDragStart(NULL), onDragStop(NULL), checkDraggable(NULL)
 {
 }
 
@@ -47,11 +52,20 @@ void bit::Draggable::update(sf::RenderWindow &window, sf::Time &gameTime)
     // If we are dragging 
     else
     {
+        dragTime += gameTime;
+
         float currentX = mousePositionInScreen.x;
         float currentY = mousePositionInScreen.y;
+        dragDistance = bit::VectorMath::distance(dragOriginX, dragOriginY, currentX, currentY);
         
-        element->relativePosition.x = elementOriginX - (dragOriginX - currentX - centerOffsetX) / element->elementScale;
-        element->relativePosition.y = elementOriginY - (dragOriginY - currentY - centerOffsetY) / element->elementScale;
+        // Only visualize if we have been dragged a significant distance or time
+        if(isSignificantDrag())
+        {
+            float dragDifferenceX = dragOriginX - currentX;
+            float dragDifferenceY = dragOriginY - currentY;
+            element->relativePosition.x = elementOriginX - (dragDifferenceX - centerOffsetX) / element->elementScale;
+            element->relativePosition.y = elementOriginY - (dragDifferenceY - centerOffsetY) / element->elementScale;
+        }
             
         if(inputManager->isButtonReleased(sf::Mouse::Left))
         {
@@ -68,6 +82,10 @@ void bit::Draggable::update(sf::RenderWindow &window, sf::Time &gameTime)
                 element->relativePosition.x = elementOriginX;
                 element->relativePosition.y = elementOriginY;
             }
+
+            // update tracking variables here so listeners can access the data anytime I am dragging
+            dragTime = sf::seconds(0);
+            dragDistance = 0;
         }
     }
 }
@@ -80,4 +98,9 @@ void bit::Draggable::cancel()
         element->relativePosition.x = elementOriginX;
         element->relativePosition.y = elementOriginY;
     }
+}
+
+bool bit::Draggable::isSignificantDrag()
+{
+    return (dragTime >= sf::seconds(significantDragSeconds) || dragDistance > signficantDragDistance);
 }

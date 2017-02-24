@@ -86,6 +86,7 @@ void bit::Container::update(sf::RenderWindow &window, sf::Time &gameTime)
                     otherParent->transferChild->onTransmit = NULL;
                 }
                 otherParent->transferChild = NULL;
+                (*it)->timeInParent = sf::seconds(0);
             }
 
             // Remove
@@ -93,6 +94,8 @@ void bit::Container::update(sf::RenderWindow &window, sf::Time &gameTime)
         }
         else
         {
+            (*it)->timeInParent += gameTime;
+
             ++it;
         }
     }

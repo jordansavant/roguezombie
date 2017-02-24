@@ -80,6 +80,7 @@ namespace bit
         bool transitFromParent;
         bit::Element* transferToParent;
         std::function<void(Element*)> onTransmit;
+        sf::Time timeInParent;
 
         // Manipulation
         Draggable* draggable;

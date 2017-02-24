@@ -302,9 +302,25 @@ bool Hud::typicalElementControl(Element* element, sf::RenderWindow* window, sf::
 {
     int centerX = element->left + element->width / 2;
     int centerY = element->top + element->height / 2;
+
+    // Dont activate if we are a relatively new kid on the block
+    if(element->timeInParent <= sf::seconds(.5))
+    {
+        return false;
+    }
+
+    // Do not consider activation attempts if we are dragging considerably
+    if(element->draggable)
+    {
+        if(element->draggable->isSignificantDrag())
+        {
+            return false;
+        }
+    }
+
     if(bit::VectorMath::inRadius(state->levelClient->mousePositionInScreen.x, state->levelClient->mousePositionInScreen.y, centerX, centerY, element->width / 2))
     {
-        if(state->rogueZombieGame->inputManager->isButtonPressed(sf::Mouse::Left))
+        if(state->rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
         {
             return true;
         }

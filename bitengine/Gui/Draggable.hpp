@@ -19,6 +19,10 @@ namespace bit
         bit::Element* element;
         bool isDragging;
         bool centerOnMouse;
+        sf::Time dragTime;
+        float dragDistance;
+        static float significantDragSeconds;
+        static float signficantDragDistance;
         float dragOriginX, dragOriginY;
         float elementOriginX, elementOriginY;
         float centerOffsetX, centerOffsetY;
@@ -29,6 +33,8 @@ namespace bit
         void update(sf::RenderWindow &window, sf::Time &gameTime);
         
         void cancel();
+
+        bool isSignificantDrag();
     };
 }
 
