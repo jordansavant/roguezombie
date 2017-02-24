@@ -44,9 +44,9 @@ ActionBar::ActionBar(Hud* hud)
         }
     };
     attack->makeHoverable(hud->state->rogueZombieGame->inputManager, [hud](bit::Hoverable* h, bit::Element* me) {
-        hud->displayTooltipAt(std::string("Attack"), me->left + me->width / 2, me->top - 10, 1, 0);
+        hud->displayTooltipAt(std::string("Attack"), std::string("attack_button"), me->left + me->width / 2, me->top - 10, 1, 0);
     }, [hud](bit::Hoverable* h, bit::Element* me) {
-        hud->hideTooltip();
+        hud->hideTooltip(std::string("attack_button"));
     });
     addChild(attack);
     originX += attack->sprite->width + xpadding;
@@ -68,9 +68,9 @@ ActionBar::ActionBar(Hud* hud)
         }
     };
     wait->makeHoverable(hud->state->rogueZombieGame->inputManager, [hud](bit::Hoverable* h, bit::Element* me) {
-        hud->displayTooltipAt(std::string("Skip Action"), me->left + me->width / 2, me->top - 10, 1, 0);
+        hud->displayTooltipAt(std::string("Skip Action"), std::string("skip_button"), me->left + me->width / 2, me->top - 10, 1, 0);
     }, [hud](bit::Hoverable* h, bit::Element* me) {
-        hud->hideTooltip();
+        hud->hideTooltip(std::string("skip_button"));
     });
     addChild(wait);
     originX += wait->sprite->width + xpadding;
@@ -93,9 +93,9 @@ ActionBar::ActionBar(Hud* hud)
         }
     };
     swap->makeHoverable(hud->state->rogueZombieGame->inputManager, [hud](bit::Hoverable* h, bit::Element* me) {
-        hud->displayTooltipAt(std::string("Swap Weapons"), me->left + me->width / 2, me->top - 10, 1, 0);
+        hud->displayTooltipAt(std::string("Swap Weapons"), std::string("swap_button"), me->left + me->width / 2, me->top - 10, 1, 0);
     }, [hud](bit::Hoverable* h, bit::Element* me) {
-        hud->hideTooltip();
+        hud->hideTooltip(std::string("swap_button"));
     });
     addChild(swap);
     originX += swap->sprite->width + xpadding;

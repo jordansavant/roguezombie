@@ -4,11 +4,6 @@ Body's are LevelRunnable but if we delete one it will screw up references in the
 - Tiles point to structures, doors or characters on them, deleting them needs to remove references
 - Or protect against deleting them somehow
 
-Tooltips dont appear sometimes, like over action icons
-- THis is because there is one instance of the tooltip
-- When an exit event hides it will propogate after the enter event for the nearby element
-- If we support a Pool of tooltips we can throw one away and grab a new one on each request
-
 Move colors out of RZConfig since its Client Specific
 
 Hunters firing after dead

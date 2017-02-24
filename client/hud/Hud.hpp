@@ -43,7 +43,6 @@ public:
     Console* console;
     TurnQueue* turnQueue;
     ActionBar* actionBar;
-    Tooltip* tooltip;
     Minimap minimap;
     sf::Texture interfaceTexture;
     bit::VertexMap interfaceVertexMap;
@@ -51,6 +50,7 @@ public:
     bit::Pool<InventoryIcon> inventoryIconPool;
     unsigned int slotDenialSoundId;
     HudElement* closeIconElement;
+    std::vector<Tooltip*> toolTips;
 
     static bool destroying;
     static float hoverlessOpacity;
@@ -95,9 +95,9 @@ public:
 
     void displayMessage(std::string &message);
 
-    void displayTooltipAt(std::string &info, int screenX, int screenY, float opacity = 1, int delay = 750, int duration = 3000, int width = -1, int height = -1);
+    void displayTooltipAt(std::string &info, std::string &tag, int screenX, int screenY, float opacity = 1, int delay = 750, int duration = 3000, int width = -1, int height = -1);
 
-    void hideTooltip();
+    void hideTooltip(std::string &tag);
 
     bool canMoveInventory();
 

@@ -30,6 +30,7 @@ public:
     InventoryPositionSlot* currentPositionSlot;
     InventoryLootSlot* currentLootSlot;
     ActionBarSlot* currentActionSlot;
+    std::string tooltipTag;
 
     bool canIssueItemCommand();
 

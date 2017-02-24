@@ -15,7 +15,7 @@
 
 InventoryItemLabel::InventoryItemLabel(Hud* hud, Item::Schema& itemSchema, float relativeX, float relativeY, AnchorType anchorType)
     : bit::Element(relativeX, relativeY, 64, 64, anchorType, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)),
-      hud(hud), itemSchema(itemSchema), icon(NULL), currentEquipmentSlot(NULL), currentPositionSlot(NULL), currentLootSlot(NULL), currentActionSlot(NULL)
+    hud(hud), itemSchema(itemSchema), icon(NULL), currentEquipmentSlot(NULL), currentPositionSlot(NULL), currentLootSlot(NULL), currentActionSlot(NULL), tooltipTag("item_label_" + itemSchema.id)
 {
     scaleStyle = ScaleStyle::PowerOfTwo;
     canHaveFocus = true;
@@ -124,8 +124,8 @@ InventoryItemLabel::InventoryItemLabel(Hud* hud, Item::Schema& itemSchema, float
     // On Drag, On Drop
     makeDraggable(hud->state->rogueZombieGame->inputManager,
         // what we do when we start dragging
-        [hud](bit::Draggable *d, Element* e){
-            hud->hideTooltip();
+        [hud, label](bit::Draggable *d, Element* e){
+            hud->hideTooltip(label->tooltipTag);
         },
         // what we do when we stop dragging, check to see if we can drop on slots etc
         [hud, label] (bit::Draggable* d, Element* e) -> bool

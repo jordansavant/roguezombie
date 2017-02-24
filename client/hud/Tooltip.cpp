@@ -51,6 +51,7 @@ void Tooltip::activate()
 
 void Tooltip::deactivate()
 {
+    this->tag = "";
     isActive = false;
     hide();
 }
@@ -69,8 +70,10 @@ void Tooltip::show()
     queueEffect(new bit::Effect(requestedDelay))->queueEffect(new bit::FadeEffect(0, requestedOpacity, bit::Easing::Instant));
 }
 
-void Tooltip::displayAt(std::string &info, int screenX, int screenY, float opacity, int delay, int duration, int width, int height)
+void Tooltip::displayAt(std::string &info, std::string &tag, int screenX, int screenY, float opacity, int delay, int duration, int width, int height)
 {
+    this->tag = tag;
+
     int wPad = 30;
     int hPad = 25;
     this->requestedOpacity = opacity;

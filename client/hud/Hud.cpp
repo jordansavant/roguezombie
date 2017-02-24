@@ -36,7 +36,7 @@ sf::Color Hud::font_primaryColor = sf::Color(0, 255, 0);
 
 Hud::Hud(StateGamePlay* _state)
     : bit::Container(0, 0, _state->rogueZombieGame->targetResolution.x, _state->rogueZombieGame->targetResolution.y, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, this, std::placeholders::_1, std::placeholders::_2,  std::placeholders::_3)),
-      state(_state), inventoryIconPool(500, std::bind(&Hud::createInventoryIcon, this))
+    state(_state), inventoryIconPool(500, std::bind(&Hud::createInventoryIcon, this))
 {
     destroying = false;
     fullscreen = true;
@@ -91,8 +91,13 @@ Hud::Hud(StateGamePlay* _state)
         submenus[i]->opacity = 0;
     }
 
-    tooltip = new Tooltip(this);
-    addChild(tooltip);
+    // Tool tips
+    for(unsigned int i = 0; i < 10; i++)
+    {
+        Tooltip* t = new Tooltip(this);
+        addChild(t);
+        toolTips.push_back(t);
+    }
 
     // Sounds
     slotDenialSoundId = state->rogueZombieGame->soundManager->loadSound(resourcePath() + "slotbeep_688997_SOUNDDOGS__of.ogg");
@@ -250,14 +255,32 @@ void Hud::displayMessage(std::string &message)
     console->print(message);
 }
 
-void Hud::displayTooltipAt(std::string &info, int screenX, int screenY, float opacity, int delay, int duration, int width, int height)
+void Hud::displayTooltipAt(std::string &info, std::string &tag, int screenX, int screenY, float opacity, int delay, int duration, int width, int height)
 {
-    tooltip->displayAt(info, screenX, screenY, opacity, delay, duration, width, height);
+    // Find an inactive tooltip
+    for(unsigned int i = 0; i < toolTips.size(); i++)
+    {
+        if(!toolTips[i]->isActive)
+        {
+            toolTips[i]->displayAt(info, tag, screenX, screenY, opacity, delay, duration, width, height);
+
+            break;
+        }
+    }
 }
 
-void Hud::hideTooltip()
+void Hud::hideTooltip(std::string &tag)
 {
-    tooltip->deactivate();
+    // Find tooltip and deactivate
+    for(unsigned int i = 0; i < toolTips.size(); i++)
+    {
+        if(toolTips[i]->tag == tag)
+        {
+            toolTips[i]->deactivate();
+
+            break;
+        }
+    }
 }
 
 bool Hud::canMoveInventory()
