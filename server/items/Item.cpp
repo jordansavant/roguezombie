@@ -362,7 +362,18 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.minimumDamage = 6;
             i->schema.maximumDamage = 9;
             i->schema.effectiveRangeInTiles = 5;
-            i->onUse = Item::visualizeWeaponFire;
+            i->onUse = [i] (Character* user) -> void
+            {
+                // Visualize
+                i->visualizeWeaponFire(user);
+
+                // Event
+                user->level->sendEventToAllPlayers([user] (bit::ServerPacket &packet) {
+                    packet << sf::Uint32(ServerEvent::Gunfire);
+                    packet << user->Body::schema.x;
+                    packet << user->Body::schema.y;
+                });
+            };
 
             break;
 
@@ -378,9 +389,14 @@ Item* Item::create(Type type, unsigned int id)
             i->onUse = [i] (Character* user) -> void
             {
                 // Visualize
-                sf::Color s = sf::Color::Yellow;;
-                sf::Color e = sf::Color::Black;
-                user->level->createLightFlare(user->Body::schema.x, user->Body::schema.y, 1, s, e, 2, 2, 1, 0);
+                i->visualizeWeaponFire(user);
+
+                // Event
+                user->level->sendEventToAllPlayers([user] (bit::ServerPacket &packet) {
+                    packet << sf::Uint32(ServerEvent::Gunfire);
+                    packet << user->Body::schema.x;
+                    packet << user->Body::schema.y;
+                });
             };
 
             break;
@@ -472,6 +488,13 @@ Item* Item::create(Type type, unsigned int id)
                 sf::Color s = sf::Color(255, 155, 0);
                 sf::Color e = sf::Color::Black;
                 tile->level->createLightFlare(tile->schema.x, tile->schema.y, 2, s, e, ix->schema.effectiveRadiusInTiles, ix->schema.effectiveRadiusInTiles, 1, 0);
+
+                // Event
+                tile->level->sendEventToAllPlayers([tile] (bit::ServerPacket &packet) {
+                    packet << sf::Uint32(ServerEvent::Explosion);
+                    packet << tile->schema.x;
+                    packet << tile->schema.y;
+                });
 
                 return true;
             };

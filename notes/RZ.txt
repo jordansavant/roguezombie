@@ -2,12 +2,13 @@ RZ Bugs
 
 Body's are LevelRunnable but if we delete one it will screw up references in the parent tile
 - Tiles point to structures, doors or characters on them, deleting them needs to remove references
-- Or protect against deleting them somehow
+- Or protect against deleting them somehow*
 
 Move colors out of RZConfig since its Client Specific
 
 Hunters firing after dead
 - Ive seen flare visualization after they are killed
+
 
 
 RZ Features
@@ -35,3 +36,10 @@ Better stat details in the window
 
 Items should have stat effects and perhaps magical (lambda) effects
 - Maybe rarity (green/blue/purple/orange)?
+
+
+
+RZ Potential issues
+
+Doorways can be blocked if bodies die in front of them
+

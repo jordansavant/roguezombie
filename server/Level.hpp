@@ -139,6 +139,8 @@ public:
 
     // Networking
 
+    void sendEventToAllPlayers(std::function<void(bit::ServerPacket&)> prepare);
+
     void handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type command);
 
     void prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client, bool full = false);

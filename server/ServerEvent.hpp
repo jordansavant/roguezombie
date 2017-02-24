@@ -35,6 +35,9 @@ enum ServerEvent
 
     GameVictory,
     GameDefeat,
+
+    Explosion,
+    Gunfire,
 };
 
 #endif

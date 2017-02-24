@@ -4,6 +4,7 @@
 #include "../bitengine/Input.hpp"
 #include "../bitengine/Graphics.hpp"
 #include "../bitengine/System.hpp"
+#include "../bitengine/Audio.hpp"
 #include "../ResourcePath.h"
 #include "RogueZombieGame.hpp"
 #include "../server/GameplayServer.hpp"
@@ -33,6 +34,10 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     cameras[0]->panSpeed = 3;
 
     hud = new Hud(this);
+
+    // Sounds
+    explosionSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bfxr_explosion01.ogg");
+    gunshotSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bfxr_gunshot01_white.ogg");
 
     // Game play mode logic
     modeEnter.resize(Mode::_count, NULL);
@@ -991,6 +996,14 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 endGame(EndGameReason::Defeat);
                 break;
             }
+
+            case ServerEvent::Explosion:
+                rogueZombieGame->soundManager->play(explosionSoundId);
+                break;
+
+            case ServerEvent::Gunfire:
+                rogueZombieGame->soundManager->play(gunshotSoundId);
+                break;
         }
     }
 }

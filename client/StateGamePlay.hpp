@@ -69,6 +69,9 @@ public:
     bool isTileSelectActive;
     bool isShiftModifierDown;
     Target target;
+    
+    unsigned int explosionSoundId;
+    unsigned int gunshotSoundId;
 
     // Test Gui
     Hud* hud;

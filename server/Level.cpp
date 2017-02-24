@@ -951,6 +951,18 @@ void Level::createLightFlare(float x, float y, float seconds, sf::Color &startCo
 /// //////////////////////////////////////////////////////////////////////////////
 /// //////////////////////////////////////////////////////////////////////////////
 
+void Level::sendEventToAllPlayers(std::function<void(bit::ServerPacket&)> prepare)
+{
+    for(auto iterator = players.begin(); iterator != players.end(); iterator++)
+    {
+        Player* player = iterator->second;
+        if(player->client)
+        {
+            server->sendEventToClient((*player->client), prepare);
+        }
+    }
+}
+
 void Level::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type commandType)
 {
     Player* player = players[client.id];
