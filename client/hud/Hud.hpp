@@ -48,7 +48,7 @@ public:
     bit::VertexMap interfaceVertexMap;
     sf::Font journalFont;
     bit::Pool<InventoryIcon> inventoryIconPool;
-    unsigned int slotDenialSoundId;
+    unsigned int slotAcceptSoundId;
     HudElement* closeIconElement;
     std::vector<Tooltip*> toolTips;
 
@@ -107,7 +107,7 @@ public:
 
     InventoryIcon* createInventoryIcon();
 
-    void playSlotDenialSound();
+    void playSlotAcceptSound();
 
     static float getDrawDepth(float targetDepth);
 };

@@ -57,10 +57,13 @@ void CharacterSprite::update(sf::Time &gameTime)
     {
         bit::VectorMath::incrementTowards(renderX, renderY, character->BodyClient::schema.x, character->BodyClient::schema.y, 4, 4);
     }
-    facingRight = character->schema.direction.x > 0 || character->schema.direction.y < 0;
 
     sf::Vector2f facing = bit::VectorMath::normalToIsometric(character->schema.direction.x, character->schema.direction.y);
-    facingRight = facing.x > 0;
+    if(facing.x != 0)
+    {
+        // only update if we have some direction
+        facingRight = facing.x > 0;
+    }
 
     // Calculate render position given sprite information and the isometric rendering
     float zlayerAdd = .00001;

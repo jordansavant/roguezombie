@@ -100,7 +100,7 @@ Hud::Hud(StateGamePlay* _state)
     }
 
     // Sounds
-    slotDenialSoundId = state->rogueZombieGame->soundManager->loadSound(resourcePath() + "slotbeep_688997_SOUNDDOGS__of.ogg");
+    slotAcceptSoundId = state->rogueZombieGame->soundManager->loadSound(resourcePath() + "slotbeep_688997_SOUNDDOGS__of.ogg");
 
     // Close
     closeIconElement = new HudElement(0, -392, 0, 0, bit::Element::AnchorType::Right, std::bind(&Hud::typicalElementControl, this, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
@@ -357,9 +357,9 @@ InventoryIcon* Hud::createInventoryIcon()
     return new InventoryIcon(this);
 }
 
-void Hud::playSlotDenialSound()
+void Hud::playSlotAcceptSound()
 {
-    state->rogueZombieGame->soundManager->play(slotDenialSoundId);
+    state->rogueZombieGame->soundManager->play(slotAcceptSoundId);
 }
 
 float Hud::getDrawDepth(float targetDepth)

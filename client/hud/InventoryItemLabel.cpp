@@ -299,7 +299,7 @@ void InventoryItemLabel::dropResult(bool result)
 {
     if(result)
     {
-        hud->playSlotDenialSound();
+        hud->playSlotAcceptSound();
     }
 }
 
