@@ -51,6 +51,9 @@ public:
 
 private:
 
+    bool previousIsOpen;
+    bool currentIsOpen;
+
     void registerTileTriggers(Tile* tile);
 };
 

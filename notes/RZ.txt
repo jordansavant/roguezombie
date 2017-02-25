@@ -37,6 +37,10 @@ Better stat details in the window
 Items should have stat effects and perhaps magical (lambda) effects
 - Maybe rarity (green/blue/purple/orange)?
 
+Server loads and updates all levels in the game
+- Consider only updating levels that have active players
+- This is causing a lot of processing overhead
+
 
 
 RZ Potential issues

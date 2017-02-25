@@ -71,7 +71,9 @@ public:
     Target target;
     
     unsigned int explosionSoundId;
-    unsigned int gunshotSoundId;
+    unsigned int pistolGunshotSoundId;
+    unsigned int rifleGunshotSoundId;
+    unsigned int doorCloseSoundId;
 
     // Test Gui
     Hud* hud;

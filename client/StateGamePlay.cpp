@@ -36,8 +36,13 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     hud = new Hud(this);
 
     // Sounds
-    explosionSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bfxr_explosion01.ogg");
-    gunshotSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bfxr_gunshot01_white.ogg");
+    explosionSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_explosion01.ogg");
+    pistolGunshotSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_pistol_01.ogg");
+    rifleGunshotSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_rifle_01.ogg");
+    doorCloseSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_click_01.ogg");
+
+    // Music
+    rogueZombieGame->musicManager->play(rogueZombieGame->exploreMusic);
 
     // Game play mode logic
     modeEnter.resize(Mode::_count, NULL);
@@ -998,12 +1003,53 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
             }
 
             case ServerEvent::Explosion:
+            {
+                float posX, posY;
+                packet >> posX;
+                packet >> posY;
                 rogueZombieGame->soundManager->play(explosionSoundId);
                 break;
+            }
 
             case ServerEvent::Gunfire:
-                rogueZombieGame->soundManager->play(gunshotSoundId);
+            {
+                float posX, posY;
+                Item::Type type;
+                packet >> posX;
+                packet >> posY;
+                bit::NetworkHelper::unpackEnum<sf::Uint32, Item::Type>(packet, type);
+                switch(type)
+                {
+                    case Item::Type::Z4Rifle:
+                        rogueZombieGame->soundManager->play(rifleGunshotSoundId);
+                        break;
+                    case Item::Type::Magnum357:
+                        rogueZombieGame->soundManager->play(pistolGunshotSoundId);
+                        break;
+                    default:
+                        rogueZombieGame->soundManager->play(pistolGunshotSoundId);
+                        break;
+                }
                 break;
+            }
+
+            case ServerEvent::DoorOpen:
+            {
+                float posX, posY;
+                packet >> posX;
+                packet >> posY;
+                rogueZombieGame->soundManager->play(doorCloseSoundId);
+                break;
+            }
+
+            case ServerEvent::DoorClose:
+            {
+                float posX, posY;
+                packet >> posX;
+                packet >> posY;
+                rogueZombieGame->soundManager->play(doorCloseSoundId);
+                break;
+            }
         }
     }
 }

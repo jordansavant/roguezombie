@@ -368,10 +368,12 @@ Item* Item::create(Type type, unsigned int id)
                 i->visualizeWeaponFire(user);
 
                 // Event
-                user->level->sendEventToAllPlayers([user] (bit::ServerPacket &packet) {
+                Item* ix = i;
+                user->level->sendEventToAllPlayers([ix, user] (bit::ServerPacket &packet) {
                     packet << sf::Uint32(ServerEvent::Gunfire);
                     packet << user->Body::schema.x;
                     packet << user->Body::schema.y;
+                    packet << sf::Uint32(ix->schema.type);
                 });
             };
 
@@ -392,10 +394,12 @@ Item* Item::create(Type type, unsigned int id)
                 i->visualizeWeaponFire(user);
 
                 // Event
-                user->level->sendEventToAllPlayers([user] (bit::ServerPacket &packet) {
+                Item* ix = i;
+                user->level->sendEventToAllPlayers([ix, user] (bit::ServerPacket &packet) {
                     packet << sf::Uint32(ServerEvent::Gunfire);
                     packet << user->Body::schema.x;
                     packet << user->Body::schema.y;
+                    packet << sf::Uint32(ix->schema.type);
                 });
             };
 

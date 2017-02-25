@@ -1,13 +1,16 @@
 #include "Door.hpp"
 #include "../../bitengine/Game.hpp"
+#include "../../bitengine/Network.hpp"
+#include "../../bitengine/System.hpp"
 #include "SFML/System.hpp"
 #include "../Level.hpp"
 #include "../Tile.hpp"
 #include "../Structure.hpp"
+#include "../ServerEvent.hpp"
 #include <functional>
 
 Door::Door()
-    : Structure(), openerCount(0)
+    : Structure(), openerCount(0), previousIsOpen(false), currentIsOpen(false)
 {
 }
 
@@ -23,6 +26,29 @@ void Door::load(Level* _level, unsigned int _id, float _x, float _y)
 void Door::update(sf::Time &gameTime)
 {
     Structure::update(gameTime);
+
+    // was closed, now open
+    if(!previousIsOpen && schema.isOpen)
+    {
+        // Event
+        Door* door = this;
+        level->sendEventToAllPlayers([door] (bit::ServerPacket &packet) {
+            packet << sf::Uint32(ServerEvent::DoorOpen);
+            packet << door->Body::schema.x;
+            packet << door->Body::schema.y;
+        });
+    }
+    else if(previousIsOpen && !schema.isOpen)
+    { 
+        // Event
+        Door* door = this;
+        level->sendEventToAllPlayers([door] (bit::ServerPacket &packet) {
+            packet << sf::Uint32(ServerEvent::DoorClose);
+            packet << door->Body::schema.x;
+            packet << door->Body::schema.y;
+        });
+    }
+    previousIsOpen = schema.isOpen;
 }
 
 void Door::setPosition(float x, float y)
@@ -34,6 +60,13 @@ void Door::setPosition(float x, float y)
     for(unsigned int i=0; i < cardinalTiles.size(); i++)
     {
         registerTileTriggers(cardinalTiles[i]);
+    }
+
+    std::vector<Tile*> currentTiles;
+    level->getTilesWithinRectangle(Body::schema.x, Body::schema.y, Body::schema.width, Body::schema.height, currentTiles);
+    for(unsigned int i=0; i < currentTiles.size(); i++)
+    {
+        registerTileTriggers(currentTiles[i]);
     }
 }
 

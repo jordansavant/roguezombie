@@ -38,6 +38,8 @@ enum ServerEvent
 
     Explosion,
     Gunfire,
+    DoorOpen,
+    DoorClose,
 };
 
 #endif
