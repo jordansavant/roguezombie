@@ -100,7 +100,7 @@ Hud::Hud(StateGamePlay* _state)
     }
 
     // Sounds
-    slotAcceptSoundId = state->rogueZombieGame->soundManager->loadSound(resourcePath() + "slotbeep_688997_SOUNDDOGS__of.ogg");
+    slotAcceptSoundId = state->rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_menu_01.ogg");
 
     // Close
     closeIconElement = new HudElement(0, -392, 0, 0, bit::Element::AnchorType::Right, std::bind(&Hud::typicalElementControl, this, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
