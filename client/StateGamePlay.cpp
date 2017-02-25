@@ -41,7 +41,9 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     rifleGunshotSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_rifle_01.ogg");
     doorCloseSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_click_01.ogg");
     openBodySoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_guts_01.ogg");
-    openChestSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_click_01.ogg");
+    closeBodySoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_guts_02.ogg");
+    openChestSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_chestopen_01.ogg");
+    closeChestSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_chestclose_01.ogg");
 
     // Music
     rogueZombieGame->musicManager->play(rogueZombieGame->exploreMusic);
@@ -1082,7 +1084,7 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
 
             case ServerEvent::ChestClose:
             {
-                rogueZombieGame->soundManager->play(openChestSoundId);
+                rogueZombieGame->soundManager->play(closeChestSoundId);
                 break;
             }
 
@@ -1094,7 +1096,7 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
 
             case ServerEvent::BodyClose:
             {
-                rogueZombieGame->soundManager->play(openBodySoundId);
+                rogueZombieGame->soundManager->play(closeBodySoundId);
                 break;
             }
         }
