@@ -52,6 +52,16 @@ void bit::MusicManager::play(unsigned int musicId)
     }
 }
 
+void bit::MusicManager::loop(unsigned int musicId, bool loop)
+{
+    if(musicStreams.size() > musicId)
+    {
+        sf::Music* music = musicStreams.at(musicId);
+
+        music->setLoop(loop);
+    }
+}
+
 float bit::MusicManager::getMasterVolume()
 {
     return masterVolume;

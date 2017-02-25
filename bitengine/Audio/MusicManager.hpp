@@ -26,6 +26,8 @@ namespace bit
 
         void play(unsigned int musicId);
 
+        void loop(unsigned int musicId, bool loop);
+
         float getMasterVolume();
 
         void setMasterVolume(float volume);

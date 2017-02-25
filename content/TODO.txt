@@ -1,3 +1,0 @@
-TODO:
-Client side needs to support modes: LevelTransition, JoiningServer
-Signify spectating character in client with some eye candy of some sort
