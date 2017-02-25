@@ -123,6 +123,10 @@ public:
     
     void closeInventoryOfHost();
 
+    virtual void onInventoryOpen(Body* guest = NULL);
+
+    virtual void onInventoryClose(Body* guest = NULL);
+
 
     // DIALOG AND INTERACTION
 

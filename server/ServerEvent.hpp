@@ -40,6 +40,10 @@ enum ServerEvent
     Gunfire,
     DoorOpen,
     DoorClose,
+    ChestOpen,
+    ChestClose,
+    BodyOpen,
+    BodyClose,
 };
 
 #endif

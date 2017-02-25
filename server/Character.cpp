@@ -1224,6 +1224,42 @@ void Character::sendEquipmentSwappedEvent(EquipmentSlot slotA, EquipmentSlot slo
     }
 }
 
+void Character::onInventoryOpen(Body* guest)
+{
+    if(schema.isDead())
+    {
+        if(guest && guest->schema.type == Body::Type::Character)
+        {
+            Character* guestCharacter = static_cast<Character*>(guest);
+            if(guestCharacter->schema.isPlayerCharacter && guestCharacter->schema.player)
+            {
+                Player* player = guestCharacter->schema.player;
+                level->sendEventToPlayer(player, [] (bit::ServerPacket &packet) -> void {
+                    packet << sf::Uint32(ServerEvent::BodyOpen);
+                });
+            }
+        }
+    }
+}
+
+void Character::onInventoryClose(Body* guest)
+{
+    if(schema.isDead())
+    {
+        if(guest && guest->schema.type == Body::Type::Character)
+        {
+            Character* guestCharacter = static_cast<Character*>(guest);
+            if(guestCharacter->schema.isPlayerCharacter && guestCharacter->schema.player)
+            {
+                Player* player = guestCharacter->schema.player;
+                level->sendEventToPlayer(player, [] (bit::ServerPacket &packet) -> void {
+                    packet << sf::Uint32(ServerEvent::BodyClose);
+                });
+            }
+        }
+    }
+}
+
 
 ///////////////////////////////////////////////////////
 //                   MOVEMENT                        //

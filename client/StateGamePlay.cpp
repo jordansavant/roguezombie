@@ -40,9 +40,12 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     pistolGunshotSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_pistol_01.ogg");
     rifleGunshotSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_rifle_01.ogg");
     doorCloseSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_click_01.ogg");
+    openBodySoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_guts_01.ogg");
+    openChestSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_click_01.ogg");
 
     // Music
     rogueZombieGame->musicManager->play(rogueZombieGame->exploreMusic);
+    rogueZombieGame->musicManager->loop(rogueZombieGame->exploreMusic, true);
 
     // Game play mode logic
     modeEnter.resize(Mode::_count, NULL);
@@ -769,7 +772,27 @@ void StateGamePlay::handleInteractionResponse(unsigned int tileId, Interaction::
             }
             else
             {
-                displayMessage(std::string("Inventory is occupied"));
+                displayMessage(std::string("Open Inventory is occupied"));
+            }
+
+            break;
+        }
+        case Interaction::Type::GetInventory:
+        {
+            bool success;
+            packet >> success;
+
+            if(success)
+            {
+                if(mode != Mode::Loot)
+                {
+                    changeMode(Mode::Loot); // this should not hit because this event is only issued after OpenInventory
+                }
+                hud->lootMenu->handleInventorySnapshot(packet, tileId);
+            }
+            else
+            {
+                displayMessage(std::string("Get Inventory is occupied"));
             }
 
             break;
@@ -1048,6 +1071,30 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 packet >> posX;
                 packet >> posY;
                 rogueZombieGame->soundManager->play(doorCloseSoundId);
+                break;
+            }
+
+            case ServerEvent::ChestOpen:
+            {
+                rogueZombieGame->soundManager->play(openChestSoundId);
+                break;
+            }
+
+            case ServerEvent::ChestClose:
+            {
+                rogueZombieGame->soundManager->play(openChestSoundId);
+                break;
+            }
+
+            case ServerEvent::BodyOpen:
+            {
+                rogueZombieGame->soundManager->play(openBodySoundId);
+                break;
+            }
+
+            case ServerEvent::BodyClose:
+            {
+                rogueZombieGame->soundManager->play(openBodySoundId);
                 break;
             }
         }

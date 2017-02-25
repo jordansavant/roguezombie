@@ -3,9 +3,10 @@
 #include "SFML/System.hpp"
 #include "../Level.hpp"
 #include "../Tile.hpp"
-#include "../Character.hpp"
 #include "../Structure.hpp"
 #include "../Interaction.hpp"
+#include "../Character.hpp"
+#include "../ServerEvent.hpp"
 #include <functional>
 
 Chest::Chest()
@@ -79,5 +80,35 @@ void Chest::getAvailableInteractions(std::vector<Interaction::Type> &fill)
         fill.push_back(Interaction::Type::OpenInventory);
         fill.push_back(Interaction::Type::LockWithKey);
         fill.push_back(Interaction::Type::LockWithLockpick);
+    }
+}
+
+void Chest::onInventoryOpen(Body* guest)
+{
+    if(guest && guest->schema.type == Body::Type::Character)
+    {
+        ::Character* guestCharacter = static_cast<::Character*>(guest);
+        if(guestCharacter->schema.isPlayerCharacter && guestCharacter->schema.player)
+        {
+            Player* player = guestCharacter->schema.player;
+            level->sendEventToPlayer(player, [] (bit::ServerPacket &packet) -> void {
+                packet << sf::Uint32(ServerEvent::ChestOpen);
+            });
+        }
+    }
+}
+
+void Chest::onInventoryClose(Body* guest)
+{
+    if(guest && guest->schema.type == Body::Type::Character)
+    {
+        ::Character* guestCharacter = static_cast<::Character*>(guest);
+        if(guestCharacter->schema.isPlayerCharacter && guestCharacter->schema.player)
+        {
+            Player* player = guestCharacter->schema.player;
+            level->sendEventToPlayer(player, [] (bit::ServerPacket &packet) -> void {
+                packet << sf::Uint32(ServerEvent::ChestClose);
+            });
+        }
     }
 }

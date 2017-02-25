@@ -316,6 +316,10 @@ public:
     
     void sendEquipmentSwappedEvent(EquipmentSlot slotA, EquipmentSlot slotB);
 
+    virtual void onInventoryOpen(Body* guest = NULL);
+
+    virtual void onInventoryClose(Body* guest = NULL);
+
 
     // Movement
 

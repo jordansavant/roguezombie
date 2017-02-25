@@ -131,6 +131,8 @@ void Body::openInventoryForGuest(Body* guest)
 
     // Tell the guest I am his host
     guest->inventoryHost = this;
+
+    onInventoryOpen(guest);
 }
 
 void Body::closeInventoryForGuest()
@@ -138,6 +140,8 @@ void Body::closeInventoryForGuest()
     // If I have a guest
     if(inventoryGuest)
     {
+        onInventoryClose(inventoryGuest);
+
         // Tell the guest I am not hosting
         inventoryGuest->inventoryHost = NULL;
 
@@ -153,6 +157,8 @@ void Body::openInventoryOfHost(Body* host)
 
     // Tell the host I am his guest
     host->inventoryGuest = this;
+
+    host->onInventoryClose(this);
 }
 
 void Body::closeInventoryOfHost()
@@ -160,6 +166,8 @@ void Body::closeInventoryOfHost()
     // If I have a host
     if(inventoryHost)
     {
+        inventoryHost->onInventoryClose(this);
+
         // Tell the host I am leaving
         inventoryHost->inventoryGuest = NULL;
 
@@ -168,6 +176,13 @@ void Body::closeInventoryOfHost()
     }
 }
 
+void Body::onInventoryOpen(Body* guest)
+{
+}
+
+void Body::onInventoryClose(Body* guest)
+{
+}
 
 
 ////////////////////////////////////////////////////////
@@ -207,11 +222,29 @@ void Body::handleInteraction(Interaction::Type interaction, Body* interactor, bi
             }
             break;
         }
+        // This is like a Synchronization call, not an Open
+        case Interaction::Type::GetInventory:
+        {
+            // If someone else is already accessing my inventory, deny
+            if(inventoryGuest && inventoryGuest != interactor)
+            {
+                responsePacket << false;
+            }
+            else
+            {
+                responsePacket << true;
+                inventory->prepareSnapshot(responsePacket);
+            }
+            break;
+        }
         case Interaction::Type::CloseInventory:
         {
             // Unset myself from their access perspective
             if(inventoryGuest)
+            {
                 inventoryGuest->inventoryHost = NULL;
+            }
+
             inventoryGuest = NULL;
             break;
         }

@@ -15,6 +15,7 @@ public:
         UnlockWithLockpick,
         UnlockWithBash,
         OpenInventory,
+        GetInventory,
         CloseInventory,
         Dialog,
     };

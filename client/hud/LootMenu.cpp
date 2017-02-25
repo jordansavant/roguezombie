@@ -118,12 +118,12 @@ void LootMenu::syncInventory()
         [tileIdx, m] (bit::ClientPacket &packet)
         {
             packet << sf::Uint32(ClientRequest::ProcessInteractionForBodyOnTile);
-            packet << sf::Uint32(Interaction::Type::OpenInventory);
+            packet << sf::Uint32(Interaction::Type::GetInventory);
             packet << sf::Uint32(tileIdx);
         },
         [tileIdx, m] (bit::ServerPacket &packet)
         {
-            m->hud->state->handleInteractionResponse(tileIdx, Interaction::Type::OpenInventory, packet);
+            m->hud->state->handleInteractionResponse(tileIdx, Interaction::Type::GetInventory, packet);
         }
     );
 }

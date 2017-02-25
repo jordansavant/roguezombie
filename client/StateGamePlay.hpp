@@ -74,6 +74,8 @@ public:
     unsigned int pistolGunshotSoundId;
     unsigned int rifleGunshotSoundId;
     unsigned int doorCloseSoundId;
+    unsigned int openBodySoundId;
+    unsigned int openChestSoundId;
 
     // Test Gui
     Hud* hud;

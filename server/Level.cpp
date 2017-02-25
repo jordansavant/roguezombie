@@ -955,13 +955,18 @@ void Level::sendEventToAllPlayers(std::function<void(bit::ServerPacket&)> prepar
 {
     for(auto iterator = players.begin(); iterator != players.end(); iterator++)
     {
-        Player* player = iterator->second;
-        if(player->client)
-        {
-            server->sendEventToClient((*player->client), prepare);
-        }
+        sendEventToPlayer(iterator->second, prepare);
     }
 }
+
+void Level::sendEventToPlayer(Player* player, std::function<void(bit::ServerPacket&)> prepare)
+{
+    if(player->client)
+    {
+        server->sendEventToClient((*player->client), prepare);
+    }
+}
+
 
 void Level::handlePlayerCommand(bit::ClientPacket &packet, bit::RemoteClient &client, Command::Type commandType)
 {

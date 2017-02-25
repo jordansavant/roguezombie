@@ -13,7 +13,7 @@ RogueZombieGame::RogueZombieGame()
     : VideoGame("Rogue Zombie", 1280, 720, false), errorMessage(""), mouse(resourcePath() + "mouse.png")
 {
     Game::stateStack->pushState(stateGameStart);
-    exploreMusic = musicManager->loadMusic(resourcePath() + "RockmenExplore.ogg");
+    exploreMusic = musicManager->loadMusic(resourcePath() + "bit_song_heartbeat.ogg");
     combatMusic = musicManager->loadMusic(resourcePath() + "RockmenCombat.ogg");
 }
 

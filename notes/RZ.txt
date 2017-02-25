@@ -20,6 +20,9 @@ To Fix
 - Try including the tile it sits on in the event registration
 - This will cause attemptOpen to fire again in the same cycle when the body moves onto the same tile
 
+Seems like Body never gets a Close inventory interaction, so perhaps they are always accessed?
+- On exit loot mode probably need to send the close inventory request
+
 
 
 RZ Features

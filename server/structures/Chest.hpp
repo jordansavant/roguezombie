@@ -44,6 +44,10 @@ public:
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
     
     virtual void getAvailableInteractions(std::vector<Interaction::Type> &fill);
+
+    virtual void onInventoryOpen(Body* guest = NULL);
+
+    virtual void onInventoryClose(Body* guest = NULL);
 };
 
 #endif
