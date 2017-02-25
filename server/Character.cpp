@@ -435,6 +435,14 @@ void Character::kill()
     {
         unequip(static_cast<Character::EquipmentSlot>(i));
     }
+
+    // Send event
+    level->sendEventToAllPlayers([this] (bit::ServerPacket &packet) -> void {
+        packet << sf::Uint32(ServerEvent::CharacterDeath);
+        packet << this->Body::schema.x;
+        packet << this->Body::schema.y;
+        packet << sf::Uint32(this->schema.type);
+    });
 }
 
 void Character::attack(Character* character)

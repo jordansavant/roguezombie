@@ -78,6 +78,7 @@ public:
     unsigned int closeBodySoundId;
     unsigned int openChestSoundId;
     unsigned int closeChestSoundId;
+    unsigned int humanCharacterDeathSoundId;
 
     // Test Gui
     Hud* hud;

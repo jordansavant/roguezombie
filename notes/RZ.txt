@@ -20,21 +20,11 @@ To Fix
 - Try including the tile it sits on in the event registration
 - This will cause attemptOpen to fire again in the same cycle when the body moves onto the same tile
 
-Seems like Body never gets a Close inventory interaction, so perhaps they are always accessed?
-- On exit loot mode probably need to send the close inventory request
-
 
 
 RZ Features
 
-When a character attacks we should show graphics for attack and harm as well as sounds
-
-Need to ambient music, environmental sounds
-
 Need sound effects
-- When a weapon is fired
-- When a character is killed
-- When an explosion occurs
 - For healing/item use
 - For item throwing (brick hitting someone)
 

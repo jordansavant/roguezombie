@@ -44,6 +44,7 @@ enum ServerEvent
     ChestClose,
     BodyOpen,
     BodyClose,
+    CharacterDeath,
 };
 
 #endif
