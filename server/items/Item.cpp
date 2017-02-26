@@ -414,6 +414,15 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.minimumDamage = 4;
             i->schema.maximumDamage = 6;
             i->schema.effectiveRangeInTiles = 1;
+            i->onUse = [i] (Character* user) -> void
+            {
+                // Event
+                user->level->sendEventToAllPlayers([user] (bit::ServerPacket &packet) {
+                    packet << sf::Uint32(ServerEvent::BluntHit);
+                    packet << user->Body::schema.x;
+                    packet << user->Body::schema.y;
+                });
+            };
 
             break;
 
@@ -432,6 +441,14 @@ Item* Item::create(Type type, unsigned int id)
             i->applyToCharacter = [i] (Character* self) -> bool
             {
                 self->heal(bit::Math::random(i->schema.minimumDamage, i->schema.maximumDamage));
+
+                // Event
+                self->level->sendEventToAllPlayers([self] (bit::ServerPacket &packet) {
+                    packet << sf::Uint32(ServerEvent::CharacterHeal);
+                    packet << self->Body::schema.x;
+                    packet << self->Body::schema.y;
+                });
+
                 return true;
             };
 
@@ -452,6 +469,16 @@ Item* Item::create(Type type, unsigned int id)
             i->applyToCharacter = [i] (Character* other) -> bool
             {
                 other->harm(bit::Math::random(i->schema.minimumDamage, i->schema.maximumDamage));
+
+                // Event
+                float x = other->Body::schema.x;
+                float y = other->Body::schema.y;
+                other->level->sendEventToAllPlayers([x, y] (bit::ServerPacket &packet) {
+                    packet << sf::Uint32(ServerEvent::BluntHit);
+                    packet << x;
+                    packet << y;
+                });
+
                 return true;
             };
 

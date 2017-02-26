@@ -24,6 +24,8 @@ public:
     {
         None,
         Ground,
+        StairwellDown_South,
+        StairwellDown_East,
     };
 
     struct Entrance

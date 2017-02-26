@@ -20,6 +20,7 @@ void Tile::load(Level* _level, unsigned int _id, Type _type, int _x, int _y, int
     schema.y = _y;
     schema.width = _width;
     schema.height = _height;
+    schema.type = _type;
     schema.centerX = _x + _width / 2;
     schema.centerY = _y + _height / 2;
     schema.illumination = 0.0f;

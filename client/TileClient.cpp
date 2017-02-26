@@ -62,7 +62,7 @@ void TileClient::clientLoad(LevelClient* _level)
 
     // Game quad
     quadIndex = level->vertexMap_charactersNormal.requestVertexIndex();
-    sprite = level->state->rogueZombieGame->spriteLoader->getSprite("Ground");
+    sprite = level->state->rogueZombieGame->spriteLoader->getSprite(getSpriteMoniker(schema.type));
     sprite->applyToQuad(&level->vertexMap_charactersNormal.vertexArray[quadIndex]);
 }
 
@@ -244,6 +244,8 @@ void TileClient::clientUpdate(sf::Time &gameTime)
 
 void TileClient::reinitialize()
 {
+    sprite = level->state->rogueZombieGame->spriteLoader->getSprite(getSpriteMoniker(schema.type));
+    sprite->applyToQuad(&level->vertexMap_charactersNormal.vertexArray[quadIndex]);
 }
 
 void TileClient::reset()
@@ -254,6 +256,22 @@ void TileClient::reset()
 void TileClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
     packet >> schema;
+}
+
+std::string TileClient::getSpriteMoniker(Tile::Type type)
+{
+    switch(type)
+    {
+        default:
+            return "Undefined";
+        case Tile::Type::Ground:
+            return "Ground";
+        case Tile::Type::StairwellDown_South:
+            return "StairwellDown_South";
+        case Tile::Type::StairwellDown_East:
+            return "StairwellDown_East";
+
+    }
 }
 
 sf::Color TileClient::getMoveColor()

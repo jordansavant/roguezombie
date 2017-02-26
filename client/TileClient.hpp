@@ -57,6 +57,8 @@ public:
 
     virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 
+    static std::string getSpriteMoniker(Tile::Type type);
+
 private:
 
     sf::Color getMoveColor();

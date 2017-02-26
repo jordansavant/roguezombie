@@ -9,24 +9,8 @@ Move colors out of RZConfig since its Client Specific
 Hunters firing after dead
 - Ive seen flare visualization after they are killed
 
-Door events are flicking open and closed
-- Visually this was not noticed, but it was happening
-- The body exit event fires for cardinal tiles
-- The door "closes" because nothing is occupying them
-- The character then moves onto the tile
-- This causes the Body of the tile to swap from door to character, thus apeparing open
-- But the door is considered in a closed position despite it being open
-To Fix
-- Try including the tile it sits on in the event registration
-- This will cause attemptOpen to fire again in the same cycle when the body moves onto the same tile
-
-
 
 RZ Features
-
-Need sound effects
-- For healing/item use
-- For item throwing (brick hitting someone)
 
 Stairwell graphic tiles (NSEW, Up and Down)
 
@@ -45,9 +29,14 @@ Server loads and updates all levels in the game
 - Consider only updating levels that have active players
 - This is causing a lot of processing overhead
 
+Options menu
+- New hotline miami is a nice simple example
 
 
 RZ Potential issues
 
 Doorways can be blocked if bodies die in front of them
+
+Laggy while debugging
+- Look at possibility of local semaphor packet sending?
 

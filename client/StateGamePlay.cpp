@@ -45,6 +45,8 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     openChestSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_chestopen_01.ogg");
     closeChestSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_chestclose_01.ogg");
     humanCharacterDeathSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_deathgrunt_01.ogg");
+    thudSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_thud_01.ogg");
+    healSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_heal_01.ogg");
 
     // Music
     rogueZombieGame->musicManager->play(rogueZombieGame->exploreMusic);
@@ -1117,6 +1119,24 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                         rogueZombieGame->soundManager->play(humanCharacterDeathSoundId);
                         break;
                 }
+                break;
+            }
+
+            case ServerEvent::BluntHit:
+            {
+                float posX, posY;
+                packet >> posX;
+                packet >> posY;
+                rogueZombieGame->soundManager->play(thudSoundId);
+                break;
+            }
+
+            case ServerEvent::CharacterHeal:
+            {
+                float posX, posY;
+                packet >> posX;
+                packet >> posY;
+                rogueZombieGame->soundManager->play(healSoundId);
                 break;
             }
         }
