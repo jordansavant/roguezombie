@@ -109,9 +109,14 @@ void GameplayServer::update(sf::Time &gameTime)
     // Remove completed requests
     pendingMoves.erase(std::remove_if(pendingMoves.begin(), pendingMoves.end(), [](PendingMovePlayer p) { return p.complete; }), pendingMoves.end());
 
+    // Update levels
     for(unsigned int i=0; i < levels.size(); i++)
     {
-        levels[i].update(gameTime);
+        // Only update them if they have players on them
+        if(levels[i].players.size() > 0)
+        {
+            levels[i].update(gameTime);
+        }
     }
 }
 
