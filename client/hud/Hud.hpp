@@ -61,6 +61,7 @@ public:
     static float zindex_iconsDragged;
     static float zindex_cells;
     static float zindex_frames;
+    static int font_largeSize;
     static int font_primarySize;
     static int font_noteSize;
     static sf::Color font_primaryColor;

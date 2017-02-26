@@ -15,6 +15,16 @@ public:
 
     Options(Hud* hud);
 
+    bit::Label* title;
+    bit::Label* musicIncrease;
+    std::string musicIncreaseText;
+    std::string musicIncreaseTextFocus;
+    bit::Label* musicDecrease;
+    std::string musicDecreaseText;
+    std::string musicDecreaseTextFocus;
+    bit::Label* quitGame;
+    std::string quitGameText;
+    std::string quitGameTextFocus;
     unsigned int naviconQuadIndex;
     bit::Sprite* naviconSprite;
 
@@ -27,6 +37,8 @@ public:
     virtual void hide();
 
     virtual void show();
+
+    void configureLabel(bit::Label* label, std::string* text, std::string* focusText);
 
 };
 

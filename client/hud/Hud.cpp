@@ -31,6 +31,7 @@ float Hud::zindex_iconsDragged = 1.0f; // icons being dragged
 float Hud::zindex_cells = .1f; // containers for inventory icons
 float Hud::zindex_frames = .1f; // menu frames
 
+int Hud::font_largeSize = 32;
 int Hud::font_primarySize = 24;
 int Hud::font_noteSize = 20;
 sf::Color Hud::font_primaryColor = sf::Color(0, 255, 0);
