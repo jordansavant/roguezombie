@@ -13,6 +13,13 @@ void bit::Output::Debug(int integer)
     Debug(ss.str());
 }
 
+void bit::Output::Debug(float floatVal)
+{
+    std::stringstream ss;
+    ss << floatVal;
+    Debug(ss.str());
+}
+
 void bit::Output::Debug(std::string message)
 {
 #if defined(__OS_WIN__)

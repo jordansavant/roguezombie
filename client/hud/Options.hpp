@@ -28,6 +28,11 @@ public:
     unsigned int naviconQuadIndex;
     bit::Sprite* naviconSprite;
 
+    bit::Slider* musicSlider;
+
+    sf::Texture sliderHandleTexture;
+    sf::Texture sliderBackgroundTexture;
+
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
     void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);

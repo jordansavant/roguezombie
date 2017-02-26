@@ -29,56 +29,55 @@ void bit::Slider::updateTargets(sf::RenderWindow &window, sf::Time &gameTime)
 
 void bit::Slider::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
 {
-    // Update real position of label
     Label::updateReals(window, gameTime);
 
-    // Set Background
+    // Set Default positions
     float backgroundX = left + width - (elementScale * backgroundSprite.getLocalBounds().width) + paddingRight + textureOffsetX * elementScale - handleSprite.getLocalBounds().width / 2 * elementScale;
     float backgroundY = top + textureOffsetY * elementScale;
+    float handleMinX = backgroundX;
+    float handleMaxX = backgroundX + (elementScale * backgroundSprite.getLocalBounds().width);
+    sliderDistance = handleMaxX - handleMinX;
+    sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
 
+    // Update state of sliding
+    if(!currentlySliding)
+    {
+        // Listen to see if we start sliding
+        if(lambdaOnSliderIsPressed && lambdaOnSliderIsPressed() && handleSprite.getGlobalBounds().contains(pixelPos.x, pixelPos.y))
+        {
+            currentlySliding = true;
+        }
+    }
+    else
+    {
+        // Listen to see if we stop sliding
+        if(currentlySliding && lambdaOnSliderIsReleased && lambdaOnSliderIsReleased())
+        {
+            currentlySliding = false;
+        }
+    }
+
+    // Update element based on slider data
+    if(currentlySliding)
+    {
+        float newSliderPosition = bit::Math::clamp((pixelPos.x - handleMinX) / sliderDistance, 0, 1);
+
+        // If we have changed value, notify
+        if(newSliderPosition != current)
+        {
+            onSlideChange(this, current, &window, &gameTime);
+            current = newSliderPosition;
+        }
+    }
+
+    // Set handle to be at current value position
+    float handleX = backgroundX + current * sliderDistance - (elementScale * handleSprite.getLocalBounds().width / 2);
+    float handleY = top + textureOffsetY * elementScale;
+
+    // Update drawables
     backgroundSprite.setColor(getColor());
     backgroundSprite.setScale(elementScale, elementScale);
     backgroundSprite.setPosition(backgroundX, backgroundY);
-
-    float handleMinX = backgroundX;
-    float handleMaxX = backgroundX + (elementScale * backgroundSprite.getLocalBounds().width);
-
-    float lerpedCurrent = (current - min) / (max - min);
-    sliderDistance = handleMaxX - handleMinX;
-
-    float handleX = backgroundX + lerpedCurrent * sliderDistance - (elementScale * handleSprite.getLocalBounds().width / 2);
-    float handleY = top + textureOffsetY * elementScale;
-
-    // Listen for shitty input
-    sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
-    if(lambdaOnSliderIsPressed && lambdaOnSliderIsPressed() && handleSprite.getGlobalBounds().contains(pixelPos.x, pixelPos.y))
-    {
-        currentlySliding = true;
-    }
-
-    if(currentlySliding)
-    {
-        float val = (pixelPos.x - handleMinX) / sliderDistance;
-
-        onSlideChange(this, val, &window, &gameTime);
-    }
-    else if(lambdaOnSliderIsPressed && lambdaOnSliderIsPressed() && backgroundSprite.getGlobalBounds().contains(pixelPos.x, pixelPos.y))
-    {
-        currentlySliding = true;
-        float val = (pixelPos.x - handleMinX) / sliderDistance;
-
-        onSlideChange(this, val, &window, &gameTime);
-    }
-
-    if(currentlySliding && lambdaOnSliderIsReleased && lambdaOnSliderIsReleased())
-    {
-        currentlySliding = false;
-    }
-
-    if(currentlySliding)
-    {
-        handleX = bit::Math::clamp(pixelPos.x, handleMinX, handleMaxX) - (elementScale * handleSprite.getLocalBounds().width / 2);
-    }
 
     handleSprite.setColor(getColor());
     handleSprite.setScale(elementScale, elementScale);

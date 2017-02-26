@@ -1,7 +1,9 @@
 #include "Options.hpp"
 #include "Hud.hpp"
+#include "../../ResourcePath.h"
 #include "../../bitengine/Input.hpp"
 #include "../../bitengine/Audio.hpp"
+#include "../../bitengine/System.hpp"
 #include "../StateGamePlay.hpp"
 #include "../LevelClient.hpp"
 #include "../RogueZombieGame.hpp"
@@ -11,6 +13,9 @@ Options::Options(Hud* _hud)
 {
     scaleStyle = ScaleStyle::PowerOfTwo;
     managesOpacity = true;
+
+    sliderHandleTexture.loadFromFile(resourcePath() + "SliderHandle.png");
+    sliderBackgroundTexture.loadFromFile(resourcePath() + "SliderBackground.png");
 
     float initX = 38;
     float initY = 30;
@@ -33,6 +38,39 @@ Options::Options(Hud* _hud)
         _hud->state->rogueZombieGame->musicManager->changeVolume(10);
     };
     addChild(musicIncrease);
+
+    initY += ySeparation;
+
+    musicSlider = new bit::Slider(sliderHandleTexture, sliderBackgroundTexture, initX, initY, 0, 0, Element::AnchorType::TopLeft,
+        [_hud] (bit::Slider* slider, float ratio, sf::RenderWindow* window, sf::Time* gameTime)
+        {
+            bit::Output::Debug(ratio);
+            _hud->state->rogueZombieGame->musicManager->setMasterVolume(ratio * _hud->state->rogueZombieGame->musicManager->getMaximum());
+        }
+    );
+    musicSlider->lambdaOnSliderIsPressed = [_hud] () -> bool {
+        return _hud->state->rogueZombieGame->inputManager->isButtonPressed(sf::Mouse::Left);
+    };
+    musicSlider->lambdaOnSliderIsReleased = [_hud] () -> bool {
+        return _hud->state->rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left);
+    };
+    musicSlider->canHaveFocus = true;
+    musicSlider->scaleStyle = bit::Element::ScaleStyle::PowerOfTwo;
+    musicSlider->setSfFontSize(Hud::font_largeSize);
+    musicSlider->setSfFont(hud->journalFont);
+    musicSlider->normalColor = sf::Color::Black;
+    musicSlider->focusedColor = sf::Color::Black;
+    musicSlider->scaleStyle = ScaleStyle::PowerOfTwo;
+    musicSlider->setSfFontString(std::string("Music"));
+    musicSlider->paddingTop = -2;
+    musicSlider->paddingLeft = 5;
+    musicSlider->paddingRight = 5;
+    musicSlider->paddingBottom = 6;
+    musicSlider->textureOffsetX = 0;
+    musicSlider->textureOffsetY = 6;
+    musicSlider->min = 0;
+    musicSlider->max = hud->state->rogueZombieGame->musicManager->getMaximum();
+    addChild(musicSlider);
 
     initY += ySeparation;
 

@@ -13,6 +13,8 @@ namespace bit
 
         static void Debug(int integer);
 
+        static void Debug(float floatVal);
+
         static void Debug(std::string message);
     };
 }
