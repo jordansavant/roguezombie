@@ -26,6 +26,12 @@ public:
         Ground,
         StairwellDown_South,
         StairwellDown_East,
+        StairwellUp_North,
+        StairwellUp_West,
+        StairwellDown_North,
+        StairwellDown_West,
+        StairwellUp_South,
+        StairwellUp_East,
     };
 
     struct Entrance

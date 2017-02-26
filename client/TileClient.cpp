@@ -270,7 +270,18 @@ std::string TileClient::getSpriteMoniker(Tile::Type type)
             return "StairwellDown_South";
         case Tile::Type::StairwellDown_East:
             return "StairwellDown_East";
-
+        case Tile::Type::StairwellUp_North:
+            return "StairwellUp_North";
+        case Tile::Type::StairwellUp_West:
+            return "StairwellUp_West";
+        case Tile::Type::StairwellDown_North:
+            return "StairwellDown_North";
+        case Tile::Type::StairwellDown_West:
+            return "StairwellDown_West";
+        case Tile::Type::StairwellUp_South:
+            return "StairwellUp_South";
+        case Tile::Type::StairwellUp_East:
+            return "StairwellUp_East";
     }
 }
 

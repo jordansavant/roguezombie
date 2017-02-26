@@ -12,8 +12,6 @@ Hunters firing after dead
 
 RZ Features
 
-Stairwell graphic tiles (NSEW, Up and Down)
-
 Need much better AI for Hunters
 - They should take cover
 - They should flee
@@ -27,6 +25,7 @@ Items should have stat effects and perhaps magical (lambda) effects
 
 Server loads and updates all levels in the game
 - Consider only updating levels that have active players
+- Also has implications on gameplay, with wandering AI etc
 - This is causing a lot of processing overhead
 
 Options menu

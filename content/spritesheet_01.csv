@@ -21,8 +21,14 @@ Ogre_Head,368,2,120,116,0,0,120,116,false
 Ogre_Shadow,2,120,120,116,0,0,120,116,false
 RacingPants,166,162,40,40,0,0,40,40,false
 StairwellDown_East,68,478,64,32,0,0,64,32,false
-StairwellDown_South,124,204,64,32,0,0,64,32,false
-Undefined,190,204,64,32,0,0,64,32,false
+StairwellDown_North,124,204,64,32,0,0,64,32,false
+StairwellDown_South,190,204,64,32,0,0,64,32,false
+StairwellDown_West,152,280,64,32,0,0,64,32,false
+StairwellUp_East,194,238,64,32,0,0,64,32,false
+StairwellUp_North,256,204,64,32,0,0,64,32,false
+StairwellUp_South,292,120,64,32,0,0,64,32,false
+StairwellUp_West,292,154,64,32,0,0,64,32,false
+Undefined,152,314,64,32,0,0,64,32,false
 Undefined_Body,110,280,40,40,0,0,40,40,false
 Undefined_Dead,110,322,40,40,0,0,40,40,false
 Undefined_FrontArm,110,364,40,40,0,0,40,40,false
@@ -30,7 +36,7 @@ Undefined_Head,128,406,40,40,0,0,40,40,false
 Undefined_Shadow,124,162,40,40,0,0,40,40,false
 Wall,2,304,64,64,0,0,64,64,false
 WallThin,2,370,64,64,0,0,64,64,false
-Water,152,280,64,32,0,0,64,32,false
+Water,152,348,64,32,0,0,64,32,false
 White,498,26,1,1,0,0,1,1,false
 Z4Rifle,134,448,40,40,0,0,40,40,false
 Zombie,152,238,40,40,0,0,40,40,false
