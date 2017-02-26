@@ -13,7 +13,7 @@ Journal::Journal(Hud* _hud)
     scaleStyle = ScaleStyle::PowerOfTwo;
     managesOpacity = true;
 
-    journalEntries = new bit::Label(40, 30, 0, 0, bit::Element::AnchorType::TopLeft);
+    journalEntries = new bit::Label(38, 30, 0, 0, bit::Element::AnchorType::TopLeft);
     journalEntries->setSfFontSize(Hud::font_primarySize);
     journalEntries->setSfFont(hud->journalFont);
     journalEntries->normalColor = sf::Color::Black;
@@ -32,7 +32,13 @@ void Journal::update(sf::RenderWindow &window, sf::Time &gameTime)
     LevelClient* levelClient = hud->state->levelClient;
     if(levelClient->playerCharacter)
     {
-        std::string entry("OBJECTIVES:\n\n");
+        // Flub divider (text does not scale perfectly)
+        std::string entry;
+        if(elementScale == 1)
+            entry = std::string("OBJECTIVES:\n-----------------------------------------\n\n");
+        else
+            entry = std::string("OBJECTIVES:\n--------------------------------------------\n\n");
+
         for(auto iterator = levelClient->playerCharacter->missionClients.begin(); iterator != levelClient->playerCharacter->missionClients.end(); iterator++)
         {
             // Level 1
@@ -47,9 +53,9 @@ void Journal::update(sf::RenderWindow &window, sf::Time &gameTime)
             {
                 MissionClient* mc = &iterator2->second;
                 if(mc->schema.isComplete)
-                    entry += "  - " + JournalEntry::getTitle(mc->schema.journalEntry) + " - Complete\n";
+                    entry += "-> " + JournalEntry::getTitle(mc->schema.journalEntry) + " // complete\n";
                 else
-                    entry += "  - " + JournalEntry::getTitle(mc->schema.journalEntry) + "\n";
+                    entry += "-> " + JournalEntry::getTitle(mc->schema.journalEntry) + "\n";
             }
         }
         journalEntries->setSfFontString(entry);
