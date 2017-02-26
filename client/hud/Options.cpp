@@ -31,7 +31,7 @@ Options::Options(Hud* _hud)
     initY += 60;
 
     // MUSIC
-    musicSlider = new bit::Slider(sliderHandleTexture, sliderBackgroundTexture, initX, initY, 0, 0, Element::AnchorType::TopLeft, [_hud] (bit::Slider* slider, float ratio, sf::RenderWindow* window, sf::Time* gameTime) {
+    musicSlider = new bit::Slider(sliderHandleTexture, sliderBackgroundTexture, initX, initY, 0, 0, Element::AnchorType::TopLeft, [_hud] (bit::Slider* slider, float ratio) {
         _hud->state->rogueZombieGame->musicManager->setByRatio(ratio);
     });
     musicSliderText = "MUSIC";
@@ -44,7 +44,7 @@ Options::Options(Hud* _hud)
     initY += ySeparation;
 
     // SOUND
-    soundSlider = new bit::Slider(sliderHandleTexture, sliderBackgroundTexture, initX, initY, 0, 0, Element::AnchorType::TopLeft, [_hud] (bit::Slider* slider, float ratio, sf::RenderWindow* window, sf::Time* gameTime) {
+    soundSlider = new bit::Slider(sliderHandleTexture, sliderBackgroundTexture, initX, initY, 0, 0, Element::AnchorType::TopLeft, [_hud] (bit::Slider* slider, float ratio) {
         _hud->state->rogueZombieGame->soundManager->setByRatio(ratio);
     });
     soundSliderText = "SOUND";

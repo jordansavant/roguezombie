@@ -12,9 +12,9 @@ namespace bit
     {
     public:
 
-        Slider(sf::Texture &handleTexture, sf::Texture &backgroundTexture, float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<void(Slider*, float, sf::RenderWindow*, sf::Time*)> onSlideChange);
+        Slider(sf::Texture &handleTexture, sf::Texture &backgroundTexture, float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<void(Slider* slider, float ratio)> onSlideChange);
 
-        std::function<void(Slider*, float, sf::RenderWindow*, sf::Time*)> onSlideChange;
+        std::function<void(Slider* slider, float ratio)> onSlideChange;
         sf::Texture* handleTexture;
         sf::Texture* backgroundTexture;
         sf::Sprite handleSprite;

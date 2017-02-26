@@ -6,7 +6,7 @@
 #include "../Math/Math.hpp"
 #include "../Input/InputManager.hpp"
 
-bit::Slider::Slider(sf::Texture &handleTexture, sf::Texture &backgroundTexture, float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<void(Slider*, float, sf::RenderWindow*, sf::Time*)> onSlideChange)
+bit::Slider::Slider(sf::Texture &handleTexture, sf::Texture &backgroundTexture, float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<void(Slider* slider, float ratio)> onSlideChange)
     : Label(relativeX, relativeY, width, height, anchorType), onSlideChange(onSlideChange),
       handleTexture(&handleTexture), backgroundTexture(&backgroundTexture), textureOffsetX(0), textureOffsetY(0),
       min(0), current(0), max(1),
@@ -66,7 +66,7 @@ void bit::Slider::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
         // If we have changed value, notify
         if(newSliderPosition != current)
         {
-            onSlideChange(this, newSliderPosition, &window, &gameTime);
+            onSlideChange(this, newSliderPosition);
             current = newSliderPosition;
         }
     }
