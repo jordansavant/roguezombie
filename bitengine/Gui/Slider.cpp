@@ -12,7 +12,8 @@ bit::Slider::Slider(sf::Texture &handleTexture, sf::Texture &backgroundTexture, 
       min(0), current(0), max(1),
       currentlySliding(false), sliderDistance(0),
       lambdaOnSliderIsPressed(NULL),
-      lambdaOnSliderIsReleased(NULL)
+      lambdaOnSliderIsReleased(NULL),
+      setFromSystem(NULL)
 {
     handleSprite.setTexture(handleTexture);
     backgroundSprite.setTexture(backgroundTexture);
@@ -65,8 +66,16 @@ void bit::Slider::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
         // If we have changed value, notify
         if(newSliderPosition != current)
         {
-            onSlideChange(this, current, &window, &gameTime);
+            onSlideChange(this, newSliderPosition, &window, &gameTime);
             current = newSliderPosition;
+        }
+    }
+    else
+    {
+        // reset our slider to system data
+        if(setFromSystem)
+        {
+            current = setFromSystem();
         }
     }
 

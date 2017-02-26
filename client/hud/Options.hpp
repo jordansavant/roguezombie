@@ -16,19 +16,17 @@ public:
     Options(Hud* hud);
 
     bit::Label* title;
-    bit::Label* musicIncrease;
-    std::string musicIncreaseText;
-    std::string musicIncreaseTextFocus;
-    bit::Label* musicDecrease;
-    std::string musicDecreaseText;
-    std::string musicDecreaseTextFocus;
     bit::Label* quitGame;
     std::string quitGameText;
     std::string quitGameTextFocus;
     unsigned int naviconQuadIndex;
     bit::Sprite* naviconSprite;
 
+    std::string musicSliderText;
     bit::Slider* musicSlider;
+
+    std::string soundSliderText;
+    bit::Slider* soundSlider;
 
     sf::Texture sliderHandleTexture;
     sf::Texture sliderBackgroundTexture;
@@ -44,6 +42,8 @@ public:
     virtual void show();
 
     void configureLabel(bit::Label* label, std::string* text, std::string* focusText);
+
+    void configureSlider(bit::Slider* slider, std::string* text, float min, float max);
 
 };
 

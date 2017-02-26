@@ -14,8 +14,8 @@ Options::Options(Hud* _hud)
     scaleStyle = ScaleStyle::PowerOfTwo;
     managesOpacity = true;
 
-    sliderHandleTexture.loadFromFile(resourcePath() + "SliderHandle.png");
-    sliderBackgroundTexture.loadFromFile(resourcePath() + "SliderBackground.png");
+    sliderHandleTexture.loadFromFile(resourcePath() + "options_sliderhandle.png");
+    sliderBackgroundTexture.loadFromFile(resourcePath() + "options_sliderbg.png");
 
     float initX = 38;
     float initY = 30;
@@ -30,61 +30,33 @@ Options::Options(Hud* _hud)
 
     initY += 60;
 
-    musicIncrease = new bit::Label(initX, initY, 0, 0, bit::Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-    musicIncreaseText = std::string("MUSIC UP");
-    musicIncreaseTextFocus = musicIncreaseText + " <<";
-    configureLabel(musicIncrease, &musicIncreaseText, &musicIncreaseTextFocus);
-    musicIncrease->onActivate = [_hud] (bit::Element* e) {
-        _hud->state->rogueZombieGame->musicManager->changeVolume(10);
+    // MUSIC
+    musicSlider = new bit::Slider(sliderHandleTexture, sliderBackgroundTexture, initX, initY, 0, 0, Element::AnchorType::TopLeft, [_hud] (bit::Slider* slider, float ratio, sf::RenderWindow* window, sf::Time* gameTime) {
+        _hud->state->rogueZombieGame->musicManager->setByRatio(ratio);
+    });
+    musicSliderText = "MUSIC";
+    configureSlider(musicSlider, &musicSliderText, 0, hud->state->rogueZombieGame->musicManager->getMaximum());
+    musicSlider->setFromSystem = [_hud] () {
+        return _hud->state->rogueZombieGame->musicManager->getMasterVolume() / _hud->state->rogueZombieGame->musicManager->getMaximum();
     };
-    addChild(musicIncrease);
-
-    initY += ySeparation;
-
-    musicSlider = new bit::Slider(sliderHandleTexture, sliderBackgroundTexture, initX, initY, 0, 0, Element::AnchorType::TopLeft,
-        [_hud] (bit::Slider* slider, float ratio, sf::RenderWindow* window, sf::Time* gameTime)
-        {
-            bit::Output::Debug(ratio);
-            _hud->state->rogueZombieGame->musicManager->setMasterVolume(ratio * _hud->state->rogueZombieGame->musicManager->getMaximum());
-        }
-    );
-    musicSlider->lambdaOnSliderIsPressed = [_hud] () -> bool {
-        return _hud->state->rogueZombieGame->inputManager->isButtonPressed(sf::Mouse::Left);
-    };
-    musicSlider->lambdaOnSliderIsReleased = [_hud] () -> bool {
-        return _hud->state->rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left);
-    };
-    musicSlider->canHaveFocus = true;
-    musicSlider->scaleStyle = bit::Element::ScaleStyle::PowerOfTwo;
-    musicSlider->setSfFontSize(Hud::font_largeSize);
-    musicSlider->setSfFont(hud->journalFont);
-    musicSlider->normalColor = sf::Color::Black;
-    musicSlider->focusedColor = sf::Color::Black;
-    musicSlider->scaleStyle = ScaleStyle::PowerOfTwo;
-    musicSlider->setSfFontString(std::string("Music"));
-    musicSlider->paddingTop = -2;
-    musicSlider->paddingLeft = 5;
-    musicSlider->paddingRight = 5;
-    musicSlider->paddingBottom = 6;
-    musicSlider->textureOffsetX = 0;
-    musicSlider->textureOffsetY = 6;
-    musicSlider->min = 0;
-    musicSlider->max = hud->state->rogueZombieGame->musicManager->getMaximum();
     addChild(musicSlider);
 
     initY += ySeparation;
 
-    musicDecrease = new bit::Label(initX, initY, 0, 0, bit::Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-    musicDecreaseText = std::string("MUSIC DOWN");
-    musicDecreaseTextFocus = musicDecreaseText + " <<";
-    configureLabel(musicDecrease, &musicDecreaseText, &musicDecreaseTextFocus);
-    musicDecrease->onActivate = [_hud] (bit::Element* e) {
-        _hud->state->rogueZombieGame->musicManager->changeVolume(-10);
+    // SOUND
+    soundSlider = new bit::Slider(sliderHandleTexture, sliderBackgroundTexture, initX, initY, 0, 0, Element::AnchorType::TopLeft, [_hud] (bit::Slider* slider, float ratio, sf::RenderWindow* window, sf::Time* gameTime) {
+        _hud->state->rogueZombieGame->soundManager->setByRatio(ratio);
+    });
+    soundSliderText = "SOUND";
+    configureSlider(soundSlider, &soundSliderText, 0, hud->state->rogueZombieGame->soundManager->getMaximum());
+    soundSlider->setFromSystem = [_hud] () {
+        return _hud->state->rogueZombieGame->soundManager->getMasterVolume() / _hud->state->rogueZombieGame->soundManager->getMaximum();
     };
-    addChild(musicDecrease);
+    addChild(soundSlider);
 
     initY += ySeparation;
 
+    // QUIT
     quitGame = new bit::Label(initX, initY, 0, 0, bit::Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     quitGameText = std::string("EXIT GAME");
     quitGameTextFocus = quitGameText + " <<";
@@ -177,4 +149,31 @@ void Options::configureLabel(bit::Label* label, std::string* text, std::string* 
             l->setSfFontString(*text);
         }
     );
+}
+
+void Options::configureSlider(bit::Slider* slider, std::string* text, float min, float max)
+{
+    Hud* _hud = hud;
+    slider->lambdaOnSliderIsPressed = [_hud] () -> bool {
+        return _hud->state->rogueZombieGame->inputManager->isButtonPressed(sf::Mouse::Left);
+    };
+    slider->lambdaOnSliderIsReleased = [_hud] () -> bool {
+        return _hud->state->rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left);
+    };
+    slider->canHaveFocus = true;
+    slider->scaleStyle = bit::Element::ScaleStyle::PowerOfTwo;
+    slider->setSfFontSize(Hud::font_largeSize);
+    slider->setSfFont(hud->journalFont);
+    slider->normalColor = sf::Color::Black;
+    slider->focusedColor = sf::Color::Black;
+    slider->scaleStyle = ScaleStyle::PowerOfTwo;
+    slider->setSfFontString(*text);
+    slider->paddingTop = 0;
+    slider->paddingLeft = 0;
+    slider->paddingRight = 5;
+    slider->paddingBottom = 15;
+    slider->textureOffsetX = 0;
+    slider->textureOffsetY = 6;
+    slider->min = min;
+    slider->max = max;
 }

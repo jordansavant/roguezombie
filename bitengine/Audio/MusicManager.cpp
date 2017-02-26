@@ -78,6 +78,12 @@ void bit::MusicManager::setMasterVolume(float volume)
     }
 }
 
+void bit::MusicManager::setByRatio(float ratio)
+{
+    ratio = bit::Math::clamp(ratio, 0, 1);
+    setMasterVolume(ratio * getMaximum());
+}
+
 void bit::MusicManager::changeVolume(float amount, bool wrapAround)
 {
     if (masterVolume + amount < 0)

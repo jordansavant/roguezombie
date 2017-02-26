@@ -75,6 +75,12 @@ void bit::SoundManager::setMasterVolume(float volume)
     masterVolume = Math::clamp(volume, 0, getMaximum());
 }
 
+void bit::SoundManager::setByRatio(float ratio)
+{
+    ratio = bit::Math::clamp(ratio, 0, 1);
+    setMasterVolume(ratio * getMaximum());
+}
+
 void bit::SoundManager::changeVolume(float amount, bool wrapAround)
 {
     if (masterVolume + amount < 0)

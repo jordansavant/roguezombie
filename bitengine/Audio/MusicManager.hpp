@@ -32,6 +32,8 @@ namespace bit
 
         void setMasterVolume(float volume);
 
+        void setByRatio(float ratio);
+
         void changeVolume(float amount, bool wrapAround = false);
 
     private:

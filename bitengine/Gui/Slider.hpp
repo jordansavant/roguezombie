@@ -29,6 +29,7 @@ namespace bit
         float sliderDistance;
         std::function<bool (void)> lambdaOnSliderIsPressed;
         std::function<bool (void)> lambdaOnSliderIsReleased;
+        std::function<float()> setFromSystem;
 
         virtual void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
 
