@@ -9,7 +9,7 @@
 #include "../RogueZombieGame.hpp"
 
 ActionBar::ActionBar(Hud* hud)
-    : Frame(hud, 0, 200, 950, 200, bit::Element::AnchorType::Bottom, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3))
+    : Frame(hud, 0, 200, 950, 200, bit::Element::AnchorType::Bottom, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3), false)
 {
     scaleStyle = bit::Element::ScaleStyle::PowerOfTwo;
     managesOpacity = true;

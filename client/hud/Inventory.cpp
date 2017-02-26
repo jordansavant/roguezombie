@@ -39,13 +39,13 @@ Inventory::Inventory(Hud* _hud)
 
     // PRIMARY PANELS
     // 500 x 720
-    equipmentPanel = new Frame(hud, 0, 0, 400, targetHeight, bit::Element::AnchorType::TopRight, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    equipmentPanel = new Frame(hud, 0, 0, 400, targetHeight, bit::Element::AnchorType::TopRight, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3), false);
     equipmentPanel->scaleStyle = ScaleStyle::PowerOfTwo;
     equipmentPanel->managesOpacity = true;
     addChild(equipmentPanel);
     
     // 800 x 720
-    inventoryPanel = new Frame(hud, 0, 0, 296, targetHeight, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    inventoryPanel = new Frame(hud, 0, 0, 296, targetHeight, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3), false);
     inventoryPanel->scaleStyle = ScaleStyle::PowerOfTwo;
     inventoryPanel->managesOpacity = true;
     addChild(inventoryPanel);

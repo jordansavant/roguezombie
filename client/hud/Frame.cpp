@@ -12,19 +12,19 @@
 #include "../TileClient.hpp"
 
 Frame::Frame(Hud* _hud)
-    : bit::Container(0, 0, 160, 200, bit::Element::AnchorType::Center, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(_hud), useBottomPointer(false), color(sf::Color::White)
+    : bit::Container(0, 0, 160, 200, bit::Element::AnchorType::Center, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(_hud), useBottomPointer(false), color(sf::Color::White), bgGreen(false)
 {
     load();
 }
 
-Frame::Frame(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType)
-    : bit::Container(relativeX, relativeY, width, height, anchorType, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(hud), useBottomPointer(false), color(sf::Color::White)
+Frame::Frame(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType, bool bgGreen)
+    : bit::Container(relativeX, relativeY, width, height, anchorType, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), hud(hud), useBottomPointer(false), color(sf::Color::White), bgGreen(bgGreen)
 {
     load();
 }
 
-Frame::Frame(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput)
-    : bit::Container(relativeX, relativeY, width, height, anchorType, lambdaListenToInput), hud(hud), useBottomPointer(false), color(sf::Color::White)
+Frame::Frame(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput, bool bgGreen)
+    : bit::Container(relativeX, relativeY, width, height, anchorType, lambdaListenToInput), hud(hud), useBottomPointer(false), color(sf::Color::White), bgGreen(bgGreen)
 {
     load();
 }
@@ -61,7 +61,7 @@ void Frame::load()
     
     // Background
     backgroundQuadIndex = hud->interfaceVertexMap.requestVertexIndex();
-    backgroundSprite = hud->state->rogueZombieGame->spriteLoader->getSprite("hud_frame_background");
+    backgroundSprite = hud->state->rogueZombieGame->spriteLoader->getSprite(bgGreen ? "hud_frame_background_green" : "hud_frame_background");
     bit::VertexHelper::resetQuad(&hud->interfaceVertexMap.vertexArray[backgroundQuadIndex]);
 
     // Bottom Pointer

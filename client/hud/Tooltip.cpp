@@ -9,7 +9,7 @@
 #include <iterator>
 
 Tooltip::Tooltip(Hud* _hud)
-    : Frame(_hud, 0, 0, 300, 80, bit::Element::AnchorType::TopLeft), isActive(false), fadeTimer(3)
+    : Frame(_hud, 0, 0, 300, 80, bit::Element::AnchorType::TopLeft, false), isActive(false), fadeTimer(3)
 {
     useBottomPointer = true;
     managesOpacity = true;

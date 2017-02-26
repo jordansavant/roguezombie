@@ -15,9 +15,9 @@ public:
 
     HudMenu(Hud* hud);
 
-    HudMenu(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType);
+    HudMenu(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType, bool bgGreen = false);
 
-    HudMenu(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput);
+    HudMenu(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput, bool bgGreen = false);
 
     bool isShown;
     float originX, originY;

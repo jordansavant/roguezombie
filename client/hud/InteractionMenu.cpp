@@ -13,7 +13,7 @@
 #include "../TileClient.hpp"
 
 InteractionMenu::InteractionMenu(Hud* _hud)
-    : Frame(_hud, 50, 0, 300, 200, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), isActive(false), tileId(0), tileClient(NULL)
+    : Frame(_hud, 50, 0, 300, 200, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3), false), isActive(false), tileId(0), tileClient(NULL)
 {
     useBottomPointer = true;
     managesOpacity = true;

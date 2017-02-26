@@ -31,6 +31,11 @@ In-Game Options menu
 - Graphics
 - Quit
 
+Journal
+- Add header bar or something
+- Switch strings to labels
+- Color entries based on completed or not
+
 
 RZ Potential issues
 

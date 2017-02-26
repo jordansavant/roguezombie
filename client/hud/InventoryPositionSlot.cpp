@@ -7,7 +7,7 @@
 #include "../../server/ClientRequest.hpp"
 
 InventoryPositionSlot::InventoryPositionSlot(Hud* hud, unsigned int position, float relativeX, float relativeY, float width, float height, AnchorType anchorType)
-    : Frame(hud, relativeX, relativeY, width, height, anchorType, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)),
+    : Frame(hud, relativeX, relativeY, width, height, anchorType, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3), false),
       position(position), equippedItemLabel(NULL)
 {
     scaleStyle = ScaleStyle::PowerOfTwo;

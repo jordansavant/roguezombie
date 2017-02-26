@@ -15,13 +15,14 @@ public:
 
     Frame(Hud* hud);
 
-    Frame(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType);
+    Frame(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType, bool bgGreen);
 
-    Frame(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput);
+    Frame(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput, bool bgGreen);
 
     Hud* hud;
     sf::Color color;
     float z;
+    bool bgGreen;
     
     unsigned int topLeftQuadIndex;
     unsigned int topRightQuadIndex;

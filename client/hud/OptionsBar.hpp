@@ -19,7 +19,7 @@ public:
     //HudElement* primary;
     HudElement* options;
     HudElement* journal;
-    //HudElement* character;
+    HudElement* character;
     HudElement* inventory;
     HudElement* map;
 };

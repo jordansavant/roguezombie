@@ -8,21 +8,21 @@
 #include "../mission/MissionClient.hpp"
 
 HudMenu::HudMenu(Hud* hud)
-    : Frame(hud, 350, 50, 300, 500, bit::Element::AnchorType::TopRight, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), isShown(false)
+    : Frame(hud, 350, 50, 300, 500, bit::Element::AnchorType::TopRight, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3), false), isShown(false)
 {
     originX = relativePosition.x;
     originY = relativePosition.y;
 }
 
-HudMenu::HudMenu(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType)
-    : Frame(hud, relativeX, relativeY, width, height, anchorType, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), isShown(false)
+HudMenu::HudMenu(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType, bool bgGreen)
+    : Frame(hud, relativeX, relativeY, width, height, anchorType, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3), bgGreen), isShown(false)
 {
     originX = relativePosition.x;
     originY = relativePosition.y;
 }
 
-HudMenu::HudMenu(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput)
-    : Frame(hud, relativeX, relativeY, width, height, anchorType, lambdaListenToInput), isShown(false)
+HudMenu::HudMenu(Hud* hud, float relativeX, float relativeY, float width, float height, AnchorType anchorType, std::function<bool(Element*, sf::RenderWindow*, sf::Time*)> lambdaListenToInput, bool bgGreen)
+    : Frame(hud, relativeX, relativeY, width, height, anchorType, lambdaListenToInput, bgGreen), isShown(false)
 {
     originX = relativePosition.x;
     originY = relativePosition.y;

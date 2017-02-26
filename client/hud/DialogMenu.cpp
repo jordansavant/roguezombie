@@ -13,7 +13,7 @@
 #include "../../server/dialog/DialogEntry.hpp"
 
 DialogMenu::DialogMenu(Hud* _hud)
-    : Frame(_hud, 0, 0, 500, 300, bit::Element::AnchorType::TopRight, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3)), isActive(false), tileId(0), tileClient(NULL)
+    : Frame(_hud, 0, 0, 500, 300, bit::Element::AnchorType::TopRight, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3), false), isActive(false), tileId(0), tileClient(NULL)
 {
     useBottomPointer = true;
     managesOpacity = true;

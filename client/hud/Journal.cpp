@@ -8,15 +8,15 @@
 #include "../mission/MissionClient.hpp"
 
 Journal::Journal(Hud* _hud)
-    : HudMenu(_hud, 0, 0, 691, 728, bit::Element::AnchorType::Right)
+    : HudMenu(_hud, 0, 0, 691, 728, bit::Element::AnchorType::Right, true)
 {
     scaleStyle = ScaleStyle::PowerOfTwo;
     managesOpacity = true;
 
-    journalEntries = new bit::Label(10, 10, 0, 0, bit::Element::AnchorType::TopLeft);
+    journalEntries = new bit::Label(40, 30, 0, 0, bit::Element::AnchorType::TopLeft);
     journalEntries->setSfFontSize(Hud::font_primarySize);
     journalEntries->setSfFont(hud->journalFont);
-    journalEntries->normalColor = Hud::font_primaryColor;
+    journalEntries->normalColor = sf::Color::Black;
     journalEntries->scaleStyle = ScaleStyle::PowerOfTwo;
     addChild(journalEntries);
 
@@ -32,7 +32,7 @@ void Journal::update(sf::RenderWindow &window, sf::Time &gameTime)
     LevelClient* levelClient = hud->state->levelClient;
     if(levelClient->playerCharacter)
     {
-        std::string entry("Objectives\n\n");
+        std::string entry("OBJECTIVES:\n\n");
         for(auto iterator = levelClient->playerCharacter->missionClients.begin(); iterator != levelClient->playerCharacter->missionClients.end(); iterator++)
         {
             // Level 1
