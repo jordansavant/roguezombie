@@ -18,7 +18,7 @@ public:
     Hud* hud;
     //HudElement* primary;
     HudElement* options;
-    //HudElement* journal;
+    HudElement* journal;
     //HudElement* character;
     HudElement* inventory;
     HudElement* map;

@@ -41,16 +41,16 @@ OptionsBar::OptionsBar(Hud* _hud)
     addChild(options);
     originX += options->sprite->width + xpadding;
 
-    //journal = new HudElement(originX, 20, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
-    //journal->load(hud, std::string("optionbar_journal"));
-    //journal->onActivate = [_hud] (Element* e) {
-    //    if(_hud->state->mode == StateGamePlay::Mode::Journal)
-    //        _hud->state->changeMode(StateGamePlay::Mode::Free);
-    //    else
-    //        _hud->state->changeMode(StateGamePlay::Mode::Journal);
-    //};
-    //addChild(journal);
-    //originX += journal->sprite->width + xpadding;
+    journal = new HudElement(originX, 0, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
+    journal->load(hud, std::string("optionbar_journal"));
+    journal->onActivate = [_hud] (Element* e) {
+        if(_hud->state->mode == StateGamePlay::Mode::Journal)
+            _hud->state->changeMode(StateGamePlay::Mode::Free);
+        else
+            _hud->state->changeMode(StateGamePlay::Mode::Journal);
+    };
+    addChild(journal);
+    originX += journal->sprite->width + xpadding;
 
     //character = new HudElement(originX, 20, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     //character->load(hud, std::string("optionbar_character"));

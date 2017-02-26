@@ -8,6 +8,8 @@ Move colors out of RZConfig since its Client Specific
 
 Hunters firing after dead
 - Ive seen flare visualization after they are killed
+- On closer look it might be some left over from a grenade flair
+- As if the grenade lighting is moving slightly past the Update ratio and rolling over?
 
 
 RZ Features
@@ -18,18 +20,16 @@ Need much better AI for Hunters
 - They should make chase - If they encounter the player and the player breaks LoS, they should go to the player's last seen location
 - They should have group tactics (spread out around player)
 
-Better stat details in the window
-
 Items should have stat effects and perhaps magical (lambda) effects
 - Maybe rarity (green/blue/purple/orange)?
+- Better stat details in the window
 
-Server loads and updates all levels in the game
-- Consider only updating levels that have active players
-- Also has implications on gameplay, with wandering AI etc
-- This is causing a lot of processing overhead
-
-Options menu
+In-Game Options menu
 - New hotline miami is a nice simple example
+- SFX Bar
+- Music Bar
+- Graphics
+- Quit
 
 
 RZ Potential issues

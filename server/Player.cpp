@@ -4,6 +4,7 @@
 #include "ServerEvent.hpp"
 #include "GameplayServer.hpp"
 #include "items/Item.hpp"
+#include "mission/Mission.hpp"
 #include "Character.hpp"
 
 Player::Player()
@@ -54,24 +55,24 @@ void Player::unsetCharacter()
 void Player::setupPlayerCharacter()
 {
     // Mission number 1
-    //Mission* root = new Mission();
-    //root->load(getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::TestMissionRoot);
-    //
-    //Mission* healthMission = new Mission();
-    //healthMission->load(getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::GetDoubleHealth);
-    //healthMission->assignRequirement([] (Character* c) -> bool {
-    //    return (c->schema.health >= 200);
-    //});
-    //root->assignChildMission(healthMission);
-    //
-    //Mission* levelMission = new Mission();
-    //levelMission->load(getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::FindLevelTwo);
-    //levelMission->assignRequirement([] (Character* c) -> bool {
-    //    return (c->level == &c->level->server->levels[1]);
-    //});
-    //root->assignChildMission(levelMission);
-    //
-    //p->character->assignMission(root);
+    Mission* root = new Mission();
+    root->load(level->server->getNextMissionId(), LogicalType::Sequence, Mission::GenerationType::Scripted, JournalEntry::Entry::TestMissionRoot);
+    
+    Mission* healthMission = new Mission();
+    healthMission->load(level->server->getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::GetDoubleHealth);
+    healthMission->assignRequirement([] (Character* c) -> bool {
+        return (c->schema.health >= 200);
+    });
+    root->assignChildMission(healthMission);
+    
+    Mission* levelMission = new Mission();
+    levelMission->load(level->server->getNextMissionId(), LogicalType::Selector, Mission::GenerationType::Scripted, JournalEntry::Entry::FindLevelTwo);
+    levelMission->assignRequirement([] (Character* c) -> bool {
+        return (c->level && c->level->id == 2);
+    });
+    root->assignChildMission(levelMission);
+    
+    character->assignMission(root);
 
     // Items
     Item* magnum = Item::create(Item::Type::Magnum357, level->server->getNextItemId());

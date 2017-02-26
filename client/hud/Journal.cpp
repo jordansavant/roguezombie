@@ -8,13 +8,21 @@
 #include "../mission/MissionClient.hpp"
 
 Journal::Journal(Hud* _hud)
-    : HudMenu(_hud, 0, 0, 300, 720, bit::Element::AnchorType::Right)
+    : HudMenu(_hud, 0, 0, 691, 728, bit::Element::AnchorType::Right)
 {
+    scaleStyle = ScaleStyle::PowerOfTwo;
+    managesOpacity = true;
+
     journalEntries = new bit::Label(10, 10, 0, 0, bit::Element::AnchorType::TopLeft);
-    journalEntries->setSfFontSize(24);
+    journalEntries->setSfFontSize(Hud::font_primarySize);
     journalEntries->setSfFont(hud->journalFont);
-    journalEntries->normalColor = sf::Color::White;
+    journalEntries->normalColor = Hud::font_primaryColor;
+    journalEntries->scaleStyle = ScaleStyle::PowerOfTwo;
     addChild(journalEntries);
+
+    // Icon
+    naviconSprite = hud->state->rogueZombieGame->spriteLoader->getSprite("JournalNavicon");
+    naviconQuadIndex = hud->interfaceVertexMap.requestVertexIndex();
 }
 
 void Journal::update(sf::RenderWindow &window, sf::Time &gameTime)
@@ -24,15 +32,15 @@ void Journal::update(sf::RenderWindow &window, sf::Time &gameTime)
     LevelClient* levelClient = hud->state->levelClient;
     if(levelClient->playerCharacter)
     {
-        std::string entry("Journal\n");
+        std::string entry("Objectives\n\n");
         for(auto iterator = levelClient->playerCharacter->missionClients.begin(); iterator != levelClient->playerCharacter->missionClients.end(); iterator++)
         {
             // Level 1
             MissionClient* m = &iterator->second;
             if(m->schema.isComplete)
-                entry += "- " + JournalEntry::getTitle(m->schema.journalEntry) + " - Complete\n";
+                entry += JournalEntry::getTitle(m->schema.journalEntry) + " - Complete\n";
             else
-                entry += "- " + JournalEntry::getTitle(m->schema.journalEntry) + "\n";
+                entry += JournalEntry::getTitle(m->schema.journalEntry) + "\n";
 
             // Level 2
             for(auto iterator2 = iterator->second.childMissions.begin(); iterator2 != iterator->second.childMissions.end(); iterator2++)
@@ -47,6 +55,26 @@ void Journal::update(sf::RenderWindow &window, sf::Time &gameTime)
         journalEntries->setSfFontString(entry);
         journalEntries->opacity = opacity;
     }
+}
+
+void Journal::updateTargets(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    HudMenu::updateTargets(window, gameTime);
+
+    // Navicon
+    bit::Vertex3* naviconQuad = &hud->interfaceVertexMap.vertexArray[naviconQuadIndex];
+    bit::VertexHelper::colorQuad(naviconQuad, sf::Color(255, 255, 255, opacity * 255));
+}
+
+void Journal::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
+{
+    HudMenu::updateReals(window, gameTime);
+
+    // Navicon
+    float naviconZ = Hud::getDrawDepth(Hud::zindex_frames);
+    bit::Vertex3* naviconQuad = &hud->interfaceVertexMap.vertexArray[naviconQuadIndex];
+    naviconSprite->applyToQuad(naviconQuad);
+    bit::VertexHelper::positionQuad(naviconQuad, left, top - naviconSprite->height * elementScale, naviconZ, naviconSprite->width, naviconSprite->height, elementScale);
 }
 
 void Journal::hide()
@@ -64,5 +92,5 @@ void Journal::show()
     clearEffects();
     relativePosition.x = targetWidth;
     immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, -targetWidth, 0));
-    immediateEffect(new bit::FadeEffect(300, 1));
+    immediateEffect(new bit::FadeEffect(300, Hud::popupOpacity));
 }

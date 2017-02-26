@@ -112,7 +112,6 @@ void StateGamePlay::changeMode(Mode _mode)
 {
     if(_mode != mode)
     {
-        displayMessage(std::string("Changed modes"));
         if(mode != Mode::Init)
         {
             modeExit[mode]();
@@ -128,6 +127,7 @@ void StateGamePlay::exitInventoryModes()
     {
         case Mode::Inventory:
         case Mode::Loot:
+        case Mode::Journal:
             changeMode(Mode::Free);
             break;
     }
