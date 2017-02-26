@@ -3,6 +3,7 @@
 #include "Minimap.hpp"
 #include "OptionsBar.hpp"
 #include "Journal.hpp"
+#include "Options.hpp"
 #include "Inventory.hpp"
 #include "InteractionMenu.hpp"
 #include "StatBubble.hpp"
@@ -78,6 +79,9 @@ Hud::Hud(StateGamePlay* _state)
     // Hud Menus
     journal = new Journal(this);
     addChild(journal);
+
+    options = new Options(this);
+    addChild(options);
     
     inventory = new Inventory(this);
     addChild(inventory);
@@ -85,6 +89,7 @@ Hud::Hud(StateGamePlay* _state)
     // Initialize all menus
     submenus.push_back(inventory);
     submenus.push_back(journal);
+    submenus.push_back(options);
     for(unsigned int i=0; i < submenus.size(); i++)
     {
         submenus[i]->canHaveFocus = false;
@@ -199,6 +204,29 @@ void Hud::deactivateJournal()
     if(journal->isShown)
     {
         journal->hide();
+        hideCloseButton();
+    }
+}
+
+void Hud::activateOptions(bool hideIfShowing)
+{
+    if(!options->isShown)
+    {
+        hideAllMenus(options);
+        options->show();
+        showCloseButton();
+    }
+    else if(hideIfShowing)
+    {
+        hideAllMenus();
+    }
+}
+
+void Hud::deactivateOptions()
+{
+    if(options->isShown)
+    {
+        options->hide();
         hideCloseButton();
     }
 }

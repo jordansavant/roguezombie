@@ -35,6 +35,7 @@ public:
         Loot,
         Inventory,
         Journal,
+        Options,
         _count
     };
 
@@ -122,6 +123,10 @@ public:
     void modeOnEnterJournal();
     void modeOnExitJournal();
     void modeOnUpdateJournal(sf::Time &gameTime);
+
+    void modeOnEnterOptions();
+    void modeOnExitOptions();
+    void modeOnUpdateOptions(sf::Time &gameTime);
 
     void modeOnUpdateCommonListener(sf::Time &gameTime);
 

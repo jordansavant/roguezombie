@@ -38,6 +38,12 @@ OptionsBar::OptionsBar(Hud* _hud)
 
     options = new HudElement(originX, 0, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     options->load(hud, std::string("optionbar_options"));
+    options->onActivate = [_hud] (Element* e) {
+        if(_hud->state->mode == StateGamePlay::Mode::Options)
+            _hud->state->changeMode(StateGamePlay::Mode::Free);
+        else
+            _hud->state->changeMode(StateGamePlay::Mode::Options);
+    };
     addChild(options);
     originX += options->sprite->width + xpadding;
 

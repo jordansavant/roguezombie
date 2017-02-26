@@ -12,6 +12,7 @@ class HudMenu;
 class HudElement;
 class OptionsBar;
 class Journal;
+class Options;
 class Inventory;
 class InteractionMenu;
 class StatBubble;
@@ -35,6 +36,7 @@ public:
     std::vector<HudMenu*> submenus;
     OptionsBar* optionsBar;
     Journal* journal;
+    Options* options;
     Inventory* inventory;
     InteractionMenu* interactionMenu;
     StatBubble* statBubble;
@@ -76,6 +78,10 @@ public:
     void activateJournal(bool hideIfShowing = true);
 
     void deactivateJournal();
+
+    void activateOptions(bool hideIfShowing = true);
+
+    void deactivateOptions();
 
     void activateInventory(bool hideIfShowing = true);
 

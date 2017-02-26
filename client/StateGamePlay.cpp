@@ -85,6 +85,10 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     modeExit[Mode::Journal] = std::bind(&StateGamePlay::modeOnExitJournal, this);
     modeUpdate[Mode::Journal] = std::bind(&StateGamePlay::modeOnUpdateJournal, this, std::placeholders::_1);
     
+    modeEnter[Mode::Options] = std::bind(&StateGamePlay::modeOnEnterOptions, this);
+    modeExit[Mode::Options] = std::bind(&StateGamePlay::modeOnExitOptions, this);
+    modeUpdate[Mode::Options] = std::bind(&StateGamePlay::modeOnUpdateOptions, this, std::placeholders::_1);
+    
     changeMode(Mode::Joining);
 }
 
@@ -128,6 +132,7 @@ void StateGamePlay::exitInventoryModes()
         case Mode::Inventory:
         case Mode::Loot:
         case Mode::Journal:
+        case Mode::Options:
             changeMode(Mode::Free);
             break;
     }
@@ -496,6 +501,26 @@ void StateGamePlay::modeOnUpdateJournal(sf::Time &gameTime)
 }
 
 
+/// /////////////////////////////////////////////////////////////////////
+///                          OPTIONS MODES                             //
+/// /////////////////////////////////////////////////////////////////////
+
+void StateGamePlay::modeOnEnterOptions()
+{
+    hud->activateOptions(false);
+}
+
+void StateGamePlay::modeOnExitOptions()
+{
+    hud->deactivateOptions();
+}
+
+void StateGamePlay::modeOnUpdateOptions(sf::Time &gameTime)
+{
+    modeOnUpdateCommonListener(gameTime);
+}
+
+
 
 /// /////////////////////////////////////////////////////////////////////
 ///                          COMMON MODES                              //
@@ -524,6 +549,18 @@ void StateGamePlay::modeOnUpdateCommonListener(sf::Time &gameTime)
     if(mode != Mode::Journal && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::J)))
     {
         changeMode(Mode::Journal);
+        return;
+    }
+
+    // Options hot key
+    if(mode == Mode::Options && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::O) || rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape)))
+    {
+        changeMode(Mode::Free);
+        return;
+    }
+    if(mode != Mode::Options && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::O)))
+    {
+        changeMode(Mode::Options);
         return;
     }
 
