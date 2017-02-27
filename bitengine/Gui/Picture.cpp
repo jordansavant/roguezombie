@@ -25,7 +25,7 @@ void bit::Picture::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     color.a = bit::Math::clamp(255 * opacity, 0, 255);
     setColor(color);
     setScale(elementScale, elementScale);
-    setPosition(left, top);
+    setPosition((int)left, (int)top);
 }
 
 void bit::Picture::draw(sf::RenderWindow &window, sf::Time &gameTime)

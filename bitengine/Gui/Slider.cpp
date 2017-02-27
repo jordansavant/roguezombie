@@ -86,11 +86,11 @@ void bit::Slider::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     // Update drawables
     backgroundSprite.setColor(getColor());
     backgroundSprite.setScale(elementScale, elementScale);
-    backgroundSprite.setPosition(backgroundX, backgroundY);
+    backgroundSprite.setPosition((int)backgroundX, (int)backgroundY);
 
     handleSprite.setColor(getColor());
     handleSprite.setScale(elementScale, elementScale);
-    handleSprite.setPosition(handleX, handleY);
+    handleSprite.setPosition((int)handleX, (int)handleY);
 }
 
 void bit::Slider::draw(sf::RenderWindow &window, sf::Time &gameTime)

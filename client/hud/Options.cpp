@@ -174,7 +174,7 @@ void Options::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     float naviconZ = Hud::getDrawDepth(Hud::zindex_frames);
     bit::Vertex3* naviconQuad = &hud->interfaceVertexMap.vertexArray[naviconQuadIndex];
     naviconSprite->applyToQuad(naviconQuad);
-    bit::VertexHelper::positionQuad(naviconQuad, left, top - naviconSprite->height * elementScale, naviconZ, naviconSprite->width, naviconSprite->height, elementScale);
+    bit::VertexHelper::positionQuad(naviconQuad, (int)left, (int)(top - naviconSprite->height * elementScale), naviconZ, naviconSprite->width, naviconSprite->height, elementScale);
 }
 
 void Options::hide()

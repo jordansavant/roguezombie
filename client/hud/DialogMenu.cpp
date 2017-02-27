@@ -36,8 +36,8 @@ void DialogMenu::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     if(tileClient)
     {
         sf::Vector2i mapping = window.mapCoordsToPixel(sf::Vector2f(tileClient->centerRenderX, tileClient->centerRenderY));
-        left = mapping.x - width / 2;
-        top = mapping.y - height - tileClient->height;
+        left = (int)(mapping.x - width / 2);
+        top = (int)(mapping.y - height - tileClient->height);
         Frame::updateReals(window, gameTime);
     }
 }

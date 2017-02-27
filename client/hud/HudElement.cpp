@@ -51,7 +51,7 @@ void HudElement::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     // Set Sprites details
     float z = Hud::getDrawDepth(Hud::zindex_icons);
     sprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[quadIndex]);
-    bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[quadIndex], left, top, z, width, height);
+    bit::VertexHelper::positionQuad(&hud->interfaceVertexMap.vertexArray[quadIndex], (int)left, (int)top, z, width, height);
     bit::VertexHelper::colorQuad(&hud->interfaceVertexMap.vertexArray[quadIndex], color);
 }
 

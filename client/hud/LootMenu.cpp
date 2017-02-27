@@ -63,7 +63,7 @@ void LootMenu::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     float z = Hud::getDrawDepth(Hud::zindex_frames);
     bit::Vertex3* quad = &hud->interfaceVertexMap.vertexArray[naviconQuadIndex];
     naviconSprite->applyToQuad(quad);
-    bit::VertexHelper::positionQuad(quad, left, top - naviconSprite->height * elementScale, z, naviconSprite->width, naviconSprite->height, elementScale);
+    bit::VertexHelper::positionQuad(quad, (int)left, (int)(top - naviconSprite->height * elementScale), z, naviconSprite->width, naviconSprite->height, elementScale);
 }
 
 void LootMenu::activate()
