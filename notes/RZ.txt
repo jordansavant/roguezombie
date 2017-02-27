@@ -14,6 +14,7 @@ Hunters firing after dead
 Fonts are blurry
 - If you compare the labels in the options areas, labels with focus are blurry and the one normal label is not
 - This gives me hope for better scaling
+- Really, this is aweful considering it only looks good on 1080 for most!?
 
 
 RZ Features
@@ -29,8 +30,9 @@ Items should have stat effects and perhaps magical (lambda) effects
 - Better stat details in the window
 
 In-Game Options menu
-- Graphics
-- Quit
+- Fullscreen Checkbox
+- VSync Checkbox
+- Quit confirmation
 
 Journal
 - Switch strings to labels

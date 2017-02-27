@@ -32,7 +32,7 @@ namespace bit
 
         virtual void updateReals(sf::RenderWindow &window, sf::Time &gameTime);
 
-		virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
+        virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
     };
 }
 

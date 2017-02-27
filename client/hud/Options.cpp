@@ -18,6 +18,9 @@ Options::Options(Hud* _hud)
     sliderHandleTexture.loadFromFile(resourcePath() + "options_sliderhandle.png");
     sliderBackgroundTexture.loadFromFile(resourcePath() + "options_sliderbg.png");
 
+    checkboxCheckedTexture.loadFromFile(resourcePath() + "options_checkbox_checked.png");
+    checkboxUncheckedTexture.loadFromFile(resourcePath() + "options_checkbox_unchecked.png");
+
     float initX = 38;
     float initY = 30;
     float ySeparation = 40;
@@ -94,6 +97,20 @@ Options::Options(Hud* _hud)
 
     initY += ySeparation;
 
+    // FULLSCREEN
+    fullscreenCheckbox = new bit::CheckBox(checkboxCheckedTexture, checkboxUncheckedTexture, initX, initY, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    fullscreenCheckbox->onActivate = [_hud] (bit::Element* e) {
+        bit::CheckBox* c = static_cast<bit::CheckBox*>(e);
+        c->isChecked = !c->isChecked;
+        _hud->state->rogueZombieGame->changeFullscreen(c->isChecked);
+    };
+    fullscreenCheckbox->setSfFontString(std::string("FULLSCREEN"));
+    fullscreenCheckbox->isChecked = hud->state->rogueZombieGame->isFullscreen;
+    configureCheckbox(fullscreenCheckbox);
+    addChild(fullscreenCheckbox);
+
+    initY += ySeparation;
+
     // QUIT
     quitGame = new bit::Label(initX, initY, 0, 0, bit::Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     quitGameText = std::string("EXIT GAME");
@@ -164,6 +181,7 @@ void Options::show()
 
     // Update the known current resolution to the system's resolution
     syncResolutionOptionWithSystem();
+    fullscreenCheckbox->isChecked = hud->state->rogueZombieGame->isFullscreen;
 }
 
 void Options::configureLabel(bit::Label* label, std::string* text, std::string* focusText)
@@ -216,6 +234,23 @@ void Options::configureSlider(bit::Slider* slider, std::string* text, float min,
     slider->textureOffsetY = 6;
     slider->min = min;
     slider->max = max;
+}
+
+void Options::configureCheckbox(bit::CheckBox* checkbox)
+{
+    Hud* _hud = hud;
+    checkbox->canHaveFocus = true;
+    checkbox->setSfFontSize(Hud::font_largeSize);
+    checkbox->setSfFont(hud->journalFont);
+    checkbox->normalColor = sf::Color::Black;
+    checkbox->focusedColor = sf::Color::Black;
+    checkbox->scaleStyle = ScaleStyle::PowerOfTwo;
+    checkbox->paddingTop = 0;
+    checkbox->paddingLeft = 0;
+    checkbox->paddingRight = 5;
+    checkbox->paddingBottom = 15;
+    checkbox->textureOffsetX = 15;
+    checkbox->textureOffsetY = 7;
 }
 
 void Options::syncResolutionOptionWithSystem()

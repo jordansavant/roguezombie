@@ -37,9 +37,13 @@ public:
     bit::Label* resolutionChangeLabel;
     std::string resolutionChangeText;
     std::string resolutionChangeTextFocus;
+    
+    bit::CheckBox* fullscreenCheckbox;
 
     sf::Texture sliderHandleTexture;
     sf::Texture sliderBackgroundTexture;
+    sf::Texture checkboxCheckedTexture;
+    sf::Texture checkboxUncheckedTexture;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 
@@ -54,6 +58,8 @@ public:
     void configureLabel(bit::Label* label, std::string* text, std::string* focusText);
 
     void configureSlider(bit::Slider* slider, std::string* text, float min, float max);
+
+    void configureCheckbox(bit::CheckBox* checkbox);
 
     void syncResolutionOptionWithSystem();
 
