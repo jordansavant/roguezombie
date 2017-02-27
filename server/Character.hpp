@@ -14,6 +14,7 @@ class Player;
 class Tile;
 class Mission;
 class Item;
+class Structure;
 
 class Character : public Body
 {
@@ -253,6 +254,8 @@ public:
 
     void inspectVisibleCharacters(std::function<void(Character* c)> inspector, bool onlyLiving = true);
 
+    void inspectVisibleStructures(std::function<void(::Structure* s)> inspector, bool onlyNonBlocking = true);
+
     void inspectCombatReachableTiles(std::function<void(Tile*)> inspector);
 
     bool inspectTileVisuallyBlocked(int x, int y);
@@ -268,6 +271,8 @@ public:
     void inspectLineOfSightBodies(int endX, int endY, std::function<void(Body* b)> inspector);
 
     void inspectLineOfSightCharacters(int endX, int endY, std::function<void(Character* c)> inspector, bool onlyLiving = true);
+
+    Character* getClosestVisibleEnemy();
 
 
     // Inventory

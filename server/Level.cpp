@@ -226,8 +226,8 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         zombie->moveToPosition(t->schema.x, t->schema.y);
                         zombies.push_back(zombie);
                         zombie->hostilityCheckAi = AiRoutines::Combat::Zombie_DetectHostility;
+                        zombie->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
                         zombie->combatDecisionAi = AiRoutines::Combat::Zombie_DecideCombat;
-                        zombie->combatDetectionAi = AiRoutines::Combat::Zombie_DetectCombat;
                         c = zombie;
                         break;
                     }
@@ -247,8 +247,8 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         hunter->moveToPosition(t->schema.x, t->schema.y);
                         hunters.push_back(hunter);
                         hunter->hostilityCheckAi = AiRoutines::Combat::Hunter_DetectHostility;
+                        hunter->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
                         hunter->combatDecisionAi = AiRoutines::Combat::Hunter_DecideCombat;
-                        hunter->combatDetectionAi = AiRoutines::Combat::Zombie_DetectCombat;
                         hunter->getStartingDialog = std::bind(&Level::getDialogTree, this);
                         c = hunter;
                         break;

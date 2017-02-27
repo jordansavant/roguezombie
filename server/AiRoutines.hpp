@@ -19,9 +19,11 @@ public:
     {
     public:
 
-        static bool Zombie_DetectHostility(Character* character, Character* other);
+        static Tile* findCoverPositionFromEnemy(Character* character, Character* enemy, unsigned int tileRadius);
 
-        static bool Zombie_DetectCombat(Character* character);
+        static bool Default_DetectCombat(Character* character);
+
+        static bool Zombie_DetectHostility(Character* character, Character* other);
 
         static void Zombie_DecideCombat(Character* character);
 

@@ -30,7 +30,7 @@ GameplayServer::~GameplayServer()
 void GameplayServer::load()
 {
     // Load the level pack definitions
-    levelLoader.load("Demo.xml");
+    levelLoader.load("HunterAI.xml");
 
     // Build all levels for this level pack
     levels.resize(levelLoader.levelDefs.size());

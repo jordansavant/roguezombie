@@ -9,6 +9,7 @@
 #include "Level.hpp"
 #include "Body.hpp"
 #include "Tile.hpp"
+#include "Structure.hpp"
 #include "Player.hpp"
 #include "mission/Mission.hpp"
 #include "items/Item.hpp"
@@ -601,6 +602,32 @@ void Character::inspectVisibleCharacters(std::function<void(Character* character
     );
 }
 
+void Character::inspectVisibleStructures(std::function<void(::Structure* s)> inspector, bool onlyNonBlocking)
+{
+    Character* character = this;
+    bit::Shadowcaster::computeFoV(Body::schema.x / level->tileWidth, Body::schema.y / level->tileHeight, level->tileColumns, level->tileRows, visionRadius,
+        [character, inspector, onlyNonBlocking] (int x, int y, float distance) {
+            Tile* tile = character->level->getTileAtIndices(x, y);
+            if(tile && tile->metadata_shadowcastId != bit::Shadowcaster::shadowcastId)
+            {
+                tile->metadata_shadowcastId = bit::Shadowcaster::shadowcastId;
+
+                Body* body = tile->body;
+                if(body && body->schema.type == Body::Type::Structure)
+                {
+                    ::Structure* structure = static_cast<::Structure*>(body);
+
+                    if(!onlyNonBlocking || (onlyNonBlocking && !structure->Body::blockFoV))
+                    {
+                        inspector(structure);
+                    }
+                }
+            }
+        },
+        std::bind(&Character::inspectTileVisuallyBlocked, this, std::placeholders::_1, std::placeholders::_2)
+    );
+}
+
 void Character::inspectCombatReachableTiles(std::function<void(Tile* t)> inspector)
 {
     Character* character = this;
@@ -678,6 +705,35 @@ void Character::inspectLineOfSightCharacters(int endX, int endY, std::function<v
         }
     });
 }
+
+Character* Character::getClosestVisibleEnemy()
+{
+    Character* self =  this;
+    Character* closestEnemy = NULL;
+    float closestDistance = 0;
+    inspectVisibleCharacters([self, &closestEnemy, &closestDistance] (Character* occupant) {
+        int x1 = self->Body::schema.x;
+        int y1 = self->Body::schema.y;
+        int width1 = self->Body::schema.width;
+        int height1 = self->Body::schema.height;
+
+        int x2 = occupant->Body::schema.x;
+        int y2 = occupant->Body::schema.y;
+        int width2 = occupant->Body::schema.width;
+        int height2 = occupant->Body::schema.height;
+
+        // If the occupant is not adjacent to me then move towards them
+        float distance = bit::RectangleMath::distance(x1, y1, width1, height1, x2, y2, width2, height2);
+        if(self->isHostileTowards(occupant) && (closestEnemy == NULL || distance < closestDistance))
+        {
+            closestEnemy = occupant;
+            closestDistance = distance;
+        }
+    });
+
+    return closestEnemy;
+}
+
 
 ///////////////////////////////////////////////////////
 //                  INVENTORY                        //

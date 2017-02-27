@@ -25,6 +25,9 @@ Items should have stat effects and perhaps magical (lambda) effects
 - Maybe rarity (green/blue/purple/orange)?
 - Better stat details in the window
 
+Structures
+- Cover structures, no purpose other than barricades
+
 
 RZ Potential issues
 
