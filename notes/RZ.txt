@@ -4,17 +4,13 @@ Body's are LevelRunnable but if we delete one it will screw up references in the
 - Tiles point to structures, doors or characters on them, deleting them needs to remove references
 - Or protect against deleting them somehow*
 
-Move colors out of RZConfig since its Client Specific
-
 Hunters firing after dead
 - Ive seen flare visualization after they are killed
 - On closer look it might be some left over from a grenade flair
 - As if the grenade lighting is moving slightly past the Update ratio and rolling over?
 
-Fonts are blurry
-- If you compare the labels in the options areas, labels with focus are blurry and the one normal label is not
-- This gives me hope for better scaling
-- Really, this is aweful considering it only looks good on 1080 for most!?
+Fat gap under Loot Interaction popup
+- Only looks weird under singular loot option (like looting a dead guy)
 
 
 RZ Features
@@ -28,15 +24,6 @@ Need much better AI for Hunters
 Items should have stat effects and perhaps magical (lambda) effects
 - Maybe rarity (green/blue/purple/orange)?
 - Better stat details in the window
-
-In-Game Options menu
-- Fullscreen Checkbox
-- VSync Checkbox
-- Quit confirmation
-
-Journal
-- Switch strings to labels
-- Color entries based on completed or not
 
 
 RZ Potential issues

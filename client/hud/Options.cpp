@@ -10,7 +10,7 @@
 #include "../RZConfig.hpp"
 
 Options::Options(Hud* _hud)
-    : HudMenu(_hud, 0, 0, 691, 728, bit::Element::AnchorType::Right, true)
+    : HudMenu(_hud, 0, 0, 691, 728, bit::Element::AnchorType::Right, true), quitSelected(false)
 {
     scaleStyle = ScaleStyle::PowerOfTwo;
     managesOpacity = true;
@@ -131,8 +131,15 @@ Options::Options(Hud* _hud)
     quitGameText = std::string("EXIT GAME");
     quitGameTextFocus = quitGameText + " <<";
     configureLabel(quitGame, &quitGameText, &quitGameTextFocus);
-    quitGame->onActivate = [_hud] (bit::Element* e) {
-        _hud->state->endGame(StateGamePlay::EndGameReason::Quit);
+    quitGame->onActivate = [_hud, self] (bit::Element* e) {
+        if(self->quitSelected)
+        {
+            _hud->state->endGame(StateGamePlay::EndGameReason::Quit);
+        }
+        else
+        {
+            self->confirmQuit();
+        }
     };
     addChild(quitGame);
 
@@ -200,6 +207,7 @@ void Options::show()
     syncResolutionOptionWithSystem();
     fullscreenCheckbox->isChecked = hud->state->rogueZombieGame->isFullscreen;
     vsyncCheckbox->isChecked = hud->state->rogueZombieGame->verticalSync;
+    deconfirmQuit();
 }
 
 void Options::configureLabel(bit::Label* label, std::string* text, std::string* focusText)
@@ -269,6 +277,22 @@ void Options::configureCheckbox(bit::CheckBox* checkbox)
     checkbox->paddingBottom = 15;
     checkbox->textureOffsetX = 18;
     checkbox->textureOffsetY = 7;
+}
+
+void Options::confirmQuit()
+{
+    quitSelected = true;
+    quitGameText = "CONFIRM EXIT?";
+    quitGameTextFocus = "CONFIRM EXIT? <<";
+    quitGame->setSfFontString(quitGameTextFocus);
+}
+
+void Options::deconfirmQuit()
+{
+    quitSelected = false;
+    quitGameText = "EXIT GAME";
+    quitGameTextFocus = "EXIT GAME <<";
+    quitGame->setSfFontString(quitGameText);
 }
 
 void Options::syncResolutionOptionWithSystem()

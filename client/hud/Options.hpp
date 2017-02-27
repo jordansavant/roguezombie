@@ -19,6 +19,7 @@ public:
     bit::Label* quitGame;
     std::string quitGameText;
     std::string quitGameTextFocus;
+    bool quitSelected;
     unsigned int naviconQuadIndex;
     bit::Sprite* naviconSprite;
 
@@ -61,6 +62,10 @@ public:
     void configureSlider(bit::Slider* slider, std::string* text, float min, float max);
 
     void configureCheckbox(bit::CheckBox* checkbox);
+
+    void confirmQuit();
+
+    void deconfirmQuit();
 
     void syncResolutionOptionWithSystem();
 

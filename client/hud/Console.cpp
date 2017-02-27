@@ -12,7 +12,7 @@ void Console::print(std::string &message)
 {
     // Create the new line
     bit::Label* line = new bit::Label(-400, 0, 0, 0, bit::Element::AnchorType::BottomLeft);
-    line->setSfFontSize(Hud::font_primarySize);
+    line->setSfFontSize(Hud::font_noteSize);
     line->setSfFont(hud->journalFont);
     line->normalColor = sf::Color(0, 255, 0);
     line->setSfFontString(message);

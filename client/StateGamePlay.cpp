@@ -331,11 +331,15 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
         {
             levelClient->cancelSelectMode();
         }
-        // Otherwise exit the game
-        // TODO: Go to options menu to quit
+        // Go to options menu to quit
+        else if(mode != Mode::Options)
+        {
+            changeMode(Mode::Options);
+        }
+        // Return to game
         else
         {
-            endGame(EndGameReason::Quit);
+            changeMode(Mode::Free);
         }
     }
 }
