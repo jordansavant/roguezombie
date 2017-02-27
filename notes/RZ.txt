@@ -11,6 +11,10 @@ Hunters firing after dead
 - On closer look it might be some left over from a grenade flair
 - As if the grenade lighting is moving slightly past the Update ratio and rolling over?
 
+Fonts are blurry
+- If you compare the labels in the options areas, labels with focus are blurry and the one normal label is not
+- This gives me hope for better scaling
+
 
 RZ Features
 
@@ -25,14 +29,10 @@ Items should have stat effects and perhaps magical (lambda) effects
 - Better stat details in the window
 
 In-Game Options menu
-- New hotline miami is a nice simple example
-- SFX Bar
-- Music Bar
 - Graphics
 - Quit
 
 Journal
-- Add header bar or something
 - Switch strings to labels
 - Color entries based on completed or not
 

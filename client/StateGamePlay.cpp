@@ -27,9 +27,12 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     : bit::ClientServerState(stack, _game, isClient, isHost), rogueZombieGame(_game), levelClient(NULL), mode(Mode::Init), endGameReason(EndGameReason::Quit), fps(), isTileSelectActive(false)
 {
     levelClient = new LevelClient();
+    
     std::string fpsFontPath(resourcePath() + "Agency.ttf");
-    fps.load(fpsFontPath, 10, 10);
-    fps.fpsText.setColor(sf::Color(0, 0, 0));//(sf::Color(50, 50, 50));
+    fps.load(fpsFontPath, 5, 3);
+    fps.fpsText.setCharacterSize(11);
+    fps.fpsText.setColor(sf::Color(100, 100, 100));
+
     createCamera(rogueZombieGame, 0, 0, 1, 1);
     cameras[0]->panSpeed = 3;
 

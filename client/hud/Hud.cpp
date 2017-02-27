@@ -93,8 +93,7 @@ Hud::Hud(StateGamePlay* _state)
     submenus.push_back(options);
     for(unsigned int i=0; i < submenus.size(); i++)
     {
-        submenus[i]->canHaveFocus = false;
-        submenus[i]->opacity = 0;
+        submenus[i]->hide();
     }
 
     // Tool tips

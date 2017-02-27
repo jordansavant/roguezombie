@@ -7,6 +7,7 @@
 #include "../StateGamePlay.hpp"
 #include "../LevelClient.hpp"
 #include "../RogueZombieGame.hpp"
+#include "../RZConfig.hpp"
 
 Options::Options(Hud* _hud)
     : HudMenu(_hud, 0, 0, 691, 728, bit::Element::AnchorType::Right, true)
@@ -53,6 +54,43 @@ Options::Options(Hud* _hud)
         return _hud->state->rogueZombieGame->soundManager->getMasterVolume() / _hud->state->rogueZombieGame->soundManager->getMaximum();
     };
     addChild(soundSlider);
+
+    initY += ySeparation;
+
+    // RESOLUTION
+    Options* self = this;
+    resolutionSlider = new bit::Slider(sliderHandleTexture, sliderBackgroundTexture, initX, initY, 0, 0, Element::AnchorType::TopLeft, [self] (bit::Slider* slider, float ratio) {
+        // Change the selected resolution
+        unsigned int rounded = bit::Math::round(ratio * slider->max);
+        self->changeSelectedResolutionIndex(rounded);
+    });
+    resolutionSliderText = "D_RES";
+    configureSlider(resolutionSlider, &resolutionSliderText, 0, RZConfig::supportedResolutions.size() - 1);
+    addChild(resolutionSlider);
+
+    initY += ySeparation;
+
+    // CURRENT RESOLUTION
+    resolutionDisplayLabel = new bit::Label(initX + 125, initY, 0, 0, bit::Element::AnchorType::TopLeft);
+    resolutionDisplayLabel->setSfFontSize(Hud::font_largeSize);
+    resolutionDisplayLabel->setSfFontString(getCurrentResolutionString());
+    resolutionDisplayLabel->setSfFont(hud->journalFont);
+    resolutionDisplayLabel->normalColor = sf::Color::Black;
+    resolutionDisplayLabel->scaleStyle = ScaleStyle::PowerOfTwo;
+    addChild(resolutionDisplayLabel);
+
+    // RESOLUTION APPLY
+    resolutionChangeLabel = new bit::Label(initX + 320, initY, 0, 0, bit::Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    resolutionChangeText = std::string("APPLY");
+    resolutionChangeTextFocus = resolutionChangeText + " <<";
+    configureLabel(resolutionChangeLabel, &resolutionChangeText, &resolutionChangeTextFocus);
+    resolutionChangeLabel->onActivate = [self] (bit::Element* e) {
+        self->applyResolution();
+    };
+    addChild(resolutionChangeLabel);
+
+    // Update selected resolution to the current resolution
+    syncResolutionOptionWithSystem();
 
     initY += ySeparation;
 
@@ -123,6 +161,9 @@ void Options::show()
     relativePosition.x = targetWidth;
     immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, -targetWidth, 0));
     immediateEffect(new bit::FadeEffect(300, Hud::popupOpacity));
+
+    // Update the known current resolution to the system's resolution
+    syncResolutionOptionWithSystem();
 }
 
 void Options::configureLabel(bit::Label* label, std::string* text, std::string* focusText)
@@ -161,7 +202,6 @@ void Options::configureSlider(bit::Slider* slider, std::string* text, float min,
         return _hud->state->rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left);
     };
     slider->canHaveFocus = true;
-    slider->scaleStyle = bit::Element::ScaleStyle::PowerOfTwo;
     slider->setSfFontSize(Hud::font_largeSize);
     slider->setSfFont(hud->journalFont);
     slider->normalColor = sf::Color::Black;
@@ -176,4 +216,68 @@ void Options::configureSlider(bit::Slider* slider, std::string* text, float min,
     slider->textureOffsetY = 6;
     slider->min = min;
     slider->max = max;
+}
+
+void Options::syncResolutionOptionWithSystem()
+{
+    // Get current system resolution
+    assignSystemResolutionIndex();
+
+    // Set the selected resolution to the system resolution
+    changeSelectedResolutionIndex(systemResolutionIndex);
+
+    // Update the slider position to match
+    resolutionSlider->current = (float)selectedResolutionIndex / ((float)RZConfig::supportedResolutions.size() - 1);
+}
+
+void Options::changeSelectedResolutionIndex(unsigned int newResolutionIndex)
+{
+    // Set the new selected resolution
+    selectedResolutionIndex = newResolutionIndex;
+
+    // Update the display text to show selected resolution
+    resolutionDisplayLabel->setSfFontString(getResolutionStringByIndex(selectedResolutionIndex));
+}
+
+void Options::applyResolution()
+{
+    // Make the system call to change the resolution to what we have selected
+    if(selectedResolutionIndex != systemResolutionIndex && selectedResolutionIndex < RZConfig::supportedResolutions.size())
+    {
+        sf::Vector2i selectedResolution = RZConfig::supportedResolutions[selectedResolutionIndex];
+        hud->state->rogueZombieGame->changeResolution(selectedResolution.x, selectedResolution.y);
+        assignSystemResolutionIndex();
+    }
+}
+
+void Options::assignSystemResolutionIndex()
+{
+    sf::Vector2i cr = hud->state->rogueZombieGame->currentResolution;
+    for(unsigned int i=0; i < RZConfig::supportedResolutions.size(); i++)
+    {
+        if(RZConfig::supportedResolutions[i].x == cr.x && RZConfig::supportedResolutions[i].y == cr.y)
+        {
+            systemResolutionIndex = i;
+            return;
+        }
+    }
+
+    systemResolutionIndex = RZConfig::defaultResolutionIndex;
+}
+
+std::string Options::getCurrentResolutionString()
+{
+    return getResolutionString(hud->state->rogueZombieGame->currentResolution);
+}
+
+std::string Options::getResolutionStringByIndex(unsigned int index)
+{
+    return getResolutionString(RZConfig::supportedResolutions[index]);
+}
+
+std::string Options::getResolutionString(sf::Vector2i &cr)
+{
+    std::stringstream ss;
+    ss << cr.x << "x" << cr.y;
+    return ss.str();
 }

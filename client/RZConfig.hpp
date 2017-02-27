@@ -17,6 +17,9 @@ public:
     static float zrenderInterfaceLowerbound;
     static float zrenderInterfaceUpperbound;
 
+    static std::vector<sf::Vector2i> supportedResolutions;
+    static unsigned int defaultResolutionIndex;
+
     static sf::Color tileInteractColor;
     static sf::Color tileTargetedColor;
     static sf::Color tileMoveColor;
@@ -25,6 +28,10 @@ public:
     static sf::Color tileTargetInRangeRadius;
 
     static float getDrawDepthForGameplay(float yPosition);
+
+private:
+
+    static sf::Vector2i _supportedResolutions[14];
 };
 
 #endif

@@ -28,6 +28,16 @@ public:
     std::string soundSliderText;
     bit::Slider* soundSlider;
 
+    unsigned int systemResolutionIndex;
+    unsigned int selectedResolutionIndex;
+
+    std::string resolutionSliderText;
+    bit::Slider* resolutionSlider;
+    bit::Label* resolutionDisplayLabel;
+    bit::Label* resolutionChangeLabel;
+    std::string resolutionChangeText;
+    std::string resolutionChangeTextFocus;
+
     sf::Texture sliderHandleTexture;
     sf::Texture sliderBackgroundTexture;
 
@@ -44,6 +54,20 @@ public:
     void configureLabel(bit::Label* label, std::string* text, std::string* focusText);
 
     void configureSlider(bit::Slider* slider, std::string* text, float min, float max);
+
+    void syncResolutionOptionWithSystem();
+
+    void changeSelectedResolutionIndex(unsigned int selectedResolution);
+
+    void applyResolution();
+
+    void assignSystemResolutionIndex();
+
+    std::string getCurrentResolutionString();
+
+    std::string getResolutionString(sf::Vector2i &cr);
+
+    std::string getResolutionStringByIndex(unsigned int index);
 
 };
 
