@@ -28,7 +28,7 @@ bit::VideoGame::VideoGame(std::string gameTitle, int width, int height, bool ful
 
     settings.depthBits = 24;
     settings.stencilBits = 8;
-    settings.antialiasingLevel = 4;
+    settings.antialiasingLevel = 0;
     settings.majorVersion = 3;
     settings.minorVersion = 0;
 

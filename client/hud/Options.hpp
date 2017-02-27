@@ -39,6 +39,7 @@ public:
     std::string resolutionChangeTextFocus;
     
     bit::CheckBox* fullscreenCheckbox;
+    bit::CheckBox* vsyncCheckbox;
 
     sf::Texture sliderHandleTexture;
     sf::Texture sliderBackgroundTexture;

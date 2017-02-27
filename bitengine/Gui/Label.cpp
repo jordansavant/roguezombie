@@ -28,7 +28,11 @@ void bit::Label::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     colorByFocus(isInfocus);
     // Scale the actual character size, not by transformable scale
     setCharacterSize(elementScale * fontSize);
-    setPosition(left + (paddingLeft / 2) * elementScale, top + (paddingTop / 2) * elementScale);
+
+    // Be sure and round to an integer for screen placement
+    float x = left + (paddingLeft / 2) * elementScale;
+    float y = top + (paddingTop / 2) * elementScale;
+    setPosition((int)x, (int)y);
 }
 
 void bit::Label::syncSizing()

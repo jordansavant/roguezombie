@@ -15,6 +15,9 @@ RogueZombieGame::RogueZombieGame()
     Game::stateStack->pushState(stateGameStart);
     exploreMusic = musicManager->loadMusic(resourcePath() + "bit_song_heartbeat.ogg");
     combatMusic = musicManager->loadMusic(resourcePath() + "RockmenCombat.ogg");
+
+    targetResolution.x = 1920;
+    targetResolution.y = 1080;
 }
 
 unsigned int RogueZombieGame::stateGameIntroduction = 1;

@@ -104,11 +104,26 @@ Options::Options(Hud* _hud)
         c->isChecked = !c->isChecked;
         _hud->state->rogueZombieGame->changeFullscreen(c->isChecked);
     };
-    fullscreenCheckbox->setSfFontString(std::string("FULLSCREEN"));
+    fullscreenCheckbox->setSfFontString(std::string("FSCRN"));
     fullscreenCheckbox->isChecked = hud->state->rogueZombieGame->isFullscreen;
     configureCheckbox(fullscreenCheckbox);
     addChild(fullscreenCheckbox);
 
+    initY += ySeparation;
+
+    // VSYNC
+    vsyncCheckbox = new bit::CheckBox(checkboxCheckedTexture, checkboxUncheckedTexture, initX, initY, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    vsyncCheckbox->onActivate = [_hud] (bit::Element* e) {
+        bit::CheckBox* c = static_cast<bit::CheckBox*>(e);
+        c->isChecked = !c->isChecked;
+        _hud->state->rogueZombieGame->setVerticalSync(c->isChecked);
+    };
+    vsyncCheckbox->setSfFontString(std::string("VSYNC"));
+    vsyncCheckbox->isChecked = hud->state->rogueZombieGame->verticalSync;
+    configureCheckbox(vsyncCheckbox);
+    addChild(vsyncCheckbox);
+
+    initY += ySeparation;
     initY += ySeparation;
 
     // QUIT
@@ -120,6 +135,8 @@ Options::Options(Hud* _hud)
         _hud->state->endGame(StateGamePlay::EndGameReason::Quit);
     };
     addChild(quitGame);
+
+    initY += ySeparation;
 
 
     // Icon
@@ -182,6 +199,7 @@ void Options::show()
     // Update the known current resolution to the system's resolution
     syncResolutionOptionWithSystem();
     fullscreenCheckbox->isChecked = hud->state->rogueZombieGame->isFullscreen;
+    vsyncCheckbox->isChecked = hud->state->rogueZombieGame->verticalSync;
 }
 
 void Options::configureLabel(bit::Label* label, std::string* text, std::string* focusText)
@@ -249,7 +267,7 @@ void Options::configureCheckbox(bit::CheckBox* checkbox)
     checkbox->paddingLeft = 0;
     checkbox->paddingRight = 5;
     checkbox->paddingBottom = 15;
-    checkbox->textureOffsetX = 15;
+    checkbox->textureOffsetX = 18;
     checkbox->textureOffsetY = 7;
 }
 
