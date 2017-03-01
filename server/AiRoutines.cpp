@@ -162,31 +162,61 @@ void AiRoutines::Combat::Hunter_DecideCombat(Character* character)
             int xDistance = bit::RectangleMath::axisDistance(bit::RectangleMath::Axis::X, x1, y1, width1, height1, x2, y2, width2, height2);
             int yDistance = bit::RectangleMath::axisDistance(bit::RectangleMath::Axis::Y, x1, y1, width1, height1, x2, y2, width2, height2);
 
-            if(xDistance <= character->level->tileWidth * 2 && yDistance <= character->level->tileWidth * 2)
-            {
-                // If I am within 2 tiles move away from them
-                int xDiff = x1 - x2;
-                int yDiff = y1 - y2;
+            sf::Vector2f directionAway = bit::VectorMath::directionToVector(x2, y2, x1, y1);
+            sf::Vector2f right(-directionAway.y, directionAway.x);
+            sf::Vector2f left(directionAway.y, -directionAway.x);
 
-                // If i can move, do so, else im in a corner so attack
-                if(character->canPathToPosition(x1 + xDiff, y1 + yDiff)) // TODO: Expensive
+            if(xDistance < character->level->tileWidth * 2 && yDistance < character->level->tileWidth * 2)
+            {
+                // If I am within 2 tiles, move away from them
+                int tileDistance = 3;
+                std::vector<sf::Vector2i> attempts;
+                attempts.push_back(sf::Vector2i(x1 + directionAway.x * character->level->tileWidth * tileDistance, y1 + directionAway.y * character->level->tileHeight * tileDistance));
+                attempts.push_back(sf::Vector2i(x1 + right.x * character->level->tileWidth * tileDistance, y1 + right.y * character->level->tileHeight * tileDistance));
+                attempts.push_back(sf::Vector2i(x1 + left.x * character->level->tileWidth * tileDistance, y1 + left.y * character->level->tileHeight * tileDistance));
+
+                for(unsigned int i=0; i < attempts.size(); i++)
                 {
-                    character->combat_DecideAction_MoveToLocation(x1 + xDiff, y1 + yDiff);
-                }
-                else
-                {
-                    character->combat_DecideAction_AttackCharacter(closestEnemy);
+                    if(character->canPathToPosition(attempts[i].x, attempts[i].y))
+                    {
+                        // If this is a valid escape direction, take it
+                        character->combat_DecideAction_MoveToLocation(attempts[i].x, attempts[i].y);
+                        break;
+                    }
+                    else if(i == attempts.size() - 1)
+                    {
+                        // Otherwise if no directions remain, attack character
+                        character->combat_DecideAction_AttackCharacter(closestEnemy);
+                    }
                 }
             }
-            else if(xDistance <= character->level->tileWidth * 6 && yDistance <= character->level->tileWidth * 6)
+            else if(xDistance < character->level->tileWidth * 6 && yDistance < character->level->tileWidth * 6)
             {
                 // If they are further than 2 tiles but within 6 tiles attack them
                 character->combat_DecideAction_AttackCharacter(closestEnemy);
             }
             else
             {
-                // If they are more than 6 tiles away, TODO: Improve logic to move within range
-                character->combat_DecideAction_Skip();
+                // If I am further than 6 tiles, move toward them, trying longer distances up until shorter distances
+                std::vector<sf::Vector2i> attempts;
+                attempts.push_back(sf::Vector2i(x1 - directionAway.x * character->level->tileWidth * 4, y1 - directionAway.y * character->level->tileHeight * 4));
+                attempts.push_back(sf::Vector2i(x1 - directionAway.x * character->level->tileWidth * 2, y1 - directionAway.y * character->level->tileHeight * 2));
+                attempts.push_back(sf::Vector2i(x1 - directionAway.x * character->level->tileWidth * 1, y1 - directionAway.y * character->level->tileHeight * 1));
+
+                for(unsigned int i=0; i < attempts.size(); i++)
+                {
+                    if(character->canPathToPosition(attempts[i].x, attempts[i].y))
+                    {
+                        // If this is a valid chase direction, take it
+                        character->combat_DecideAction_MoveToLocation(attempts[i].x, attempts[i].y);
+                        break;
+                    }
+                    else if(i == attempts.size() - 1)
+                    {
+                        // Otherwise if no directions remain, attack character
+                        character->combat_DecideAction_AttackCharacter(closestEnemy);
+                    }
+                }
             }
         }
     }

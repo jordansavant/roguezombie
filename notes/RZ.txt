@@ -27,6 +27,7 @@ Items should have stat effects and perhaps magical (lambda) effects
 
 Structures
 - Cover structures, no purpose other than barricades
+- Update CoH to include structures that are diagonally adjacent
 
 
 RZ Potential issues
