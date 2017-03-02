@@ -14,5 +14,7 @@ XoGeni::XoTileMap* XoGeni::XoLevelGenerator::generate(unsigned int seed, unsigne
 {
     XoTileMap* tileMap = new XoTileMap(width, height);
 
+    tileMap->buildGround();
+
     return tileMap;
 }

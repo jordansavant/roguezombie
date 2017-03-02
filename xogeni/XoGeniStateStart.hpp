@@ -11,6 +11,8 @@ namespace XoGeni
 {
     class XoGeniGame;
     class XoLevelGenerator;
+    class XoLevelRenderer;
+    class XoTileMap;
 
     class XoGeniStateStart : public bit::State
     {
@@ -22,6 +24,8 @@ namespace XoGeni
 
         XoGeniGame* xoGeniGame;
         XoLevelGenerator* levelGenerator;
+        XoLevelRenderer* levelRenderer;
+        XoTileMap* tileMap;
 
         virtual bool update(sf::Time &gameTime);
 

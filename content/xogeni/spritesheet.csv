@@ -1,0 +1,2 @@
+trimmed_name,frame_x,frame_y,frame_width,frame_height,sprite_x,sprite_y,sprite_width,sprite_height,rotated
+tile_ground,2,2,8,8,0,0,8,8,false
