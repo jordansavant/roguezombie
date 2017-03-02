@@ -1,3 +1,9 @@
+Possible titles:
+- Rogue Zombie
+- ZRL
+
+
+--------------------
 RZ Bugs
 
 Body's are LevelRunnable but if we delete one it will screw up references in the parent tile
@@ -12,9 +18,14 @@ Hunters firing after dead
 Fat gap under Loot Interaction popup
 - Only looks weird under singular loot option (like looting a dead guy)
 
-Upgrade SFML to v2.4
+Characters retain pointers to attack targets
+- If the attack target disappears between decision to attack and attack sequence we will have a memory violation
+- Change the pointer to a Tile* or an X and Y which will fetch a tile and therefore a character
+- If the tile has no body (character) then we can skip attack
+- Same for all server side elements, they should point to tiles, not to characters (or structures) etc
 
 
+--------------------
 RZ Features
 
 Need much better AI for Hunters
@@ -25,8 +36,19 @@ Items should have stat effects and perhaps magical (lambda) effects
 - Better stat details in the window
 
 Procedural levels
+- Traps
+- Pitfalls
+- https://www.rockpapershotgun.com/2015/07/28/how-do-roguelikes-generate-levels/
+- http://www.gridsagegames.com/blog/2014/06/procedural-map-generation/
+
+Ability to Trash items in the inventory
+
+Flavor console line
+
+Upgrade SFML to v2.4
 
 
+--------------------
 RZ Potential issues
 
 Doorways can be blocked if bodies die in front of them
@@ -35,8 +57,28 @@ Laggy while debugging
 - Look at possibility of local semaphor packet sending?
 
 
+--------------------
+RZ Scoping issues
+
+If I use the city generator and also want level generation to work for buildings, homes, subways etc we have a TON of level generation to build
+Say we do get level generation built out, how do you make this fun? Whats the point if its not fun?
+Hundreds of items (or smartly generated ones) will need to be created
+And whats to drive the player to explore? And how do you balance something so expansive?
+In Brogue its about reaching level 26, so the entire game is balanced for 26 levels of generation
+I have a multiplayer hook and that is honestly what is giving it its edge
+Perhaps I should step away from the scale of the city generator and focus on generating solid building / facilities with storage
+Also nothing is holding me down to playing as a zombie, I could do the typical survival as a human route
+
+If players are expecting a brogueish quality then there is a ton of balancing, machining and nifty generation to create
+Dealing with the network is very cumberson compared to what these other guys build, but at the same time its my leg up
+I have a decent mission system, narrative system and loot system that perhaps could be automatically generated
+
+We could change the scope of the game back to a tower ascent/descent with a series of procedurally generated facility floors
+That would scope our level generation to a single building (with perhaps basement, caverns, and subway escape
+It could also allow us to procedurally include scripted plotline, characters and events
 
 
+--------------------
 Threaded Sockets
 
 The client has a TcpSocket
