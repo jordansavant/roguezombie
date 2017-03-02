@@ -7,7 +7,7 @@
 #include <iostream>
 #include <sstream>
 
-XoGeniGame::XoGeniGame()
+XoGeni::XoGeniGame::XoGeniGame()
     : VideoGame("XoGeni", 1280, 720, false), mouse(resourcePath() + "xogeni/mouse.png")
 {
     Game::stateStack->pushState(stateStart);
@@ -16,9 +16,9 @@ XoGeniGame::XoGeniGame()
     targetResolution.y = 720;
 }
 
-unsigned int XoGeniGame::stateStart = 1;
+unsigned int XoGeni::XoGeniGame::stateStart = 1;
 
-void XoGeniGame::update(sf::Time &gameTime)
+void XoGeni::XoGeniGame::update(sf::Time &gameTime)
 {
     VideoGame::update(gameTime);
 
@@ -49,14 +49,14 @@ void XoGeniGame::update(sf::Time &gameTime)
     }
 }
 
-void XoGeniGame::draw(sf::RenderWindow &window, sf::Time &gameTime)
+void XoGeni::XoGeniGame::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
     VideoGame::draw(window, gameTime);
 
     mouse.draw(window, gameTime);
 }
 
-void XoGeniGame::registerStates()
+void XoGeni::XoGeniGame::registerStates()
 {
     stateStack->registerState<XoGeniStateStart, XoGeniGame>(this, stateStart);
 }

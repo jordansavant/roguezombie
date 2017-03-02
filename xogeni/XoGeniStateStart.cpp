@@ -5,17 +5,17 @@
 #include "../ResourcePath.h"
 #include "XoGeniGame.hpp"
 
-XoGeniStateStart::XoGeniStateStart(bit::StateStack &stack, XoGeniGame* _game)
+XoGeni::XoGeniStateStart::XoGeniStateStart(bit::StateStack &stack, XoGeniGame* _game)
     : bit::State(stack, _game), xoGeniGame(_game)
 {
     createCamera(xoGeniGame, 0, 0, 1, 1);
 }
 
-XoGeniStateStart::~XoGeniStateStart()
+XoGeni::XoGeniStateStart::~XoGeniStateStart()
 {
 }
 
-bool XoGeniStateStart::update(sf::Time &gameTime)
+bool XoGeni::XoGeniStateStart::update(sf::Time &gameTime)
 {
     if(xoGeniGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
     {
@@ -25,7 +25,7 @@ bool XoGeniStateStart::update(sf::Time &gameTime)
     return true;
 }
 
-void XoGeniStateStart::draw(sf::RenderWindow &window, sf::Time &gameTime)
+void XoGeni::XoGeniStateStart::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::State::draw(window, gameTime);
 }

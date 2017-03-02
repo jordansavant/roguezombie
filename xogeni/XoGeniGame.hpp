@@ -7,20 +7,23 @@
 #include "../bitengine/Gui.hpp"
 #include <string>
 
-class XoGeniGame: public bit::VideoGame
+namespace XoGeni
 {
-public:
-        XoGeniGame();
+    class XoGeniGame: public bit::VideoGame
+    {
+    public:
+            XoGeniGame();
 
-        static unsigned int stateStart;
+            static unsigned int stateStart;
 
-        bit::Mouse mouse;
+            bit::Mouse mouse;
 
-        virtual void update(sf::Time &gameTime);
+            virtual void update(sf::Time &gameTime);
 
-        virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
+            virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
 
-        virtual void registerStates();
-};
+            virtual void registerStates();
+    };
+}
 
 #endif

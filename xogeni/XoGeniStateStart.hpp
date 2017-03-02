@@ -7,21 +7,25 @@
 #include "../bitengine/Graphics.hpp"
 #include "../bitengine/Gui.hpp"
 
-class XoGeniGame;
-
-class XoGeniStateStart : public bit::State
+namespace XoGeni
 {
-public:
+    class XoGeniGame;
 
-    XoGeniStateStart(bit::StateStack &stack, XoGeniGame* game);
+    class XoGeniStateStart : public bit::State
+    {
+    public:
 
-    virtual ~XoGeniStateStart();
+        XoGeniStateStart(bit::StateStack &stack, XoGeniGame* game);
 
-    XoGeniGame* xoGeniGame;
+        virtual ~XoGeniStateStart();
 
-    virtual bool update(sf::Time &gameTime);
+        XoGeniGame* xoGeniGame;
 
-    virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
-};
+        virtual bool update(sf::Time &gameTime);
+
+        virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
+    };
+
+}
 
 #endif
