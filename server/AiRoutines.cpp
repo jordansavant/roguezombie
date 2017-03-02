@@ -220,4 +220,8 @@ void AiRoutines::Combat::Hunter_DecideCombat(Character* character)
             }
         }
     }
+    else
+    {
+        character->combat_DecideAction_Skip();
+    }
 }

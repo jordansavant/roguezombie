@@ -12,22 +12,19 @@ Hunters firing after dead
 Fat gap under Loot Interaction popup
 - Only looks weird under singular loot option (like looting a dead guy)
 
+Upgrade SFML to v2.4
+
 
 RZ Features
 
 Need much better AI for Hunters
-- They should take cover
-- They should flee
 - They should make chase - If they encounter the player and the player breaks LoS, they should go to the player's last seen location
-- They should have group tactics (spread out around player)
 
 Items should have stat effects and perhaps magical (lambda) effects
 - Maybe rarity (green/blue/purple/orange)?
 - Better stat details in the window
 
-Structures
-- Cover structures, no purpose other than barricades
-- Update CoH to include structures that are diagonally adjacent
+Procedural levels
 
 
 RZ Potential issues
@@ -36,4 +33,64 @@ Doorways can be blocked if bodies die in front of them
 
 Laggy while debugging
 - Look at possibility of local semaphor packet sending?
+
+
+
+
+Threaded Sockets
+
+The client has a TcpSocket
+The server has a TcpListener
+
+Both are parented by Socket
+
+Client uses:
+	socket.connect
+	socket.setBlocking
+	socket.receive
+	socket.send
+
+Server uses:
+	listenerSocket.setBlocking
+	listenerSocket.listen
+	listenerSocket.close
+	listenerSocket.accept
+	client->socket.send
+	client->socket.receive
+	client->socket.disconnect
+
+	
+Rough process
+1. Server starts listening
+2. Client connects
+3. Server accepts
+4. Server close
+5. Server sends
+6. Client receives
+7. Client sends
+8. Server receives
+9. Client disconnect
+10. Server listens
+
+
+A server has an IP address and listens to a specific port
+A client connects to that IP address and port
+When the socket is accepted data is sent and received
+
+
+In local hosting the server is running in a thread separated from the client.
+When the server needs to send data it could MUTEX copy the packet into a queue of packets to be sent
+A bool is set that packets are pending
+The client socket would poll the bool until it was set, it would then MUTEX the queue and pop off a packet
+
+The server has a list of client sockets and could copy packets to their specific instance queues when packets are sent (in this case, one client)
+
+To implement we would need to wrap the TcpSocket and TcpListener and sf::Socket classes with bit versions
+Then we would need two bit versions, one that was the SFML network implementation and two that was the threaded queue version
+
+Phase 1:
+- Plan out all ^^used methods for both SFML networked and BIT threaded versions
+- Create BIT wrappers that used SFML networking
+- Create BIT wrappers that used threads
+
 
