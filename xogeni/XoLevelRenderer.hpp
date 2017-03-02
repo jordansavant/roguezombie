@@ -8,7 +8,7 @@
 namespace XoGeni
 {
     class XoGeniStateStart;
-    class XoTileMap;
+    class CellMap;
 
     class XoLevelRenderer : public sf::Drawable, public sf::Transformable
     {
@@ -18,13 +18,13 @@ namespace XoGeni
         ~XoLevelRenderer();
 
         XoGeniStateStart* stateStart;
-        XoTileMap* tileMap;
+        CellMap* cellMap;
         sf::Texture texture;
         bit::VertexMap vertexMap_tiles;
         std::vector<unsigned int>tileQuadIndexes;
         bit::Sprite* groundSprite;
 
-        void load(XoTileMap* tileMap);
+        void load(CellMap* cellMap);
 
         void update(sf::Time &gameTime);
 

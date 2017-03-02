@@ -65,7 +65,27 @@ Alpha level gen
 	- When player requests to move to a new level and the level does not exist, generate it
 	- Or, when a new floor is reached generate subsequent floors for X depth
 	- Or, probably better for an Alpha is pregenerate all levels of the building
-- 
+
+Dungeon Gen Steps
+- Create Grid
+- Place Rooms
+	- Iterate
+		- First
+			- Create room
+			- Give room dimensions
+			- Place at origin
+		- Others
+			- Create room
+			- Give room dimensions
+			- Scan tiles until the room is not overlapping another room
+			- Place room
+		- Return if room count exceeded
+		- Return if attempt count exceeded
+- Connect Rooms
+- Open Rooms
+- Create Corridors
+- Place Stairs
+- Clean Up
 	
 
 

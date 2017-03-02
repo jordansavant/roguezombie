@@ -2,13 +2,13 @@
 #include "../bitengine/Math.hpp"
 #include "../bitengine/Graphics.hpp"
 #include "../ResourcePath.h"
-#include "LevelGenerator/XoTileMap.hpp"
-#include "LevelGenerator/XoTile.hpp"
+#include "LevelGenerator/CellMap.hpp"
+#include "LevelGenerator/Cell.hpp"
 #include "XoGeniStateStart.hpp"
 #include "XoGeniGame.hpp"
 
 XoGeni::XoLevelRenderer::XoLevelRenderer(XoGeniStateStart* stateStart)
-    : stateStart(stateStart), tileMap(NULL)
+    : stateStart(stateStart), cellMap(NULL)
 {
     stateStart->xoGeniGame->spriteLoader->loadSprites(resourcePath() + "xogeni/spritesheet.csv");
     texture.loadFromFile(resourcePath() + "xogeni/spritesheet.png");
@@ -20,7 +20,7 @@ XoGeni::XoLevelRenderer::~XoLevelRenderer()
 {
 }
 
-void XoGeni::XoLevelRenderer::load(XoTileMap* tileMap)
+void XoGeni::XoLevelRenderer::load(CellMap* cellMap)
 {
     // Unload quads
     for(unsigned int i=0; i < tileQuadIndexes.size(); i++)
@@ -30,9 +30,9 @@ void XoGeni::XoLevelRenderer::load(XoTileMap* tileMap)
     }
 
     // Load new quads
-    this->tileMap = tileMap;
+    this->cellMap = cellMap;
     
-    for(unsigned int i=0; i < tileMap->tiles.size(); i++)
+    for(unsigned int i=0; i < cellMap->cells.size(); i++)
     {
         // Get/Create quad index
         unsigned int quadIndex;
@@ -47,7 +47,7 @@ void XoGeni::XoLevelRenderer::load(XoTileMap* tileMap)
         }
     }
 
-    if(tileQuadIndexes.size() > tileMap->tiles.size())
+    if(tileQuadIndexes.size() > cellMap->cells.size())
     {
         int uhoh = 1;
     }
@@ -60,13 +60,13 @@ void XoGeni::XoLevelRenderer::update(sf::Time &gameTime)
     unsigned int renderZ = .5;
     sf::Color color = sf::Color::White;
 
-    for(unsigned int i=0; i < tileMap->tiles.size(); i++)
+    for(unsigned int i=0; i < cellMap->cells.size(); i++)
     {
-        XoTile* tile = tileMap->tiles[i];
+        Cell* cell = cellMap->cells[i];
         unsigned int quadIndex = quadIndex = tileQuadIndexes[i];
 
-        unsigned int x = 15 + tile->x  * renderDistanceX;
-        unsigned int y = 15 +tile->y  * renderDistanceY;
+        unsigned int x = cell->x  * renderDistanceX;
+        unsigned int y = cell->y  * renderDistanceY;
 
         bit::VertexHelper::positionQuad(&vertexMap_tiles.vertexArray[quadIndex], x, y, renderZ, groundSprite->width, groundSprite->height);
         bit::VertexHelper::colorQuad(&vertexMap_tiles.vertexArray[quadIndex], color);
@@ -91,8 +91,8 @@ void XoGeni::XoLevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates st
 sf::Vector2i XoGeni::XoLevelRenderer::getMapRenderSize()
 {
     sf::Vector2i size;
-    size.x = tileMap->width * (groundSprite->width + 1);
-    size.y = tileMap->height * (groundSprite->height + 1);
+    size.x = cellMap->width * (groundSprite->width + 1);
+    size.y = cellMap->height * (groundSprite->height + 1);
 
     return size;
 }

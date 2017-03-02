@@ -5,11 +5,11 @@
 #include "../ResourcePath.h"
 #include "XoGeniGame.hpp"
 #include "XoLevelRenderer.hpp"
-#include "LevelGenerator/XoLevelGenerator.hpp"
-#include "LevelGenerator/XoTileMap.hpp"
+#include "LevelGenerator/LevelGenerator.hpp"
+#include "LevelGenerator/CellMap.hpp"
 
 XoGeni::XoGeniStateStart::XoGeniStateStart(bit::StateStack &stack, XoGeniGame* _game)
-    : bit::State(stack, _game), xoGeniGame(_game), levelGenerator(NULL), tileMap(NULL)
+    : bit::State(stack, _game), xoGeniGame(_game), levelGenerator(NULL), cellMap(NULL)
 {
     createCamera(xoGeniGame, 0, 0, 1, 1);
     cameras[0]->panSpeed = 5;
@@ -19,7 +19,7 @@ XoGeni::XoGeniStateStart::XoGeniStateStart(bit::StateStack &stack, XoGeniGame* _
     fps.fpsText.setCharacterSize(11);
     fps.fpsText.setColor(sf::Color(100, 100, 100));
 
-    levelGenerator = new XoLevelGenerator();
+    levelGenerator = new LevelGenerator();
     levelRenderer = new XoLevelRenderer(this);
 }
 
@@ -27,7 +27,7 @@ XoGeni::XoGeniStateStart::~XoGeniStateStart()
 {
     delete levelGenerator;
     delete levelRenderer;
-    delete tileMap;
+    delete cellMap;
 }
 
 bool XoGeni::XoGeniStateStart::update(sf::Time &gameTime)
@@ -62,11 +62,11 @@ bool XoGeni::XoGeniStateStart::update(sf::Time &gameTime)
 
     if(xoGeniGame->inputManager->isButtonPressed(sf::Keyboard::Space))
     {
-        tileMap = levelGenerator->generate(std::rand(), 128, 128);
-        levelRenderer->load(tileMap);
+        cellMap = levelGenerator->generate(std::rand(), 128, 128);
+        levelRenderer->load(cellMap);
     }
 
-    if(tileMap)
+    if(cellMap)
     {
         levelRenderer->update(gameTime);
 
@@ -86,7 +86,7 @@ void XoGeni::XoGeniStateStart::draw(sf::RenderWindow &window, sf::Time &gameTime
 
 void XoGeni::XoGeniStateStart::drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera)
 {
-    if(tileMap)
+    if(cellMap)
     {
         window.draw(*levelRenderer);
     }

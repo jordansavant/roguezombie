@@ -10,9 +10,9 @@
 namespace XoGeni
 {
     class XoGeniGame;
-    class XoLevelGenerator;
+    class LevelGenerator;
     class XoLevelRenderer;
-    class XoTileMap;
+    class CellMap;
 
     class XoGeniStateStart : public bit::State
     {
@@ -24,9 +24,9 @@ namespace XoGeni
         
         bit::FrameTimer fps;
         XoGeniGame* xoGeniGame;
-        XoLevelGenerator* levelGenerator;
         XoLevelRenderer* levelRenderer;
-        XoTileMap* tileMap;
+        LevelGenerator* levelGenerator;
+        CellMap* cellMap;
 
         virtual bool update(sf::Time &gameTime);
 
