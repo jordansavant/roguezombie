@@ -21,7 +21,8 @@ namespace XoGeni
         XoGeniStateStart(bit::StateStack &stack, XoGeniGame* game);
 
         virtual ~XoGeniStateStart();
-
+        
+        bit::FrameTimer fps;
         XoGeniGame* xoGeniGame;
         XoLevelGenerator* levelGenerator;
         XoLevelRenderer* levelRenderer;
@@ -30,6 +31,8 @@ namespace XoGeni
         virtual bool update(sf::Time &gameTime);
 
         virtual void draw(sf::RenderWindow &window, sf::Time &gameTime);
+
+        virtual void drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera);
     };
 
 }

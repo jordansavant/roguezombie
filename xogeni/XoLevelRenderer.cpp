@@ -46,6 +46,11 @@ void XoGeni::XoLevelRenderer::load(XoTileMap* tileMap)
             tileQuadIndexes.push_back(quadIndex);
         }
     }
+
+    if(tileQuadIndexes.size() > tileMap->tiles.size())
+    {
+        int uhoh = 1;
+    }
 }
 
 void XoGeni::XoLevelRenderer::update(sf::Time &gameTime)
@@ -60,8 +65,8 @@ void XoGeni::XoLevelRenderer::update(sf::Time &gameTime)
         XoTile* tile = tileMap->tiles[i];
         unsigned int quadIndex = quadIndex = tileQuadIndexes[i];
 
-        unsigned int x = tile->x  * renderDistanceX;
-        unsigned int y = tile->y  * renderDistanceY;
+        unsigned int x = 15 + tile->x  * renderDistanceX;
+        unsigned int y = 15 +tile->y  * renderDistanceY;
 
         bit::VertexHelper::positionQuad(&vertexMap_tiles.vertexArray[quadIndex], x, y, renderZ, groundSprite->width, groundSprite->height);
         bit::VertexHelper::colorQuad(&vertexMap_tiles.vertexArray[quadIndex], color);
@@ -81,4 +86,13 @@ void XoGeni::XoLevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates st
     target.draw(vertexMap_tiles.vertexArray, states);
 
     bit::VideoGame::depthTestEnd();
+}
+
+sf::Vector2i XoGeni::XoLevelRenderer::getMapRenderSize()
+{
+    sf::Vector2i size;
+    size.x = tileMap->width * (groundSprite->width + 1);
+    size.y = tileMap->height * (groundSprite->height + 1);
+
+    return size;
 }

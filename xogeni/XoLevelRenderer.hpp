@@ -28,6 +28,8 @@ namespace XoGeni
 
         void update(sf::Time &gameTime);
 
+        sf::Vector2i getMapRenderSize();
+
     private:
 
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
