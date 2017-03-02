@@ -2,6 +2,7 @@
 #include "bitengine/System/tinyxml2.h"
 #include "client/RogueZombieGame.hpp"
 #include "server/RogueZombieServer.hpp"
+#include "xogeni/XoGeniGame.hpp"
 #include "ResourcePath.h"
 
 #if defined(__OS_WIN__)
@@ -13,6 +14,11 @@
 int main(int argc, char* argv[])
 {
     srand(time(NULL));
+
+    XoGeniGame generator;
+    generator.run();
+
+    return 0;
 
     if(argc == 1)
     {
