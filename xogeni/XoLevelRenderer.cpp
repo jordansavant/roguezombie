@@ -4,6 +4,7 @@
 #include "../ResourcePath.h"
 #include "LevelGenerator/CellMap.hpp"
 #include "LevelGenerator/Cell.hpp"
+#include "LevelGenerator/Room.hpp"
 #include "XoGeniStateStart.hpp"
 #include "XoGeniGame.hpp"
 
@@ -58,7 +59,6 @@ void XoGeni::XoLevelRenderer::update(sf::Time &gameTime)
     unsigned int renderDistanceX = groundSprite->width + 1;
     unsigned int renderDistanceY = groundSprite->height + 1;
     unsigned int renderZ = .5;
-    sf::Color color = sf::Color::White;
 
     for(unsigned int i=0; i < cellMap->cells.size(); i++)
     {
@@ -67,6 +67,15 @@ void XoGeni::XoLevelRenderer::update(sf::Time &gameTime)
 
         unsigned int x = cell->x  * renderDistanceX;
         unsigned int y = cell->y  * renderDistanceY;
+
+        sf::Color color = sf::Color::White;
+        if(cell->room)
+        {
+            if(cell->isRoomEdge)
+                color = sf::Color::Yellow;
+            else
+                color = sf::Color::Red;
+        }
 
         bit::VertexHelper::positionQuad(&vertexMap_tiles.vertexArray[quadIndex], x, y, renderZ, groundSprite->width, groundSprite->height);
         bit::VertexHelper::colorQuad(&vertexMap_tiles.vertexArray[quadIndex], color);

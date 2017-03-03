@@ -15,6 +15,7 @@ XoGeni::CellMap* XoGeni::LevelGenerator::generate(unsigned int seed, unsigned in
     CellMap* cellMap = new CellMap(width, height);
 
     cellMap->buildGround();
+    cellMap->buildRooms();
 
     return cellMap;
 }

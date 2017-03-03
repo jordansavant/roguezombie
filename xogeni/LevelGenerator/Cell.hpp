@@ -4,15 +4,18 @@
 
 namespace XoGeni
 {
+    class Room;
+
     class Cell
     {
     public:
-        Cell();
 
         Cell(unsigned int index, unsigned int x, unsigned int y);
 
         unsigned int index;
         unsigned int x, y;
+        Room* room;
+        bool isRoomEdge;
 
     };
 }

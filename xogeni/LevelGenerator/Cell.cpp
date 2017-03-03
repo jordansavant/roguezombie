@@ -1,11 +1,9 @@
 #include "Cell.hpp"
+#include "Room.hpp"
 
-XoGeni::Cell::Cell()
-    : index(0), x(0), y(0)
-{
-}
+#include <stddef.h>
 
 XoGeni::Cell::Cell(unsigned int index, unsigned int x, unsigned int y)
-    : index(index), x(x), y(y)
+    : index(index), x(x), y(y), room(NULL), isRoomEdge(false)
 {
 }

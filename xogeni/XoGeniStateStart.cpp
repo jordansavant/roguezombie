@@ -62,7 +62,7 @@ bool XoGeni::XoGeniStateStart::update(sf::Time &gameTime)
 
     if(xoGeniGame->inputManager->isButtonPressed(sf::Keyboard::Space))
     {
-        cellMap = levelGenerator->generate(std::rand(), 128, 128);
+        cellMap = levelGenerator->generate(std::rand(), 90, 90);
         levelRenderer->load(cellMap);
     }
 
