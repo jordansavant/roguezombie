@@ -76,6 +76,10 @@ void XoGeni::XoLevelRenderer::update(sf::Time &gameTime)
             else
                 color = sf::Color(200, 200, 200);
         }
+        if(cell->isSill)
+        {
+            color = sf::Color::Cyan;
+        }
 
         bit::VertexHelper::positionQuad(&vertexMap_tiles.vertexArray[quadIndex], x, y, renderZ, groundSprite->width, groundSprite->height);
         bit::VertexHelper::colorQuad(&vertexMap_tiles.vertexArray[quadIndex], color);

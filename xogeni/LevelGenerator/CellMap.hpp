@@ -13,6 +13,7 @@ namespace XoGeni
     class CellMap
     {
     public:
+
         CellMap(unsigned int width, unsigned int height);
 
         ~CellMap();
@@ -29,14 +30,24 @@ namespace XoGeni
         int minRoomWidth, maxRoomWidth;
         int minRoomHeight, maxRoomHeight;
         int roomScatter;
+        int minHallWidth;
 
         void buildGround();
 
+        // Room building
         void buildRooms();
 
         Room* buildRoom();
 
         void emplaceRoom(Room* room);
+
+        // Room opening
+        void buildOpenings();
+
+        void openRoom(Room* room);
+
+        void getRoomSills(Room* room, std::vector<Cell*> &fill);
+
 
         bool canHouseDimension(unsigned int x, unsigned int y, unsigned int w, unsigned int h);
 

@@ -16,6 +16,7 @@ namespace XoGeni
         unsigned int x, y;
         Room* room;
         bool isRoomEdge;
+        bool isSill;
 
     };
 }

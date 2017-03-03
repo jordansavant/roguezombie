@@ -16,6 +16,7 @@ XoGeni::CellMap::CellMap(unsigned int width, unsigned int height)
     minRoomHeight = 6;
     maxRoomHeight = 16;
     roomScatter = 10;
+    minHallWidth = 1;
 }
 
 XoGeni::CellMap::~CellMap()
@@ -44,6 +45,11 @@ void XoGeni::CellMap::buildGround()
         cells.push_back(cell);
     }
 }
+
+
+/////////////////////////////////////////
+// ROOM BUILDING START
+////////////////////////////////////////
 
 void XoGeni::CellMap::buildRooms()
 {
@@ -116,6 +122,102 @@ void XoGeni::CellMap::emplaceRoom(Room* room)
         return false;
     });
 }
+
+/////////////////////////////////////////
+// ROOM BUILDING END
+////////////////////////////////////////
+
+
+
+
+/////////////////////////////////////////
+// OPENING BUILDING START
+////////////////////////////////////////
+
+void XoGeni::CellMap::buildOpenings()
+{
+    for(unsigned int i = 0; i < rooms.size(); i++)
+    {
+        openRoom(rooms[i]);
+    }
+}
+
+void XoGeni::CellMap::openRoom(Room* room)
+{
+    // Get list of room door sills
+    std::vector<Cell*> sills;
+    getRoomSills(room, sills);
+
+    for(unsigned int i=0; i < sills.size(); i++)
+    {
+        // TESTING
+        sills[i]->isSill = true;
+    }
+
+        // All edge cells of the room that are not near the edge of the map (must have room for walls + min hall width)
+
+    // Calculate number of openings
+
+    // Iterate number of openings
+
+        // Get a random sill
+
+        // Get cell for sill
+
+        // 
+}
+
+void XoGeni::CellMap::getRoomSills(Room* room, std::vector<Cell*> &fill)
+{
+    unsigned int topMargin = minHallWidth + 2;
+    unsigned int bottomMargin = height - (minHallWidth + 2);
+    unsigned int leftMargin = minHallWidth + 2;
+    unsigned int rightMargin = width - (minHallWidth + 2);
+
+    unsigned int cornerSpacing = 2; // do not let sills be valid within 2 spaces of corners
+
+    // North wall
+    if(room->y > topMargin)
+    {
+        for(unsigned int i = room->x + cornerSpacing; i < room->x + room->width - cornerSpacing; i += 2)
+        {
+            fill.push_back(getCellAtPosition(i, room->y));
+        }
+    }
+
+    // South wall
+    if(room->y + room->height < bottomMargin)
+    {
+        for(unsigned int i = room->x + cornerSpacing; i < room->x + room->width - cornerSpacing; i += 2)
+        {
+            fill.push_back(getCellAtPosition(i, room->y + room->height - 1));
+        }
+    }
+
+    // East wall
+    if(room->x < rightMargin)
+    {
+        for(unsigned int i = room->y + cornerSpacing; i < room->y + room->height - cornerSpacing; i += 2)
+        {
+            fill.push_back(getCellAtPosition(room->x, i));
+        }
+    }
+
+    // West wall
+    if(room->x + room->width < rightMargin)
+    {
+        for(unsigned int i = room->y + cornerSpacing; i < room->y + room->height - cornerSpacing; i += 2)
+        {
+            fill.push_back(getCellAtPosition(room->x + room->width - 1, i));
+        }
+    }
+}
+
+/////////////////////////////////////////
+// OPENING BUILDING END
+////////////////////////////////////////
+
+
 
 bool XoGeni::CellMap::canHouseDimension(unsigned int x, unsigned int y, unsigned int w, unsigned int h)
 {
