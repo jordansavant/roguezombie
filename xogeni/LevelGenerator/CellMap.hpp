@@ -9,6 +9,7 @@ namespace XoGeni
 {
     class Cell;
     class Room;
+    class RoomDoor;
 
     class CellMap
     {
@@ -23,6 +24,7 @@ namespace XoGeni
 
         std::vector<XoGeni::Cell*> cells;
         std::vector<XoGeni::Room*> rooms;
+        std::vector<XoGeni::RoomDoor*> doors;
 
         int roomCount;
         int roomAttemptCount;
@@ -41,8 +43,8 @@ namespace XoGeni
 
         void emplaceRoom(Room* room);
 
-        // Room opening
-        void buildOpenings();
+        // Door building
+        void buildDoors();
 
         void openRoom(Room* room);
 

@@ -41,10 +41,13 @@ Procedural levels
 - http://www.gridsagegames.com/blog/2014/06/procedural-map-generation/
 
 Level Gen TO DO:
-- Ensure that rooms never are placed within padding requirement of map
-- Enforce single spacing between rooms (and designate as walls)
 - Change sill margins to remove wall padding
 - Change door creation to pick external cell of a sill instead of a sill
+
+- When sills are selected they should check that:
+	- their perpendicular wall spot is not blocked (should never be)
+	- the spot beyond that in the same direction is not blocked (dont see why it would be)
+	- the spot beyond the door is not on the outside corner of another room
 	
 
 

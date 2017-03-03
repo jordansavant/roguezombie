@@ -11,10 +11,6 @@ XoGeni::Room::Room()
 
 XoGeni::Room::~Room()
 {
-    for(unsigned int i=0; i < doors.size(); i++)
-    {
-        delete doors[i];
-    }
 }
 
 XoGeni::Room::Room(unsigned int x, unsigned int y, unsigned int width, unsigned int height)

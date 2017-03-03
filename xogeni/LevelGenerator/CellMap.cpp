@@ -16,7 +16,7 @@ XoGeni::CellMap::CellMap(unsigned int width, unsigned int height)
     maxRoomWidth = 16;
     minRoomHeight = 6;
     maxRoomHeight = 16;
-    roomScatter = 10;
+    roomScatter = 30;
     minHallWidth = 1;
 }
 
@@ -30,6 +30,11 @@ XoGeni::CellMap::~CellMap()
     for(unsigned int i=0; i < rooms.size(); i++)
     {
         delete rooms[i];
+    }
+    
+    for(unsigned int i=0; i < doors.size(); i++)
+    {
+        delete doors[i];
     }
 }
 
@@ -190,10 +195,10 @@ void XoGeni::CellMap::emplaceRoom(Room* room)
 
 
 /////////////////////////////////////////
-// OPENING BUILDING START
+// DOOR BUILDING START
 ////////////////////////////////////////
 
-void XoGeni::CellMap::buildOpenings()
+void XoGeni::CellMap::buildDoors()
 {
     for(unsigned int i = 0; i < rooms.size(); i++)
     {
@@ -229,7 +234,10 @@ void XoGeni::CellMap::openRoom(Room* room)
     for(unsigned int i=0; i < doorSills.size(); i++)
     {
         Cell* sill = doorSills[i];
-        sill->isDoor = true;
+        Cell* doorSpot = getCellAtPosition(sill->sillData.doorX, sill->sillData.doorY);
+
+        if(doorSpot->isDoor)
+            continue;
 
         // Pick door type
         RoomDoor::DoorType doorType;
@@ -244,8 +252,12 @@ void XoGeni::CellMap::openRoom(Room* room)
         }
 
         // Create door
-        RoomDoor* door = new RoomDoor(sill->x, sill->y, doorType);
-        room->doors.push_back(door);
+        RoomDoor* door = new RoomDoor(doorSpot->x, doorSpot->y, doorType);
+        doors.push_back(door);
+
+        // Assign door
+        doorSpot->isDoor = true;
+        doorSpot->door = door;
     }
 }
 
@@ -264,6 +276,8 @@ void XoGeni::CellMap::getRoomSills(Room* room, std::vector<Cell*> &fill)
         {
             Cell* cell = getCellAtPosition(i, room->y);
             cell->isSill = true;
+            cell->sillData.doorX = cell->x;
+            cell->sillData.doorY = cell->y - 1;
             fill.push_back(cell);
         }
     }
@@ -275,6 +289,8 @@ void XoGeni::CellMap::getRoomSills(Room* room, std::vector<Cell*> &fill)
         {
             Cell* cell = getCellAtPosition(i, room->y + room->height - 1);
             cell->isSill = true;
+            cell->sillData.doorX = cell->x;
+            cell->sillData.doorY = cell->y + 1;
             fill.push_back(cell);
         }
     }
@@ -286,6 +302,8 @@ void XoGeni::CellMap::getRoomSills(Room* room, std::vector<Cell*> &fill)
         {
             Cell* cell = getCellAtPosition(room->x, i);
             cell->isSill = true;
+            cell->sillData.doorX = cell->x - 1;
+            cell->sillData.doorY = cell->y;
             fill.push_back(cell);
         }
     }
@@ -297,22 +315,24 @@ void XoGeni::CellMap::getRoomSills(Room* room, std::vector<Cell*> &fill)
         {
             Cell* cell = getCellAtPosition(room->x + room->width - 1, i);
             cell->isSill = true;
+            cell->sillData.doorX = cell->x + 1;
+            cell->sillData.doorY = cell->y;
             fill.push_back(cell);
         }
     }
 }
 
 /////////////////////////////////////////
-// OPENING BUILDING END
+// DOOR BUILDING END
 ////////////////////////////////////////
 
 
 
 bool XoGeni::CellMap::canHouseDimension(unsigned int x, unsigned int y, unsigned int w, unsigned int h)
 {
-    if(x > 0 && y > 0)
+    if(x > mapPadding && y > mapPadding)
     {
-        if(x + w < width && y + h < height)
+        if(x + w + mapPadding < width && y + h + mapPadding < height)
         {
             return true;
         }

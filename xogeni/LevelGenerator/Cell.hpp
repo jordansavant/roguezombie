@@ -5,6 +5,7 @@
 namespace XoGeni
 {
     class Room;
+    class RoomDoor;
 
     class Cell
     {
@@ -12,9 +13,18 @@ namespace XoGeni
 
         Cell(unsigned int index, unsigned int x, unsigned int y);
 
+        struct SillData
+        {
+            SillData(): doorX(0), doorY(0) {}
+            unsigned int doorX;
+            unsigned int doorY;
+        };
+
         unsigned int index;
         unsigned int x, y;
         Room* room;
+        RoomDoor* door;
+        SillData sillData;
         bool isWall;
         bool isRoomEdge;
         bool isSill;

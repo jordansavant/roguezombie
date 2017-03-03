@@ -6,8 +6,6 @@
 
 namespace XoGeni
 {
-    class RoomDoor;
-
     class Room
     {
     public:
@@ -19,7 +17,6 @@ namespace XoGeni
 
         unsigned int x, y;
         unsigned int width, height;
-        std::vector<RoomDoor*> doors;
 
     };
 }
