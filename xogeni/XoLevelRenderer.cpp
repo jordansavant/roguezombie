@@ -92,6 +92,10 @@ void XoGeni::XoLevelRenderer::update(sf::Time &gameTime)
         {
             color = sf::Color::Yellow;
         }
+        if(cell->isTunnel)
+        {
+            color = sf::Color::Red;
+        }
 
         bit::VertexHelper::positionQuad(&vertexMap_tiles.vertexArray[quadIndex], x, y, renderZ, groundSprite->width, groundSprite->height);
         bit::VertexHelper::colorQuad(&vertexMap_tiles.vertexArray[quadIndex], color);

@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <functional>
+#include "../../bitengine/Math.hpp"
 
 namespace XoGeni
 {
@@ -33,6 +34,9 @@ namespace XoGeni
         int minRoomHeight, maxRoomHeight;
         int roomScatter;
         int minHallWidth;
+        std::vector<sf::Vector2i> tunnelDirs;
+        int tunnelSanity;
+        int tunnelSanityCounter;
 
         void buildGround();
 
@@ -52,6 +56,17 @@ namespace XoGeni
 
         void getRandomDoorType();
 
+        // Tunnel building
+        void buildTunnels();
+
+        void tunnel(Cell* cell, sf::Vector2i lastDir = sf::Vector2i(0,0));
+
+        bool openTunnel(Cell* cell, sf::Vector2i &dir);
+
+        bool canTunnel(Cell* cell, sf::Vector2i &dir);
+
+        void emplaceTunnel(Cell* cell, sf::Vector2i &dir);
+
 
         bool canHouseDimension(unsigned int x, unsigned int y, unsigned int w, unsigned int h);
 
@@ -60,6 +75,8 @@ namespace XoGeni
         void inspectCellsInDimension(unsigned int x, unsigned int y, unsigned int w, unsigned int h, const std::function<bool(Cell* cell)> &inspector);
 
         Cell* getCellAtPosition(unsigned int x, unsigned int y);
+
+        Cell* getCellAtPositionNullable(unsigned int x, unsigned int y);
     };
 }
 #endif

@@ -39,6 +39,9 @@ Procedural levels
 - Traps, Chasms, Machines
 - https://www.rockpapershotgun.com/2015/07/28/how-do-roguelikes-generate-levels/
 - http://www.gridsagegames.com/blog/2014/06/procedural-map-generation/
+- http://donjon.bin.sh/d20/dungeon/
+- http://donjon.bin.sh/code/dungeon/
+- http://donjon.bin.sh/code/dungeon/dungeon.pl
 
 Level Gen TO DO:
 - Change sill margins to remove wall padding
@@ -48,7 +51,19 @@ Level Gen TO DO:
 	- their perpendicular wall spot is not blocked (should never be)
 	- the spot beyond that in the same direction is not blocked (dont see why it would be)
 	- the spot beyond the door is not on the outside corner of another room
-	
+
+- Corridors
+	- Essentially scans all locations and recursively digs tunnels across entire map
+	- Direction splits (or turns if only one) are returned as a collection from a direction routine that uses random chance to determine number of turns
+		- Labyrinthian style would randomly change direction
+		- Errant style would stay straight 50% of the time
+		- Straight style would stay straight 90% of the time
+	- For each direction from current position we try to open the tunnel
+		- Get next position and additional position beyond
+		- If the additional position beyond is a room permiter we stop
+		- If the additional position beyond is a coridor we stop
+		- Otherwise we emplace the tunnel
+	- Our only stop condition is running into a room or another corridor
 
 
 Ability to Trash items in the inventory
