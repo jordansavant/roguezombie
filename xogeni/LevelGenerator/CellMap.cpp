@@ -219,7 +219,7 @@ void XoGeni::CellMap::openRoom(Room* room)
     // Get other random doors
     for(unsigned int i=0; i < sills.size(); i++)
     {
-        if(LevelGenerator::random.next(hypSize / 2) == 0 && i != firstDoorIndex)
+        if(LevelGenerator::random.next(numOpenings / 2) == 0 && i != firstDoorIndex)
         {
             doorSills.push_back(sills[i]);
         }
@@ -280,7 +280,7 @@ void XoGeni::CellMap::getRoomSills(Room* room, std::vector<Cell*> &fill)
     }
 
     // East wall
-    if(room->x < rightMargin)
+    if(room->x > leftMargin)
     {
         for(unsigned int i = room->y + cornerSpacing; i < room->y + room->height - cornerSpacing; i += 2)
         {
