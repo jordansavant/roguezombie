@@ -48,6 +48,8 @@ namespace XoGeni
 
         void getRoomSills(Room* room, std::vector<Cell*> &fill);
 
+        void getRandomDoorType();
+
 
         bool canHouseDimension(unsigned int x, unsigned int y, unsigned int w, unsigned int h);
 

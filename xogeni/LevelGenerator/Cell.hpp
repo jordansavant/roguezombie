@@ -17,6 +17,7 @@ namespace XoGeni
         Room* room;
         bool isRoomEdge;
         bool isSill;
+        bool isDoor;
 
     };
 }

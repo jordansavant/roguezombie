@@ -40,52 +40,10 @@ Procedural levels
 - https://www.rockpapershotgun.com/2015/07/28/how-do-roguelikes-generate-levels/
 - http://www.gridsagegames.com/blog/2014/06/procedural-map-generation/
 
-Currently the level loads from a LevelLoader which is currently designed to build level definitions by reading XML Nodes (from the level editor)
-A procedural level generator could create these LevelLoader defs directly (or data that another LevelLoader could read)
-Stages:
-- Create floorplan: In a tile grid of X size generate rooms and hallways as tiles and structures
-	- Room placement, hallway connection, doors
-	- Identify a room with a theme (office, storage, etc)
-	- Create lights for rooms
-- Create entrances to connect to previous level exit
-	- Can pass a position, level id, entrance id so it can connect back
-- Create items, chests, furnishings
-	- Determine item quality by distance or number of doors to access the room from level entrances
-	- Determine furnishins by room themes
-- Create npcs and enemies
-- Create machines
-- Create exits
-	- Able to connect to next level, or perhaps levels using unique id's
-
-Alpha level gen
-- Use a prefab level with lights, items
-- Ability to wire up entrances and exits automatically (connecting prior level clone to this level clone)
-- When the server loads create seed level (first level) probably from a rooftop prefab
-- Level generation time
-	- When player requests to move to a new level and the level does not exist, generate it
-	- Or, when a new floor is reached generate subsequent floors for X depth
-	- Or, probably better for an Alpha is pregenerate all levels of the building
-
-Dungeon Gen Steps
-- Create Grid
-- Place Rooms
-	- Iterate
-		- First
-			- Create room
-			- Give room dimensions
-			- Place at origin
-		- Others
-			- Create room
-			- Give room dimensions
-			- Scan tiles until the room is not overlapping another room
-			- Place room
-		- Return if room count exceeded
-		- Return if attempt count exceeded
-- Connect Rooms
-- Open Rooms
-- Create Corridors
-- Place Stairs
-- Clean Up
+Level Gen TO DO:
+- Enforce single spacing between rooms (and designate as walls)
+- Change sill margins to remove wall padding
+- Change door creation to pick external cell of a sill instead of a sill
 	
 
 

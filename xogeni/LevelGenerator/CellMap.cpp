@@ -1,6 +1,7 @@
 #include "CellMap.hpp"
 #include "Cell.hpp"
 #include "Room.hpp"
+#include "RoomDoor.hpp"
 #include "LevelGenerator.hpp"
 #include "../../bitengine/Math.hpp"
 #include "../../bitengine/Intelligence.hpp"
@@ -146,25 +147,48 @@ void XoGeni::CellMap::openRoom(Room* room)
 {
     // Get list of room door sills
     std::vector<Cell*> sills;
+    std::vector<Cell*> doorSills;
     getRoomSills(room, sills);
 
+    // Calculate number of openings
+    unsigned int hypSize = std::sqrtf(room->width * room->height);
+    unsigned int numOpenings = hypSize + LevelGenerator::random.next(hypSize);
+
+    // Guarantee one doorway
+    unsigned int firstDoorIndex = LevelGenerator::random.next(sills.size());
+    doorSills.push_back(sills[firstDoorIndex]);
+
+    // Get other random doors
     for(unsigned int i=0; i < sills.size(); i++)
     {
-        // TESTING
-        sills[i]->isSill = true;
+        if(LevelGenerator::random.next(hypSize / 2) == 0 && i != firstDoorIndex)
+        {
+            doorSills.push_back(sills[i]);
+        }
     }
 
-        // All edge cells of the room that are not near the edge of the map (must have room for walls + min hall width)
+    // Make doors
+    for(unsigned int i=0; i < doorSills.size(); i++)
+    {
+        Cell* sill = doorSills[i];
+        sill->isDoor = true;
 
-    // Calculate number of openings
+        // Pick door type
+        RoomDoor::DoorType doorType;
+        switch(LevelGenerator::random.next(2))
+        {
+            case 0:
+                doorType = RoomDoor::DoorType::Arch;
+                break;
+            case 1:
+                doorType = RoomDoor::DoorType::Door;
+                break;
+        }
 
-    // Iterate number of openings
-
-        // Get a random sill
-
-        // Get cell for sill
-
-        // 
+        // Create door
+        RoomDoor* door = new RoomDoor(sill->x, sill->y, doorType);
+        room->doors.push_back(door);
+    }
 }
 
 void XoGeni::CellMap::getRoomSills(Room* room, std::vector<Cell*> &fill)
@@ -173,7 +197,6 @@ void XoGeni::CellMap::getRoomSills(Room* room, std::vector<Cell*> &fill)
     unsigned int bottomMargin = height - (minHallWidth + 2);
     unsigned int leftMargin = minHallWidth + 2;
     unsigned int rightMargin = width - (minHallWidth + 2);
-
     unsigned int cornerSpacing = 2; // do not let sills be valid within 2 spaces of corners
 
     // North wall
@@ -181,7 +204,9 @@ void XoGeni::CellMap::getRoomSills(Room* room, std::vector<Cell*> &fill)
     {
         for(unsigned int i = room->x + cornerSpacing; i < room->x + room->width - cornerSpacing; i += 2)
         {
-            fill.push_back(getCellAtPosition(i, room->y));
+            Cell* cell = getCellAtPosition(i, room->y);
+            cell->isSill = true;
+            fill.push_back(cell);
         }
     }
 
@@ -190,7 +215,9 @@ void XoGeni::CellMap::getRoomSills(Room* room, std::vector<Cell*> &fill)
     {
         for(unsigned int i = room->x + cornerSpacing; i < room->x + room->width - cornerSpacing; i += 2)
         {
-            fill.push_back(getCellAtPosition(i, room->y + room->height - 1));
+            Cell* cell = getCellAtPosition(i, room->y + room->height - 1);
+            cell->isSill = true;
+            fill.push_back(cell);
         }
     }
 
@@ -199,7 +226,9 @@ void XoGeni::CellMap::getRoomSills(Room* room, std::vector<Cell*> &fill)
     {
         for(unsigned int i = room->y + cornerSpacing; i < room->y + room->height - cornerSpacing; i += 2)
         {
-            fill.push_back(getCellAtPosition(room->x, i));
+            Cell* cell = getCellAtPosition(room->x, i);
+            cell->isSill = true;
+            fill.push_back(cell);
         }
     }
 
@@ -208,7 +237,9 @@ void XoGeni::CellMap::getRoomSills(Room* room, std::vector<Cell*> &fill)
     {
         for(unsigned int i = room->y + cornerSpacing; i < room->y + room->height - cornerSpacing; i += 2)
         {
-            fill.push_back(getCellAtPosition(room->x + room->width - 1, i));
+            Cell* cell = getCellAtPosition(room->x + room->width - 1, i);
+            cell->isSill = true;
+            fill.push_back(cell);
         }
     }
 }

@@ -80,6 +80,10 @@ void XoGeni::XoLevelRenderer::update(sf::Time &gameTime)
         {
             color = sf::Color::Cyan;
         }
+        if(cell->isDoor)
+        {
+            color = sf::Color::Magenta;
+        }
 
         bit::VertexHelper::positionQuad(&vertexMap_tiles.vertexArray[quadIndex], x, y, renderZ, groundSprite->width, groundSprite->height);
         bit::VertexHelper::colorQuad(&vertexMap_tiles.vertexArray[quadIndex], color);
