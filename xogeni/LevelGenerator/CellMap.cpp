@@ -137,24 +137,28 @@ void XoGeni::CellMap::emplaceRoom(Room* room)
             {
                 Cell* neighbor = cellMap->getCellAtPosition(cell->x - 1, cell->y - 1);
                 neighbor->isWall = true;
+                neighbor->isRoomPermiter = true;
             }
             // Top Right corner
             if(cell->x == room->x + room->width - 1 && cell->y == room->y)
             {
                 Cell* neighbor = cellMap->getCellAtPosition(cell->x + 1, cell->y - 1);
                 neighbor->isWall = true;
+                neighbor->isRoomPermiter = true;
             }
             // Bottom left corner
             if(cell->x == room->x && cell->y == room->y + room->height - 1)
             {
                 Cell* neighbor = cellMap->getCellAtPosition(cell->x - 1, cell->y + 1);
                 neighbor->isWall = true;
+                neighbor->isRoomPermiter = true;
             }
             // Bottom right corner
             if(cell->x == room->x + room->width - 1 && cell->y == room->y + room->height - 1)
             {
                 Cell* neighbor = cellMap->getCellAtPosition(cell->x + 1, cell->y + 1);
                 neighbor->isWall = true;
+                neighbor->isRoomPermiter = true;
             }
 
             // Left side
@@ -162,24 +166,28 @@ void XoGeni::CellMap::emplaceRoom(Room* room)
             {
                 Cell* neighbor = cellMap->getCellAtPosition(cell->x - 1, cell->y);
                 neighbor->isWall = true;
+                neighbor->isRoomPermiter = true;
             }
             // Top side
             if(cell->y == room->y)
             {
                 Cell* neighbor = cellMap->getCellAtPosition(cell->x, cell->y - 1);
                 neighbor->isWall = true;
+                neighbor->isRoomPermiter = true;
             }
             // Right side
             if(cell->x == room->x + room->width - 1)
             {
                 Cell* neighbor = cellMap->getCellAtPosition(cell->x + 1, cell->y);
                 neighbor->isWall = true;
+                neighbor->isRoomPermiter = true;
             }
             // Bottom side
             if(cell->y == room->y + room->height - 1)
             {
                 Cell* neighbor = cellMap->getCellAtPosition(cell->x, cell->y + 1);
                 neighbor->isWall = true;
+                neighbor->isRoomPermiter = true;
             }
         }
 
@@ -256,6 +264,7 @@ void XoGeni::CellMap::openRoom(Room* room)
         doors.push_back(door);
 
         // Assign door
+        doorSpot->isWall = false;
         doorSpot->isDoor = true;
         doorSpot->door = door;
     }

@@ -80,6 +80,10 @@ void XoGeni::XoLevelRenderer::update(sf::Time &gameTime)
         {
             color = sf::Color::Cyan;
         }
+        if(cell->isRoomPermiter)
+        {
+            color = sf::Color(120, 190, 100); // will be overwritten by walls
+        }
         if(cell->isWall)
         {
             color = sf::Color(190, 102, 124);

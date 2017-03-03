@@ -27,6 +27,7 @@ namespace XoGeni
         SillData sillData;
         bool isWall;
         bool isRoomEdge;
+        bool isRoomPermiter;
         bool isSill;
         bool isDoor;
 
