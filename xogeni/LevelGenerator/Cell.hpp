@@ -15,6 +15,7 @@ namespace XoGeni
         unsigned int index;
         unsigned int x, y;
         Room* room;
+        bool isWall;
         bool isRoomEdge;
         bool isSill;
         bool isDoor;

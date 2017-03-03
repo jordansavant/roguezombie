@@ -88,7 +88,7 @@ XoGeni::Room* XoGeni::CellMap::buildRoom()
                 // See if cells at this position within the room dimension are free
                 bool canBePlaced = true;
                 cellMap->inspectCellsInDimension(cell->x, cell->y, roomWidth, roomHeight, [&canBePlaced] (Cell* cell) -> bool {
-                    if(cell->room != NULL)
+                    if(cell->room != NULL || cell->isWall)
                     {
                         canBePlaced = false;
                         return true; // break inspection loop
@@ -117,9 +117,67 @@ XoGeni::Room* XoGeni::CellMap::buildRoom()
 void XoGeni::CellMap::emplaceRoom(Room* room)
 {
     // Assign cells to have this room
-    inspectCellsInDimension(room->x, room->y, room->width, room->height, [room] (Cell* cell) -> bool {
+    CellMap* cellMap = this;
+    inspectCellsInDimension(room->x, room->y, room->width, room->height, [room, cellMap] (Cell* cell) -> bool {
         cell->room = room;
+
+        // Set room edge
         cell->isRoomEdge = (cell->x == room->x || cell->y == room->y || cell->x == room->x + room->width - 1 || cell->y == room->y + room->height - 1);
+
+        // Set exterior walls
+        if(cell->isRoomEdge)
+        {
+            // Top left corner
+            if(cell->x == room->x && cell->y == room->y)
+            {
+                Cell* neighbor = cellMap->getCellAtPosition(cell->x - 1, cell->y - 1);
+                neighbor->isWall = true;
+            }
+            // Top Right corner
+            if(cell->x == room->x + room->width - 1 && cell->y == room->y)
+            {
+                Cell* neighbor = cellMap->getCellAtPosition(cell->x + 1, cell->y - 1);
+                neighbor->isWall = true;
+            }
+            // Bottom left corner
+            if(cell->x == room->x && cell->y == room->y + room->height - 1)
+            {
+                Cell* neighbor = cellMap->getCellAtPosition(cell->x - 1, cell->y + 1);
+                neighbor->isWall = true;
+            }
+            // Bottom right corner
+            if(cell->x == room->x + room->width - 1 && cell->y == room->y + room->height - 1)
+            {
+                Cell* neighbor = cellMap->getCellAtPosition(cell->x + 1, cell->y + 1);
+                neighbor->isWall = true;
+            }
+
+            // Left side
+            if(cell->x == room->x)
+            {
+                Cell* neighbor = cellMap->getCellAtPosition(cell->x - 1, cell->y);
+                neighbor->isWall = true;
+            }
+            // Top side
+            if(cell->y == room->y)
+            {
+                Cell* neighbor = cellMap->getCellAtPosition(cell->x, cell->y - 1);
+                neighbor->isWall = true;
+            }
+            // Right side
+            if(cell->x == room->x + room->width - 1)
+            {
+                Cell* neighbor = cellMap->getCellAtPosition(cell->x + 1, cell->y);
+                neighbor->isWall = true;
+            }
+            // Bottom side
+            if(cell->y == room->y + room->height - 1)
+            {
+                Cell* neighbor = cellMap->getCellAtPosition(cell->x, cell->y + 1);
+                neighbor->isWall = true;
+            }
+        }
+
         return false;
     });
 }
