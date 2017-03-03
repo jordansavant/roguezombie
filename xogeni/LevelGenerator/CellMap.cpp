@@ -5,7 +5,6 @@
 #include "LevelGenerator.hpp"
 #include "../../bitengine/Math.hpp"
 #include "../../bitengine/Intelligence.hpp"
-#include "../../bitengine/System.hpp"
 
 XoGeni::CellMap::CellMap(unsigned int width, unsigned int height)
     : width(width), height(height), size(width * height)
@@ -17,16 +16,13 @@ XoGeni::CellMap::CellMap(unsigned int width, unsigned int height)
     maxRoomWidth = 16;
     minRoomHeight = 6;
     maxRoomHeight = 16;
-    roomScatter = 30;
+    roomScatter = 100;
     minHallWidth = 1;
 
     tunnelDirs.push_back(sf::Vector2i(1, 0)); // right
     tunnelDirs.push_back(sf::Vector2i(0, 1)); // down
     tunnelDirs.push_back(sf::Vector2i(-1, 0)); // left
     tunnelDirs.push_back(sf::Vector2i(0, -1)); // up
-
-    tunnelSanity = 5000;
-    tunnelSanityCounter = 0;
 }
 
 XoGeni::CellMap::~CellMap()
@@ -358,38 +354,52 @@ void XoGeni::CellMap::buildTunnels()
     Cell* cell = getCellAtPosition(mapPadding, mapPadding);
     tunnel(cell, tunnelDirs[0]);
 
-    //// Iterate all cells within the map
-    //for(unsigned int i = mapPadding; i < width - mapPadding; i++) // cols
-    //{
-    //    for(unsigned int j = mapPadding; j < height - mapPadding; j++) // rows
-    //    {
-    //        // Build recursive tunnels from cell
-    //        Cell* cell = getCellAtPosition(i, j);
-    //        tunnel(cell, tunnelDirs[0]);
-    //    }
-    //}
+    // Iterate all cells within the map
+    for(unsigned int i = mapPadding; i < width - mapPadding; i++) // cols
+    {
+        for(unsigned int j = mapPadding; j < height - mapPadding; j++) // rows
+        {
+            // Build recursive tunnels from cell
+            Cell* cell = getCellAtPosition(i, j);
+            if(cell->room == NULL && !cell->isRoomPermiter && !cell->isTunnel)
+            {
+                tunnel(cell, tunnelDirs[0]);
+            }
+        }
+    }
 }
 
 void XoGeni::CellMap::tunnel(Cell* cell, sf::Vector2i lastDir)
 {
-    // TODO: make attempt to dig in last direction have a probability
-    if(openTunnel(cell, lastDir))
+    bool attemptStraight = LevelGenerator::random.next(100) < 80; // % chance to try to go straight
+    std::vector<sf::Vector2i> dirs;
+    getShuffledDirections(dirs);
+
+    // Try to dig straight
+    if(attemptStraight)
     {
-        Cell* nextCell = getCellAtPosition(cell->x + lastDir.x, cell->y + lastDir.y);
-        tunnel(nextCell, lastDir);
+        if(openTunnel(cell, lastDir))
+        {
+            Cell* nextCell = getCellAtPosition(cell->x + lastDir.x, cell->y + lastDir.y);
+            tunnel(nextCell, lastDir);
+        }
+
+        // Remove this direction from choice directions
+        unsigned int lastDirIndex;
+        for(unsigned int i=0; i < dirs.size(); i++)
+        {
+            if(dirs[i].x == lastDir.x && dirs[i].y == lastDir.y)
+            {
+                lastDirIndex = i;
+            }
+        }
+        dirs.erase(dirs.begin() + lastDirIndex);
     }
 
-    // Try to dig in same direction
-    for(unsigned int i=0; i < tunnelDirs.size(); i++)
+    // Try to dig in any direction
+    for(unsigned int i=0; i < dirs.size(); i++)
     {
-        sf::Vector2i dir = tunnelDirs[i];
-
-        if(cell->x == 1 && cell->y == 1)
-        {
-            bit::Output::Debug("=---=");
-            bit::Output::Debug(dir.x);
-            bit::Output::Debug(dir.y);
-        }
+        sf::Vector2i dir = dirs[i];
 
         if(openTunnel(cell, dir))
         {
@@ -413,9 +423,6 @@ bool XoGeni::CellMap::openTunnel(Cell* cell, sf::Vector2i &dir)
 
 bool XoGeni::CellMap::canTunnel(Cell* cell, sf::Vector2i &dir)
 {
-    if(tunnelSanityCounter >= tunnelSanity)
-        return false;
-
     unsigned int thisX = cell->x;
     unsigned int thisY = cell->y;
 
@@ -433,7 +440,6 @@ bool XoGeni::CellMap::canTunnel(Cell* cell, sf::Vector2i &dir)
     unsigned int nextUpLeftX = nextUpX + dir.y;
     unsigned int nextUpLeftY = nextUpY + -dir.x;
 
-
     // Cell two positions over cannot be: outside of margin, room perimeter, another corridor
     if(nextX >= mapPadding && nextY >= mapPadding && nextX < width - mapPadding && nextY < height - mapPadding)
     {
@@ -444,7 +450,7 @@ bool XoGeni::CellMap::canTunnel(Cell* cell, sf::Vector2i &dir)
         Cell* nextUpLeftCell = getCellAtPosition(nextUpLeftX, nextUpLeftY);
         Cell* nextUpRightCell = getCellAtPosition(nextUpRightX, nextUpRightY);
         
-        bool isHeadingIntoRoom = nextCell->isRoomEdge || nextUpCell->isRoomEdge;
+        bool isHeadingIntoRoom = nextCell->isRoomPermiter || nextUpCell->isRoomPermiter;
         bool isHeadingIntoTunnel = nextCell->isTunnel || nextUpCell->isTunnel;
         bool isRunningAdjacentToTunnel = nextLeftCell->isTunnel || nextRightCell->isTunnel || nextUpLeftCell->isTunnel || nextUpRightCell->isTunnel;
 
@@ -461,7 +467,6 @@ void XoGeni::CellMap::emplaceTunnel(Cell* cell, sf::Vector2i &dir)
 {
     Cell* nextCell = getCellAtPosition(cell->x + dir.x, cell->y + dir.y);
     nextCell->isTunnel = true;
-    tunnelSanityCounter++;
 }
 
 /////////////////////////////////////////
@@ -544,3 +549,13 @@ XoGeni::Cell* XoGeni::CellMap::getCellAtPositionNullable(unsigned int x, unsigne
     return NULL;
 }
 
+void XoGeni::CellMap::getShuffledDirections(std::vector<sf::Vector2i> &fill)
+{
+    fill = tunnelDirs;
+
+    unsigned int n = fill.size();
+    for (unsigned int i = n - 1; i > 0; --i)
+    {
+        std::swap(fill[i], fill[LevelGenerator::random.next(i+1)]);
+    }
+}

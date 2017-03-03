@@ -35,8 +35,6 @@ namespace XoGeni
         int roomScatter;
         int minHallWidth;
         std::vector<sf::Vector2i> tunnelDirs;
-        int tunnelSanity;
-        int tunnelSanityCounter;
 
         void buildGround();
 
@@ -77,6 +75,8 @@ namespace XoGeni
         Cell* getCellAtPosition(unsigned int x, unsigned int y);
 
         Cell* getCellAtPositionNullable(unsigned int x, unsigned int y);
+
+        void getShuffledDirections(std::vector<sf::Vector2i> &fill);
     };
 }
 #endif

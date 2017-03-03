@@ -25,7 +25,7 @@ XoGeni::XoGeniStateStart::XoGeniStateStart(bit::StateStack &stack, XoGeniGame* _
     levelRenderer = new XoLevelRenderer(this);
 
     // Seed
-    seedCounter = std::rand();
+    seedCounter = 2006; // std::rand();
 }
 
 XoGeni::XoGeniStateStart::~XoGeniStateStart()
