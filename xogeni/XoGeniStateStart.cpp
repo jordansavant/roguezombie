@@ -2,14 +2,16 @@
 #include "../bitengine/Game.hpp"
 #include "../bitengine/Graphics.hpp"
 #include "../bitengine/Input.hpp"
+#include "../bitengine/System.hpp"
 #include "../ResourcePath.h"
 #include "XoGeniGame.hpp"
 #include "XoLevelRenderer.hpp"
 #include "LevelGenerator/LevelGenerator.hpp"
 #include "LevelGenerator/CellMap.hpp"
+#include <sstream>
 
 XoGeni::XoGeniStateStart::XoGeniStateStart(bit::StateStack &stack, XoGeniGame* _game)
-    : bit::State(stack, _game), xoGeniGame(_game), levelGenerator(NULL), cellMap(NULL)
+    : bit::State(stack, _game), xoGeniGame(_game), levelGenerator(NULL), cellMap(NULL), seedCounter(0)
 {
     createCamera(xoGeniGame, 0, 0, 1, 1);
     cameras[0]->panSpeed = 5;
@@ -21,6 +23,9 @@ XoGeni::XoGeniStateStart::XoGeniStateStart(bit::StateStack &stack, XoGeniGame* _
 
     levelGenerator = new LevelGenerator();
     levelRenderer = new XoLevelRenderer(this);
+
+    // Seed
+    seedCounter = std::rand();
 }
 
 XoGeni::XoGeniStateStart::~XoGeniStateStart()
@@ -62,8 +67,13 @@ bool XoGeni::XoGeniStateStart::update(sf::Time &gameTime)
 
     if(xoGeniGame->inputManager->isButtonPressed(sf::Keyboard::Space))
     {
-        cellMap = levelGenerator->generate(std::rand(), 90, 90);
+        std::stringstream ss;
+        ss << "SEED: " << seedCounter;
+        bit::Output::Debug(ss.str());
+
+        cellMap = levelGenerator->generate(seedCounter, 90, 90);
         levelRenderer->load(cellMap);
+        seedCounter++;
     }
 
     if(cellMap)

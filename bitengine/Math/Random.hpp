@@ -24,6 +24,10 @@ namespace bit
 
         unsigned int next();
 
+        unsigned int next(int max);
+
+        unsigned int next(int min, int max);
+
         float nextFloat();
 
     private:

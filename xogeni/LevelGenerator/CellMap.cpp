@@ -1,20 +1,21 @@
 #include "CellMap.hpp"
 #include "Cell.hpp"
 #include "Room.hpp"
+#include "LevelGenerator.hpp"
 #include "../../bitengine/Math.hpp"
 #include "../../bitengine/Intelligence.hpp"
 
 XoGeni::CellMap::CellMap(unsigned int width, unsigned int height)
     : width(width), height(height), size(width * height)
 {
-    roomCount = 50;
-    roomAttemptCount = 100;
+    roomCount = (width + height) / 4;
+    roomAttemptCount = roomCount * 2;
     mapPadding = 1;
     minRoomWidth = 6;
     maxRoomWidth = 16;
     minRoomHeight = 6;
     maxRoomHeight = 16;
-    roomScatter = 5;
+    roomScatter = 10;
 }
 
 XoGeni::CellMap::~CellMap()
@@ -63,8 +64,8 @@ void XoGeni::CellMap::buildRooms()
 
 XoGeni::Room* XoGeni::CellMap::buildRoom()
 {
-    unsigned int roomWidth = bit::Math::random(minRoomWidth, maxRoomWidth);
-    unsigned int roomHeight = bit::Math::random(minRoomHeight, maxRoomHeight);
+    unsigned int roomWidth = LevelGenerator::random.next(minRoomWidth, maxRoomWidth);
+    unsigned int roomHeight = LevelGenerator::random.next(minRoomHeight, maxRoomHeight);
 
     Room* room = NULL;
     CellMap* cellMap = this;

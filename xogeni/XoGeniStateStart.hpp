@@ -27,6 +27,7 @@ namespace XoGeni
         XoLevelRenderer* levelRenderer;
         LevelGenerator* levelGenerator;
         CellMap* cellMap;
+        unsigned int seedCounter;
 
         virtual bool update(sf::Time &gameTime);
 

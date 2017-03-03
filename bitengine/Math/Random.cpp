@@ -12,6 +12,11 @@ bit::Random::Random(unsigned int _seed)
     engine.seed(_seed);
 }
 
+void bit::Random::seed(unsigned int _seed)
+{
+    engine.seed(_seed);
+}
+
 unsigned int bit::Random::min()
 {
     return 0;
@@ -25,6 +30,16 @@ unsigned int bit::Random::max()
 unsigned int bit::Random::next()
 {
     return engine();
+}
+
+unsigned int bit::Random::next(int max)
+{
+    return next() % max;
+}
+
+unsigned int bit::Random::next(int min, int max)
+{
+    return next() % (max - min) + min;
 }
 
 float bit::Random::nextFloat()

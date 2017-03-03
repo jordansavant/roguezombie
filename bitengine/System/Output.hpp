@@ -11,6 +11,8 @@ namespace bit
     {
     public:
 
+        static void Debug(unsigned int integer);
+
         static void Debug(int integer);
 
         static void Debug(float floatVal);
