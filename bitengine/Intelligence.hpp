@@ -5,5 +5,6 @@
 #include "Intelligence/FloodFill.hpp"
 #include "Intelligence/Node.hpp"
 #include "Intelligence/Shadowcaster.hpp"
+#include "Intelligence/Spiral.hpp"
 
 #endif
