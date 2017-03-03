@@ -5,6 +5,7 @@
 #include "LevelGenerator.hpp"
 #include "../../bitengine/Math.hpp"
 #include "../../bitengine/Intelligence.hpp"
+#include "../../bitengine/System.hpp"
 
 XoGeni::CellMap::CellMap(unsigned int width, unsigned int height)
     : width(width), height(height), size(width * height)
@@ -353,27 +354,48 @@ void XoGeni::CellMap::getRoomSills(Room* room, std::vector<Cell*> &fill)
 
 void XoGeni::CellMap::buildTunnels()
 {
-    // Iterate all cells within the map
-    for(unsigned int i = mapPadding; i < width - mapPadding; i++) // cols
-    {
-        for(unsigned int j = mapPadding; j < height - mapPadding; j++) // rows
-        {
-            // Build recursive tunnels from cell
-            Cell* cell = getCellAtPosition(i, j);
-            tunnel(cell, tunnelDirs[0]);
-        }
-    }
+    // Build recursive tunnels from cell
+    Cell* cell = getCellAtPosition(mapPadding, mapPadding);
+    tunnel(cell, tunnelDirs[0]);
+
+    //// Iterate all cells within the map
+    //for(unsigned int i = mapPadding; i < width - mapPadding; i++) // cols
+    //{
+    //    for(unsigned int j = mapPadding; j < height - mapPadding; j++) // rows
+    //    {
+    //        // Build recursive tunnels from cell
+    //        Cell* cell = getCellAtPosition(i, j);
+    //        tunnel(cell, tunnelDirs[0]);
+    //    }
+    //}
 }
 
 void XoGeni::CellMap::tunnel(Cell* cell, sf::Vector2i lastDir)
 {
     // TODO: make attempt to dig in last direction have a probability
-
-    // Try to dig in same direction
     if(openTunnel(cell, lastDir))
     {
         Cell* nextCell = getCellAtPosition(cell->x + lastDir.x, cell->y + lastDir.y);
-        return tunnel(nextCell, lastDir);
+        tunnel(nextCell, lastDir);
+    }
+
+    // Try to dig in same direction
+    for(unsigned int i=0; i < tunnelDirs.size(); i++)
+    {
+        sf::Vector2i dir = tunnelDirs[i];
+
+        if(cell->x == 1 && cell->y == 1)
+        {
+            bit::Output::Debug("=---=");
+            bit::Output::Debug(dir.x);
+            bit::Output::Debug(dir.y);
+        }
+
+        if(openTunnel(cell, dir))
+        {
+            Cell* nextCell = getCellAtPosition(cell->x + dir.x, cell->y + dir.y);
+            tunnel(nextCell, dir);
+        }
     }
 }
 
@@ -396,23 +418,39 @@ bool XoGeni::CellMap::canTunnel(Cell* cell, sf::Vector2i &dir)
 
     unsigned int thisX = cell->x;
     unsigned int thisY = cell->y;
+
     unsigned int nextX = cell->x + dir.x;
     unsigned int nextY = cell->y + dir.y;
-    unsigned int overX = cell->x + dir.x * 2;
-    unsigned int overY = cell->y + dir.y * 2;
+    unsigned int nextRightX = nextX + -dir.y;
+    unsigned int nextRightY = nextY + dir.x;
+    unsigned int nextLeftX = nextX + dir.y;
+    unsigned int nextLeftY = nextY + -dir.x;
+
+    unsigned int nextUpX = nextX + dir.x;
+    unsigned int nextUpY = nextY + dir.y;
+    unsigned int nextUpRightX = nextUpX + -dir.y;
+    unsigned int nextUpRightY = nextUpY + dir.x;
+    unsigned int nextUpLeftX = nextUpX + dir.y;
+    unsigned int nextUpLeftY = nextUpY + -dir.x;
+
 
     // Cell two positions over cannot be: outside of margin, room perimeter, another corridor
-    if(overX >= mapPadding && overY >= mapPadding && overX < width - mapPadding && overY < height - mapPadding)
+    if(nextX >= mapPadding && nextY >= mapPadding && nextX < width - mapPadding && nextY < height - mapPadding)
     {
         Cell* nextCell = getCellAtPosition(nextX, nextY);
-        Cell* overCell = getCellAtPosition(overX, overY);
-        //if(!overCell->isRoomPermiter) // TODO: REMOVE, testing for recursion patterns
+        Cell* nextLeftCell = getCellAtPosition(nextLeftX, nextLeftY);
+        Cell* nextRightCell = getCellAtPosition(nextRightX, nextRightY);
+        Cell* nextUpCell = getCellAtPosition(nextUpX, nextUpY);
+        Cell* nextUpLeftCell = getCellAtPosition(nextUpLeftX, nextUpLeftY);
+        Cell* nextUpRightCell = getCellAtPosition(nextUpRightX, nextUpRightY);
+        
+        bool isHeadingIntoRoom = nextCell->isRoomEdge || nextUpCell->isRoomEdge;
+        bool isHeadingIntoTunnel = nextCell->isTunnel || nextUpCell->isTunnel;
+        bool isRunningAdjacentToTunnel = nextLeftCell->isTunnel || nextRightCell->isTunnel || nextUpLeftCell->isTunnel || nextUpRightCell->isTunnel;
+
+        if(!isHeadingIntoRoom && !isHeadingIntoTunnel && !isRunningAdjacentToTunnel)
         {
-            // Adjecent tested direction and beyond cannot be tunnels
-            if(!nextCell->isTunnel && !overCell->isTunnel)
-            {
-                return true;
-            }
+            return true;
         }
     }
 
