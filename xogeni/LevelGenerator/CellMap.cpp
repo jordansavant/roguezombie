@@ -7,11 +7,14 @@
 XoGeni::CellMap::CellMap(unsigned int width, unsigned int height)
     : width(width), height(height), size(width * height)
 {
-    roomCount = 100;
+    roomCount = 50;
     roomAttemptCount = 100;
     mapPadding = 1;
-    minRoomWidth = 7;
-    minRoomHeight = 7;
+    minRoomWidth = 6;
+    maxRoomWidth = 16;
+    minRoomHeight = 6;
+    maxRoomHeight = 16;
+    roomScatter = 5;
 }
 
 XoGeni::CellMap::~CellMap()
@@ -60,34 +63,44 @@ void XoGeni::CellMap::buildRooms()
 
 XoGeni::Room* XoGeni::CellMap::buildRoom()
 {
-    unsigned int roomWidth = minRoomWidth + bit::Math::random(5);
-    unsigned int roomHeight = minRoomHeight + bit::Math::random(5);
+    unsigned int roomWidth = bit::Math::random(minRoomWidth, maxRoomWidth);
+    unsigned int roomHeight = bit::Math::random(minRoomHeight, maxRoomHeight);
 
     Room* room = NULL;
     CellMap* cellMap = this;
+    unsigned int i=0;
 
-    inspectAllCellsInSpiral([roomWidth, roomHeight, cellMap, &room] (Cell* cell) -> bool {
-        if(cellMap->canHouseDimension(cell->x, cell->y, roomWidth, roomHeight))
+    inspectAllCellsInSpiral([roomWidth, roomHeight, cellMap, &room, &i] (Cell* cell) -> bool {
+
+        if(i % cellMap->roomScatter == 0)
         {
-            // See if cells at this position within the room dimension are free
-            bool canBePlaced = true;
-            cellMap->inspectCellsInDimension(cell->x, cell->y, roomWidth, roomHeight, [&canBePlaced] (Cell* cell) -> bool {
-                if(cell->room != NULL)
-                {
-                    canBePlaced = false;
-                    return true; // break inspection loop
-                }
-                return false;
-            });
-
-            // If the cells are free then emplace the room
-            if(canBePlaced)
+            // Distribute according to room scatter distance
+            if(cellMap->canHouseDimension(cell->x, cell->y, roomWidth, roomHeight))
             {
-                room = new Room(cell->x, cell->y, roomWidth, roomHeight);
-                cellMap->emplaceRoom(room);
-                return true;
+                // See if cells at this position within the room dimension are free
+                bool canBePlaced = true;
+                cellMap->inspectCellsInDimension(cell->x, cell->y, roomWidth, roomHeight, [&canBePlaced] (Cell* cell) -> bool {
+                    if(cell->room != NULL)
+                    {
+                        canBePlaced = false;
+                        return true; // break inspection loop
+                    }
+                    return false;
+                });
+
+                // If the cells are free then emplace the room
+                if(canBePlaced)
+                {
+                    room = new Room(cell->x, cell->y, roomWidth, roomHeight);
+                    cellMap->emplaceRoom(room);
+                    return true;
+                }
             }
         }
+
+        i++;
+
+        return false;
     });
 
     return room;

@@ -68,13 +68,13 @@ void XoGeni::XoLevelRenderer::update(sf::Time &gameTime)
         unsigned int x = cell->x  * renderDistanceX;
         unsigned int y = cell->y  * renderDistanceY;
 
-        sf::Color color = sf::Color::White;
+        sf::Color color = sf::Color(20, 20, 20);
         if(cell->room)
         {
             if(cell->isRoomEdge)
-                color = sf::Color::Yellow;
+                color = sf::Color(100, 100, 100);
             else
-                color = sf::Color::Red;
+                color = sf::Color(200, 200, 200);
         }
 
         bit::VertexHelper::positionQuad(&vertexMap_tiles.vertexArray[quadIndex], x, y, renderZ, groundSprite->width, groundSprite->height);

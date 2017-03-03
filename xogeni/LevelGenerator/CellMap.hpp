@@ -26,8 +26,9 @@ namespace XoGeni
         int roomCount;
         int roomAttemptCount;
         int mapPadding;
-        int minRoomWidth;
-        int minRoomHeight;
+        int minRoomWidth, maxRoomWidth;
+        int minRoomHeight, maxRoomHeight;
+        int roomScatter;
 
         void buildGround();
 

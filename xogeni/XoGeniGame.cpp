@@ -8,12 +8,12 @@
 #include <sstream>
 
 XoGeni::XoGeniGame::XoGeniGame()
-    : VideoGame("XoGeni", 1280, 720, false), mouse(resourcePath() + "xogeni/mouse.png")
+    : VideoGame("XoGeni", 810, 810, false), mouse(resourcePath() + "xogeni/mouse.png")
 {
     Game::stateStack->pushState(stateStart);
 
-    targetResolution.x = 1280;
-    targetResolution.y = 720;
+    targetResolution.x = 810;
+    targetResolution.y = 810;
 }
 
 unsigned int XoGeni::XoGeniGame::stateStart = 1;
