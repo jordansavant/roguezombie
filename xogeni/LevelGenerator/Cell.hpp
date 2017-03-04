@@ -31,6 +31,7 @@ namespace XoGeni
         bool isRoomPermiter;
         bool isSill;
         bool isDoor;
+        bool wasDoor;
         bool isTunnel;
         bool wasCorridorTunnel;
         bool wasDoorTunnel;

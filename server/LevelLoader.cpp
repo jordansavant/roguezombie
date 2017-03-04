@@ -289,21 +289,22 @@ void LevelLoader::Level::unpack(XoGeni::CellMap* cellMap)
         characterIdMap.push_back(0);
         lightIdMap.push_back(0);
 
-        // Make temporary walls
-        if(cell->room == NULL && !cell->isDoor && !cell->isTunnel)
+        //// Make temporary walls
+        if(cell->room == NULL && !cell->isTunnel)
         {
             structureIdMap.push_back(sId);
-
+        
             LevelLoader::Structure structureDef;
             structureDef.id = sId;
-            structureDef.type = 1; // wall
+            structureDef.type = cell->isDoor ? 2 : 1;
+            structureDef.isOpen = cell->isDoor ? false : true;
             structureDefs.push_back(structureDef);
-
+        
             sId++;
         }
         else
         {
-            structureIdMap.push_back(0);
+          structureIdMap.push_back(0);
         }
     }
 

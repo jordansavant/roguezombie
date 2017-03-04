@@ -15,10 +15,10 @@ int main(int argc, char* argv[])
 {
     srand(time(NULL));
 
-    //XoGeni::XoGeniGame generator;
-    //generator.run();
+    XoGeni::XoGeniGame generator;
+    generator.run();
 
-    //return 0;
+    return 0;
 
     if(argc == 1)
     {

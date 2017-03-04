@@ -14,6 +14,7 @@
 #include "dialog/Dialog.hpp"
 #include "ServerEvent.hpp"
 #include "../xogeni/LevelGenerator/LevelGenerator.hpp"
+#include "../xogeni/LevelGenerator/CellMap.hpp"
 
 GameplayServer::GameplayServer()
     : bit::Server(), startingLevel(NULL), isGameOver(false), bodyIdCounter(0), missionIdCounter(0), itemIdCounter(0), dialogIdCounter(0)
@@ -33,7 +34,9 @@ void GameplayServer::load()
     // Load the level pack definitions
     //levelLoader.loadFromXML("Demo.xml");
     XoGeni::LevelGenerator levelGenerator;
-    levelLoader.loadFromXoGeni(levelGenerator.generate(2006, 64, 64));
+    XoGeni::CellMap* cellMap = levelGenerator.generate(2006, 64, 64);
+    levelLoader.loadFromXoGeni(cellMap);
+    delete cellMap;
 
     // Build all levels for this level pack
     levels.resize(levelLoader.levelDefs.size());

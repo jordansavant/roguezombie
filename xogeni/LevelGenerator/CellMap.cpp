@@ -285,9 +285,10 @@ void XoGeni::CellMap::openRoom(Room* room)
 
         // Assign door
         doorSpot->isDoor = true;
+        doorSpot->wasDoor = true;
         doorSpot->door = door;
 
-        // Ensure connection
+        // Help connections
         connectDoor(door);
     }
 }
@@ -613,19 +614,14 @@ void XoGeni::CellMap::buildExits()
 
 void XoGeni::CellMap::cleanup()
 {
-    // Remove tunnels that have no connection to rooms
-
     // Remove dead ends
     collapseTunnels();
-    // if tunnel and connected tunnels < 2 its a dead end
-    // if dead end recursively collapse
 
     // Fix doors
-    // Option A: attempt to redig tunnels
-    // Option B: remove unconnected doors and ensure connectivity of rooms elsewhere
-    // Doors stacked against each other from adjacent rooms should turn one into a tunnel (or arch?)
+    fixDoors();
 
-    // Empty blocks
+    // Fix rooms
+    fixRooms();
 }
 
 void XoGeni::CellMap::collapseTunnels()
@@ -681,6 +677,46 @@ unsigned int XoGeni::CellMap::countTunnelConnections(Cell* tunnelCell)
     count += leftCell != NULL && (leftCell->isTunnel || leftCell->isDoor || leftCell->isRoomEdge) ? 1 : 0;
 
     return count;
+}
+
+void XoGeni::CellMap::fixDoors()
+{
+
+    //Door Cleanup
+    //- Iterate all doors
+    //	- If door direction has no tunnel, door or other room
+    //		- delete door
+    for(auto it = doors.begin(); it != doors.end();)
+    {
+        RoomDoor* door = (*it);
+        Cell* doorCell = getCellAtPosition(door->x, door->y);
+        Cell* neighbor = getCellAtPosition(door->x + door->direction.x, door->y + door->direction.y);
+
+        // See if we need to remove the element
+        if(neighbor->room == NULL && !neighbor->isDoor && !neighbor->isTunnel)
+        {
+            doorCell->isDoor = false;
+            delete door;
+            it = doors.erase(it);
+        }
+        else
+        {
+            ++it; // iterate list pointer
+        }
+    }
+}
+
+void XoGeni::CellMap::fixRooms()
+{
+    //- If more than one room
+    //	- Iterate rooms
+    //		- Iterate all doors connected to room
+    //			- Walk door path recursively until a room is reach
+    //				- If room is not origin room
+    //					- Increment origin room connections counter
+    //		- If connections is 0
+    //			- OPTION A: delete room
+    //			- OPTION B: find closest room and tunnel toward room
 }
 
 /////////////////////////////////////////
