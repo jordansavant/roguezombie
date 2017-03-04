@@ -82,7 +82,8 @@ void XoGeni::XoLevelRenderer::update(sf::Time &gameTime)
         }
         if(cell->isRoomPermiter)
         {
-            color = sf::Color(120, 190, 100); // will be overwritten by walls
+            color = sf::Color(120, 190, 100);
+            color = sf::Color(30, 15, 0);
         }
         if(cell->isWall)
         {
@@ -90,7 +91,7 @@ void XoGeni::XoLevelRenderer::update(sf::Time &gameTime)
         }
         if(cell->isTunnel)
         {
-            color = sf::Color::Red;
+            color = sf::Color(200, 200, 200);
         }
         if(cell->isDoor)
         {
