@@ -54,6 +54,8 @@ namespace XoGeni
 
         void getRandomDoorType();
 
+        void connectDoor(RoomDoor* door);
+
         // Tunnel building
         void buildTunnels();
 

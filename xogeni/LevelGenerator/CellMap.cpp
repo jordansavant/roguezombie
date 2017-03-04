@@ -265,13 +265,20 @@ void XoGeni::CellMap::openRoom(Room* room)
         }
 
         // Create door
-        RoomDoor* door = new RoomDoor(doorSpot->x, doorSpot->y, doorType);
+        sf::Vector2i dir(doorSpot->x - sill->x, doorSpot->y - sill->y);
+        RoomDoor* door = new RoomDoor(doorSpot->x, doorSpot->y, doorType, doorSills[i]->room, dir);
         doors.push_back(door);
 
         // Assign door
         doorSpot->isWall = false;
         doorSpot->isDoor = true;
         doorSpot->door = door;
+
+        // Ensure connection to at least
+        // - Tunnel
+        // - Another door
+        // - Another room
+        connectDoor(door);
     }
 }
 
@@ -332,6 +339,38 @@ void XoGeni::CellMap::getRoomSills(Room* room, std::vector<Cell*> &fill)
             cell->sillData.doorX = cell->x + 1;
             cell->sillData.doorY = cell->y;
             fill.push_back(cell);
+        }
+    }
+}
+
+void XoGeni::CellMap::connectDoor(RoomDoor* door)
+{
+    // Tunnel away from door until we find
+    // - A tunnel
+    // - Another door
+    // - Another room
+
+    bool complete = false;
+    Cell* cell = getCellAtPosition(door->x, door->y);
+    while(!complete)
+    {
+        cell = getCellAtPositionNullable(cell->x + door->direction.x, cell->y + door->direction.y);
+        if(cell)
+        {
+            bool end = cell->isTunnel || cell->isDoor || cell->isRoomEdge;
+            if(end)
+            {
+                complete = true;
+            }
+            else
+            {
+                cell->isTunnel = true; 
+            }
+        }
+        else
+        {
+            // TODO: Failure condition
+            complete = true;
         }
     }
 }
