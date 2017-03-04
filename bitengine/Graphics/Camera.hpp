@@ -32,6 +32,10 @@ namespace bit
 
         virtual void changeZoom(int adjustBy);
 
+        virtual void move(float x, float y);
+
+        virtual void setCenter(float x, float y);
+
         void handleWindowChange(sf::RenderWindow &window);
 
         virtual void update(sf::Time &gameTime);

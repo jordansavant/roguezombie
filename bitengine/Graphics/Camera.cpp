@@ -33,6 +33,26 @@ void bit::Camera::changeZoom(int adjustBy)
     view.zoom(100 / (baseZoom + adjustBy));
 }
 
+void bit::Camera::move(float x, float y)
+{
+    sf::Vector2f destination = view.getCenter();
+
+    destination.x += x;
+    destination.y += y;
+
+    view.setCenter(destination);
+}
+
+void bit::Camera::setCenter(float x, float y)
+{
+    sf::Vector2f destination = view.getCenter();
+
+    destination.x = x;
+    destination.y = y;
+
+    view.setCenter(destination);
+}
+
 void bit::Camera::handleWindowChange(sf::RenderWindow &window)
 {
     setView();

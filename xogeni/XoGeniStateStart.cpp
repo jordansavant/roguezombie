@@ -75,9 +75,12 @@ bool XoGeni::XoGeniStateStart::update(sf::Time &gameTime)
 
         if(cellMap)
             delete cellMap;
-        cellMap = levelGenerator->generate(seedCounter, 90, 90);
+        cellMap = levelGenerator->generate(seedCounter, 64, 64);
         levelRenderer->load(cellMap);
         seedCounter++;
+
+        // Center camera
+        cameras[0]->setCenter(levelRenderer->getMapRenderSize().x / 2, levelRenderer->getMapRenderSize().y / 2);
     }
 
     if(cellMap)
