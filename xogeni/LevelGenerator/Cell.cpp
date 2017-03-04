@@ -8,6 +8,7 @@ XoGeni::Cell::Cell(unsigned int index, unsigned int x, unsigned int y)
       isWall(false), isRoomEdge(false), isRoomPermiter(false), isSill(false),
       isDoor(false), wasDoor(false),
       isTunnel(false), wasCorridorTunnel(false), wasDoorTunnel(false),
-      isEntrance(false), isExit(false), entranceId(0), exitId(0)
+      isEntrance(false), isExit(false), entranceId(0), exitId(0),
+      metadata_floodfillId(0)
 {
 }

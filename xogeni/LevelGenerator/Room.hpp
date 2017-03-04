@@ -17,6 +17,7 @@ namespace XoGeni
 
         unsigned int x, y;
         unsigned int width, height;
+        unsigned int roomConnections;
 
     };
 }

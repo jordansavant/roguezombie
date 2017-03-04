@@ -681,7 +681,6 @@ unsigned int XoGeni::CellMap::countTunnelConnections(Cell* tunnelCell)
 
 void XoGeni::CellMap::fixDoors()
 {
-
     //Door Cleanup
     //- Iterate all doors
     //	- If door direction has no tunnel, door or other room
@@ -711,12 +710,59 @@ void XoGeni::CellMap::fixRooms()
     //- If more than one room
     //	- Iterate rooms
     //		- Iterate all doors connected to room
-    //			- Walk door path recursively until a room is reach
+    //			- Floodfill tunnel until a room is located
     //				- If room is not origin room
     //					- Increment origin room connections counter
     //		- If connections is 0
     //			- OPTION A: delete room
     //			- OPTION B: find closest room and tunnel toward room
+
+    // Iterate rooms
+    // Astar from their center to the center of every room
+    // Count every other room connected
+    // If any room has no connections it must be fixed
+    //if(rooms.size() > 1)
+    //{
+    //    for(unsigned int d=0; d < doors.size(); d++)
+    //    {
+    //        CellMap* cellMap = this;
+    //        RoomDoor* door = doors[d];
+    //        Room* room = door->parentRoom;
+    //        Cell* doorCell = getCellAtPosition(door->x, door->y);
+    //        
+    //        bit::FloodFill::compute(doorCell->x, doorCell->y,
+    //            [&cellMap, &door, &room, &doorCell] (int x, int y, int depth) {
+    //                
+    //                Cell* cell = cellMap->getCellAtPosition(x, y);
+    //                
+    //                // Increment number of rooms we have connected too
+    //                if(cell->metadata_floodfillId != bit::FloodFill::floodfillId && cell->room && cell->room != room)
+    //                {
+    //                    cell->metadata_floodfillId = bit::FloodFill::floodfillId;
+    //                    room->roomConnections++;
+    //                }
+    //            },
+    //            [&cellMap, &door, &room, &doorCell] (int x, int y, int depth) -> bool {
+    //
+    //                Cell* cell = cellMap->getCellAtPosition(x, y);
+    //
+    //                // If the inspected cell is not a tile, door, or the edge of a room, stop
+    //                if(!cell->isTunnel && !cell->isDoor && !cell->isRoomEdge)
+    //                {
+    //                    return true;
+    //                }
+    //
+    //                // If the cell is part of a room but it's our room, stop
+    //                if(cell->room && cell->room == room)
+    //                {
+    //                    return true;
+    //                }
+    //                
+    //                return false;
+    //            }
+    //        );
+    //    }
+    //}
 }
 
 /////////////////////////////////////////

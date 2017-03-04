@@ -14,7 +14,7 @@ XoGeni::Room::~Room()
 }
 
 XoGeni::Room::Room(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
-    : x(x), y(y), width(width), height(height)
+    : x(x), y(y), width(width), height(height), roomConnections(0)
 {
 }
 

@@ -39,6 +39,7 @@ namespace XoGeni
         bool isExit;
         unsigned int entranceId;
         unsigned int exitId;
+        unsigned int metadata_floodfillId;
 
     };
 }
