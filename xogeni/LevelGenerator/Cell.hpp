@@ -25,6 +25,7 @@ namespace XoGeni
         Room* room;
         RoomDoor* door;
         SillData sillData;
+        unsigned int tunnelTestCount;
         bool isWall;
         bool isRoomEdge;
         bool isRoomPermiter;

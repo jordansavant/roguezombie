@@ -27,6 +27,8 @@ namespace XoGeni
 
         void load(CellMap* cellMap);
 
+        void paint();
+
         void update(sf::Time &gameTime);
 
         sf::Vector2i getMapRenderSize();

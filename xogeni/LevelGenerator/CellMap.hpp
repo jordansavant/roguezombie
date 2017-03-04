@@ -63,6 +63,8 @@ namespace XoGeni
 
         void tunnel(Cell* cell, sf::Vector2i lastDir = sf::Vector2i(0,0));
 
+        void tunnel2(Cell* cell, unsigned int dirI = 0);
+
         bool openTunnel(Cell* cell, sf::Vector2i &dir);
 
         bool canTunnel(Cell* cell, sf::Vector2i &dir);

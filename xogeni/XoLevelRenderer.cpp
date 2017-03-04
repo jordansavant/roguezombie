@@ -52,10 +52,13 @@ void XoGeni::XoLevelRenderer::load(CellMap* cellMap)
     {
         int uhoh = 1;
     }
+
+    paint();
 }
 
-void XoGeni::XoLevelRenderer::update(sf::Time &gameTime)
+void XoGeni::XoLevelRenderer::paint()
 {
+    /// RENDERING
     unsigned int renderDistanceX = groundSprite->width + 1;
     unsigned int renderDistanceY = groundSprite->height + 1;
     unsigned int renderZ = .5;
@@ -174,6 +177,10 @@ void XoGeni::XoLevelRenderer::update(sf::Time &gameTime)
         bit::VertexHelper::colorQuad(&vertexMap_tiles.vertexArray[quadIndex], color);
         groundSprite->applyToQuad(&vertexMap_tiles.vertexArray[quadIndex]);
     }
+}
+
+void XoGeni::XoLevelRenderer::update(sf::Time &gameTime)
+{
 }
 
 void XoGeni::XoLevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const

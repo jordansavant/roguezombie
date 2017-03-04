@@ -5,18 +5,34 @@
 #include "LevelGenerator.hpp"
 #include "../../bitengine/Math.hpp"
 #include "../../bitengine/Intelligence.hpp"
+#include "../../bitengine/System.hpp"
 
 XoGeni::CellMap::CellMap(unsigned int width, unsigned int height)
     : width(width), height(height), size(width * height)
 {
-    roomCount = (width + height) / 4;
-    roomAttemptCount = roomCount * 2;
     mapPadding = 1;
+    float mapHypSize = std::sqrtf(width * height);
+
+    // Room Details
     minRoomWidth = 6;
     maxRoomWidth = 16;
     minRoomHeight = 6;
     maxRoomHeight = 16;
-    roomScatter = 10;
+
+    float hypMinRoomSize = std::sqrtf(minRoomWidth * minRoomHeight);
+    float hypMaxRoomSize = std::sqrtf(maxRoomWidth * maxRoomHeight);
+    float hypSize = (hypMinRoomSize + hypMaxRoomSize) / 2;
+
+    float roomDensity = .8;
+    float maxRoomsPerMap = (mapHypSize / hypSize) * (mapHypSize / hypSize);
+
+    //roomDensity = .5f + (roomDensity / 2);
+    roomCount = maxRoomsPerMap * roomDensity;
+    roomAttemptCount = roomCount * 2;
+    roomScatter = (hypSize * (1 - roomDensity)) + hypSize / 2;
+    roomScatter = (hypSize / 2) + (hypSize * 10 * (1 - roomDensity)) ;
+
+    // Tunnel details
     minHallWidth = 1;
     tunnelTurnRatio = 0;
     deadEndRatio = 0;
@@ -406,6 +422,7 @@ void XoGeni::CellMap::buildTunnels()
             Cell* cell = getCellAtPosition(i, j);
             if(cell->room == NULL && !cell->isRoomPermiter && !cell->isTunnel)
             {
+                //tunnel2(cell);
                 tunnel(cell);
             }
         }
@@ -414,16 +431,17 @@ void XoGeni::CellMap::buildTunnels()
 
 void XoGeni::CellMap::tunnel(Cell* cell, sf::Vector2i lastDir)
 {
+    // ORIGINAL
     if(lastDir.x == 0 && lastDir.y == 0)
     {
         // first cell
         lastDir = tunnelDirs[0];
     }
-
+    
     bool attemptStraight = LevelGenerator::random.nextFloat() > tunnelTurnRatio; // % chance to try to go straight
     std::vector<sf::Vector2i> dirs;
     getShuffledDirections(dirs);
-
+    
     // Try to dig straight
     if(attemptStraight)
     {
@@ -432,30 +450,41 @@ void XoGeni::CellMap::tunnel(Cell* cell, sf::Vector2i lastDir)
             Cell* nextCell = getCellAtPosition(cell->x + lastDir.x, cell->y + lastDir.y);
             tunnel(nextCell, lastDir);
         }
-
-        // Remove this direction from choice directions
-        unsigned int lastDirIndex;
-        for(unsigned int i=0; i < dirs.size(); i++)
-        {
-            if(dirs[i].x == lastDir.x && dirs[i].y == lastDir.y)
-            {
-                lastDirIndex = i;
-            }
-        }
-        dirs.erase(dirs.begin() + lastDirIndex);
     }
-
+    
     // Try to dig in any direction
     for(unsigned int i=0; i < dirs.size(); i++)
     {
         sf::Vector2i dir = dirs[i];
-
+    
+        if(attemptStraight && dir.x == lastDir.x && dir.y == lastDir.y)
+            continue;
+    
         if(openTunnel(cell, dir))
         {
             Cell* nextCell = getCellAtPosition(cell->x + dir.x, cell->y + dir.y);
             tunnel(nextCell, dir);
         }
     }
+}
+
+void XoGeni::CellMap::tunnel2(Cell* cell, unsigned int dirI)
+{
+    // If I have run this cell against all directions, fail
+    if(cell->tunnelTestCount >= tunnelDirs.size())
+        return;
+
+    sf::Vector2i dir = tunnelDirs[dirI % tunnelDirs.size()];
+    if(!openTunnel(cell, dir))
+    {
+        // If I cant tunnel in this dir, try again in next direction
+        cell->tunnelTestCount++;
+        return tunnel2(cell, dirI + 1);
+    }
+
+    // If I successfully tunneled get next cell and tunnel again
+    Cell* nextCell = getCellAtPosition(cell->x + dir.x, cell->y + dir.y);
+    return tunnel2(nextCell, dirI);
 }
 
 bool XoGeni::CellMap::openTunnel(Cell* cell, sf::Vector2i &dir)

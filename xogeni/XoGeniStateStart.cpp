@@ -64,6 +64,7 @@ bool XoGeni::XoGeniStateStart::update(sf::Time &gameTime)
     {
         //cameras[0]->changeZoom(ticks);
         levelRenderer->renderState += ticks > 0 ? 1 : -1;
+        levelRenderer->paint();
     }
 
     if(xoGeniGame->inputManager->isButtonPressed(sf::Keyboard::Space))
