@@ -7,7 +7,7 @@
 
 #if defined(__OS_WIN__)
 #if defined(_DEBUG)
-//#include "vld.h"
+//#include "vld.h" // Visual Leak Detector (Memory Leaks)
 #endif
 #endif
 

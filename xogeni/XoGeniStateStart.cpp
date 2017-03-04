@@ -72,6 +72,8 @@ bool XoGeni::XoGeniStateStart::update(sf::Time &gameTime)
         ss << "SEED: " << seedCounter;
         bit::Output::Debug(ss.str());
 
+        if(cellMap)
+            delete cellMap;
         cellMap = levelGenerator->generate(seedCounter, 90, 90);
         levelRenderer->load(cellMap);
         seedCounter++;
