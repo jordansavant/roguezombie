@@ -31,6 +31,8 @@ namespace XoGeni
         bool isSill;
         bool isDoor;
         bool isTunnel;
+        bool wasCorridorTunnel;
+        bool wasDoorTunnel;
 
     };
 }

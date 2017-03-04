@@ -23,6 +23,7 @@ namespace XoGeni
         bit::VertexMap vertexMap_tiles;
         std::vector<unsigned int>tileQuadIndexes;
         bit::Sprite* groundSprite;
+        unsigned int renderState;
 
         void load(CellMap* cellMap);
 

@@ -34,6 +34,8 @@ namespace XoGeni
         int minRoomHeight, maxRoomHeight;
         int roomScatter;
         int minHallWidth;
+        float tunnelTurnRatio;
+        float deadEndRatio;
         std::vector<sf::Vector2i> tunnelDirs;
 
         void buildGround();

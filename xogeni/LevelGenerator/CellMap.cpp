@@ -16,8 +16,10 @@ XoGeni::CellMap::CellMap(unsigned int width, unsigned int height)
     maxRoomWidth = 16;
     minRoomHeight = 6;
     maxRoomHeight = 16;
-    roomScatter = 100;
+    roomScatter = 10;
     minHallWidth = 1;
+    tunnelTurnRatio = 0;
+    deadEndRatio = 0;
 
     tunnelDirs.push_back(sf::Vector2i(1, 0)); // right
     tunnelDirs.push_back(sf::Vector2i(0, 1)); // down
@@ -281,52 +283,64 @@ void XoGeni::CellMap::getRoomSills(Room* room, std::vector<Cell*> &fill)
     // North wall
     if(room->y > topMargin)
     {
-        for(unsigned int i = room->x + cornerSpacing; i < room->x + room->width - cornerSpacing; i += 2)
+        for(unsigned int i = room->x + cornerSpacing; i < room->x + room->width - cornerSpacing; i++)
         {
-            Cell* cell = getCellAtPosition(i, room->y);
-            cell->isSill = true;
-            cell->sillData.doorX = cell->x;
-            cell->sillData.doorY = cell->y - 1;
-            fill.push_back(cell);
+            if(i % 2 == 0)
+            {
+                Cell* cell = getCellAtPosition(i, room->y);
+                cell->isSill = true;
+                cell->sillData.doorX = cell->x;
+                cell->sillData.doorY = cell->y - 1;
+                fill.push_back(cell);
+            }
         }
     }
 
     // South wall
     if(room->y + room->height < bottomMargin)
     {
-        for(unsigned int i = room->x + cornerSpacing; i < room->x + room->width - cornerSpacing; i += 2)
+        for(unsigned int i = room->x + cornerSpacing; i < room->x + room->width - cornerSpacing; i++)
         {
-            Cell* cell = getCellAtPosition(i, room->y + room->height - 1);
-            cell->isSill = true;
-            cell->sillData.doorX = cell->x;
-            cell->sillData.doorY = cell->y + 1;
-            fill.push_back(cell);
+            if(i % 2 == 0)
+            {
+                Cell* cell = getCellAtPosition(i, room->y + room->height - 1);
+                cell->isSill = true;
+                cell->sillData.doorX = cell->x;
+                cell->sillData.doorY = cell->y + 1;
+                fill.push_back(cell);
+            }
         }
     }
 
     // East wall
     if(room->x > leftMargin)
     {
-        for(unsigned int i = room->y + cornerSpacing; i < room->y + room->height - cornerSpacing; i += 2)
+        for(unsigned int i = room->y + cornerSpacing; i < room->y + room->height - cornerSpacing; i++)
         {
-            Cell* cell = getCellAtPosition(room->x, i);
-            cell->isSill = true;
-            cell->sillData.doorX = cell->x - 1;
-            cell->sillData.doorY = cell->y;
-            fill.push_back(cell);
+            if(i % 2 == 0)
+            {
+                Cell* cell = getCellAtPosition(room->x, i);
+                cell->isSill = true;
+                cell->sillData.doorX = cell->x - 1;
+                cell->sillData.doorY = cell->y;
+                fill.push_back(cell);
+            }
         }
     }
 
     // West wall
     if(room->x + room->width < rightMargin)
     {
-        for(unsigned int i = room->y + cornerSpacing; i < room->y + room->height - cornerSpacing; i += 2)
+        for(unsigned int i = room->y + cornerSpacing; i < room->y + room->height - cornerSpacing; i++)
         {
-            Cell* cell = getCellAtPosition(room->x + room->width - 1, i);
-            cell->isSill = true;
-            cell->sillData.doorX = cell->x + 1;
-            cell->sillData.doorY = cell->y;
-            fill.push_back(cell);
+            if(i % 2 == 0)
+            {
+                Cell* cell = getCellAtPosition(room->x + room->width - 1, i);
+                cell->isSill = true;
+                cell->sillData.doorX = cell->x + 1;
+                cell->sillData.doorY = cell->y;
+                fill.push_back(cell);
+            }
         }
     }
 }
@@ -358,6 +372,7 @@ void XoGeni::CellMap::connectDoor(RoomDoor* door)
             else
             {
                 cell->isTunnel = true; 
+                cell->wasDoorTunnel = true;
             }
         }
         else
@@ -405,7 +420,7 @@ void XoGeni::CellMap::tunnel(Cell* cell, sf::Vector2i lastDir)
         lastDir = tunnelDirs[0];
     }
 
-    bool attemptStraight = LevelGenerator::random.next(100) < 80; // % chance to try to go straight
+    bool attemptStraight = LevelGenerator::random.nextFloat() > tunnelTurnRatio; // % chance to try to go straight
     std::vector<sf::Vector2i> dirs;
     getShuffledDirections(dirs);
 
@@ -501,6 +516,7 @@ void XoGeni::CellMap::emplaceTunnel(Cell* cell, sf::Vector2i &dir)
 {
     Cell* nextCell = getCellAtPosition(cell->x + dir.x, cell->y + dir.y);
     nextCell->isTunnel = true;
+    nextCell->wasCorridorTunnel = true;
 }
 
 /////////////////////////////////////////
@@ -522,6 +538,9 @@ void XoGeni::CellMap::cleanup()
     // if dead end recursively collapse
 
     // Fix doors
+    // Option A: attempt to redig tunnels
+    // Option B: remove unconnected doors and ensure connectivity of rooms elsewhere
+    // Doors stacked against each other from adjacent rooms should turn one into a tunnel (or arch?)
 
     // Empty blocks
 }
@@ -537,7 +556,8 @@ void XoGeni::CellMap::collapseTunnels()
             // if tunnel and connected tunnels < 2 its a dead end
             // if dead end recursively collapse
             // Build recursive tunnels from cell
-            if(cell->isTunnel && countTunnelConnections(cell) < 2)
+            bool p = LevelGenerator::random.nextFloat() > deadEndRatio;
+            if(p && cell->isTunnel && countTunnelConnections(cell) < 2)
             {
                 collapse(cell);
             }

@@ -9,7 +9,7 @@
 #include "XoGeniGame.hpp"
 
 XoGeni::XoLevelRenderer::XoLevelRenderer(XoGeniStateStart* stateStart)
-    : stateStart(stateStart), cellMap(NULL)
+    : stateStart(stateStart), cellMap(NULL), renderState(0)
 {
     stateStart->xoGeniGame->spriteLoader->loadSprites(resourcePath() + "xogeni/spritesheet.csv");
     texture.loadFromFile(resourcePath() + "xogeni/spritesheet.png");
@@ -67,36 +67,108 @@ void XoGeni::XoLevelRenderer::update(sf::Time &gameTime)
 
         unsigned int x = cell->x  * renderDistanceX;
         unsigned int y = cell->y  * renderDistanceY;
+        
+        sf::Color colorGround = sf::Color(30, 15, 0);
+        sf::Color colorRoom = sf::Color(200, 200, 200);
+        sf::Color colorRoomEdge = sf::Color(100, 100, 100);
+        sf::Color colorRoomPerimeter = sf::Color(60, 30, 0);
+        sf::Color colorTunnel = sf::Color(200, 200, 200);
+        sf::Color colorSill = sf::Color::Cyan;
+        sf::Color colorDoor = sf::Color::Yellow;
 
-        sf::Color color = sf::Color(30, 15, 0);
-        if(cell->room)
+        sf::Color color = colorGround;
+
+        unsigned int stateCount = 7;
+        switch(renderState % stateCount)
         {
-            if(cell->isRoomEdge)
-                color = sf::Color(100, 100, 100);
-            else
-                color = sf::Color(200, 200, 200);
+            case 1:
+                if(cell->room)
+                    color = colorRoom;
+                break;
+            case 2:
+                if(cell->room)
+                    if(cell->isRoomEdge)
+                        color = colorRoomEdge;
+                    else
+                        color = colorRoom;
+                if(cell->isRoomPermiter)
+                    color = colorRoomPerimeter;
+                break;
+            case 3:
+                if(cell->room)
+                    if(cell->isRoomEdge)
+                        color = colorRoomEdge;
+                    else
+                        color = colorRoom;
+                if(cell->isRoomPermiter)
+                    color = colorRoomPerimeter;
+                if(cell->wasCorridorTunnel)
+                    color = colorTunnel;
+                break;
+            case 4:
+                if(cell->room)
+                    if(cell->isRoomEdge)
+                        color = colorRoomEdge;
+                    else
+                        color = colorRoom;
+                if(cell->isRoomPermiter)
+                    color = colorRoomPerimeter;
+                if(cell->wasCorridorTunnel)
+                    color = colorTunnel;
+                if(cell->isSill)
+                    color = colorSill;
+                break;
+            case 5:
+                if(cell->room)
+                    if(cell->isRoomEdge)
+                        color = colorRoomEdge;
+                    else
+                        color = colorRoom;
+                if(cell->isRoomPermiter)
+                    color = colorRoomPerimeter;
+                if(cell->wasCorridorTunnel)
+                    color = colorTunnel;
+                if(cell->isSill)
+                    color = colorSill;
+                if(cell->isDoor)
+                    color = colorDoor;
+                break;
+            case 6:
+                if(cell->room)
+                    if(cell->isRoomEdge)
+                        color = colorRoomEdge;
+                    else
+                        color = colorRoom;
+                if(cell->isRoomPermiter)
+                    color = colorRoomPerimeter;
+                if(cell->wasCorridorTunnel)
+                    color = colorTunnel;
+                if(cell->wasDoorTunnel)
+                    color = colorTunnel;
+                if(cell->isSill)
+                    color = colorSill;
+                if(cell->isDoor)
+                    color = colorDoor;
+                break;
+            // Full
+            default:
+            case 0:
+                if(cell->room)
+                    if(cell->isRoomEdge)
+                        color = colorRoomEdge;
+                    else
+                        color = colorRoom;
+                if(cell->isSill)
+                    color = colorSill;
+                if(cell->isRoomPermiter)
+                    color = colorRoomPerimeter;
+                if(cell->isTunnel)
+                    color = colorTunnel;
+                if(cell->isDoor)
+                    color = sf::Color::Yellow;
+                break;
         }
-        if(cell->isSill)
-        {
-            color = sf::Color::Cyan;
-        }
-        if(cell->isRoomPermiter)
-        {
-            color = sf::Color(120, 190, 100);
-            color = sf::Color(30, 15, 0);
-        }
-        if(cell->isWall)
-        {
-            color = sf::Color(190, 102, 124);
-        }
-        if(cell->isTunnel)
-        {
-            color = sf::Color(200, 200, 200);
-        }
-        if(cell->isDoor)
-        {
-            color = sf::Color::Yellow;
-        }
+        
 
         bit::VertexHelper::positionQuad(&vertexMap_tiles.vertexArray[quadIndex], x, y, renderZ, groundSprite->width, groundSprite->height);
         bit::VertexHelper::colorQuad(&vertexMap_tiles.vertexArray[quadIndex], color);

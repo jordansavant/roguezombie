@@ -44,8 +44,9 @@ Procedural levels
 - http://donjon.bin.sh/code/dungeon/dungeon.pl
 
 Level Gen TO DO:
-- Change sill margins to remove wall padding
-- Change door creation to pick external cell of a sill instead of a sill
+- Have sills pick based on Map odd/even instead of every other so that they can universally align
+- Clean up routines need to fix doors that had tunnels collapsed
+- Doors tunelling outward can make tunnels that corner to corner with other tunnels (can they be shadowcasted through?)
 
 - When sills are selected they should check that:
 	- their perpendicular wall spot is not blocked (should never be)
