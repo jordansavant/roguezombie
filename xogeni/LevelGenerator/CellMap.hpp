@@ -67,6 +67,14 @@ namespace XoGeni
 
         void emplaceTunnel(Cell* cell, sf::Vector2i &dir);
 
+        // Clean up
+        void cleanup();
+
+        void collapseTunnels();
+
+        void collapse(Cell* tunnelCell);
+
+        unsigned int countTunnelConnections(Cell* tunnelCell);
 
         bool canHouseDimension(unsigned int x, unsigned int y, unsigned int w, unsigned int h);
 

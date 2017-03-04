@@ -22,6 +22,8 @@ XoGeni::CellMap* XoGeni::LevelGenerator::generate(unsigned int seed, unsigned in
     cellMap->buildRooms();
     cellMap->buildTunnels();
     cellMap->buildDoors();
+    // cellMap->buildStairs()
+    cellMap->cleanup();
 
     return cellMap;
 }

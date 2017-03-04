@@ -509,6 +509,83 @@ void XoGeni::CellMap::emplaceTunnel(Cell* cell, sf::Vector2i &dir)
 
 
 
+
+/////////////////////////////////////////
+// CLEAN UP START
+////////////////////////////////////////
+
+void XoGeni::CellMap::cleanup()
+{
+    // Remove dead ends
+    collapseTunnels();
+    // if tunnel and connected tunnels < 2 its a dead end
+    // if dead end recursively collapse
+
+    // Fix doors
+
+    // Empty blocks
+}
+
+void XoGeni::CellMap::collapseTunnels()
+{
+    // scan all cells
+    for(unsigned int i = mapPadding; i < width - mapPadding; i++) // cols
+    {
+        for(unsigned int j = mapPadding; j < height - mapPadding; j++) // rows
+        {
+            Cell* cell = getCellAtPosition(i, j);
+            // if tunnel and connected tunnels < 2 its a dead end
+            // if dead end recursively collapse
+            // Build recursive tunnels from cell
+            if(cell->isTunnel && countTunnelConnections(cell) < 2)
+            {
+                collapse(cell);
+            }
+        }
+    }
+}
+
+void XoGeni::CellMap::collapse(Cell* tunnelCell)
+{
+    // collapse this tunnel
+    tunnelCell->isTunnel = false;
+
+    // Find direction of adjacent tunnel(s) // should be one unless used outside of collapsing dead ends
+    for(unsigned int i=0; i < tunnelDirs.size(); i++)
+    {
+        // Collapse them if they are dead ends
+        Cell* neighbor = getCellAtPositionNullable(tunnelCell->x + tunnelDirs[i].x, tunnelCell->y + tunnelDirs[i].y);
+        if(neighbor && neighbor->isTunnel && countTunnelConnections(neighbor) < 2)
+        {
+            collapse(neighbor);
+        }
+    }
+}
+
+unsigned int XoGeni::CellMap::countTunnelConnections(Cell* tunnelCell)
+{
+    unsigned int count = 0;
+
+    // Look at cardinal tiles
+    Cell* topCell = getCellAtPositionNullable(tunnelCell->x, tunnelCell->y - 1);
+    Cell* bottomCell = getCellAtPositionNullable(tunnelCell->x, tunnelCell->y + 1);
+    Cell* rightCell = getCellAtPositionNullable(tunnelCell->x + 1, tunnelCell->y);
+    Cell* leftCell = getCellAtPositionNullable(tunnelCell->x - 1, tunnelCell->y);
+
+    count += topCell != NULL && (topCell->isTunnel || topCell->isDoor || topCell->isRoomEdge) ? 1 : 0;
+    count += bottomCell != NULL && (bottomCell->isTunnel || bottomCell->isDoor || bottomCell->isRoomEdge) ? 1 : 0;
+    count += rightCell != NULL && (rightCell->isTunnel || rightCell->isDoor || rightCell->isRoomEdge) ? 1 : 0;
+    count += leftCell != NULL && (leftCell->isTunnel || leftCell->isDoor || leftCell->isRoomEdge) ? 1 : 0;
+
+    return count;
+}
+
+/////////////////////////////////////////
+// CLEAN UP END
+////////////////////////////////////////
+
+
+
 bool XoGeni::CellMap::canHouseDimension(unsigned int x, unsigned int y, unsigned int w, unsigned int h)
 {
     if(x > mapPadding && y > mapPadding)
