@@ -37,6 +37,8 @@ namespace XoGeni
         float tunnelTurnRatio;
         float deadEndRatio;
         std::vector<sf::Vector2i> tunnelDirs;
+        unsigned int entranceCount;
+        unsigned int exitCount;
 
         void buildGround();
 
@@ -70,6 +72,10 @@ namespace XoGeni
         bool canTunnel(Cell* cell, sf::Vector2i &dir);
 
         void emplaceTunnel(Cell* cell, sf::Vector2i &dir);
+
+        // Exit building
+
+        void buildExits();
 
         // Clean up
         void cleanup();

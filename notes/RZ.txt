@@ -24,6 +24,10 @@ Characters retain pointers to attack targets
 - If the tile has no body (character) then we can skip attack
 - Same for all server side elements, they should point to tiles, not to characters (or structures) etc
 
+When I ran the level with a big blank canvas of tiles the performance was horrible
+- The shadowcasting may be networking everything without some visible range limitation?
+- The tiles do not need to be changing their quads in every Update() cycle
+
 
 --------------------
 RZ Features
@@ -44,27 +48,23 @@ Procedural levels
 - http://donjon.bin.sh/code/dungeon/dungeon.pl
 
 Level Gen TO DO:
-- Have sills pick based on Map odd/even instead of every other so that they can universally align
 - Clean up routines need to fix doors that had tunnels collapsed
 - Doors tunelling outward can make tunnels that corner to corner with other tunnels (can they be shadowcasted through?)
 
-- When sills are selected they should check that:
-	- their perpendicular wall spot is not blocked (should never be)
-	- the spot beyond that in the same direction is not blocked (dont see why it would be)
-	- the spot beyond the door is not on the outside corner of another room
-
-- Corridors
-	- Essentially scans all locations and recursively digs tunnels across entire map
-	- Direction splits (or turns if only one) are returned as a collection from a direction routine that uses random chance to determine number of turns
-		- Labyrinthian style would randomly change direction
-		- Errant style would stay straight 50% of the time
-		- Straight style would stay straight 90% of the time
-	- For each direction from current position we try to open the tunnel
-		- Get next position and additional position beyond
-		- If the additional position beyond is a room permiter we stop
-		- If the additional position beyond is a coridor we stop
-		- Otherwise we emplace the tunnel
-	- Our only stop condition is running into a room or another corridor
+Door Cleanup
+- Iterate all doors
+	- If door direction has no tunnel, door or other room
+		- delete door
+- If more than one room
+	- Iterate rooms
+		- Iterate all doors connected to room
+			- Walk door path recursively until a room is reach
+				- If room is not origin room
+					- Increment origin room connections counter
+		- If connections is 0
+			- OPTION A: delete room
+			- OPTION B: find closest room and tunnel toward room
+	
 
 
 Ability to Trash items in the inventory

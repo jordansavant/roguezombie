@@ -81,7 +81,7 @@ void XoGeni::XoLevelRenderer::paint()
 
         sf::Color color = colorGround;
 
-        unsigned int stateCount = 7;
+        unsigned int stateCount = 8;
         switch(renderState % stateCount)
         {
             case 1:
@@ -153,6 +153,21 @@ void XoGeni::XoLevelRenderer::paint()
                 if(cell->isDoor)
                     color = colorDoor;
                 break;
+            case 7:
+                if(cell->room)
+                    if(cell->isRoomEdge)
+                        color = colorRoomEdge;
+                    else
+                        color = colorRoom;
+                if(cell->isRoomPermiter)
+                    color = colorRoomPerimeter;
+                if(cell->isTunnel)
+                    color = colorTunnel;
+                if(cell->isSill)
+                    color = colorSill;
+                if(cell->isDoor)
+                    color = colorDoor;
+                break;
             // Full
             default:
             case 0:
@@ -169,6 +184,10 @@ void XoGeni::XoLevelRenderer::paint()
                     color = colorTunnel;
                 if(cell->isDoor)
                     color = sf::Color::Yellow;
+                if(cell->isEntrance)
+                    color = sf::Color::Red;
+                if(cell->isExit)
+                    color = sf::Color::Blue;
                 break;
         }
         

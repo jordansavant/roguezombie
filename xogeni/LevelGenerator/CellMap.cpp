@@ -41,6 +41,10 @@ XoGeni::CellMap::CellMap(unsigned int width, unsigned int height)
     tunnelDirs.push_back(sf::Vector2i(0, 1)); // down
     tunnelDirs.push_back(sf::Vector2i(-1, 0)); // left
     tunnelDirs.push_back(sf::Vector2i(0, -1)); // up
+
+    // Exit details
+    entranceCount = 1;
+    exitCount = 1;
 }
 
 XoGeni::CellMap::~CellMap()
@@ -556,11 +560,61 @@ void XoGeni::CellMap::emplaceTunnel(Cell* cell, sf::Vector2i &dir)
 
 
 /////////////////////////////////////////
+// EXIT BUILDING START
+////////////////////////////////////////
+
+void XoGeni::CellMap::buildExits()
+{
+    unsigned int en = std::min(entranceCount, rooms.size());
+    unsigned int ex = std::min(exitCount, rooms.size());
+
+    unsigned int enC = 0;
+    for(unsigned int i=0; i < rooms.size(); i++)
+    {
+        if(enC >= en)
+            break;
+
+        unsigned int centerX = rooms[i]->x + rooms[i]->width / 2;
+        unsigned int centerY = rooms[i]->y + rooms[i]->height / 2;
+
+        enC++;
+        Cell* centerCell = getCellAtPosition(centerX, centerY);
+        centerCell->isEntrance = true;
+        centerCell->entranceId = enC;
+    }
+    
+    unsigned int exC = 0;
+    for(unsigned int i=rooms.size() - 1; i > 0; i--)
+    {
+        if(exC >= ex)
+            break;
+
+        unsigned int centerX = rooms[i]->x + rooms[i]->width / 2;
+        unsigned int centerY = rooms[i]->y + rooms[i]->height / 2;
+
+        exC++;
+        Cell* centerCell = getCellAtPosition(centerX, centerY);
+        centerCell->isExit = true;
+        centerCell->exitId = exC;
+    }
+}
+
+/////////////////////////////////////////
+// EXIT BUILDING END
+////////////////////////////////////////
+
+
+
+
+
+/////////////////////////////////////////
 // CLEAN UP START
 ////////////////////////////////////////
 
 void XoGeni::CellMap::cleanup()
 {
+    // Remove tunnels that have no connection to rooms
+
     // Remove dead ends
     collapseTunnels();
     // if tunnel and connected tunnels < 2 its a dead end

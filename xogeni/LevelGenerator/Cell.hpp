@@ -34,6 +34,10 @@ namespace XoGeni
         bool isTunnel;
         bool wasCorridorTunnel;
         bool wasDoorTunnel;
+        bool isEntrance;
+        bool isExit;
+        unsigned int entranceId;
+        unsigned int exitId;
 
     };
 }

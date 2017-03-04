@@ -2,6 +2,8 @@
 #include "../bitengine/System/tinyxml2.h"
 #include "../bitengine/System.hpp"
 #include "../ResourcePath.h"
+#include "../xogeni/LevelGenerator/CellMap.hpp"
+#include "../xogeni/LevelGenerator/Cell.hpp"
 #include <sstream>
 
 void LevelLoader::Event::unpack(tinyxml2::XMLElement* node)
@@ -241,7 +243,7 @@ LevelLoader::Light LevelLoader::Level::getLightDefById(unsigned int id)
 }
 
 
-void LevelLoader::load(std::string file)
+void LevelLoader::loadFromXML(std::string file)
 {
     tinyxml2::XMLDocument doc;
     tinyxml2::XMLError err = doc.LoadFile((resourcePath() + file).c_str());
@@ -256,5 +258,87 @@ void LevelLoader::load(std::string file)
         LevelLoader::Level levelDef;
         levelDef.unpack(child);
         levelDefs.push_back(levelDef);
+    }
+}
+ 
+void LevelLoader::loadFromXoGeni(XoGeni::CellMap* cellMap)
+{
+    LevelLoader::Level levelDef;
+    levelDef.unpack(cellMap);
+    levelDefs.push_back(levelDef);
+}
+
+void LevelLoader::Level::unpack(XoGeni::CellMap* cellMap)
+{
+    id = 1;
+    defaultEntranceId = 1;
+
+    // Get level dimensions
+    rows = cellMap->width;
+    columns = cellMap->height;
+    size = rows * columns;
+
+    // Parse id maps into linear arrays
+    // no structureIdMap, characterIdMap, lightIdMap yet
+    unsigned int sId = 1;
+    for(unsigned int i=0; i < cellMap->cells.size(); i++)
+    {
+        XoGeni::Cell* cell = cellMap->cells[i];
+
+        tileIdMap.push_back(i + 1);
+        characterIdMap.push_back(0);
+        lightIdMap.push_back(0);
+
+        // Make temporary walls
+        if(cell->room == NULL && !cell->isDoor && !cell->isTunnel)
+        {
+            structureIdMap.push_back(sId);
+
+            LevelLoader::Structure structureDef;
+            structureDef.id = sId;
+            structureDef.type = 1; // wall
+            structureDefs.push_back(structureDef);
+
+            sId++;
+        }
+        else
+        {
+            structureIdMap.push_back(0);
+        }
+    }
+
+    // Load definitions
+
+    // Tiles
+    for(unsigned int i=0; i < cellMap->cells.size(); i++)
+    {
+        LevelLoader::Tile tileDef;
+        tileDef.unpack(cellMap->cells[i]);
+        tileDefs.push_back(tileDef);
+    }
+
+    // Structures
+
+    // Characters
+
+    // Lights
+}
+
+void LevelLoader::Tile::unpack(XoGeni::Cell* cell)
+{
+    id = cell->index + 1;
+    type = 1; // Ground
+
+    // Enter events in tile
+
+    // Exit events in tile
+    
+    // Entrances in tile
+    if(cell->isEntrance)
+    {
+        LevelLoader::Entrance entranceDef;
+        entranceDef.id = cell->entranceId;
+        entranceDef.priority = 1;;
+        entrances.push_back(entranceDef);
     }
 }

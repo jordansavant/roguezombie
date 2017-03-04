@@ -6,6 +6,11 @@
 #include <vector>
 #include "../bitengine/System/tinyxml2.h"
 
+namespace XoGeni {
+    class CellMap;
+    class Cell;
+}
+
 class LevelLoader
 {
 public:
@@ -26,6 +31,7 @@ public:
         unsigned int targetEntranceId;
 
         void unpack(tinyxml2::XMLElement* node);
+
     };
 
     struct Entrance
@@ -45,6 +51,8 @@ public:
         std::vector<Entrance> entrances;
 
         void unpack(tinyxml2::XMLElement* node);
+
+        void unpack(XoGeni::Cell* cell);
     };
     
     struct Item
@@ -111,6 +119,8 @@ public:
 
         void unpack(tinyxml2::XMLElement* node);
 
+        void unpack(XoGeni::CellMap* cellMap);
+
         void loadIdString(const char* text, std::vector<unsigned int> &fill);
 
         LevelLoader::Tile getTileByIndex(unsigned int index);
@@ -135,7 +145,9 @@ public:
     unsigned int defaultLevelId;
     std::vector<Level> levelDefs;
 
-    void load(std::string file);
+    void loadFromXML(std::string file);
+
+    void loadFromXoGeni(XoGeni::CellMap* cellMap);
 
 };
 
