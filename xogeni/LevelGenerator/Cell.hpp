@@ -2,12 +2,14 @@
 #ifndef XG_CELL_H
 #define XG_CELL_H
 
+#include "../../bitengine/Intelligence.hpp"
+
 namespace XoGeni
 {
     class Room;
     class RoomDoor;
 
-    class Cell
+    class Cell : public bit::Node
     {
     public:
 
@@ -35,6 +37,7 @@ namespace XoGeni
         bool isTunnel;
         bool wasCorridorTunnel;
         bool wasDoorTunnel;
+        bool wasRoomFixTunnel;
         bool isEntrance;
         bool isExit;
         unsigned int entranceId;

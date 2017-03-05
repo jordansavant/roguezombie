@@ -90,6 +90,12 @@ namespace XoGeni
 
         void fixRooms();
 
+        bool isRoomConnected(Room* room);
+
+        Room* getNearestRoom(Room* room);
+
+        void tunnelFromRoomToRoom(Room* start, Room* end);
+
 
         bool canHouseDimension(unsigned int x, unsigned int y, unsigned int w, unsigned int h);
 

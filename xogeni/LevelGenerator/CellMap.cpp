@@ -721,48 +721,128 @@ void XoGeni::CellMap::fixRooms()
     // Astar from their center to the center of every room
     // Count every other room connected
     // If any room has no connections it must be fixed
-    //if(rooms.size() > 1)
-    //{
-    //    for(unsigned int d=0; d < doors.size(); d++)
-    //    {
-    //        CellMap* cellMap = this;
-    //        RoomDoor* door = doors[d];
-    //        Room* room = door->parentRoom;
-    //        Cell* doorCell = getCellAtPosition(door->x, door->y);
-    //        
-    //        bit::FloodFill::compute(doorCell->x, doorCell->y,
-    //            [&cellMap, &door, &room, &doorCell] (int x, int y, int depth) {
-    //                
-    //                Cell* cell = cellMap->getCellAtPosition(x, y);
-    //                
-    //                // Increment number of rooms we have connected too
-    //                if(cell->metadata_floodfillId != bit::FloodFill::floodfillId && cell->room && cell->room != room)
-    //                {
-    //                    cell->metadata_floodfillId = bit::FloodFill::floodfillId;
-    //                    room->roomConnections++;
-    //                }
-    //            },
-    //            [&cellMap, &door, &room, &doorCell] (int x, int y, int depth) -> bool {
-    //
-    //                Cell* cell = cellMap->getCellAtPosition(x, y);
-    //
-    //                // If the inspected cell is not a tile, door, or the edge of a room, stop
-    //                if(!cell->isTunnel && !cell->isDoor && !cell->isRoomEdge)
-    //                {
-    //                    return true;
-    //                }
-    //
-    //                // If the cell is part of a room but it's our room, stop
-    //                if(cell->room && cell->room == room)
-    //                {
-    //                    return true;
-    //                }
-    //                
-    //                return false;
-    //            }
-    //        );
-    //    }
-    //}
+    if(rooms.size() > 1)
+    {
+        for(unsigned int i=0; i < rooms.size(); i++)
+        {
+            Room* room = rooms[i];
+            if(!isRoomConnected(room))
+            {
+                // Option A: delete room
+                // Option B: find nearest room and do a direct tunnel
+                Room* closestRoom = getNearestRoom(room);
+
+                // Tunnel to room
+                tunnelFromRoomToRoom(room, closestRoom);
+            }
+        }
+    }
+}
+
+bool XoGeni::CellMap::isRoomConnected(Room* room)
+{
+    CellMap* cellMap = this;
+    unsigned int centerX = room->x + room->width / 2;
+    unsigned int centerY = room->y + room->height / 2;
+    Cell* roomCenterCell = getCellAtPosition(centerX, centerY);
+
+    for(unsigned int j=0; j < rooms.size(); j++)
+    {
+        Room* otherRoom = rooms[j];
+
+        if(otherRoom == room)
+            continue;
+
+        unsigned int otherCenterX = otherRoom->x + otherRoom->width / 2;
+        unsigned int otherCenterY = otherRoom->y + otherRoom->height / 2;
+        Cell* otherRoomCenterCell = getCellAtPosition(otherCenterX, otherCenterY);
+
+        std::function<bool(Cell* c)> isBlocked = [&room] (Cell* c) -> bool {
+            if(c->room == NULL && !c->isTunnel && !c->isDoor)
+            {
+                return true;
+            }
+            return false;
+        };
+        std::function<void(Cell* c, std::vector<Cell*> &f)> getNeighbors = [&cellMap] (Cell* c, std::vector<Cell*> &f) {
+            f.push_back(cellMap->getCellAtPosition(c->x, c->y - 1)); // top
+            f.push_back(cellMap->getCellAtPosition(c->x, c->y + 1)); // bottom
+            f.push_back(cellMap->getCellAtPosition(c->x + 1, c->y)); // right
+            f.push_back(cellMap->getCellAtPosition(c->x - 1, c->y)); // left
+        };
+
+        std::vector<Cell*> cellPath;
+        bit::Astar::pathfind(roomCenterCell, otherRoomCenterCell, isBlocked, getNeighbors, cellPath);
+
+        if(cellPath.size() != 0)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+XoGeni::Room* XoGeni::CellMap::getNearestRoom(Room* room)
+{
+    unsigned int centerX = room->x + room->width / 2;
+    unsigned int centerY = room->y + room->height / 2;
+    Cell* roomCenterCell = getCellAtPosition(centerX, centerY);
+    Room* closestRoom = NULL;
+    float closestDistance = 0;
+
+    for(unsigned int i=0; i < rooms.size(); i++)
+    {
+        Room* otherRoom = rooms[i];
+        if(otherRoom == room)
+            continue;
+        unsigned int otherCenterX = otherRoom->x + otherRoom->width / 2;
+        unsigned int otherCenterY = otherRoom->y + otherRoom->height / 2;
+        Cell* otherRoomCenterCell = getCellAtPosition(otherCenterX, otherCenterY);
+
+        float distance = bit::VectorMath::distance(roomCenterCell->x, roomCenterCell->y, otherRoomCenterCell->x, otherRoomCenterCell->y);
+
+        if(closestRoom == NULL || closestDistance > distance)
+        {
+            closestRoom = otherRoom;
+            closestDistance = distance;
+        }
+    }
+
+    return closestRoom;
+}
+
+void XoGeni::CellMap::tunnelFromRoomToRoom(Room* start, Room* end)
+{
+    Cell* startCenterCell = getCellAtPosition(start->x + start->width / 2, start->y + start->height / 2);
+    Cell* endCenterCell = getCellAtPosition(end->x + end->width / 2, end->y + end->height / 2);
+
+    sf::Vector2f dirf = bit::VectorMath::directionToVector(startCenterCell->x, startCenterCell->y, endCenterCell->x, endCenterCell->y);
+    float distance = bit::VectorMath::distance(startCenterCell->x, startCenterCell->y, endCenterCell->x, endCenterCell->y);
+
+    sf::Vector2i dir((int)(dirf.x * distance), (int)(dirf.y * distance));
+
+    // Full orthogonal tunnel
+    for(int i=1; i <= std::abs(dir.x); i++)
+    {
+        int xPlus = dir.x < 0 ? -i : i;
+        Cell* cell = getCellAtPosition(startCenterCell->x + xPlus, startCenterCell->y);
+        if(cell->room == NULL && !cell->isDoor && !cell->isTunnel)
+        {
+            cell->isTunnel = true;
+            cell->wasRoomFixTunnel = true;
+        }
+    }
+    for(int i=1; i <= std::abs(dir.y); i++)
+    {
+        int yPlus = dir.y < 0 ? -i : i;
+        Cell* cell = getCellAtPosition(startCenterCell->x, startCenterCell->y + yPlus);
+        if(cell->room == NULL && !cell->isDoor && !cell->isTunnel)
+        {
+            cell->isTunnel = true;
+            cell->wasRoomFixTunnel = true;
+        }
+    }
 }
 
 /////////////////////////////////////////

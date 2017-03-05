@@ -81,13 +81,15 @@ void XoGeni::XoLevelRenderer::paint()
 
         sf::Color color = colorGround;
 
-        unsigned int stateCount = 9;
+        unsigned int stateCount = 10;
         switch(renderState % stateCount)
         {
+            // Rooms only
             case 1:
                 if(cell->room)
                     color = colorRoom;
                 break;
+            // Room details
             case 2:
                 if(cell->room)
                     if(cell->isRoomEdge)
@@ -97,6 +99,7 @@ void XoGeni::XoLevelRenderer::paint()
                 if(cell->isRoomPermiter)
                     color = colorRoomPerimeter;
                 break;
+            // Full tunnel recursion
             case 3:
                 if(cell->room)
                     if(cell->isRoomEdge)
@@ -108,6 +111,7 @@ void XoGeni::XoLevelRenderer::paint()
                 if(cell->wasCorridorTunnel)
                     color = colorTunnel;
                 break;
+            // Door sills
             case 4:
                 if(cell->room)
                     if(cell->isRoomEdge)
@@ -121,6 +125,7 @@ void XoGeni::XoLevelRenderer::paint()
                 if(cell->isSill)
                     color = colorSill;
                 break;
+            // Doors
             case 5:
                 if(cell->room)
                     if(cell->isRoomEdge)
@@ -136,6 +141,7 @@ void XoGeni::XoLevelRenderer::paint()
                 if(cell->wasDoor)
                     color = colorDoor;
                 break;
+            // Door tunnels
             case 6:
                 if(cell->room)
                     if(cell->isRoomEdge)
@@ -153,6 +159,7 @@ void XoGeni::XoLevelRenderer::paint()
                 if(cell->wasDoor)
                     color = colorDoor;
                 break;
+            // Dead end tunnels removed
             case 7:
                 if(cell->room)
                     if(cell->isRoomEdge)
@@ -161,13 +168,14 @@ void XoGeni::XoLevelRenderer::paint()
                         color = colorRoom;
                 if(cell->isRoomPermiter)
                     color = colorRoomPerimeter;
-                if(cell->isTunnel)
+                if(cell->isTunnel && !cell->wasRoomFixTunnel)
                     color = colorTunnel;
                 if(cell->isSill)
                     color = colorSill;
                 if(cell->wasDoor)
                     color = colorDoor;
                 break;
+            // Exits added
             case 8:
                 if(cell->room)
                     if(cell->isRoomEdge)
@@ -178,7 +186,7 @@ void XoGeni::XoLevelRenderer::paint()
                     color = colorSill;
                 if(cell->isRoomPermiter)
                     color = colorRoomPerimeter;
-                if(cell->isTunnel)
+                if(cell->isTunnel && !cell->wasRoomFixTunnel)
                     color = colorTunnel;
                 if(cell->wasDoor)
                     color = sf::Color::Yellow;
@@ -187,7 +195,28 @@ void XoGeni::XoLevelRenderer::paint()
                 if(cell->isExit)
                     color = sf::Color::Blue;
                 break;
-            // Full
+            // Dangling doors removed
+            case 9:
+                if(cell->room)
+                    if(cell->isRoomEdge)
+                        color = colorRoomEdge;
+                    else
+                        color = colorRoom;
+                if(cell->isSill)
+                    color = colorSill;
+                if(cell->isRoomPermiter)
+                    color = colorRoomPerimeter;
+                if(cell->isTunnel && !cell->wasRoomFixTunnel)
+                    color = colorTunnel;
+                if(cell->isDoor)
+                    color = sf::Color::Yellow;
+                if(cell->isEntrance)
+                    color = sf::Color::Red;
+                if(cell->isExit)
+                    color = sf::Color::Blue;
+                break;
+            // Room tunnels dug
+            // Final
             default:
             case 0:
                 if(cell->room)
