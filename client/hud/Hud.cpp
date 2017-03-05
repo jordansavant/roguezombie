@@ -34,7 +34,7 @@ float Hud::zindex_frames = .1f; // menu frames
 int Hud::font_largeSize = 32;
 int Hud::font_primarySize = 24;
 int Hud::font_noteSize = 20;
-sf::Color Hud::font_primaryColor = sf::Color(0, 255, 0);
+sf::Color Hud::font_primaryColor = RZConfig::fontGreen;
 
 Hud::Hud(StateGamePlay* _state)
     : bit::Container(0, 0, _state->rogueZombieGame->targetResolution.x, _state->rogueZombieGame->targetResolution.y, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, this, std::placeholders::_1, std::placeholders::_2,  std::placeholders::_3)),

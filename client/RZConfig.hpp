@@ -27,6 +27,9 @@ public:
     static sf::Color tileTargetInRange;
     static sf::Color tileTargetInRangeRadius;
 
+    static sf::Color fontGreen;
+    static sf::Color fontRed;
+
     static float getDrawDepthForGameplay(float yPosition);
 
 private:

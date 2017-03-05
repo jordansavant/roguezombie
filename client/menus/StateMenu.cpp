@@ -7,12 +7,14 @@
 #include "../../bitengine/Input.hpp"
 #include "../RogueZombieGame.hpp"
 #include "../../ResourcePath.h"
+#include "../RZConfig.hpp"
 
 StateMenu::StateMenu(RogueZombieGame* rogueZombieGame)
     : bit::Container(0, 0, rogueZombieGame->targetResolution.x, rogueZombieGame->targetResolution.y, bit::Element::AnchorType::Center), rogueZombieGame(rogueZombieGame)
 {
     // Colors
-    rzRed = sf::Color(216, 30, 30);
+    rzRed = RZConfig::fontRed;
+    rzGreen = RZConfig::fontGreen;
 
     // Assets
     std::string titleImagePath(resourcePath() + "minititle.png");
@@ -64,8 +66,8 @@ void StateMenu::configureLabel(bit::Label* label, std::string text)
     label->setSfFont(menuFont);
     label->setSfFontSize(menuFontSize);
     label->setSfFontString(text);
-    label->normalColor = sf::Color::White;
-    label->focusedColor = rzRed;
+    label->normalColor = rzGreen;
+    label->focusedColor = sf::Color::White;
     label->paddingTop = 0;
     label->paddingLeft = 5;
     label->paddingRight = 5;
