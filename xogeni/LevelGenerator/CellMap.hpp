@@ -44,12 +44,14 @@ namespace XoGeni
 
         void buildGround();
 
+
         // Room building
         void buildRooms();
 
         Room* buildRoom();
 
         void emplaceRoom(Room* room);
+
 
         // Door building
         void buildDoors();
@@ -61,6 +63,7 @@ namespace XoGeni
         void getRandomDoorType();
 
         void connectDoor(RoomDoor* door);
+
 
         // Tunnel building
         void buildTunnels();
@@ -75,12 +78,14 @@ namespace XoGeni
 
         void emplaceTunnel(Cell* cell, sf::Vector2i &dir);
 
+
         // Exit building
 
         void buildExits();
 
-        // Clean up
-        void cleanup();
+
+        // Clean up connections
+        void cleanupConnections();
 
         void collapseTunnels();
 
@@ -101,6 +106,11 @@ namespace XoGeni
         void tunnelFromRoomToRoom(Room* start, Room* end, bool stopOnRoom = false);
 
         void emplaceRoomFix(Cell* cell);
+
+
+        // Wall building
+
+        void buildWalls();
 
 
         bool canHouseDimension(unsigned int x, unsigned int y, unsigned int w, unsigned int h);

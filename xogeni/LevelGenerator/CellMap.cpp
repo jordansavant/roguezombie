@@ -611,10 +611,10 @@ void XoGeni::CellMap::buildExits()
 
 
 /////////////////////////////////////////
-// CLEAN UP START
+// CLEAN CONNECTIONS START
 ////////////////////////////////////////
 
-void XoGeni::CellMap::cleanup()
+void XoGeni::CellMap::cleanupConnections()
 {
     // Remove dead ends
     collapseTunnels();
@@ -864,7 +864,62 @@ void XoGeni::CellMap::emplaceRoomFix(Cell* cell)
 }
 
 /////////////////////////////////////////
-// CLEAN UP END
+// CLEAN UP CONNECTIONS END
+////////////////////////////////////////
+
+
+
+
+
+
+/////////////////////////////////////////
+// WALL BUILDING START
+////////////////////////////////////////
+
+void XoGeni::CellMap::buildWalls()
+{
+    std::vector<sf::Vector2i> dirs;
+    // cardinals
+    dirs.push_back(sf::Vector2i(1, 0));
+    dirs.push_back(sf::Vector2i(0, 1));
+    dirs.push_back(sf::Vector2i(-1, 0));
+    dirs.push_back(sf::Vector2i(0, -1));
+    // diagnoals
+    dirs.push_back(sf::Vector2i(1, 1));
+    dirs.push_back(sf::Vector2i(-1, 1));
+    dirs.push_back(sf::Vector2i(-1, -1));
+    dirs.push_back(sf::Vector2i(1, -1));
+
+    // Iterate all cells
+    // If I am not a room, door or tunnel
+    // Look at neighbors and count number of: doors, rooms, tunnels
+    // If count is > 0 make me a wall
+    for(unsigned int i = 0; i < width ; i++) // cols
+    {
+        for(unsigned int j = 0; j < height; j++) // rows
+        {
+            Cell* cell = getCellAtPosition(i, j);
+
+            if(cell->room == NULL && !cell->isDoor && !cell->isTunnel)
+            {
+                for(unsigned int d = 0; d < dirs.size() ; d++)
+                {
+                    Cell* neighbor = getCellAtPositionNullable(cell->x + dirs[d].x, cell->y + dirs[d].y);
+                    if(neighbor)
+                    {
+                        if(neighbor->room != NULL || neighbor->isDoor || neighbor->isTunnel)
+                        {
+                            cell->isWall = 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/////////////////////////////////////////
+// WALL BUILDING END
 ////////////////////////////////////////
 
 

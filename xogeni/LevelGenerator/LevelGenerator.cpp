@@ -23,8 +23,8 @@ XoGeni::CellMap* XoGeni::LevelGenerator::generate(unsigned int seed, unsigned in
     cellMap->buildTunnels();
     cellMap->buildDoors();
     cellMap->buildExits();
-    cellMap->cleanup();
-    // cellMap->buildWalls()
+    cellMap->cleanupConnections();
+    cellMap->buildWalls();
 
     return cellMap;
 }

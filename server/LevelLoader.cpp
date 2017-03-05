@@ -285,19 +285,35 @@ void LevelLoader::Level::unpack(XoGeni::CellMap* cellMap)
     {
         XoGeni::Cell* cell = cellMap->cells[i];
 
+        // Tiles
         tileIdMap.push_back(i + 1);
+        LevelLoader::Tile tileDef;
+        tileDef.unpack(cellMap->cells[i]);
+        tileDefs.push_back(tileDef);
+
         characterIdMap.push_back(0);
         lightIdMap.push_back(0);
 
-        //// Make temporary walls
-        if(cell->room == NULL && !cell->isTunnel)
+        // Structures
+        if(cell->isWall)
         {
             structureIdMap.push_back(sId);
         
             LevelLoader::Structure structureDef;
             structureDef.id = sId;
-            structureDef.type = cell->isDoor ? 2 : 1;
-            structureDef.isOpen = cell->isDoor ? false : true;
+            structureDef.type = 1;
+            structureDefs.push_back(structureDef);
+        
+            sId++;
+        }
+        else if(cell->isDoor)
+        {
+            structureIdMap.push_back(sId);
+        
+            LevelLoader::Structure structureDef;
+            structureDef.id = sId;
+            structureDef.type = 2;
+            structureDef.isOpen = false;
             structureDefs.push_back(structureDef);
         
             sId++;
@@ -306,19 +322,11 @@ void LevelLoader::Level::unpack(XoGeni::CellMap* cellMap)
         {
           structureIdMap.push_back(0);
         }
+
+        // Lights
     }
 
     // Load definitions
-
-    // Tiles
-    for(unsigned int i=0; i < cellMap->cells.size(); i++)
-    {
-        LevelLoader::Tile tileDef;
-        tileDef.unpack(cellMap->cells[i]);
-        tileDefs.push_back(tileDef);
-    }
-
-    // Structures
 
     // Characters
 
