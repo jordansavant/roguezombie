@@ -280,62 +280,58 @@ void LevelLoader::Level::unpack(XoGeni::CellMap* cellMap)
 
     // Parse id maps into linear arrays
     // no structureIdMap, characterIdMap, lightIdMap yet
+    unsigned int tId = 1;
     unsigned int sId = 1;
+    unsigned int lId = 1;
     for(unsigned int i=0; i < cellMap->cells.size(); i++)
     {
         XoGeni::Cell* cell = cellMap->cells[i];
 
         // Tiles
-        tileIdMap.push_back(i + 1);
+        tileIdMap.push_back(tId);
         LevelLoader::Tile tileDef;
-        tileDef.unpack(cellMap->cells[i]);
+        tileDef.unpack(cellMap->cells[i], tId);
         tileDefs.push_back(tileDef);
+        tId++;
 
-        characterIdMap.push_back(0);
-        lightIdMap.push_back(0);
 
         // Structures
-        if(cell->isWall)
+        if(cell->isWall || cell->isDoor)
         {
             structureIdMap.push_back(sId);
-        
             LevelLoader::Structure structureDef;
-            structureDef.id = sId;
-            structureDef.type = 1;
+            structureDef.unpack(cell, sId);
             structureDefs.push_back(structureDef);
-        
-            sId++;
-        }
-        else if(cell->isDoor)
-        {
-            structureIdMap.push_back(sId);
-        
-            LevelLoader::Structure structureDef;
-            structureDef.id = sId;
-            structureDef.type = 2;
-            structureDef.isOpen = false;
-            structureDefs.push_back(structureDef);
-        
             sId++;
         }
         else
         {
-          structureIdMap.push_back(0);
+            structureIdMap.push_back(0);
         }
 
         // Lights
+        if(cell->hasLight)
+        {
+            lightIdMap.push_back(lId);
+            LevelLoader::Light lightDef;
+            lightDef.unpack(cell, lId);
+            lightDefs.push_back(lightDef);
+            lId++;
+        }
+        else
+        {
+            lightIdMap.push_back(0);
+        }
+
+        // Characters
+        characterIdMap.push_back(0);
+
     }
-
-    // Load definitions
-
-    // Characters
-
-    // Lights
 }
 
-void LevelLoader::Tile::unpack(XoGeni::Cell* cell)
+void LevelLoader::Tile::unpack(XoGeni::Cell* cell, unsigned int tileId)
 {
-    id = cell->index + 1;
+    id = tileId;
     type = 1; // Ground
 
     // Enter events in tile
@@ -350,4 +346,26 @@ void LevelLoader::Tile::unpack(XoGeni::Cell* cell)
         entranceDef.priority = 1;;
         entrances.push_back(entranceDef);
     }
+}
+
+void LevelLoader::Structure::unpack(XoGeni::Cell* cell, unsigned int structureId)
+{
+    id = structureId;
+    type = cell->isWall ? 1 : 2; // wall or door currently
+    isOpen = false;
+    isLocked = false;
+
+    // Items in structure
+
+    // Lights in structure
+}
+
+void LevelLoader::Light::unpack(XoGeni::Cell* cell, unsigned int lightId)
+{
+    id = lightId;
+    radius = cell->lightRadius;
+    brightness = cell->lightOpacity;
+    red = cell->lightColorR;
+    green = cell->lightColorG;
+    blue = cell->lightColorB;
 }

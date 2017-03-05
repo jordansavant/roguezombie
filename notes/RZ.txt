@@ -24,11 +24,13 @@ Characters retain pointers to attack targets
 - If the tile has no body (character) then we can skip attack
 - Same for all server side elements, they should point to tiles, not to characters (or structures) etc
 
-When I ran the level with a big blank canvas of tiles the performance was horrible
-- The shadowcasting may be networking everything without some visible range limitation?
-- The tiles do not need to be changing their quads in every Update() cycle
-- Figured out that it was characters have a default vision of 30, for a blank are thats pi*30^2 = 2826!
-
+Lights are performance hogs
+- We should move their processing to a distributed update
+- Then have a separate lighting color struct for tiles
+- Have a global lighting ID that increments before the update cycle of lights
+- When lights run they will reset the lighting colors of the tile if the ID is a mismatch, indicating its a new lighting engine update
+- When they run they will merge their colors into the lighting struct
+- Then in the tile update loop we apply lighting color to the actual colors
 
 --------------------
 RZ Features

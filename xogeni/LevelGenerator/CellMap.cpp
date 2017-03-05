@@ -924,6 +924,40 @@ void XoGeni::CellMap::buildWalls()
 
 
 
+
+
+
+/////////////////////////////////////////
+// LIGHT BUILDING START
+////////////////////////////////////////
+
+void XoGeni::CellMap::buildLights()
+{
+    //for(unsigned int i=0; i < rooms.size(); i++)
+    //{
+    //    Room* room = rooms[i];
+    //    unsigned int centerX = room->x + room->width / 2;
+    //    unsigned int centerY = room->y + room->height / 2;
+    //    Cell* roomCenterCell = getCellAtPosition(centerX, centerY);
+    //
+    //    unsigned int hypSize = (room->width + room->height) / 2;
+    //
+    //    roomCenterCell->hasLight = true;
+    //    roomCenterCell->lightRadius = hypSize;
+    //    roomCenterCell->lightOpacity = 1;
+    //    roomCenterCell->lightColorR = 255;
+    //    roomCenterCell->lightColorG = 225;
+    //    roomCenterCell->lightColorB = 100;
+    //}
+}
+
+/////////////////////////////////////////
+// LIGHT BUILDING END
+////////////////////////////////////////
+
+
+
+
 bool XoGeni::CellMap::canHouseDimension(unsigned int x, unsigned int y, unsigned int w, unsigned int h)
 {
     if(x > mapPadding && y > mapPadding)

@@ -24,25 +24,35 @@ namespace XoGeni
 
         unsigned int index;
         unsigned int x, y;
-        Room* room;
-        RoomDoor* door;
-        SillData sillData;
         unsigned int tunnelTestCount;
         bool isWall;
+        
+        Room* room;
         bool isRoomEdge;
         bool isRoomPermiter;
+        
+        RoomDoor* door;
+        SillData sillData;
         bool isSill;
         bool isDoor;
         bool wasDoor;
+        
         bool isTunnel;
         bool wasCorridorTunnel;
         bool wasDoorTunnel;
         bool wasRoomFixTunnel;
+        
         bool isEntrance;
         bool isExit;
         unsigned int entranceId;
         unsigned int exitId;
-        unsigned int metadata_floodfillId;
+
+        bool hasLight;
+        unsigned int lightRadius;
+        float lightOpacity;
+        unsigned int lightColorR;
+        unsigned int lightColorG;
+        unsigned int lightColorB;
 
     };
 }

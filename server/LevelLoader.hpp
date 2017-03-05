@@ -52,7 +52,7 @@ public:
 
         void unpack(tinyxml2::XMLElement* node);
 
-        void unpack(XoGeni::Cell* cell);
+        void unpack(XoGeni::Cell* cell, unsigned int id);
     };
     
     struct Item
@@ -75,6 +75,8 @@ public:
         float brightness;
 
         void unpack(tinyxml2::XMLElement* node);
+
+        void unpack(XoGeni::Cell* cell, unsigned int id);
     };
     
     struct Structure
@@ -87,6 +89,8 @@ public:
         std::vector<Light> lights;
 
         void unpack(tinyxml2::XMLElement* node);
+
+        void unpack(XoGeni::Cell* cell, unsigned int id);
     };
 
     struct Character

@@ -113,6 +113,11 @@ namespace XoGeni
         void buildWalls();
 
 
+        // Light building
+
+        void buildLights();
+
+
         bool canHouseDimension(unsigned int x, unsigned int y, unsigned int w, unsigned int h);
 
         void inspectAllCellsInSpiral(const std::function<bool(Cell* cell)> &inspector);
