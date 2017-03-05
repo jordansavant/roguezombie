@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "../bitengine/System/tinyxml2.h"
+#include "../xogeni/LevelGenerator/LevelGenerator.hpp"
 
 namespace XoGeni {
     class CellMap;
@@ -123,7 +124,7 @@ public:
 
         void unpack(tinyxml2::XMLElement* node);
 
-        void unpack(XoGeni::CellMap* cellMap);
+        void unpack(XoGeni::CellMap* cellMap, unsigned int id);
 
         void loadIdString(const char* text, std::vector<unsigned int> &fill);
 
@@ -151,7 +152,7 @@ public:
 
     void loadFromXML(std::string file);
 
-    void loadFromXoGeni(XoGeni::CellMap* cellMap);
+    void loadFromXoGeni(XoGeni::LevelGenerator &levelGenerator, unsigned int seed, unsigned int width, unsigned int height);
 
 };
 

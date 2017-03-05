@@ -2,6 +2,7 @@
 #include "../bitengine/System/tinyxml2.h"
 #include "../bitengine/System.hpp"
 #include "../ResourcePath.h"
+#include "../xogeni/LevelGenerator/LevelGenerator.hpp"
 #include "../xogeni/LevelGenerator/CellMap.hpp"
 #include "../xogeni/LevelGenerator/Cell.hpp"
 #include <sstream>
@@ -261,16 +262,26 @@ void LevelLoader::loadFromXML(std::string file)
     }
 }
  
-void LevelLoader::loadFromXoGeni(XoGeni::CellMap* cellMap)
+void LevelLoader::loadFromXoGeni(XoGeni::LevelGenerator &levelGenerator, unsigned int seed, unsigned int width, unsigned int height)
 {
-    LevelLoader::Level levelDef;
-    levelDef.unpack(cellMap);
-    levelDefs.push_back(levelDef);
+    unsigned int levelId = 1;
+    for(unsigned int i=0; i < 10; i++)
+    {
+        XoGeni::CellMap* cellMap = levelGenerator.generate(seed, width, height);
+
+        LevelLoader::Level levelDef;
+        levelDef.unpack(cellMap, levelId);
+        levelDefs.push_back(levelDef);
+        levelId++;
+
+        delete cellMap;
+
+    }
 }
 
-void LevelLoader::Level::unpack(XoGeni::CellMap* cellMap)
+void LevelLoader::Level::unpack(XoGeni::CellMap* cellMap, unsigned int levelId)
 {
-    id = 1;
+    id = levelId;
     defaultEntranceId = 1;
 
     // Get level dimensions

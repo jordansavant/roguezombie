@@ -24,6 +24,9 @@ namespace bit
 
         virtual ~Server();
 
+        sf::Mutex isLoadCompleteMutex;
+        bool isLoadComplete;
+
         enum ServerPacketType
         {
             Broadcast,                  // tell all clients a string broadcast

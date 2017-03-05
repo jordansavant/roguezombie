@@ -31,12 +31,9 @@ GameplayServer::~GameplayServer()
 
 void GameplayServer::load()
 {
-    // Load the level pack definitions
-    //levelLoader.loadFromXML("Demo.xml");
+    // Generate levels
     XoGeni::LevelGenerator levelGenerator;
-    XoGeni::CellMap* cellMap = levelGenerator.generate(2006, 64, 64);
-    levelLoader.loadFromXoGeni(cellMap);
-    delete cellMap;
+    levelLoader.loadFromXoGeni(levelGenerator, 2006, 64, 64);
 
     // Build all levels for this level pack
     levels.resize(levelLoader.levelDefs.size());

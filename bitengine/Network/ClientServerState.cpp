@@ -50,7 +50,7 @@ void bit::ClientServerState::load()
     {
         server = newServer();
         server->start();
-        ipAddress = "127.0.0.1"; // TODO: HardCoded
+        ipAddress = "127.0.0.1";
         port = getServerPort();
     }
     else if(isClient)
@@ -81,9 +81,24 @@ bool bit::ClientServerState::update(sf::Time &gameTime)
 {
     bit::State::update(gameTime);
 
+    if(isHost)
+    {
+        // We are both a server and a client
+        // It is possible that the server is still loading
+        bool serverLoadComplete = false;
+        server->isLoadCompleteMutex.lock();
+        serverLoadComplete = server->isLoadComplete;
+        server->isLoadCompleteMutex.unlock();
+
+        if(!serverLoadComplete)
+        {
+            return true;
+        }
+    }
+
     if(isClient)
     {
-        if(isNetworkConnected)
+        if(isNetworkConnected) // Socket is connected
         {
             // Handle the network input
             ServerPacket packet;

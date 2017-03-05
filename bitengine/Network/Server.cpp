@@ -14,7 +14,8 @@ bit::Server::Server()
       maxConnectedClients(16),
       connectedClients(0),
       clientIdentifier(0),
-      clients(1)
+      clients(1),
+      isLoadComplete(false)
 {
     listenerSocket.setBlocking(false);
 
@@ -78,6 +79,9 @@ void bit::Server::executionThread()
     sf::Clock stepClock, tickClock;
 
     load();
+    isLoadCompleteMutex.lock();
+    isLoadComplete = true;
+    isLoadCompleteMutex.unlock();
 
     while(!waitingThreadEnd)
     {
