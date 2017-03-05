@@ -98,7 +98,7 @@ namespace XoGeni
 
         Room* getNearestRoom(Room* room);
 
-        void tunnelFromRoomToRoom(Room* start, Room* end);
+        void tunnelFromRoomToRoom(Room* start, Room* end, bool stopOnRoom = false);
 
         void emplaceRoomFix(Cell* cell);
 

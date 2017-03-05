@@ -25,7 +25,7 @@ XoGeni::XoGeniStateStart::XoGeniStateStart(bit::StateStack &stack, XoGeniGame* _
     levelRenderer = new XoLevelRenderer(this);
 
     // Seed
-    seedCounter = 28284; // 28266; //std::rand();
+    seedCounter = std::rand();
 }
 
 XoGeni::XoGeniStateStart::~XoGeniStateStart()
@@ -98,12 +98,19 @@ bool XoGeni::XoGeniStateStart::update(sf::Time &gameTime)
     {
         // Special validation routine
         unsigned int testSeed = std::rand(); //seedCounter;
-        unsigned int iterations = 100;
+        unsigned int iterations = 10000;
         std::stringstream ssa;
         ssa << "TESTING " << iterations << " ITERATIONS FROM " << testSeed; 
         bit::Output::Debug(ssa.str());
         for(unsigned int i=0; i < iterations; i++)
         {
+            if(i % 25 == 0)
+            {
+                std::stringstream ssb;
+                ssb << "AT SEED " << testSeed;
+                bit::Output::Debug(ssb.str());
+            }
+
             CellMap* testMap = levelGenerator->generate(testSeed, 64, 64);
 
             if(!testMap->testValidity())

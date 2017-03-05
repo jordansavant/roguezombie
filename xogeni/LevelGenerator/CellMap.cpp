@@ -730,12 +730,8 @@ void XoGeni::CellMap::fixRooms()
             Room* room = rooms[i];
             if(!areRoomsConnected(room, entranceRoom))
             {
-                // Option A: delete room
-                // Option B: find nearest room and do a direct tunnel
-                //Room* closestRoom = getNearestRoom(room);
-
                 // Tunnel to room
-                tunnelFromRoomToRoom(room, entranceRoom);
+                tunnelFromRoomToRoom(room, entranceRoom, true);
             }
         }
     }
@@ -815,7 +811,7 @@ XoGeni::Room* XoGeni::CellMap::getNearestRoom(Room* room)
     return closestRoom;
 }
 
-void XoGeni::CellMap::tunnelFromRoomToRoom(Room* start, Room* end)
+void XoGeni::CellMap::tunnelFromRoomToRoom(Room* start, Room* end, bool stopOnRoom)
 {
     Cell* startCenterCell = getCellAtPosition(start->x + start->width / 2, start->y + start->height / 2);
     Cell* endCenterCell = getCellAtPosition(end->x + end->width / 2, end->y + end->height / 2);
@@ -826,18 +822,28 @@ void XoGeni::CellMap::tunnelFromRoomToRoom(Room* start, Room* end)
     sf::Vector2i dir(bit::Math::round(dirf.x * distance), bit::Math::round(dirf.y * distance));
     sf::Vector2i pos(startCenterCell->x, startCenterCell->y);
 
+    std::vector<sf::Vector2i> path;
+
     // Full orthogonal tunnel
     for(int i=1; i <= std::abs(dir.x); i++)
     {
         int xPlus = dir.x < 0 ? -1 : 1;
         pos.x += xPlus;
-        emplaceRoomFix(getCellAtPosition(pos.x, pos.y));
+        path.push_back(pos);
     }
     for(int i=1; i <= std::abs(dir.y); i++)
     {
         int yPlus = dir.y < 0 ? -1 : 1;
         pos.y += yPlus;
-        emplaceRoomFix(getCellAtPosition(pos.x, pos.y));
+        path.push_back(pos);
+    }
+    for(unsigned int i=0; i < path.size(); i++)
+    {
+        Cell* cell = getCellAtPosition(path[i].x, path[i].y);
+        if(cell->room && cell->room != start && stopOnRoom)
+            return;
+
+        emplaceRoomFix(cell);
     }
 }
 
