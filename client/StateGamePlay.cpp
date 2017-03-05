@@ -153,6 +153,7 @@ void StateGamePlay::exitInventoryModes()
 
 void StateGamePlay::modeOnEnterJoining()
 {
+    joiningMenu->show();
     hud->hide();
 }
 

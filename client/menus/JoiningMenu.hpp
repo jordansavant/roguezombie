@@ -16,8 +16,16 @@ public:
 
     StateGamePlay* state;
     bit::Label* joiningLabel;
+    std::vector<std::string> messages;
+    bit::GameTimer messageTimer;
+    unsigned int currentMessage;
+
+    void show();
 
     void hide();
+
+    virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
+
 };
 
 #endif
