@@ -8,7 +8,7 @@
 #include "../../bitengine/System.hpp"
 
 XoGeni::CellMap::CellMap(unsigned int width, unsigned int height)
-    : width(width), height(height), size(width * height)
+    : width(width), height(height), size(width * height), entranceRoom(NULL), exitRoom(NULL)
 {
     mapPadding = 1;
     float mapHypSize = std::sqrtf(width * height);
@@ -582,6 +582,7 @@ void XoGeni::CellMap::buildExits()
         Cell* centerCell = getCellAtPosition(centerX, centerY);
         centerCell->isEntrance = true;
         centerCell->entranceId = enC;
+        entranceRoom = rooms[i];
     }
     
     unsigned int exC = 0;
@@ -597,6 +598,7 @@ void XoGeni::CellMap::buildExits()
         Cell* centerCell = getCellAtPosition(centerX, centerY);
         centerCell->isExit = true;
         centerCell->exitId = exC;
+        exitRoom = rooms[i];
     }
 }
 
@@ -726,14 +728,14 @@ void XoGeni::CellMap::fixRooms()
         for(unsigned int i=0; i < rooms.size(); i++)
         {
             Room* room = rooms[i];
-            if(!isRoomConnected(room))
+            if(!areRoomsConnected(room, entranceRoom))
             {
                 // Option A: delete room
                 // Option B: find nearest room and do a direct tunnel
-                Room* closestRoom = getNearestRoom(room);
+                //Room* closestRoom = getNearestRoom(room);
 
                 // Tunnel to room
-                tunnelFromRoomToRoom(room, closestRoom);
+                tunnelFromRoomToRoom(room, entranceRoom);
             }
         }
     }
@@ -741,43 +743,44 @@ void XoGeni::CellMap::fixRooms()
 
 bool XoGeni::CellMap::isRoomConnected(Room* room)
 {
+    return areRoomsConnected(room, entranceRoom);
+}
+
+bool XoGeni::CellMap::areRoomsConnected(Room* room, Room* otherRoom)
+{
     CellMap* cellMap = this;
     unsigned int centerX = room->x + room->width / 2;
     unsigned int centerY = room->y + room->height / 2;
     Cell* roomCenterCell = getCellAtPosition(centerX, centerY);
 
-    for(unsigned int j=0; j < rooms.size(); j++)
-    {
-        Room* otherRoom = rooms[j];
+    if(otherRoom == room)
+        return true;
 
-        if(otherRoom == room)
-            continue;
+    unsigned int otherCenterX = otherRoom->x + otherRoom->width / 2;
+    unsigned int otherCenterY = otherRoom->y + otherRoom->height / 2;
+    Cell* otherRoomCenterCell = getCellAtPosition(otherCenterX, otherCenterY);
 
-        unsigned int otherCenterX = otherRoom->x + otherRoom->width / 2;
-        unsigned int otherCenterY = otherRoom->y + otherRoom->height / 2;
-        Cell* otherRoomCenterCell = getCellAtPosition(otherCenterX, otherCenterY);
-
-        std::function<bool(Cell* c)> isBlocked = [&room] (Cell* c) -> bool {
-            if(c->room == NULL && !c->isTunnel && !c->isDoor)
-            {
-                return true;
-            }
-            return false;
-        };
-        std::function<void(Cell* c, std::vector<Cell*> &f)> getNeighbors = [&cellMap] (Cell* c, std::vector<Cell*> &f) {
-            f.push_back(cellMap->getCellAtPosition(c->x, c->y - 1)); // top
-            f.push_back(cellMap->getCellAtPosition(c->x, c->y + 1)); // bottom
-            f.push_back(cellMap->getCellAtPosition(c->x + 1, c->y)); // right
-            f.push_back(cellMap->getCellAtPosition(c->x - 1, c->y)); // left
-        };
-
-        std::vector<Cell*> cellPath;
-        bit::Astar::pathfind(roomCenterCell, otherRoomCenterCell, isBlocked, getNeighbors, cellPath);
-
-        if(cellPath.size() != 0)
+    std::function<bool(Cell* c)> isBlocked = [&room] (Cell* c) -> bool {
+        if(c->room == NULL && !c->isTunnel && !c->isDoor)
         {
             return true;
         }
+        return false;
+    };
+    std::function<void(Cell* c, std::vector<Cell*> &f)> getNeighbors = [&cellMap] (Cell* c, std::vector<Cell*> &f) {
+        f.push_back(cellMap->getCellAtPosition(c->x, c->y - 1)); // top
+        f.push_back(cellMap->getCellAtPosition(c->x, c->y + 1)); // bottom
+        f.push_back(cellMap->getCellAtPosition(c->x + 1, c->y)); // right
+        f.push_back(cellMap->getCellAtPosition(c->x - 1, c->y)); // left
+    };
+
+    std::vector<Cell*> cellPath;
+    bit::Astar::pathfind(roomCenterCell, otherRoomCenterCell, isBlocked, getNeighbors, cellPath);
+
+    // If there is a path
+    if(cellPath.size() != 0)
+    {
+        return true;
     }
 
     return false;
@@ -820,28 +823,37 @@ void XoGeni::CellMap::tunnelFromRoomToRoom(Room* start, Room* end)
     sf::Vector2f dirf = bit::VectorMath::directionToVector(startCenterCell->x, startCenterCell->y, endCenterCell->x, endCenterCell->y);
     float distance = bit::VectorMath::distance(startCenterCell->x, startCenterCell->y, endCenterCell->x, endCenterCell->y);
 
-    sf::Vector2i dir((int)(dirf.x * distance), (int)(dirf.y * distance));
+    sf::Vector2i dir(bit::Math::round(dirf.x * distance), bit::Math::round(dirf.y * distance));
+    sf::Vector2i pos(startCenterCell->x, startCenterCell->y);
 
     // Full orthogonal tunnel
     for(int i=1; i <= std::abs(dir.x); i++)
     {
-        int xPlus = dir.x < 0 ? -i : i;
-        Cell* cell = getCellAtPosition(startCenterCell->x + xPlus, startCenterCell->y);
-        if(cell->room == NULL && !cell->isDoor && !cell->isTunnel)
-        {
-            cell->isTunnel = true;
-            cell->wasRoomFixTunnel = true;
-        }
+        int xPlus = dir.x < 0 ? -1 : 1;
+        pos.x += xPlus;
+        emplaceRoomFix(getCellAtPosition(pos.x, pos.y));
     }
     for(int i=1; i <= std::abs(dir.y); i++)
     {
-        int yPlus = dir.y < 0 ? -i : i;
-        Cell* cell = getCellAtPosition(startCenterCell->x, startCenterCell->y + yPlus);
-        if(cell->room == NULL && !cell->isDoor && !cell->isTunnel)
-        {
-            cell->isTunnel = true;
-            cell->wasRoomFixTunnel = true;
-        }
+        int yPlus = dir.y < 0 ? -1 : 1;
+        pos.y += yPlus;
+        emplaceRoomFix(getCellAtPosition(pos.x, pos.y));
+    }
+}
+
+void XoGeni::CellMap::emplaceRoomFix(Cell* cell)
+{
+    // Make door
+    //if(cell->isRoomPermiter && !cell->isDoor && !cell->isTunnel)
+    //{
+    //    cell->isDoor = true;
+    //}
+    //// Make tunnel
+    //else
+    if(cell->room == NULL && !cell->isDoor && !cell->isTunnel)
+    {
+        cell->isTunnel = true;
+        cell->wasRoomFixTunnel = true;
     }
 }
 
@@ -934,4 +946,22 @@ void XoGeni::CellMap::getShuffledDirections(std::vector<sf::Vector2i> &fill)
     {
         std::swap(fill[i], fill[LevelGenerator::random.next(i+1)]);
     }
+}
+
+bool XoGeni::CellMap::testValidity()
+{
+    return areAllRoomsConnected();
+}
+
+bool XoGeni::CellMap::areAllRoomsConnected()
+{
+    for(unsigned int i=0; i < rooms.size(); i++)
+    {
+        if(!isRoomConnected(rooms[i]))
+        {
+            return false;
+        }
+    }
+
+    return true;
 }

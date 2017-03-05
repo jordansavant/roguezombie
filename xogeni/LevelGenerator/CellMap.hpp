@@ -39,6 +39,8 @@ namespace XoGeni
         std::vector<sf::Vector2i> tunnelDirs;
         unsigned int entranceCount;
         unsigned int exitCount;
+        Room* entranceRoom;
+        Room* exitRoom;
 
         void buildGround();
 
@@ -92,9 +94,13 @@ namespace XoGeni
 
         bool isRoomConnected(Room* room);
 
+        bool areRoomsConnected(Room* room, Room* other);
+
         Room* getNearestRoom(Room* room);
 
         void tunnelFromRoomToRoom(Room* start, Room* end);
+
+        void emplaceRoomFix(Cell* cell);
 
 
         bool canHouseDimension(unsigned int x, unsigned int y, unsigned int w, unsigned int h);
@@ -108,6 +114,12 @@ namespace XoGeni
         Cell* getCellAtPositionNullable(unsigned int x, unsigned int y);
 
         void getShuffledDirections(std::vector<sf::Vector2i> &fill);
+
+
+        // Test methods
+        bool testValidity();
+
+        bool areAllRoomsConnected();
     };
 }
 #endif

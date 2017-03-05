@@ -25,7 +25,7 @@ XoGeni::XoGeniStateStart::XoGeniStateStart(bit::StateStack &stack, XoGeniGame* _
     levelRenderer = new XoLevelRenderer(this);
 
     // Seed
-    seedCounter = 28200; //std::rand();
+    seedCounter = 28284; // 28266; //std::rand();
 }
 
 XoGeni::XoGeniStateStart::~XoGeniStateStart()
@@ -81,6 +81,31 @@ bool XoGeni::XoGeniStateStart::update(sf::Time &gameTime)
 
         // Center camera
         cameras[0]->setCenter(levelRenderer->getMapRenderSize().x / 2, levelRenderer->getMapRenderSize().y / 2);
+    }
+
+    if(xoGeniGame->inputManager->isButtonPressed(sf::Keyboard::Return))
+    {
+        // Special validation routine
+        unsigned int testSeed = std::rand(); //seedCounter;
+        unsigned int iterations = 100;
+        std::stringstream ssa;
+        ssa << "TESTING " << iterations << " ITERATIONS FROM " << testSeed; 
+        bit::Output::Debug(ssa.str());
+        for(unsigned int i=0; i < iterations; i++)
+        {
+            CellMap* testMap = levelGenerator->generate(testSeed, 64, 64);
+
+            if(!testMap->testValidity())
+            {
+                std::stringstream ssb;
+                ssb << "SEED " << testSeed << " INVALID"; 
+                bit::Output::Debug(ssb.str());
+            }
+
+            delete testMap;
+            testSeed++;
+        }
+        bit::Output::Debug("TEST COMPLETE");
     }
 
     if(cellMap)
