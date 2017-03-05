@@ -275,7 +275,6 @@ void LevelLoader::loadFromXoGeni(XoGeni::LevelGenerator &levelGenerator, unsigne
         levelId++;
 
         delete cellMap;
-
     }
 }
 
