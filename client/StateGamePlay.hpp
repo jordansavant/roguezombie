@@ -14,6 +14,7 @@ class LevelClient;
 class RogueZombieGame;
 class CharacterClient;
 class Hud;
+class JoiningMenu;
 
 class StateGamePlay : public bit::ClientServerState
 {
@@ -83,8 +84,9 @@ public:
     unsigned int thudSoundId;
     unsigned int healSoundId;
 
-    // Test Gui
+    // Gui
     Hud* hud;
+    JoiningMenu* joiningMenu;
 
     virtual void load();
 

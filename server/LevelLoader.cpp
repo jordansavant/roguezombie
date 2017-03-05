@@ -332,7 +332,12 @@ void LevelLoader::Level::unpack(XoGeni::CellMap* cellMap)
 void LevelLoader::Tile::unpack(XoGeni::Cell* cell, unsigned int tileId)
 {
     id = tileId;
-    type = 1; // Ground
+    if(cell->isEntrance)
+        type = 4; // StairwellUp_North
+    else if(cell->isExit)
+        type = 2; // StairwellDown_South
+    else
+        type = 1; // Ground
 
     // Enter events in tile
 
@@ -343,7 +348,7 @@ void LevelLoader::Tile::unpack(XoGeni::Cell* cell, unsigned int tileId)
     {
         LevelLoader::Entrance entranceDef;
         entranceDef.id = cell->entranceId;
-        entranceDef.priority = 1;;
+        entranceDef.priority = 1;
         entrances.push_back(entranceDef);
     }
 }

@@ -14,6 +14,7 @@
 #include "TileClient.hpp"
 #include "CharacterClient.hpp"
 #include "../server/Command.hpp"
+#include "menus/JoiningMenu.hpp"
 #include "hud/Hud.hpp"
 #include "hud/InteractionMenu.hpp"
 #include "hud/StatBubble.hpp"
@@ -37,6 +38,7 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     cameras[0]->panSpeed = 3;
 
     hud = new Hud(this);
+    joiningMenu = new JoiningMenu(rogueZombieGame, this);
 
     // Sounds
     explosionSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_explosion01.ogg");
@@ -98,6 +100,7 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
 StateGamePlay::~StateGamePlay()
 {
     delete hud;
+    delete joiningMenu;
     delete levelClient;
 }
 
@@ -155,6 +158,7 @@ void StateGamePlay::modeOnEnterJoining()
 
 void StateGamePlay::modeOnExitJoining()
 {
+    joiningMenu->hide();
     hud->show();
 }
 
@@ -703,6 +707,7 @@ bool StateGamePlay::update(sf::Time &gameTime)
     fps.update(gameTime);
 
     hud->update(*rogueZombieGame->renderWindow, gameTime);
+    joiningMenu->update(*rogueZombieGame->renderWindow, gameTime);
 
     levelClient->update(gameTime);
 
@@ -725,6 +730,7 @@ void StateGamePlay::draw(sf::RenderWindow &window, sf::Time &gameTime)
     bit::ClientServerState::draw(window, gameTime);
 
     hud->draw(window, gameTime);
+    joiningMenu->draw(window, gameTime);
 
     fps.draw(window, gameTime);
 }
