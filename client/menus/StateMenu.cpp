@@ -19,7 +19,7 @@ StateMenu::StateMenu(RogueZombieGame* rogueZombieGame)
     titleTexture.loadFromFile(titleImagePath);
     titleTexture.setSmooth(true);
 
-    std::string fontPath(resourcePath() + "homespun.ttf");
+    std::string fontPath(resourcePath() + "Audimat.ttf");
     menuFont.loadFromFile(fontPath);
     menuFontSize = 48;
 

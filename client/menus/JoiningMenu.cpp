@@ -15,7 +15,7 @@ JoiningMenu::JoiningMenu(RogueZombieGame* rogueZombieGame, StateGamePlay* state)
     messages.push_back("Server is planning rooms...");
     messages.push_back("Server is setting doors...");
     messages.push_back("Server is tunneling corridors...");
-    messages.push_back("Server is biulding walls...");
+    messages.push_back("Server is building walls...");
     messages.push_back("Server is placing lights...");
     messages.push_back("Server is spawning characters...");
     messages.push_back("Server is consulting random number god...");

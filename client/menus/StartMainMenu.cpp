@@ -16,7 +16,7 @@ StartMainMenu::StartMainMenu(RogueZombieGame* rogueZombieGame, StateGameStart* s
     titlePicture = new bit::Picture(0, 0, 0, 0, bit::Element::AnchorType::Center);
     titlePicture->opacity = 0;
     titlePicture->setTexture(titleTexture);
-	titlePicture->setColor(sf::Color::White);
+    titlePicture->setColor(sf::Color::White);
     addChild(titlePicture);
 
     // Singleplayer
@@ -32,7 +32,7 @@ StartMainMenu::StartMainMenu(RogueZombieGame* rogueZombieGame, StateGameStart* s
             return false;
         }
     );
-    configureLabel(singleplayerLabel, "host");
+    configureLabel(singleplayerLabel, "Host Game");
 
     // Multiplayer
     multiplayerLabel = new bit::Label(0, -600, 0, 0, bit::Element::AnchorType::Center,
@@ -47,11 +47,11 @@ StartMainMenu::StartMainMenu(RogueZombieGame* rogueZombieGame, StateGameStart* s
             return false;
         }
     );
-    configureLabel(multiplayerLabel, "join");
+    configureLabel(multiplayerLabel, "Join Server");
 
     // Options
     settingsLabel = new bit::Label(0, -600, 0, 0, bit::Element::AnchorType::Center, std::bind(&StartMainMenu::onActivate_Settings, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-    configureLabel(settingsLabel, "settings");
+    configureLabel(settingsLabel, "Configure");
 
     // Exit
     exitLabel = new bit::Label(0, -600, 0, 0, bit::Element::AnchorType::Center,
@@ -66,7 +66,7 @@ StartMainMenu::StartMainMenu(RogueZombieGame* rogueZombieGame, StateGameStart* s
             return false;
         }
     );
-    configureLabel(exitLabel, "exit");
+    configureLabel(exitLabel, "Exit");
 }
 
 void StartMainMenu::load()
