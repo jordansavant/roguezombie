@@ -67,8 +67,20 @@ bool XoGeni::XoGeniStateStart::update(sf::Time &gameTime)
         levelRenderer->paint();
     }
 
+    bool run = false;
+
     if(xoGeniGame->inputManager->isButtonPressed(sf::Keyboard::Space))
     {
+        run = true;
+        if(xoGeniGame->inputManager->isButtonDown(sf::Keyboard::LShift))
+            seedCounter--;
+        else
+            seedCounter++;
+    }
+
+    if(cellMap == NULL || run)
+    {
+        run = false;
         std::stringstream ss;
         ss << "SEED: " << seedCounter;
         bit::Output::Debug(ss.str());
@@ -77,7 +89,6 @@ bool XoGeni::XoGeniStateStart::update(sf::Time &gameTime)
             delete cellMap;
         cellMap = levelGenerator->generate(seedCounter, 64, 64);
         levelRenderer->load(cellMap);
-        seedCounter++;
 
         // Center camera
         cameras[0]->setCenter(levelRenderer->getMapRenderSize().x / 2, levelRenderer->getMapRenderSize().y / 2);
