@@ -124,7 +124,7 @@ public:
 
         void unpack(tinyxml2::XMLElement* node);
 
-        void unpack(XoGeni::CellMap* cellMap, unsigned int id);
+        void unpack(XoGeni::CellMap* cellMap);
 
         void loadIdString(const char* text, std::vector<unsigned int> &fill);
 

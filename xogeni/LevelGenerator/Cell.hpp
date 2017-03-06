@@ -8,6 +8,8 @@ namespace XoGeni
 {
     class Room;
     class RoomDoor;
+    class Entrance;
+    class Exit;
 
     class Cell : public bit::Node
     {
@@ -43,9 +45,14 @@ namespace XoGeni
         bool wasRoomFixTunnel;
         
         bool isEntrance;
-        bool isExit;
         unsigned int entranceId;
-        unsigned int exitId;
+        unsigned int entrancePriority;
+
+        bool isEntranceTransition;
+        Entrance* entranceTransition;
+
+        bool isExitTransition;
+        Exit* exitTransition;
 
         bool hasLight;
         unsigned int lightRadius;

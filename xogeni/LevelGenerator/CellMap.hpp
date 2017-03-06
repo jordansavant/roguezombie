@@ -18,14 +18,13 @@ namespace XoGeni
     {
     public:
 
-        CellMap(unsigned int id, unsigned int width, unsigned int height, CellMap* parentMap = NULL);
+        CellMap(unsigned int id, unsigned int width, unsigned int height);
 
         ~CellMap();
 
         unsigned int id;
         unsigned int width, height;
         unsigned int size;
-        CellMap* parentMap;
 
         std::vector<XoGeni::Cell*> cells;
         std::vector<XoGeni::Room*> rooms;
@@ -94,6 +93,12 @@ namespace XoGeni
         void buildEntrance();
 
         void buildExit();
+
+        void connectToParent(CellMap* parentMap);
+
+        void connectToChild(CellMap* child);
+
+        void destroyExit();
 
 
         // Clean up connections

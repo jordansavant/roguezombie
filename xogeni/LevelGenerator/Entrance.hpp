@@ -8,11 +8,12 @@ namespace XoGeni
     {
     public:
 
-        Entrance(unsigned int id, unsigned int x, unsigned int y, unsigned int parentExitId = 0);
+        Entrance(unsigned int id, unsigned int x, unsigned int y, unsigned int parentMapId = 0, unsigned int parentExitId = 0);
 
         unsigned int id;
         unsigned int x, y;
         bool isConnectedToParent;
+        unsigned int parentMapId;
         unsigned int parentExitId;
 
     };

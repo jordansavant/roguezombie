@@ -9,8 +9,9 @@
 #include "../../bitengine/Intelligence.hpp"
 #include "../../bitengine/System.hpp"
 
-XoGeni::CellMap::CellMap(unsigned int id, unsigned int width, unsigned int height, CellMap* parentMap)
-    : id(id), width(width), height(height), size(width * height), parentMap(parentMap), entranceRoom(NULL), exitRoom(NULL)
+XoGeni::CellMap::CellMap(unsigned int id, unsigned int width, unsigned int height)
+    : id(id), width(width), height(height), size(width * height),
+      entranceRoom(NULL), exitRoom(NULL)
 {
     mapPadding = 1;
     float mapHypSize = std::sqrtf(width * height);
@@ -592,10 +593,16 @@ void XoGeni::CellMap::buildEntrance()
     unsigned int centerY = room->y + room->height / 2;
     Cell* centerCell = getCellAtPosition(centerX, centerY);
         
-    // Build entrance and tie to parent
-    entrance = new Entrance(entranceId, centerCell->x, centerCell->y, parentMap != NULL ? parentMap->exit->id : NULL);
-    centerCell->isEntrance = true;
-    centerCell->entranceId = entranceId;
+    // Build entrance
+    entrance = new Entrance(entranceId, centerCell->x, centerCell->y);
+    centerCell->isEntranceTransition = true;
+    centerCell->entranceTransition = entrance;
+
+    // Build entrance landing pad (TODO: floodfill priorities for multiple cells)
+    Cell* landingCell = getCellAtPosition(centerX + 0, centerY + 1);
+    landingCell->isEntrance = true;
+    landingCell->entranceId = entranceId;
+    landingCell->entrancePriority = 1;
 
     // Set our maps entrance room
     entranceRoom = room;
@@ -603,7 +610,7 @@ void XoGeni::CellMap::buildEntrance()
 
 void XoGeni::CellMap::buildExit()
 {
-    unsigned int exitId = 1;
+    unsigned int exitId = 2; // must not be same as entrance id
 
     // Pick a random room that is not the entrance room (in future give better heuristic)
     Room* room;
@@ -621,11 +628,42 @@ void XoGeni::CellMap::buildExit()
         
     // Build exit
     exit = new Exit(exitId, centerCell->x, centerCell->y);
-    centerCell->isExit = true;
-    centerCell->exitId = exitId;
+    centerCell->isExitTransition = true;
+    centerCell->exitTransition = exit;
+
+    // Build exit landing pad (TODO: floodfill priorities for multiple cells)
+    Cell* landingCell = getCellAtPosition(centerX + 0, centerY + 1);
+    landingCell->isEntrance = true;
+    landingCell->entranceId = exitId;
+    landingCell->entrancePriority = 1;
 
     // Set our maps exit room
     exitRoom = room;
+}
+
+void XoGeni::CellMap::connectToParent(CellMap* parentMap)
+{
+    // Connect the entrance to the parent's exit
+    entrance->isConnectedToParent = true;
+    entrance->parentMapId = parentMap->id;
+    entrance->parentExitId = parentMap->exit->id;
+    Cell* entranceCell = getCellAtPosition(entrance->x, entrance->y);
+    int a = 1;
+}
+
+void XoGeni::CellMap::connectToChild(CellMap* childMap)
+{
+    // Connect the exit to the child's entrance
+    exit->isConnectedToChild = true;
+    exit->childMapId = childMap->id;
+    exit->childEntranceId = childMap->entrance->id;
+    Cell* exitCell = getCellAtPosition(exit->x, exit->y);
+    int a = 1;
+}
+
+void XoGeni::CellMap::destroyExit()
+{
+    // TODO: Fill In
 }
 
 /////////////////////////////////////////

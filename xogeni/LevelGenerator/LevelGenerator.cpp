@@ -1,6 +1,8 @@
 #include "LevelGenerator.hpp"
 #include "../../bitengine/Math.hpp"
 #include "CellMap.hpp"
+#include "Entrance.hpp"
+#include "Exit.hpp"
 
 bit::Random XoGeni::LevelGenerator::random;
 
@@ -16,21 +18,27 @@ std::vector<XoGeni::CellMap*> XoGeni::LevelGenerator::buildTower(unsigned int se
 {
     random.seed(seed);
 
-    unsigned int mapCount = 5;
+    unsigned int mapCount = 2;
     std::vector<CellMap*> maps;
     CellMap* parent = NULL;
 
     for(unsigned int mapId = 1; mapId <= mapCount; mapId++)
     {
-        CellMap* map;
-        if(parent == NULL)
+        CellMap* map = generate(64, 64, mapId);
+        
+        // If we have a parent map then connect us
+        if(parent != NULL)
         {
-            map = generate(seed, 64, 64, mapId);
+            parent->connectToChild(map);
+            map->connectToParent(parent);
         }
-        else
+
+        // If I am the last map then destroy my exit
+        if(mapId == mapCount)
         {
-            map = generate(seed, 64, 64, mapId, parent);
+            map->destroyExit();
         }
+
         parent = map;
         maps.push_back(map);
     }
@@ -38,9 +46,17 @@ std::vector<XoGeni::CellMap*> XoGeni::LevelGenerator::buildTower(unsigned int se
     return maps;
 }
 
-XoGeni::CellMap* XoGeni::LevelGenerator::generate(unsigned int seed, unsigned int width, unsigned int height, unsigned int mapId, CellMap* parentMap)
+XoGeni::CellMap* XoGeni::LevelGenerator::buildMap(unsigned int seed)
 {
-    CellMap* cellMap = new CellMap(mapId, width, height, parentMap);
+    random.seed(seed);
+
+    return generate(64, 64, 1);
+
+}
+
+XoGeni::CellMap* XoGeni::LevelGenerator::generate(unsigned int width, unsigned int height, unsigned int mapId)
+{
+    CellMap* cellMap = new CellMap(mapId, width, height);
 
     cellMap->buildGround();
     cellMap->buildRooms();

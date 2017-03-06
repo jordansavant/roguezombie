@@ -19,7 +19,9 @@ namespace XoGeni
         
         std::vector<CellMap*> buildTower(unsigned int seed);
         
-        CellMap* generate(unsigned int seed, unsigned int width, unsigned int height, unsigned int mapId, CellMap* parentMap = NULL);
+        CellMap* buildMap(unsigned int seed);
+        
+        CellMap* generate(unsigned int width, unsigned int height, unsigned int mapId);
     };
 }
 #endif

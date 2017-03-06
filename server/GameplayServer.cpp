@@ -74,39 +74,41 @@ void GameplayServer::update(sf::Time &gameTime)
     // Honor level transition requests
     for(unsigned int i=0; i < pendingMoves.size(); i++)
     {
-        PendingMovePlayer* pm = &pendingMoves[i];
-
-        unsigned int indexFrom = pm->fromLevelId - 1;
-        unsigned int indexTo = pm->toLevelId - 1;
+        unsigned int indexFrom = pendingMoves[i].fromLevelId - 1;
+        unsigned int indexTo = pendingMoves[i].toLevelId - 1;
 
         // If I can add the player to the new level
-        if(levels[indexTo].canAddPlayer(pm->player, pm->toEntranceId))
+        if(levels[indexTo].canAddPlayer(pendingMoves[i].player, pendingMoves[i].toEntranceId))
         {
+            std::stringstream ss;
+            ss << "SERVER: from " << indexFrom + 1 << " to " << indexTo + 1;
+            bit::Output::Debug(ss.str());
+
             // Remove them from their current level
-            levels[indexFrom].removePlayer(pm->player);
+            levels[indexFrom].removePlayer(pendingMoves[i].player);
 
             // Add them to their new level
-            levels[indexTo].addPlayer(pm->player, pm->toEntranceId);
+            levels[indexTo].addPlayer(pendingMoves[i].player, pendingMoves[i].toEntranceId);
             
             // If the player character has spectators tell them as well, but we are sending an immediate packet to player
             // This used to request a player full snapshot but we are sending it immediately in the packet
-            for(unsigned int i=0; i < pm->player->character->spectators.size(); i++)
+            for(unsigned int i=0; i < pendingMoves[i].player->character->spectators.size(); i++)
             {
-                Player* spectator = pm->player->character->spectators[i];
+                Player* spectator = pendingMoves[i].player->character->spectators[i];
                 spectator->requestFullSnapshot = true;
             }
 
             // Notify client of transition
             Level* level = &levels[indexTo];
-            bit::RemoteClient* client = pm->player->client;
-            sendEventToClient(*pm->player->client, [level, client](bit::ServerPacket &packet){
+            bit::RemoteClient* client = pendingMoves[i].player->client;
+            sendEventToClient(*pendingMoves[i].player->client, [level, client](bit::ServerPacket &packet){
                 packet << sf::Uint32(ServerEvent::ArrivedLevel);
                 packet << sf::Uint32(level->id);
                 level->prepareSnapshot(packet, *client, true);
             });
 
 
-            pm->complete = true;
+            pendingMoves[i].complete = true;
         }
     }
     // Remove completed requests

@@ -931,6 +931,7 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
 
     ServerEvent eventType;
     bit::NetworkHelper::unpackEnum<sf::Uint32, ServerEvent>(packet, eventType);
+                std::stringstream ss;
 
     if(levelClient->playerCharacter)
     {
@@ -943,6 +944,8 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 displayMessage(std::string("Arrived at level"));
                 unsigned int levelId;
                 packet >> levelId;
+                ss << "CLIENT: from " << levelClient->levelId << " to " << levelId;
+                bit::Output::Debug(ss.str());
                 switchLevels(levelId);
                 levelClient->handleSnapshot(packet, true);
                 break;

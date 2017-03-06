@@ -5,6 +5,8 @@
 #include "../xogeni/LevelGenerator/LevelGenerator.hpp"
 #include "../xogeni/LevelGenerator/CellMap.hpp"
 #include "../xogeni/LevelGenerator/Cell.hpp"
+#include "../xogeni/LevelGenerator/Entrance.hpp"
+#include "../xogeni/LevelGenerator/Exit.hpp"
 #include <sstream>
 
 void LevelLoader::Event::unpack(tinyxml2::XMLElement* node)
@@ -264,24 +266,27 @@ void LevelLoader::loadFromXML(std::string file)
  
 void LevelLoader::loadFromXoGeni(XoGeni::LevelGenerator &levelGenerator, unsigned int seed, unsigned int width, unsigned int height)
 {
-    unsigned int levelId = 1;
-    for(unsigned int i=0; i < 10; i++)
+    std::vector<XoGeni::CellMap*> tower = levelGenerator.buildTower(seed);
+
+    for(unsigned int i=0; i < tower.size(); i++)
     {
-        XoGeni::CellMap* cellMap = levelGenerator.generate(seed, width, height, levelId);
+        XoGeni::CellMap* cellMap = tower[i];
 
         LevelLoader::Level levelDef;
-        levelDef.unpack(cellMap, levelId);
+        levelDef.unpack(cellMap);
         levelDefs.push_back(levelDef);
-        levelId++;
+    }
 
-        delete cellMap;
+    for(unsigned int i=0; i < tower.size(); i++)
+    {
+        delete tower[i];
     }
 }
 
-void LevelLoader::Level::unpack(XoGeni::CellMap* cellMap, unsigned int levelId)
+void LevelLoader::Level::unpack(XoGeni::CellMap* cellMap)
 {
-    id = levelId;
-    defaultEntranceId = 1;
+    id = cellMap->id;
+    defaultEntranceId = cellMap->entrance->id;
 
     // Get level dimensions
     rows = cellMap->width;
@@ -342,10 +347,10 @@ void LevelLoader::Level::unpack(XoGeni::CellMap* cellMap, unsigned int levelId)
 void LevelLoader::Tile::unpack(XoGeni::Cell* cell, unsigned int tileId)
 {
     id = tileId;
-    if(cell->isEntrance)
-        type = 4; // StairwellUp_North
-    else if(cell->isExit)
-        type = 2; // StairwellDown_South
+    if(cell->isEntranceTransition)
+        type = 2; // StairwellUp_North
+    else if(cell->isExitTransition)
+        type = 4; // StairwellDown_South
     else
         type = 1; // Ground
 
@@ -358,10 +363,39 @@ void LevelLoader::Tile::unpack(XoGeni::Cell* cell, unsigned int tileId)
     {
         LevelLoader::Entrance entranceDef;
         entranceDef.id = cell->entranceId;
-        entranceDef.priority = 1;
+        entranceDef.priority = cell->entrancePriority;
         entrances.push_back(entranceDef);
     }
+
+    // Entrance transitions events
+    if(cell->isEntranceTransition)
+    {
+        // If this connects to another map parent, create an event to transition there
+        if(cell->entranceTransition->isConnectedToParent)
+        {
+            LevelLoader::Event eventDef;
+            eventDef.type = LevelLoader::Event::Type::PlayerGoToLevel;
+            eventDef.targetLevelId = cell->entranceTransition->parentMapId;
+            eventDef.targetEntranceId = cell->entranceTransition->parentExitId;
+            enterEvents.push_back(eventDef);
+        }
+    }
+
+    // Exit transition events
+    if(cell->isExitTransition)
+    {
+        // If this connects to another map child, create an event to transition there
+        if(cell->exitTransition->isConnectedToChild)
+        {
+            LevelLoader::Event eventDef;
+            eventDef.type = LevelLoader::Event::Type::PlayerGoToLevel;
+            eventDef.targetLevelId = cell->exitTransition->childMapId;
+            eventDef.targetEntranceId = cell->exitTransition->childEntranceId;
+            enterEvents.push_back(eventDef);
+        }
+    }
 }
+
 
 void LevelLoader::Structure::unpack(XoGeni::Cell* cell, unsigned int structureId)
 {

@@ -78,6 +78,10 @@ void XoGeni::XoLevelRenderer::paint()
         sf::Color colorTunnel = sf::Color(200, 200, 200);
         sf::Color colorSill = sf::Color::Cyan;
         sf::Color colorDoor = sf::Color::Yellow;
+        sf::Color colorEntranceTransition = sf::Color::Red;
+        sf::Color colorExitTransition = sf::Color::Blue;
+        sf::Color colorEntrance = sf::Color(255, 125, 0);
+        sf::Color colorWall = sf::Color(0, 40, 60);
 
         sf::Color color = colorGround;
 
@@ -190,10 +194,12 @@ void XoGeni::XoLevelRenderer::paint()
                     color = colorTunnel;
                 if(cell->wasDoor)
                     color = sf::Color::Yellow;
+                if(cell->isEntranceTransition)
+                    color = colorEntranceTransition;
+                if(cell->isExitTransition)
+                    color = colorExitTransition;
                 if(cell->isEntrance)
-                    color = sf::Color::Red;
-                if(cell->isExit)
-                    color = sf::Color::Blue;
+                    color = colorEntrance;
                 break;
             // Dangling doors removed
             case 9:
@@ -210,10 +216,12 @@ void XoGeni::XoLevelRenderer::paint()
                     color = colorTunnel;
                 if(cell->isDoor)
                     color = sf::Color::Yellow;
+                if(cell->isEntranceTransition)
+                    color = colorEntranceTransition;
+                if(cell->isExitTransition)
+                    color = colorExitTransition;
                 if(cell->isEntrance)
-                    color = sf::Color::Red;
-                if(cell->isExit)
-                    color = sf::Color::Blue;
+                    color = colorEntrance;
                 break;
             // Fix room tunnels dug
             case 10:
@@ -230,10 +238,12 @@ void XoGeni::XoLevelRenderer::paint()
                     color = colorTunnel;
                 if(cell->isDoor)
                     color = sf::Color::Yellow;
+                if(cell->isEntranceTransition)
+                    color = colorEntranceTransition;
+                if(cell->isExitTransition)
+                    color = colorExitTransition;
                 if(cell->isEntrance)
-                    color = sf::Color::Red;
-                if(cell->isExit)
-                    color = sf::Color::Blue;
+                    color = colorEntrance;
                 break;
             // Walls added
             // Final
@@ -252,12 +262,14 @@ void XoGeni::XoLevelRenderer::paint()
                     color = colorTunnel;
                 if(cell->isDoor)
                     color = sf::Color::Yellow;
+                if(cell->isEntranceTransition)
+                    color = colorEntranceTransition;
+                if(cell->isExitTransition)
+                    color = colorExitTransition;
                 if(cell->isEntrance)
-                    color = sf::Color::Red;
-                if(cell->isExit)
-                    color = sf::Color::Blue;
+                    color = colorEntrance;
                 if(cell->isWall)
-                    color = sf::Color(0, 40, 60);
+                    color = colorWall;
                 break;
         }
         
