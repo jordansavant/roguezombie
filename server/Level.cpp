@@ -324,7 +324,6 @@ void Level::loadEventIntoTile(bit::Event<std::function<void(Tile* t, Body* body)
                         else
                         {
                             // Go to level
-                            p->onLevelTransitionAttempt(); // clean up level specific data
                             l->movePlayerToLevel(p, eventDef.targetLevelId, eventDef.targetEntranceId);
                         }
                     }
@@ -699,6 +698,7 @@ bool Level::setCharacterAtEntrance(Character* character, unsigned int entranceId
 void Level::movePlayerToLevel(Player* player, unsigned int levelId, unsigned int entranceId)
 {
     // Tell server to move
+    player->onLevelTransitionAttempt(); // clean up level specific data
     server->movePlayerToLevel(player, id, levelId, entranceId);
 }
 
