@@ -32,8 +32,8 @@ Lights are performance hogs
 - When they run they will merge their colors into the lighting struct
 - Then in the tile update loop we apply lighting color to the actual colors
 
-Characters hold pointer refs to targets that could disappear
-- Change combat to point to an X and Y and look for character at that position when attack turn comes
+Tils are performance hogs
+- We have a couple thousand tiles per map, each one iterating and updating
 
 --------------------
 RZ Features
@@ -51,9 +51,10 @@ Procedural levels
 - http://donjon.bin.sh/d20/dungeon/
 - http://donjon.bin.sh/code/dungeon/
 - http://donjon.bin.sh/code/dungeon/dungeon.pl
-
-Level Gen TO DO:
-- Floodfill entrance landing pads
+- TO DO:
+	- Floodfill entrance landing pads
+	- Lights, enemies, structures, items
+	- Given hallways we must figure out how to move over and beyond dead bodies
 
 Better stair tiles
 
@@ -72,31 +73,22 @@ Upgrade SFML to v2.4
 --------------------
 RZ Potential issues
 
-Doorways can be blocked if bodies die in front of them
-
 Laggy while debugging
 - Look at possibility of local semaphor packet sending?
 
 
 --------------------
-RZ Scoping issues
+RZ Scope
 
-If I use the city generator and also want level generation to work for buildings, homes, subways etc we have a TON of level generation to build
-Say we do get level generation built out, how do you make this fun? Whats the point if its not fun?
-Hundreds of items (or smartly generated ones) will need to be created
-And whats to drive the player to explore? And how do you balance something so expansive?
-In Brogue its about reaching level 26, so the entire game is balanced for 26 levels of generation
-I have a multiplayer hook and that is honestly what is giving it its edge
-Perhaps I should step away from the scale of the city generator and focus on generating solid building / facilities with storage
-Also nothing is holding me down to playing as a zombie, I could do the typical survival as a human route
+I've decided to go the route of level gen for a single tower, took a few days to get something working but its a good foundation
 
-If players are expecting a brogueish quality then there is a ton of balancing, machining and nifty generation to create
-Dealing with the network is very cumberson compared to what these other guys build, but at the same time its my leg up
-I have a decent mission system, narrative system and loot system that perhaps could be automatically generated
-
-We could change the scope of the game back to a tower ascent/descent with a series of procedurally generated facility floors
-That would scope our level generation to a single building (with perhaps basement, caverns, and subway escape
-It could also allow us to procedurally include scripted plotline, characters and events
+You play has human characters in the apocalypse
+You must ascend a tower to the helicopter on top
+The tower is dangerous, robots, hunters, zombies, its ground zero perhaps
+Level one is ground floor prefab, it is the only place that players can join for partying
+Level two until top are procedurally generated with themes such as: medical, robotics, offices, labs
+Level top is a prefab of a boss fight and the escape
+Levels can have a prefab thematic elements and rooms to carry plotline and ensure level exploration
 
 
 --------------------
