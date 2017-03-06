@@ -313,6 +313,7 @@ void Level::loadEventIntoTile(bit::Event<std::function<void(Tile* t, Body* body)
                     if(c->schema.isPlayerCharacter)
                     {
                         Player* p = c->schema.player;
+
                         // Cannot leave level in combat
                         if(l->state == Level::State::Combat)
                         {
@@ -320,10 +321,10 @@ void Level::loadEventIntoTile(bit::Event<std::function<void(Tile* t, Body* body)
                                 packet << sf::Uint32(ServerEvent::CannotTransitionInCombat);
                             });
                         }
-                        // Don't leave if we just arrived in this level (prevents looping through portals)
                         else
                         {
                             // Go to level
+                            p->onLevelTransitionAttempt(); // clean up level specific data
                             l->movePlayerToLevel(p, eventDef.targetLevelId, eventDef.targetEntranceId);
                         }
                     }

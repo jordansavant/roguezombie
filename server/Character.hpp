@@ -354,6 +354,8 @@ public:
 
     // Management
 
+    void clearLevelSpecificData();
+
     void sendCombatTurnStart();
 
     void sendCombatTurnEnd();

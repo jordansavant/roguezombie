@@ -42,6 +42,8 @@ public:
 
     void onCharacterDeath(Character* character);
 
+    void onLevelTransitionAttempt();
+
     void setSpectatee(Character* character);
 
     void unsetSpectatee();

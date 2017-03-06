@@ -243,7 +243,12 @@ void Character::combat_PerformAction_MoveToLocation(sf::Time &gameTime)
                 if(moveToTile(nextTile))
                 {
                     // Ready the next position and increment by distance travelled
-                    path.pop_back();
+
+                    // Our path may have been cleared by tile event (like changing levels)
+                    if(path.size() > 0)
+                    {
+                        path.pop_back();
+                    }
                     combatTilesTraversed++;
                 }
             }
@@ -413,7 +418,11 @@ void Character::followPath(sf::Time &gameTime)
         {
             if(moveToTile(nextTile))
             {
-                path.pop_back();
+                // Our path may have been cleared by tile event (like changing levels)
+                if(path.size() > 0)
+                {
+                    path.pop_back();
+                }
             }
         }
         else
@@ -1507,6 +1516,12 @@ void Character::checkMissions()
 ///////////////////////////////////////////////////////
 //                  MANAGEMENT                       //
 ///////////////////////////////////////////////////////
+
+void Character::clearLevelSpecificData()
+{
+    targetEnemy = NULL;
+    path.clear();
+}
 
 void Character::sendCombatTurnStart()
 {

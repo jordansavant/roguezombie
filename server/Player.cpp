@@ -6,6 +6,7 @@
 #include "items/Item.hpp"
 #include "mission/Mission.hpp"
 #include "Character.hpp"
+#include "../bitengine/System.hpp"
 
 Player::Player()
     : level(NULL), controlState(ControlState::Normal), character(NULL), spectatee(NULL), clientId(0), client(NULL), requestFullSnapshot(false)
@@ -131,6 +132,17 @@ void Player::onCharacterDeath(Character* e)
 
     // Check for game over
     level->server->checkForGameOver();
+}
+
+// When moving to a new level is called
+//  We may or may not actually transition but we have requested to
+//  This is where we should clean up any level specific data
+void Player::onLevelTransitionAttempt()
+{
+    if(character)
+    {
+        character->clearLevelSpecificData();
+    }
 }
 
 void Player::setSpectatee(Character* character)

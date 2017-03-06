@@ -32,6 +32,15 @@ Lights are performance hogs
 - When they run they will merge their colors into the lighting struct
 - Then in the tile update loop we apply lighting color to the actual colors
 
+When transitioning levels it is possible to click on a distant tile beyond the entrance
+- This causes the next level to load and to honor the position clicked on and teleport them around the map
+
+Characters hold pointer refs to targets that could disappear
+- Change combat to point to an X and Y and look for character at that position when attack turn comes
+
+Player can have no player but I think I added code that will assume its never null
+- Look in the command management area
+
 --------------------
 RZ Features
 
@@ -51,16 +60,15 @@ Procedural levels
 
 Level Gen TO DO:
 - Floodfill entrance landing pads
-- Connect entrances/exits
-- Currently they are causing you to load into a new level and then load directly back into the old leveL
-- Levels are smarter in the game logic than they are in the level generator
-	- In the game any tile would have an entrance and a priority, this was the landing area for multiple players
-	- Exits and Entrances didn't really exist, only tiles that had transition events
-	- That being said I need to reengineer the level generator to:
-		- Choose an entrance point and flood fill for a short distance
-		- The cells in the floodfill would have their priority set to the distance
-		- Cells would then have two other identifiers: exitTransition and entranceTransition which would wire events to their parent
 
+Server should give better level transition notifications
+- It should show floor title for "Entering"
+- It should not show "Leaving"
+- It should specify if there was no room to transition
+
+Better stair tiles
+
+Map
 
 Ability to Trash items in the inventory
 
