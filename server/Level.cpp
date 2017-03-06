@@ -927,6 +927,17 @@ void Level::createLightFlare(float x, float y, float seconds, sf::Color &startCo
     lights.push_back(flare);
 }
 
+Character* Level::getCharacterByPosition(float x, float y)
+{
+    Tile* tile = getTileAtPosition(x, y);
+    if(tile && tile->body && tile->body->schema.type == Body::Type::Character)
+    {
+        Character* c = static_cast<Character*>(tile->body);
+        return c;
+    }
+    return NULL;
+}
+
 
 
 

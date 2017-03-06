@@ -35,6 +35,8 @@ void GameplayServer::load()
     XoGeni::LevelGenerator levelGenerator;
     levelLoader.loadFromXoGeni(levelGenerator, 2006, 64, 64);
 
+    //levelLoader.loadFromXML("HunterAI.xml");
+
     // Build all levels for this level pack
     levels.resize(levelLoader.levelDefs.size());
     for(unsigned int i=0; i < levelLoader.levelDefs.size(); i++)

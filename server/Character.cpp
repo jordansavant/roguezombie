@@ -17,7 +17,7 @@
 
 Character::Character()
     : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), actionDelayTimer(1), hostilityCheckAi(NULL), combatDetectionAi(NULL), combatDecisionAi(NULL),
-      isHostileCombatDetected(false), targetEnemy(NULL), combatTilesTraversed(0), moveTimer(.67f), equipment(), schema(), visionRadius(30)
+      isHostileCombatDetected(false), hasTargetEnemy(false), targetEnemyPosition(0, 0), combatTilesTraversed(0), moveTimer(.67f), equipment(), schema(), visionRadius(30)
 {
     equipment.resize(EquipmentSlot::_count, NULL);
 }
@@ -269,22 +269,34 @@ void Character::combat_PerformAction_MoveToLocation(sf::Time &gameTime)
 
 void Character::combat_DecideAction_AttackCharacter(Character* character)
 {
+    hasTargetEnemy = true;
+    targetEnemyPosition.x = character->Body::schema.x;
+    targetEnemyPosition.y = character->Body::schema.y;
+
     schema.currentActionPoints--;
-    // TODO: do this
-    targetEnemy = character;
     combatAction = CombatAction::Attack;
     combat_SwitchStatePerform();
 }
 
 void Character::combat_PerformAction_AttackCharacter(sf::Time &gameTime)
 {
-    attack(targetEnemy);
-    combat_SwitchStateDelay();
+    if(hasTargetEnemy)
+    {
+        Character* targetEnemy = level->getCharacterByPosition(targetEnemyPosition.x, targetEnemyPosition.y);
 
-    // Set the direction
-    sf::Vector2f dir = bit::VectorMath::directionToVector(Body::schema.x, Body::schema.y, targetEnemy->Body::schema.x, targetEnemy->Body::schema.y);
-    schema.direction.x = dir.x;
-    schema.direction.y = dir.y;
+        if(targetEnemy)
+        {
+            attack(targetEnemy);
+
+            // Set the direction
+            sf::Vector2f dir = bit::VectorMath::directionToVector(Body::schema.x, Body::schema.y, targetEnemy->Body::schema.x, targetEnemy->Body::schema.y);
+            schema.direction.x = dir.x;
+            schema.direction.y = dir.y;
+        }
+    }
+
+    // End performance
+    combat_SwitchStateDelay();
 }
 
 void Character::combat_DecideAction_Skip()
@@ -1519,7 +1531,6 @@ void Character::checkMissions()
 
 void Character::clearLevelSpecificData()
 {
-    targetEnemy = NULL;
     path.clear();
 }
 

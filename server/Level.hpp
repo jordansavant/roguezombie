@@ -136,6 +136,8 @@ public:
 
     void createLightFlare(float x, float y, float seconds, sf::Color &startColor, sf::Color &endColor, float startRadius, float endRadius, float startBrightness, float endBrightness = 0);
 
+    Character* getCharacterByPosition(float x, float y);
+
 
     // Networking
 

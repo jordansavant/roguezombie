@@ -71,7 +71,8 @@ public:
     bool isHostileCombatDetected;
     unsigned int combatTilesTraversed;
     std::vector<Tile*> path;
-    Character* targetEnemy;
+    bool hasTargetEnemy;
+    sf::Vector2f targetEnemyPosition;
     bit::GameTimer moveTimer;
     std::vector<Mission*> missions;
     std::vector<Item*> equipment;
