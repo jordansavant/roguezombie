@@ -6,6 +6,7 @@ enum ServerEvent
 {
     LeavingLevel,
     ArrivedLevel,
+    CannotTransitionNoRoom,
     CannotTransitionInCombat,
 
     SpectateBegin,

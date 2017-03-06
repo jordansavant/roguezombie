@@ -937,14 +937,20 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
         switch(eventType)
         {
             case ServerEvent::LeavingLevel:
-                displayMessage(std::string("Leaving level"));
+                // Do not display anything to the player, we are 99% likely to show the arrival
                 break;
             case ServerEvent::ArrivedLevel:
-                displayMessage(std::string("Arrived at level"));
+            {
                 unsigned int levelId;
                 packet >> levelId;
                 switchLevels(levelId);
                 levelClient->handleSnapshot(packet, true);
+                std::stringstream ss; ss << "Arrived at level " << levelId;
+                displayMessage(ss.str());
+                break;
+            }
+            case ServerEvent::CannotTransitionNoRoom:
+                displayMessage(std::string("Cannot leave level, exit is blocked"));
                 break;
             case ServerEvent::CannotTransitionInCombat:
                 displayMessage(std::string("Cannot leave level in combat"));

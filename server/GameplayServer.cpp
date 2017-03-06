@@ -106,6 +106,20 @@ void GameplayServer::update(sf::Time &gameTime)
 
             pendingMoves[i].complete = true;
         }
+        else
+        {
+            if(pendingMoves[i].attemptTimer.update(gameTime))
+            {
+                // We have attempted longer than we should, we have failed transition, notify player
+                bit::RemoteClient* client = pendingMoves[i].player->client;
+                sendEventToClient(*pendingMoves[i].player->client, [client](bit::ServerPacket &packet){
+                    packet << sf::Uint32(ServerEvent::CannotTransitionNoRoom);
+                });
+
+                // Remove pending move
+                pendingMoves[i].complete = true;
+            }
+        }
     }
     // Remove completed requests
     pendingMoves.erase(std::remove_if(pendingMoves.begin(), pendingMoves.end(), [](PendingMovePlayer p) { return p.complete; }), pendingMoves.end());
@@ -149,6 +163,7 @@ void GameplayServer::movePlayerToLevel(Player* player, unsigned int fromLevelId,
     m.fromLevelId = fromLevelId;
     m.toLevelId = toLevelId;
     m.toEntranceId = toEntranceId;
+    m.attemptTimer.setNewDuration(4);
     pendingMoves.push_back(m);
 
     // Notify client of transition

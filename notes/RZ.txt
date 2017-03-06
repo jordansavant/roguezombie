@@ -32,9 +32,6 @@ Lights are performance hogs
 - When they run they will merge their colors into the lighting struct
 - Then in the tile update loop we apply lighting color to the actual colors
 
-When transitioning levels it is possible to click on a distant tile beyond the entrance
-- This causes the next level to load and to honor the position clicked on and teleport them around the map
-
 Characters hold pointer refs to targets that could disappear
 - Change combat to point to an X and Y and look for character at that position when attack turn comes
 

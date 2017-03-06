@@ -49,6 +49,7 @@ private:
         unsigned int toLevelId;
         unsigned int toEntranceId;
         bool complete;
+        bit::GameTimer attemptTimer;
     };
     struct PendingPlayerJoin
     {
