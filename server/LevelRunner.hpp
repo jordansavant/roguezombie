@@ -12,11 +12,13 @@ class Character;
 class BaseLevelRunner
 {
 public:
-    BaseLevelRunner() { }
+    BaseLevelRunner() : distributedUpdateCounter(0) { }
 
     virtual ~BaseLevelRunner() { }
 
     virtual void update(sf::Time &gameTime) = 0;
+
+    unsigned int distributedUpdateCounter;
 };
 
 template <class T>
@@ -24,7 +26,7 @@ class LevelRunner : public BaseLevelRunner
 {
 public:
     LevelRunner(Level* _level, std::vector<T*>* _list)
-        : BaseLevelRunner(), level(_level), list(_list), distributedUpdateCounter(0)
+        : BaseLevelRunner(), level(_level), list(_list)
     {
     }
 
@@ -39,7 +41,6 @@ public:
 
     Level* level;
     std::vector<T*>* list;
-    unsigned int distributedUpdateCounter;
 
     virtual void update(sf::Time &gameTime)
     {

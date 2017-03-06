@@ -1,5 +1,6 @@
 #include "Tile.hpp"
 #include "Body.hpp"
+#include "Level.hpp"
 #include "../bitengine/Intelligence.hpp"
 #include "../bitengine/Math.hpp"
 
@@ -34,6 +35,15 @@ void Tile::load(Level* _level, unsigned int _id, Type _type, int _x, int _y, int
 
 void Tile::update(sf::Time &gameTime)
 {
+    rebaseLighting();
+}
+
+void Tile::distributedUpdate(sf::Time &gameTime)
+{
+}
+
+void Tile::rebaseLighting()
+{
     // Reset brightness to none
     schema.illumination = 0.05f;
 
@@ -44,13 +54,19 @@ void Tile::update(sf::Time &gameTime)
 
     // Reset body's illuminance
     if(body)
-        body->schema.illumination = 0.05f;
+    {
+        body->schema.illumination = schema.illumination;
+        body->schema.rshade = schema.rshade;
+        body->schema.gshade = schema.gshade;
+        body->schema.bshade = schema.bshade;
+    }
     if(door)
-        door->schema.illumination = 0.05f;
-}
-
-void Tile::distributedUpdate(sf::Time &gameTime)
-{
+    {
+        door->schema.illumination = schema.illumination;
+        door->schema.rshade = schema.rshade;
+        door->schema.gshade = schema.gshade;
+        door->schema.bshade = schema.bshade;
+    }
 }
 
 void Tile::setOccupyingBody(Body* _body)

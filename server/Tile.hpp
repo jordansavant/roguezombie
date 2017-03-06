@@ -111,6 +111,8 @@ public:
 
     virtual void distributedUpdate(sf::Time &gameTime);
 
+    void rebaseLighting();
+
     virtual void setOccupyingBody(Body* body);
 
     virtual void setOccupyingDoor(Body* body);

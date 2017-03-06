@@ -992,22 +992,26 @@ void XoGeni::CellMap::buildWalls()
 
 void XoGeni::CellMap::buildLights()
 {
-    //for(unsigned int i=0; i < rooms.size(); i++)
-    //{
-    //    Room* room = rooms[i];
-    //    unsigned int centerX = room->x + room->width / 2;
-    //    unsigned int centerY = room->y + room->height / 2;
-    //    Cell* roomCenterCell = getCellAtPosition(centerX, centerY);
-    //
-    //    unsigned int hypSize = (room->width + room->height) / 2;
-    //
-    //    roomCenterCell->hasLight = true;
-    //    roomCenterCell->lightRadius = hypSize;
-    //    roomCenterCell->lightOpacity = 1;
-    //    roomCenterCell->lightColorR = 255;
-    //    roomCenterCell->lightColorG = 225;
-    //    roomCenterCell->lightColorB = 100;
-    //}
+    // Lights are very costly
+
+    // Add a light to the entrance
+    Cell* entranceCell = getCellAtPosition(entrance->x, entrance->y);
+    
+    entranceCell->hasLight = true;
+    entranceCell->lightRadius = 4;
+    entranceCell->lightOpacity = .6;
+    entranceCell->lightColorR = 255;
+    entranceCell->lightColorG = 225;
+    entranceCell->lightColorB = 100;
+
+    // Add a light to the exit
+    Cell* exitCell = getCellAtPosition(exit->x, exit->y);
+    
+    exitCell->hasLight = true;
+    exitCell->lightRadius = 4;
+    exitCell->lightOpacity = .6;
+    exitCell->lightColorR = 255;
+    exitCell->lightColorG = 225;
 }
 
 /////////////////////////////////////////

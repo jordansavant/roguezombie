@@ -24,16 +24,10 @@ Characters retain pointers to attack targets
 - If the tile has no body (character) then we can skip attack
 - Same for all server side elements, they should point to tiles, not to characters (or structures) etc
 
-Lights are performance hogs
-- We should move their processing to a distributed update
-- Then have a separate lighting color struct for tiles
-- Have a global lighting ID that increments before the update cycle of lights
-- When lights run they will reset the lighting colors of the tile if the ID is a mismatch, indicating its a new lighting engine update
-- When they run they will merge their colors into the lighting struct
-- Then in the tile update loop we apply lighting color to the actual colors
-
-Tils are performance hogs
-- We have a couple thousand tiles per map, each one iterating and updating
+Tiles and lights are still performance hogs
+- Currently lights only update if they are in the player range
+- But the list of tiles is still updating
+- Consider implementing the range based updates mentioned in the features below
 
 --------------------
 RZ Features
@@ -55,6 +49,12 @@ Procedural levels
 	- Floodfill entrance landing pads
 	- Lights, enemies, structures, items
 	- Given hallways we must figure out how to move over and beyond dead bodies
+
+Implement playerRangeUpdate
+- Organize tiles and lights into quadTree structures
+- On level update only run PlayerRangeUpdate for tiles or lights within X range of players
+- Could do this also with characters and structures
+- This should reduce the update overhead of a large map, only loading and running updates on elements within certain ranges
 
 Better stair tiles
 

@@ -103,6 +103,8 @@ public:
     bool setCharacterAtEntrance(Character* character, unsigned int entranceId);
 
     void movePlayerToLevel(Player* player, unsigned int toLevelId, unsigned int toEntranceId);
+
+    bool isWithinRangeOfPlayer(float x, float y, float rangeCheck);
     
 
     // Tile Positioning and Pathfinding

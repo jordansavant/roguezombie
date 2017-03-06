@@ -376,10 +376,23 @@ void Level::loadEventIntoTile(bit::Event<std::function<void(Tile* t, Body* body)
 
 void Level::update(sf::Time &gameTime)
 {
+    //bit::Output::Debug("------------------------------");
     // Update entities
+    std::stringstream ss;
     for(unsigned int i=0; i < runners.size(); i++)
     {
+        //sf::Clock clock;
+
+        //ss.str("");
+        //ss << "Runner [" << i << "] start";
+        //bit::Output::Debug(ss.str());
+
         runners[i]->update(gameTime);
+
+        //sf::Time elapsed = clock.getElapsedTime();
+        //ss.str("");
+        //ss << "Runner [" << i << "] duration (ms): " << elapsed.asMilliseconds();
+        //bit::Output::Debug(ss.str());
     }
     
     switch(state)
@@ -528,7 +541,7 @@ bool Level::createPlayer(Player* player)
 
     // Create light source for character's vision
     Light* light = new Light();
-    light->load(this, zombie->Body::schema.x, zombie->Body::schema.y, 12, sf::Color::White, .65); // sf::Color(237, 255, 214) this is the old green hue, it was swapped with white because light blending was confusing looking
+    light->load(this, zombie->Body::schema.x, zombie->Body::schema.y, 10, sf::Color::White, .45); // sf::Color(237, 255, 214) this is the old green hue, it was swapped with white because light blending was confusing looking
     zombie->lights.push_back(light);
     Light* orbLight = new Light();
     orbLight->load(this, zombie->Body::schema.x, zombie->Body::schema.y, 2, sf::Color::White, .6);
@@ -700,6 +713,38 @@ void Level::movePlayerToLevel(Player* player, unsigned int levelId, unsigned int
     // Tell server to move
     player->onLevelTransitionAttempt(); // clean up level specific data
     server->movePlayerToLevel(player, id, levelId, entranceId);
+}
+
+bool Level::isWithinRangeOfPlayer(float x, float y, float rangeCheck)
+{
+    for(auto iterator = players.begin(); iterator != players.end(); iterator++)
+    {
+        Player* player = iterator->second;
+        if(player == NULL)
+            continue;
+
+        // Check player character
+        if(player->character)
+        {
+            float distance = bit::VectorMath::distance(x, y, player->character->Body::schema.x, player->character->Body::schema.y);
+            if(distance <= rangeCheck)
+            {
+                return true;
+            }
+        }
+
+        // Check player spectatee
+        if(player->spectatee)
+        {
+            float distance = bit::VectorMath::distance(x, y, player->spectatee->Body::schema.x, player->spectatee->Body::schema.y);
+            if(distance <= rangeCheck)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 

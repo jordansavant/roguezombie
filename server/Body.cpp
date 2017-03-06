@@ -46,14 +46,6 @@ void Body::load(Level* _level, unsigned int _id, Type _type, float _x, float _y,
 
 void Body::update(sf::Time &gameTime)
 {
-    // Reset brightness to none
-    schema.illumination = 0.05f;
-
-    // Reset color to black
-    schema.rshade = 255;
-    schema.gshade = 255;
-    schema.bshade = 255;
-
     // If I have a light, update it
     for(unsigned int i=0; i < lights.size(); i++)
     {
