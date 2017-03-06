@@ -35,9 +35,6 @@ Lights are performance hogs
 Characters hold pointer refs to targets that could disappear
 - Change combat to point to an X and Y and look for character at that position when attack turn comes
 
-Player can have no player but I think I added code that will assume its never null
-- Look in the command management area
-
 --------------------
 RZ Features
 
@@ -58,14 +55,12 @@ Procedural levels
 Level Gen TO DO:
 - Floodfill entrance landing pads
 
-Server should give better level transition notifications
-- It should show floor title for "Entering"
-- It should not show "Leaving"
-- It should specify if there was no room to transition
-
 Better stair tiles
 
 Map
+
+Ability to move with WASD, even in combat
+- Display combat movements remaining in HUD
 
 Ability to Trash items in the inventory
 

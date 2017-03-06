@@ -254,16 +254,20 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
             {
                 // Debug Commands
                 case Command::Type::PlayerMoveUp:
-                    character->moveUp();
+                    if(character)
+                        character->moveUp();
                     break;
                 case Command::Type::PlayerMoveDown:
-                    character->moveDown();
+                    if(character)
+                        character->moveDown();
                     break;
                 case Command::Type::PlayerMoveLeft:
-                    character->moveLeft();
+                    if(character)
+                        character->moveLeft();
                     break;
                 case Command::Type::PlayerMoveRight:
-                    character->moveRight();
+                    if(character)
+                        character->moveRight();
                     break;
 
                 // Item Mode Commands
@@ -281,7 +285,7 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
                             switch(level->state)
                             {
                                 case Level::State::Combat:
-                                    if(itemSchema.canCommandInCombat && this->validateCombat())
+                                    if(itemSchema.canCommandInCombat && validateCombat())
                                     {
                                         // Allow the item to apply its operation to the character
                                         Item::useItemOnSelf(character, itemSchema);
@@ -289,7 +293,7 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
                                     }
                                     break;
                                 case Level::State::Free:
-                                    if(itemSchema.canCommandInFree && this->validateFree())
+                                    if(itemSchema.canCommandInFree && validateFree())
                                     {
                                         // Allow the item to apply its operation to the character
                                         Item::useItemOnSelf(character, itemSchema);
@@ -315,7 +319,7 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
                                 switch(level->state)
                                 {
                                     case Level::State::Combat:
-                                        if(itemSchema.canCommandInCombat && this->validateCombat())
+                                        if(itemSchema.canCommandInCombat && validateCombat())
                                         {
                                             // Allow the item to apply its operation to the character
                                             Item::useItemOnCharacter(character, other, itemSchema);
@@ -323,7 +327,7 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
                                         }
                                         break;
                                     case Level::State::Free:
-                                        if(itemSchema.canCommandInFree && this->validateFree())
+                                        if(itemSchema.canCommandInFree && validateFree())
                                         {
                                             // Allow the item to apply its operation to the character
                                             Item::useItemOnCharacter(character, other, itemSchema);
@@ -348,7 +352,7 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
                                 switch(level->state)
                                 {
                                     case Level::State::Combat:
-                                        if(itemSchema.canCommandInCombat && this->validateCombat())
+                                        if(itemSchema.canCommandInCombat && validateCombat())
                                         {
                                             // Allow the item to apply its operation
                                             Item::useItemOnTileArea(character, t, itemSchema);
@@ -356,7 +360,7 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
                                         }
                                         break;
                                     case Level::State::Free:
-                                        if(itemSchema.canCommandInFree && this->validateFree())
+                                        if(itemSchema.canCommandInFree && validateFree())
                                         {
                                             // Allow the item to apply its operation
                                             Item::useItemOnTileArea(character, t, itemSchema);
