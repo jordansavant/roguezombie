@@ -42,14 +42,6 @@ Items should have stat effects and perhaps magical (lambda) effects
 - Maybe rarity (green/blue/purple/orange)?
 - Better stat details in the window
 
-Threaded XoGeni building
-- When a game starts fork a thread that runs the XoGeni level generation
-- This should take a single seed and produce X amount of levels (floors)
-- This will save the cellMaps into a vector
-- It can have stages of completion (get ratio)
-- Meanwhile the game state will rendering a build progress bar
-- When complete it will move into the game play state with the cellmaps
-
 Procedural levels
 - https://www.rockpapershotgun.com/2015/07/28/how-do-roguelikes-generate-levels/
 - http://www.gridsagegames.com/blog/2014/06/procedural-map-generation/
@@ -58,24 +50,7 @@ Procedural levels
 - http://donjon.bin.sh/code/dungeon/dungeon.pl
 
 Level Gen TO DO:
-- Clean up routines need to fix doors that had tunnels collapsed
-- Doors tunelling outward can make tunnels that corner to corner with other tunnels (can they be shadowcasted through?)
-- Add lights to doors / areas
-Door Cleanup
-- Iterate all doors
-	- If door direction has no tunnel, door or other room
-		- delete door
-- If more than one room
-	- Iterate rooms
-		- Iterate all doors connected to room
-			- Walk door path recursively until a room is reach
-				- If room is not origin room
-					- Increment origin room connections counter
-		- If connections is 0
-			- OPTION A: delete room
-			- OPTION B: find closest room and tunnel toward room
-	
-
+- Connect entrances/exits
 
 Ability to Trash items in the inventory
 

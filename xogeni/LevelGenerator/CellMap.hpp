@@ -11,21 +11,27 @@ namespace XoGeni
     class Cell;
     class Room;
     class RoomDoor;
+    class Entrance;
+    class Exit;
 
     class CellMap
     {
     public:
 
-        CellMap(unsigned int width, unsigned int height);
+        CellMap(unsigned int id, unsigned int width, unsigned int height, CellMap* parentMap = NULL);
 
         ~CellMap();
 
+        unsigned int id;
         unsigned int width, height;
         unsigned int size;
+        CellMap* parentMap;
 
         std::vector<XoGeni::Cell*> cells;
         std::vector<XoGeni::Room*> rooms;
         std::vector<XoGeni::RoomDoor*> doors;
+        XoGeni::Entrance* entrance;
+        XoGeni::Exit* exit;
 
         int roomCount;
         int roomAttemptCount;
@@ -42,6 +48,8 @@ namespace XoGeni
         Room* entranceRoom;
         Room* exitRoom;
 
+
+        // Terrain building
         void buildGround();
 
 
@@ -82,6 +90,10 @@ namespace XoGeni
         // Exit building
 
         void buildExits();
+
+        void buildEntrance();
+
+        void buildExit();
 
 
         // Clean up connections

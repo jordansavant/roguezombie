@@ -16,8 +16,10 @@ namespace XoGeni
         ~LevelGenerator();
 
         static bit::Random random;
-
-        CellMap* generate(unsigned int seed, unsigned int width, unsigned int height);
+        
+        std::vector<CellMap*> buildTower(unsigned int seed);
+        
+        CellMap* generate(unsigned int seed, unsigned int width, unsigned int height, unsigned int mapId, CellMap* parentMap = NULL);
     };
 }
 #endif

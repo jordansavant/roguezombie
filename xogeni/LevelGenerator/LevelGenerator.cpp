@@ -12,11 +12,35 @@ XoGeni::LevelGenerator::~LevelGenerator()
 {
 }
 
-XoGeni::CellMap* XoGeni::LevelGenerator::generate(unsigned int seed, unsigned int width, unsigned int height)
+std::vector<XoGeni::CellMap*> XoGeni::LevelGenerator::buildTower(unsigned int seed)
 {
     random.seed(seed);
 
-    CellMap* cellMap = new CellMap(width, height);
+    unsigned int mapCount = 5;
+    std::vector<CellMap*> maps;
+    CellMap* parent = NULL;
+
+    for(unsigned int mapId = 1; mapId <= mapCount; mapId++)
+    {
+        CellMap* map;
+        if(parent == NULL)
+        {
+            map = generate(seed, 64, 64, mapId);
+        }
+        else
+        {
+            map = generate(seed, 64, 64, mapId, parent);
+        }
+        parent = map;
+        maps.push_back(map);
+    }
+
+    return maps;
+}
+
+XoGeni::CellMap* XoGeni::LevelGenerator::generate(unsigned int seed, unsigned int width, unsigned int height, unsigned int mapId, CellMap* parentMap)
+{
+    CellMap* cellMap = new CellMap(mapId, width, height, parentMap);
 
     cellMap->buildGround();
     cellMap->buildRooms();

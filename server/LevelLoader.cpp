@@ -267,7 +267,7 @@ void LevelLoader::loadFromXoGeni(XoGeni::LevelGenerator &levelGenerator, unsigne
     unsigned int levelId = 1;
     for(unsigned int i=0; i < 10; i++)
     {
-        XoGeni::CellMap* cellMap = levelGenerator.generate(seed, width, height);
+        XoGeni::CellMap* cellMap = levelGenerator.generate(seed, width, height, levelId);
 
         LevelLoader::Level levelDef;
         levelDef.unpack(cellMap, levelId);

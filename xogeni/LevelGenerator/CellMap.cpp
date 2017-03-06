@@ -3,12 +3,14 @@
 #include "Room.hpp"
 #include "RoomDoor.hpp"
 #include "LevelGenerator.hpp"
+#include "Entrance.hpp"
+#include "Exit.hpp"
 #include "../../bitengine/Math.hpp"
 #include "../../bitengine/Intelligence.hpp"
 #include "../../bitengine/System.hpp"
 
-XoGeni::CellMap::CellMap(unsigned int width, unsigned int height)
-    : width(width), height(height), size(width * height), entranceRoom(NULL), exitRoom(NULL)
+XoGeni::CellMap::CellMap(unsigned int id, unsigned int width, unsigned int height, CellMap* parentMap)
+    : id(id), width(width), height(height), size(width * height), parentMap(parentMap), entranceRoom(NULL), exitRoom(NULL)
 {
     mapPadding = 1;
     float mapHypSize = std::sqrtf(width * height);
@@ -63,6 +65,9 @@ XoGeni::CellMap::~CellMap()
     {
         delete doors[i];
     }
+    
+    delete entrance;
+    delete exit;
 }
 
 void XoGeni::CellMap::buildGround()
@@ -566,40 +571,61 @@ void XoGeni::CellMap::emplaceTunnel(Cell* cell, sf::Vector2i &dir)
 
 void XoGeni::CellMap::buildExits()
 {
-    unsigned int en = std::min(entranceCount, rooms.size());
-    unsigned int ex = std::min(exitCount, rooms.size());
+    // Exit and entrances depend on connecting parent maps
+    // If there is no parent map we can create an entrance and exit
+    // If there is a parent we should tie the entrance to their exit and create an exit
+    // In either scenario we are the master of exits so generate them
 
-    unsigned int enC = 0;
+    buildEntrance();
+
+    buildExit();
+
+}
+
+void XoGeni::CellMap::buildEntrance()
+{
+    unsigned int entranceId = 1;
+
+    // Pick a random room (in future give better heuristic)
+    Room* room = rooms[LevelGenerator::random.next(rooms.size())];
+    unsigned int centerX = room->x + room->width / 2;
+    unsigned int centerY = room->y + room->height / 2;
+    Cell* centerCell = getCellAtPosition(centerX, centerY);
+        
+    // Build entrance and tie to parent
+    entrance = new Entrance(entranceId, centerCell->x, centerCell->y, parentMap != NULL ? parentMap->exit->id : NULL);
+    centerCell->isEntrance = true;
+    centerCell->entranceId = entranceId;
+
+    // Set our maps entrance room
+    entranceRoom = room;
+}
+
+void XoGeni::CellMap::buildExit()
+{
+    unsigned int exitId = 1;
+
+    // Pick a random room that is not the entrance room (in future give better heuristic)
+    Room* room;
     for(unsigned int i=0; i < rooms.size(); i++)
     {
-        if(enC >= en)
+        if(rooms[i] != entranceRoom)
+        {
+            room = rooms[i];
             break;
-
-        unsigned int centerX = rooms[i]->x + rooms[i]->width / 2;
-        unsigned int centerY = rooms[i]->y + rooms[i]->height / 2;
-
-        enC++;
-        Cell* centerCell = getCellAtPosition(centerX, centerY);
-        centerCell->isEntrance = true;
-        centerCell->entranceId = enC;
-        entranceRoom = rooms[i];
+        }
     }
-    
-    unsigned int exC = 0;
-    for(unsigned int i=rooms.size() - 1; i > 0; i--)
-    {
-        if(exC >= ex)
-            break;
+    unsigned int centerX = room->x + room->width / 2;
+    unsigned int centerY = room->y + room->height / 2;
+    Cell* centerCell = getCellAtPosition(centerX, centerY);
+        
+    // Build exit
+    exit = new Exit(exitId, centerCell->x, centerCell->y);
+    centerCell->isExit = true;
+    centerCell->exitId = exitId;
 
-        unsigned int centerX = rooms[i]->x + rooms[i]->width / 2;
-        unsigned int centerY = rooms[i]->y + rooms[i]->height / 2;
-
-        exC++;
-        Cell* centerCell = getCellAtPosition(centerX, centerY);
-        centerCell->isExit = true;
-        centerCell->exitId = exC;
-        exitRoom = rooms[i];
-    }
+    // Set our maps exit room
+    exitRoom = room;
 }
 
 /////////////////////////////////////////

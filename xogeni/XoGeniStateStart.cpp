@@ -87,7 +87,7 @@ bool XoGeni::XoGeniStateStart::update(sf::Time &gameTime)
 
         if(cellMap)
             delete cellMap;
-        cellMap = levelGenerator->generate(seedCounter, 64, 64);
+        cellMap = levelGenerator->generate(seedCounter, 64, 64, 1);
         levelRenderer->load(cellMap);
 
         // Center camera
@@ -111,7 +111,7 @@ bool XoGeni::XoGeniStateStart::update(sf::Time &gameTime)
                 bit::Output::Debug(ssb.str());
             }
 
-            CellMap* testMap = levelGenerator->generate(testSeed, 64, 64);
+            CellMap* testMap = levelGenerator->generate(testSeed, 64, 64, 1);
 
             if(!testMap->testValidity())
             {
