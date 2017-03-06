@@ -33,12 +33,6 @@ std::vector<XoGeni::CellMap*> XoGeni::LevelGenerator::buildTower(unsigned int se
             map->connectToParent(parent);
         }
 
-        // If I am the last map then destroy my exit
-        if(mapId == mapCount)
-        {
-            map->destroyExit();
-        }
-
         parent = map;
         maps.push_back(map);
     }
@@ -50,7 +44,9 @@ XoGeni::CellMap* XoGeni::LevelGenerator::buildMap(unsigned int seed)
 {
     random.seed(seed);
 
-    return generate(64, 64, 1);
+    CellMap* cellMap = generate(64, 64, 1);
+
+    return cellMap;
 
 }
 

@@ -98,8 +98,6 @@ namespace XoGeni
 
         void connectToChild(CellMap* child);
 
-        void destroyExit();
-
 
         // Clean up connections
         void cleanupConnections();

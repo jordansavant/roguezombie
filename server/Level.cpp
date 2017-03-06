@@ -528,7 +528,7 @@ bool Level::createPlayer(Player* player)
 
     // Create light source for character's vision
     Light* light = new Light();
-    light->load(this, zombie->Body::schema.x, zombie->Body::schema.y, 12, sf::Color::White, .35); // sf::Color(237, 255, 214) this is the old green hue, it was swapped with white because light blending was confusing looking
+    light->load(this, zombie->Body::schema.x, zombie->Body::schema.y, 12, sf::Color::White, .65); // sf::Color(237, 255, 214) this is the old green hue, it was swapped with white because light blending was confusing looking
     zombie->lights.push_back(light);
     Light* orbLight = new Light();
     orbLight->load(this, zombie->Body::schema.x, zombie->Body::schema.y, 2, sf::Color::White, .6);

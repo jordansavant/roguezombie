@@ -35,18 +35,18 @@ void Tile::load(Level* _level, unsigned int _id, Type _type, int _x, int _y, int
 void Tile::update(sf::Time &gameTime)
 {
     // Reset brightness to none
-    schema.illumination = 0.0f;
+    schema.illumination = 0.05f;
 
     // Reset color to black
-    schema.rshade = 0;
-    schema.gshade = 0;
-    schema.bshade = 0;
+    schema.rshade = 255;
+    schema.gshade = 255;
+    schema.bshade = 255;
 
     // Reset body's illuminance
     if(body)
-        body->schema.illumination = 0;
+        body->schema.illumination = 0.05f;
     if(door)
-        door->schema.illumination = 0;
+        door->schema.illumination = 0.05f;
 }
 
 void Tile::distributedUpdate(sf::Time &gameTime)

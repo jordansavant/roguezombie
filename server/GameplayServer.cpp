@@ -80,10 +80,6 @@ void GameplayServer::update(sf::Time &gameTime)
         // If I can add the player to the new level
         if(levels[indexTo].canAddPlayer(pendingMoves[i].player, pendingMoves[i].toEntranceId))
         {
-            std::stringstream ss;
-            ss << "SERVER: from " << indexFrom + 1 << " to " << indexTo + 1;
-            bit::Output::Debug(ss.str());
-
             // Remove them from their current level
             levels[indexFrom].removePlayer(pendingMoves[i].player);
 

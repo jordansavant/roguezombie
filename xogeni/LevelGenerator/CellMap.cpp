@@ -661,11 +661,6 @@ void XoGeni::CellMap::connectToChild(CellMap* childMap)
     int a = 1;
 }
 
-void XoGeni::CellMap::destroyExit()
-{
-    // TODO: Fill In
-}
-
 /////////////////////////////////////////
 // EXIT BUILDING END
 ////////////////////////////////////////
