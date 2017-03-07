@@ -143,3 +143,25 @@ void Tile::prepareSnapshot(bit::ServerPacket &packet, bool full)
 {
     packet << schema;
 }
+
+// Quadtree
+        
+float Tile::quadtree_getX()
+{
+    return schema.x;
+}
+
+float Tile::quadtree_getY()
+{
+    return schema.y;
+}
+
+float Tile::quadtree_getWidth()
+{
+    return schema.width;
+}
+
+float Tile::quadtree_getHeight()
+{
+    return schema.height;
+}

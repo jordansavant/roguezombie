@@ -34,7 +34,7 @@
 #include <map>
 
 Level::Level()
-    : server(NULL), id(0), state(State::Free), tileWidth(0), tileHeight(0), tileRows(0), tileColumns(0), tileCount(0), characterInTurn(NULL)
+    : server(NULL), id(0), state(State::Free), tileWidth(0), tileHeight(0), tileRows(0), tileColumns(0), tileCount(0), characterInTurn(NULL), tileQuadTree(NULL)
 {
 }
 
@@ -45,6 +45,8 @@ Level::~Level()
         delete runners[i];
     }
     turnQueue.clear();
+
+    delete tileQuadTree;
 }
 
 
@@ -296,6 +298,21 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
             }
         }
     }
+
+    // Build quadtrees
+    // Todo: only insert tiles that are "smart" meaning they are not walled off behind walls
+    // this should be indicated by the XoGeni generator
+    tileQuadTree = new bit::QuadTree(0, 0, mapWidth, mapHeight);
+    tileQuadTree->maxObjects = 256;
+    for(unsigned int i=0; i < tiles.size(); i++)
+    {
+        tileQuadTree->insert(tiles[i]);
+    }
+
+    // Test
+    std::vector<bit::QuadTreeObject*> tiles;
+    tileQuadTree->getObjectsNear(tiles, 1500, 400, 0, 0);
+    int here = 1;
 }
 
 void Level::loadEventIntoTile(bit::Event<std::function<void(Tile* t, Body* body)>> &e, LevelLoader::Event &eventDef)

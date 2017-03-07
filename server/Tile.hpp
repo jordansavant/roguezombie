@@ -12,7 +12,7 @@
 class Level;
 class Body;
 
-class Tile : public bit::Node, public LevelRunnable
+class Tile : public bit::Node, public bit::QuadTreeObject, public LevelRunnable
 {
 public:
 
@@ -124,6 +124,16 @@ public:
     bool hasEntrance(unsigned int entranceId);
 
     unsigned int getEntrancePriority(unsigned int entranceId);
+
+    // Quadtree
+        
+    virtual float quadtree_getX();
+        
+    virtual float quadtree_getY();
+
+    virtual float quadtree_getWidth();
+
+    virtual float quadtree_getHeight();
 
 private:
 
