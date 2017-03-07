@@ -104,6 +104,7 @@ public:
     unsigned int metadata_floodfillId;
     bit::Event<std::function<void(Tile* t, Body* body)>> onBodyEnter;
     bit::Event<std::function<void(Tile* t, Body* body)>> onBodyLeave;
+    bool isUnreachable;
 
     virtual void load(Level* level, unsigned int id, Type type, int x, int y, int width, int height);
 

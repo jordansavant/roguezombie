@@ -113,6 +113,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
             // Load our tile
             Tile* t = new Tile();
             t->load(this, index, tileType, originX, originY, tileWidth, tileHeight);
+            t->isUnreachable = tileDef.isUnreachable;
             tiles[index] = t;
 
             // Append events
@@ -306,7 +307,10 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
     tileQuadTree->maxObjects = 256;
     for(unsigned int i=0; i < tiles.size(); i++)
     {
-        tileQuadTree->insert(tiles[i]);
+        if(tiles[i]->isUnreachable == false)
+        {
+            tileQuadTree->insert(tiles[i]);
+        }
     }
 
     // Test

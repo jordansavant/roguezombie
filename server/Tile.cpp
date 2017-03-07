@@ -5,7 +5,7 @@
 #include "../bitengine/Math.hpp"
 
 Tile::Tile()
-    : bit::Node(0, 0), level(NULL), body(NULL), door(NULL), metadata_shadowcastId(0), metadata_floodfillId(0), schema()
+    : bit::Node(0, 0), level(NULL), body(NULL), door(NULL), metadata_shadowcastId(0), metadata_floodfillId(0), schema(), isUnreachable(false)
 {
 }
 

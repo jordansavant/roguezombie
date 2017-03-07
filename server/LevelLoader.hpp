@@ -50,6 +50,7 @@ public:
         std::vector<Event> enterEvents;
         std::vector<Event> exitEvents;
         std::vector<Entrance> entrances;
+        bool isUnreachable;
 
         void unpack(tinyxml2::XMLElement* node);
 

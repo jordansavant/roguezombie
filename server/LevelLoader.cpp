@@ -26,6 +26,7 @@ void LevelLoader::Tile::unpack(tinyxml2::XMLElement* node)
 {
     node->FirstChildElement("id")->QueryUnsignedText(&id);
     node->FirstChildElement("type")->QueryUnsignedText(&type);
+    isUnreachable = false;
 
     // Enter events in tile
     tinyxml2::XMLElement* enterEventNodes = node->FirstChildElement("enterEvents");
@@ -347,6 +348,7 @@ void LevelLoader::Level::unpack(XoGeni::CellMap* cellMap)
 void LevelLoader::Tile::unpack(XoGeni::Cell* cell, unsigned int tileId)
 {
     id = tileId;
+    isUnreachable = cell->isTagUnreachable;
     if(cell->isEntranceTransition)
         type = 2; // StairwellUp_North
     else if(cell->isExitTransition)
