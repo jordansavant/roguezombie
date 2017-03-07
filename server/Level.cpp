@@ -394,33 +394,39 @@ void Level::loadEventIntoTile(bit::Event<std::function<void(Tile* t, Body* body)
 void Level::update(sf::Time &gameTime)
 {
     // Test quad update
+    sf::Clock q;
+    float qmicro = 0;
+    float umicro = 0;
     for(auto iterator = players.begin(); iterator != players.end(); iterator++)
     {
-        float rangeWidth = 3 * tileWidth;
-        float rangeHeight = 3 * tileHeight;
+        float rangeWidth = 32 * tileWidth;
+        float rangeHeight = 32 * tileHeight;
         Player* player = iterator->second;
         Character* playerCharacter = player->character ? player->character : player->spectatee ? player->spectatee : NULL;
         if(playerCharacter)
         {
             float _x = playerCharacter->Body::schema.x - rangeWidth / 2 + tileWidth / 2;
             float _y = playerCharacter->Body::schema.y - rangeHeight / 2 + tileHeight / 2;
-            float _w = rangeWidth;
-            float _h = rangeHeight;
-            std::vector<Tile*> nearbyTiles;
-            tileQuadTree->getAllObjectsWithin(nearbyTiles, _x, _y, _w, _h);
-            for(unsigned int i=0; i < nearbyTiles.size(); i++)
-            {
-                nearbyTiles[i]->playerQuadUpdate(gameTime);
-            }
+            tileQuadTree->onAllObjectsWithin(_x, _y, rangeWidth, rangeHeight, [&gameTime, playerCharacter] (Tile* tile) {
+                tile->playerNearbyUpdate(gameTime, playerCharacter);
+            });
         }
     }
-    int here = 1;
+    qmicro = q.getElapsedTime().asMicroseconds();
 
     // Update entities
-    std::stringstream ss;
     for(unsigned int i=0; i < runners.size(); i++)
     {
+        if(i == 0)
+        {
+            q.restart();
+        }
         runners[i]->update(gameTime);
+        
+        if(i == 0)
+        {
+            umicro = q.getElapsedTime().asMicroseconds();
+        }
     }
     
     switch(state)

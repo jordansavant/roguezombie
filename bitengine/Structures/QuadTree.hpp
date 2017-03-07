@@ -5,6 +5,8 @@
 #include <vector>
 #include <iostream>
 #include <sstream>
+#include <functional>
+#include "../Math/RectangleMath.hpp"
 
 namespace bit
 {
@@ -256,7 +258,7 @@ namespace bit
             }
         }
 
-        void getAllObjectsWithin(std::vector<T*> &fill, float _x, float _y, float _width, float _height)
+        void onAllObjectsWithin(float _x, float _y, float _width, float _height, std::function<void(T* object)> operation)
         {
             // If we have child split nodes, look in them
             if(nodes.size() > 0)
@@ -266,15 +268,11 @@ namespace bit
                 // This request does not fit into one of my children so it spans multiple children, therefore collect all objects
                 if(childIndex == -1)
                 {
-                    int tl_index = getIndex(_x, _y, 0, 0); 						//  0 ->  1
-                    int tr_index = getIndex(_x + _width, _y, 0, 0); 			//  1 -> -1
-                    int bl_index = getIndex(_x, _y + _height, 0, 0); 			//  0 ->  1
-                    int br_index = getIndex(_x + _width, _y + _height, 0, 0); 	//  1 -> -1
-
-                    bool inTL = tl_index == 0 || tr_index == 0 || bl_index == 0 || br_index == 0;
-                    bool inTR = tl_index == 1 || tr_index == 1 || bl_index == 1 || br_index == 1;
-                    bool inBL = tl_index == 2 || tr_index == 2 || bl_index == 2 || br_index == 2;
-                    bool inBR = tl_index == 3 || tr_index == 3 || bl_index == 3 || br_index == 3;
+                    // NEED TO: An index should return true if the rectangle overlaps its quad at all, not contain
+                    bool inTL = bit::RectangleMath::intersects(_x, _y, _width, _height, x, y, width /  2, height / 2);
+                    bool inTR = bit::RectangleMath::intersects(_x, _y, _width, _height, x + width / 2, y, width /  2, height / 2);
+                    bool inBL = bit::RectangleMath::intersects(_x, _y, _width, _height, x, y + height / 2, width /  2, height / 2);
+                    bool inBR = bit::RectangleMath::intersects(_x, _y, _width, _height, x + width / 2, y + height / 2, width /  2, height / 2);
 
                     for(unsigned int i = 0; i < 4; i++)
                     {
@@ -283,25 +281,25 @@ namespace bit
                             case 0:
                                 if(inTL)
                                 {
-                                    nodes[i]->getAllObjectsWithin(fill, _x, _y, _width, _height);
+                                    nodes[i]->onAllObjectsWithin(_x, _y, _width, _height, operation);
                                 }
                                 break;
                             case 1:
                                 if(inTR)
                                 {
-                                    nodes[i]->getAllObjectsWithin(fill, _x, _y, _width, _height);
+                                    nodes[i]->onAllObjectsWithin(_x, _y, _width, _height, operation);
                                 }
                                 break;
                             case 2:
                                 if(inBL)
                                 {
-                                    nodes[i]->getAllObjectsWithin(fill, _x, _y, _width, _height);
+                                    nodes[i]->onAllObjectsWithin(_x, _y, _width, _height, operation);
                                 }
                                 break;
                             case 3:
                                 if(inBR)
                                 {
-                                    nodes[i]->getAllObjectsWithin(fill, _x, _y, _width, _height);
+                                    nodes[i]->onAllObjectsWithin(_x, _y, _width, _height, operation);
                                 }
                                 break;
                         }
@@ -310,7 +308,7 @@ namespace bit
                 // This request fits within a child so re-request from child
                 else
                 {
-                    nodes[childIndex]->getAllObjectsWithin(fill, _x, _y, _width, _height);
+                    nodes[childIndex]->onAllObjectsWithin(_x, _y, _width, _height, operation);
                 }
             }
             else
@@ -331,10 +329,17 @@ namespace bit
                     float _ob = _oy + _oh;
                     if(_ox >= _x && _oy >= _y && _or <= _r && _ob <= _b)
                     {
-                        fill.push_back(objects[i]);
+                        operation(object);
                     }
                 }
             }
+        }
+
+        void getAllObjectsWithin(float _x, float _y, float _width, float _height, std::vector<T*> &fill)
+        {
+            onAllObjectsWithin(_x, _y, _width, _height, [&fill] (T* object) {
+                fill.push_back(object);
+            });
         }
     };
 }

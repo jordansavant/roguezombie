@@ -32,13 +32,11 @@ Tiles and lights are still performance hogs
 Rename Node -> AstarNode
 
 CURRENTLY
-- QuadTree has been implemented but needs to be moved back into a Template so I can fill lists of the subclass data type
 - I need to settle on a QuadSize limit
 	- rooms are currently max 16x16, this means I need to be able to stand on one side and see changes on the other
 	- That would indicate being able to get tiles up to 32 away
 	- That would give us a maxSize of 1024, which is 1/4 of the current tile set
 	- We could further optimize by flagging tiles as unreachable in the mapgenerator, then never adding them to the quadtree
-- Also I need to implement the rangedUpdate method for Tile and Light
 - Also I need to eliminate the normal update methods for Tile and Light
 	- This should reduce processing overhead instead of iterating entire list each cycle
 	- This quadtree reduction is useless if I am still running normal updates

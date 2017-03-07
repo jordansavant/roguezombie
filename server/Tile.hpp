@@ -112,7 +112,7 @@ public:
 
     virtual void distributedUpdate(sf::Time &gameTime);
 
-    virtual void playerQuadUpdate(sf::Time &gameTime);
+    virtual void playerNearbyUpdate(sf::Time &gameTime, Body* playerCharacterOrSpectatee);
 
     void rebaseLighting();
 

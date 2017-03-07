@@ -41,7 +41,7 @@ void Tile::distributedUpdate(sf::Time &gameTime)
 {
 }
 
-void Tile::playerQuadUpdate(sf::Time &gameTime)
+void Tile::playerNearbyUpdate(sf::Time &gameTime, Body* playerCharacterOrSpectatee)
 {
     rebaseLighting();
 }
