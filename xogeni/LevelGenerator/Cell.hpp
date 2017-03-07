@@ -50,9 +50,9 @@ namespace XoGeni
 
         bool isEntranceTransition;
         Entrance* entranceTransition;
-
         bool isExitTransition;
         Exit* exitTransition;
+        sf::Vector2i transitionDir;
 
         bool hasLight;
         unsigned int lightRadius;

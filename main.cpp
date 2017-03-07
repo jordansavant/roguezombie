@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
     XoGeni::XoGeniGame generator;
     generator.run();
     
-    return 0;
+    //return 0;
     
     if(argc == 1)
     {

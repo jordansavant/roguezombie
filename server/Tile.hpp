@@ -22,16 +22,16 @@ public:
 
     enum Type
     {
-        None,
-        Ground,
-        StairwellDown_South,
-        StairwellDown_East,
-        StairwellUp_North,
-        StairwellUp_West,
-        StairwellDown_North,
-        StairwellDown_West,
-        StairwellUp_South,
-        StairwellUp_East,
+        None, // 0
+        Ground, // 1
+        StairwellDown_South, // 2
+        StairwellDown_East,  // 3
+        StairwellDown_North, // 4
+        StairwellDown_West, // 5
+        StairwellUp_North, // 6
+        StairwellUp_West, // 7
+        StairwellUp_South, // 8
+        StairwellUp_East, // 9
     };
 
     struct Entrance

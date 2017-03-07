@@ -350,9 +350,31 @@ void LevelLoader::Tile::unpack(XoGeni::Cell* cell, unsigned int tileId)
     id = tileId;
     isUnreachable = cell->isTagUnreachable;
     if(cell->isEntranceTransition)
-        type = 2; // StairwellUp_North
+    {
+        if(cell->transitionDir.y > 0) // north wall
+            type = 5; // StairwellDown_West
+        else if(cell->transitionDir.x > 0) // west wall
+            type = 5; // StairwellDown_West
+        else if(cell->transitionDir.y < 0) // south wall
+            type = 2; // StairwellDown_South
+        else if(cell->transitionDir.x < 0) // east wall
+            type = 2; // StairwellDown_South
+        else // center
+            type = 5; // StairwellDown_West
+    }
     else if(cell->isExitTransition)
-        type = 4; // StairwellDown_South
+    {
+        if(cell->transitionDir.y > 0) // north wall
+            type = 7; // StairwellUp_West
+        else if(cell->transitionDir.x > 0) // west wall
+            type = 7; // StairwellUp_West
+        else if(cell->transitionDir.y < 0) // south wall
+            type = 8; // StairwellUp_South
+        else if(cell->transitionDir.x < 0) // east wall
+            type = 8; // StairwellUp_South
+        else // center
+            type = 7; // StairwellUp_West
+    }
     else
         type = 1; // Ground
 

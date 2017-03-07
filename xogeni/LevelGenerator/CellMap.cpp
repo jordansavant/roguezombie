@@ -589,17 +589,17 @@ void XoGeni::CellMap::buildEntrance()
 
     // Pick a random room (in future give better heuristic)
     Room* room = rooms[LevelGenerator::random.next(rooms.size())];
-    unsigned int centerX = room->x + room->width / 2;
-    unsigned int centerY = room->y + room->height / 2;
-    Cell* centerCell = getCellAtPosition(centerX, centerY);
-        
+    
+    // Pick a good entrance cell
+    Cell* entranceCell = pickTransitionCellForRoom(room);
+    
     // Build entrance
-    entrance = new Entrance(entranceId, centerCell->x, centerCell->y);
-    centerCell->isEntranceTransition = true;
-    centerCell->entranceTransition = entrance;
+    entrance = new Entrance(entranceId, entranceCell->x, entranceCell->y);
+    entranceCell->isEntranceTransition = true;
+    entranceCell->entranceTransition = entrance;
 
     // Build  landing pad
-    buildLandingPad(centerCell, entranceId);
+    buildLandingPad(entranceCell, entranceId);
 
     // Set our maps entrance room
     entranceRoom = room;
@@ -611,28 +611,90 @@ void XoGeni::CellMap::buildExit()
 
     // Pick a random room that is not the entrance room (in future give better heuristic)
     Room* room;
+    unsigned int randI = LevelGenerator::random.next(rooms.size());
     for(unsigned int i=0; i < rooms.size(); i++)
     {
-        if(rooms[i] != entranceRoom)
+        unsigned int testIndex = (randI + i) % rooms.size();
+        if(rooms[testIndex] != entranceRoom)
         {
-            room = rooms[i];
+            room = rooms[testIndex];
             break;
         }
     }
-    unsigned int centerX = room->x + room->width / 2;
-    unsigned int centerY = room->y + room->height / 2;
-    Cell* centerCell = getCellAtPosition(centerX, centerY);
+    
+    // Pick a good entrance cell
+    Cell* exitCell = pickTransitionCellForRoom(room);
         
     // Build exit
-    exit = new Exit(exitId, centerCell->x, centerCell->y);
-    centerCell->isExitTransition = true;
-    centerCell->exitTransition = exit;
+    exit = new Exit(exitId, exitCell->x, exitCell->y);
+    exitCell->isExitTransition = true;
+    exitCell->exitTransition = exit;
 
     // Build  landing pad
-    buildLandingPad(centerCell, exitId);
+    buildLandingPad(exitCell, exitId);
 
     // Set our maps exit room
     exitRoom = room;
+}
+
+XoGeni::Cell* XoGeni::CellMap::pickTransitionCellForRoom(XoGeni::Room* room)
+{
+    // Default to the center of the room because its guaranteed, though not amazing
+    Cell* pick = NULL;
+    unsigned int centerX = room->x + room->width / 2 - 1;
+    unsigned int centerY = room->y + room->height / 2 - 1;
+    pick = getCellAtPosition(centerX, centerY);
+
+    // First pick is the northwest corner
+    // It must have a wall to north and to west
+    unsigned int nwX = room->x;
+    unsigned int nwY = room->y;
+    Cell* nwCell = getCellAtPosition(nwX, nwY);
+    Cell* nwnCell = getCellAtPosition(nwX, nwY - 1);
+    Cell* nwwCell = getCellAtPosition(nwX - 1, nwY);
+    if(!nwnCell->isDoor && !nwnCell->isTunnel && !nwwCell->isDoor && !nwwCell->isTunnel)
+    {
+        pick = nwCell;
+        pick->transitionDir.x = 0;
+        pick->transitionDir.y = 1;
+        return pick;
+    }
+
+    // Second pick is a blank spot along the north wall
+    for(unsigned int i = room->x; i < room->x + room->width; i++)
+    {
+        // It must have a wall to north and to west
+        unsigned int nX = i;
+        unsigned int nY = room->y;
+        Cell* nCell = getCellAtPosition(nX, nY);
+        Cell* nnCell = getCellAtPosition(nX, nY - 1);
+        if(!nnCell->isDoor && !nnCell->isTunnel)
+        {
+            pick = nCell;
+            pick->transitionDir.x = 0;
+            pick->transitionDir.y = 1;
+            return pick;
+        }
+    }
+
+    // Third pick is a blank spot along the west wall
+    for(unsigned int i = room->y; i < room->y + room->height; i++)
+    {
+        // It must have a wall to north and to west
+        unsigned int wX = room->x;
+        unsigned int wY = i;
+        Cell* wCell = getCellAtPosition(wX, wY);
+        Cell* wwCell = getCellAtPosition(wX, wY - 1);
+        if(!wwCell->isDoor && !wwCell->isTunnel)
+        {
+            pick = wCell;
+            pick->transitionDir.x = 1;
+            pick->transitionDir.y = 0;
+            return pick;
+        }
+    }
+
+    return pick;
 }
 
 void XoGeni::CellMap::buildLandingPad(Cell* startCell, unsigned int entranceId)

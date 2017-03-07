@@ -94,6 +94,8 @@ namespace XoGeni
 
         void buildExit();
 
+        Cell* pickTransitionCellForRoom(Room* room);
+
         void buildLandingPad(Cell* startCell, unsigned int entranceId);
 
         void connectToParent(CellMap* parentMap);

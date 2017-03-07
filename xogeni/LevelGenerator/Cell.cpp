@@ -10,7 +10,7 @@ XoGeni::Cell::Cell(unsigned int index, unsigned int x, unsigned int y)
       isTunnel(false), wasCorridorTunnel(false), wasDoorTunnel(false), wasRoomFixTunnel(false),
       isEntrance(false), entranceId(0), entrancePriority(0),
       isEntranceTransition(false), entranceTransition(NULL),
-      isExitTransition(false), exitTransition(NULL),
+      isExitTransition(false), exitTransition(NULL), transitionDir(0, 0),
       hasLight(false), lightRadius(0), lightOpacity(0), lightColorR(0), lightColorG(0), lightColorB(0),
       isTagUnreachable(false),
       metadata_floodfillId(0)
