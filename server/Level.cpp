@@ -113,7 +113,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
             // Load our tile
             Tile* t = new Tile();
             t->load(this, index, tileType, originX, originY, tileWidth, tileHeight);
-            t->isUnreachable = tileDef.isUnreachable;
+            //t->isUnreachable = tileDef.isUnreachable;
             tiles[index] = t;
 
             // Append events
@@ -305,6 +305,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
     // this should be indicated by the XoGeni generator
     tileQuadTree = new bit::QuadTree<Tile>(0, 0, mapWidth, mapHeight);
     tileQuadTree->maxObjects = 256;
+    tileQuadTree->maxLevels = 100;
     for(unsigned int i=0; i < tiles.size(); i++)
     {
         if(tiles[i]->isUnreachable == false)
@@ -312,11 +313,6 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
             tileQuadTree->insert(tiles[i]);
         }
     }
-
-    // Test
-    std::vector<Tile*> tiles;
-    tileQuadTree->getObjectsNear(tiles, 1500, 400, 0, 0);
-    int here = 1;
 }
 
 void Level::loadEventIntoTile(bit::Event<std::function<void(Tile* t, Body* body)>> &e, LevelLoader::Event &eventDef)
@@ -397,6 +393,25 @@ void Level::loadEventIntoTile(bit::Event<std::function<void(Tile* t, Body* body)
 
 void Level::update(sf::Time &gameTime)
 {
+    // Test quad update
+    for(auto iterator = players.begin(); iterator != players.end(); iterator++)
+    {
+        float rangeWidth = 16 * tileWidth;
+        float rangeHeight = 16 * tileHeight;
+        Player* player = iterator->second;
+        Character* playerCharacter = player->character ? player->character : player->spectatee ? player->spectatee : NULL;
+        if(playerCharacter)
+        {
+            std::vector<Tile*> nearbyTiles;
+            tileQuadTree->getObjectsNear(nearbyTiles, playerCharacter->Body::schema.x, playerCharacter->Body::schema.y, playerCharacter->Body::schema.width, playerCharacter->Body::schema.height);
+            for(unsigned int i=0; i < nearbyTiles.size(); i++)
+            {
+                nearbyTiles[i]->playerQuadUpdate(gameTime);
+            }
+        }
+    }
+    int here = 1;
+
     // Update entities
     std::stringstream ss;
     for(unsigned int i=0; i < runners.size(); i++)
@@ -729,8 +744,6 @@ bool Level::isWithinRangeOfPlayer(float x, float y, float rangeCheck)
     for(auto iterator = players.begin(); iterator != players.end(); iterator++)
     {
         Player* player = iterator->second;
-        if(player == NULL)
-            continue;
 
         // Check player character
         if(player->character)

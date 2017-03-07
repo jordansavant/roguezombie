@@ -35,11 +35,15 @@ void Tile::load(Level* _level, unsigned int _id, Type _type, int _x, int _y, int
 
 void Tile::update(sf::Time &gameTime)
 {
-    rebaseLighting();
 }
 
 void Tile::distributedUpdate(sf::Time &gameTime)
 {
+}
+
+void Tile::playerQuadUpdate(sf::Time &gameTime)
+{
+    rebaseLighting();
 }
 
 void Tile::rebaseLighting()

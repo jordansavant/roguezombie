@@ -112,6 +112,8 @@ public:
 
     virtual void distributedUpdate(sf::Time &gameTime);
 
+    virtual void playerQuadUpdate(sf::Time &gameTime);
+
     void rebaseLighting();
 
     virtual void setOccupyingBody(Body* body);

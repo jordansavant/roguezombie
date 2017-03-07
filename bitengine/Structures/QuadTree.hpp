@@ -84,8 +84,8 @@ namespace bit
             float subX = x;
             float subY = y;
 
-            nodes.push_back(fetchFromPool(subX + subWidth, subY, subWidth, subHeight, level + 1));
             nodes.push_back(fetchFromPool(subX, subY, subWidth, subHeight, level + 1));
+            nodes.push_back(fetchFromPool(subX + subWidth, subY, subWidth, subHeight, level + 1));
             nodes.push_back(fetchFromPool(subX, subY + subHeight, subWidth, subHeight, level + 1));
             nodes.push_back(fetchFromPool(subX + subWidth, subY + subHeight, subWidth, subHeight, level + 1));
         }
@@ -129,30 +129,41 @@ namespace bit
 
         int getIndex(float _x, float _y, float _width, float _height)
         {
-            double verticalMidpoint = x + (width / 2);
-            double horizontalMidpoint = y + (height / 2);
+            float verticalMidpoint = x + (width / 2);
+            float horizontalMidpoint = y + (height / 2);
 
-            // Object can completely fit within the top quadrants
-            bool topQuadrant = (_y + _height < horizontalMidpoint);
+            bool withinTop = _y >= y && _y + _height <= horizontalMidpoint;
+            bool withinBottom = _y >= horizontalMidpoint && _y <= y + height;
+            bool withinLeft = _x >= x && _x + _width <= verticalMidpoint;
+            bool withinRight = _x >= verticalMidpoint && _x <= x + width;
 
-            // Object can completely fit within the bottom quadrants
-            bool bottomQuadrant = (_y > horizontalMidpoint);
-
-            // Object can completely fit within the left quadrants
-            if (_x + _width < verticalMidpoint)
+            // Within Top
+            if(withinTop)
             {
-                if (topQuadrant)
-                    return 1;
-                else if (bottomQuadrant)
-                    return 2;
-            }
-            // Object can completely fit within the right quadrants
-            else if (_x > verticalMidpoint)
-            {
-                if (topQuadrant)
+                // Within Left
+                if (withinLeft)
+                {
                     return 0;
-                else if (bottomQuadrant)
+                }
+                // Within Right
+                else if(withinRight)
+                {
+                    return 1;
+                }
+            }
+            // Within Bottom
+            else if(withinBottom)
+            {
+                // Within Left
+                if (withinLeft)
+                {
+                    return 2;
+                }
+                // Within Right
+                else if(withinRight)
+                {
                     return 3;
+                }
             }
 
             // Object does not fit, must belong to parent
