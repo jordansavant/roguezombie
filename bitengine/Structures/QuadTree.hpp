@@ -316,7 +316,24 @@ namespace bit
             else
             {
                 // No child split nodes, so give them my content
-                getAllObjects(fill);
+                // Iterate objects and place them into list if they are within the bounds of the requested
+                for(unsigned int i = 0; i < objects.size(); i++)
+                {
+                    // If it is within the dimension
+                    T* object = objects[i];
+                    float _r = _x + _width;
+                    float _b = _y + _height;
+                    float _ox = object->quadtree_getX();
+                    float _oy = object->quadtree_getY();
+                    float _ow = object->quadtree_getWidth();
+                    float _oh = object->quadtree_getHeight();
+                    float _or = _ox + _ow;
+                    float _ob = _oy + _oh;
+                    if(_ox >= _x && _oy >= _y && _or <= _r && _ob <= _b)
+                    {
+                        fill.push_back(objects[i]);
+                    }
+                }
             }
         }
     };
