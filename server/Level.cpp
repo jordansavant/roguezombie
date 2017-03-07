@@ -24,10 +24,10 @@
 #include "../bitengine/System.hpp"
 #include "../bitengine/Intelligence.hpp"
 #include "../bitengine/Intelligence/Shadowcaster.hpp"
+#include "../bitengine/Structures.hpp"
 #include "../bitengine/System.hpp"
 #include "../bitengine/System/tinyxml2.h"
 #include "../ResourcePath.h"
-#include "../bitengine/Structures/Event.hpp"
 #include "ServerEvent.hpp"
 #include <functional>
 #include <sstream>
@@ -304,7 +304,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
     // Todo: only insert tiles that are "smart" meaning they are not walled off behind walls
     // this should be indicated by the XoGeni generator
     tileQuadTree = new bit::QuadTree<Tile>(0, 0, mapWidth, mapHeight);
-    tileQuadTree->maxObjects = 256;
+    tileQuadTree->maxObjects = 16;
     tileQuadTree->maxLevels = 100;
     for(unsigned int i=0; i < tiles.size(); i++)
     {
@@ -396,14 +396,18 @@ void Level::update(sf::Time &gameTime)
     // Test quad update
     for(auto iterator = players.begin(); iterator != players.end(); iterator++)
     {
-        float rangeWidth = 16 * tileWidth;
-        float rangeHeight = 16 * tileHeight;
+        float rangeWidth = 3 * tileWidth;
+        float rangeHeight = 3 * tileHeight;
         Player* player = iterator->second;
         Character* playerCharacter = player->character ? player->character : player->spectatee ? player->spectatee : NULL;
         if(playerCharacter)
         {
+            float _x = playerCharacter->Body::schema.x - rangeWidth / 2 + tileWidth / 2;
+            float _y = playerCharacter->Body::schema.y - rangeHeight / 2 + tileHeight / 2;
+            float _w = rangeWidth;
+            float _h = rangeHeight;
             std::vector<Tile*> nearbyTiles;
-            tileQuadTree->getObjectsNear(nearbyTiles, playerCharacter->Body::schema.x, playerCharacter->Body::schema.y, playerCharacter->Body::schema.width, playerCharacter->Body::schema.height);
+            tileQuadTree->getAllObjectsWithin(nearbyTiles, _x, _y, _w, _h);
             for(unsigned int i=0; i < nearbyTiles.size(); i++)
             {
                 nearbyTiles[i]->playerQuadUpdate(gameTime);

@@ -241,22 +241,82 @@ namespace bit
             }
         }
 
-        void getObjectsNear(std::vector<T*> &fill, float _x, float _y, float _width, float _height)
+        void getAllObjects(std::vector<T*> &fill)
         {
-            // Search into children to retrieve
-            int index = getIndex(_x, _y, _width, _height);
-            if (index != -1 && nodes.size() > 0)
+            // Get my local objects
+            for(unsigned int i=0; i < objects.size(); i++)
             {
-                nodes[index]->getObjectsNear(fill, _x, _y, _width, _height);
+                fill.push_back(objects[i]);
             }
-            // I added this from code inspection, have no idea if this else condition will help but it seemed like
-            // this quadtree should only fill in the neighbors if it did not have an index for the children
+
+            // Get all child node objects recursively
+            for(unsigned int i=0; i < nodes.size(); i++)
+            {
+                nodes[i]->getAllObjects(fill);
+            }
+        }
+
+        void getAllObjectsWithin(std::vector<T*> &fill, float _x, float _y, float _width, float _height)
+        {
+            // If we have child split nodes, look in them
+            if(nodes.size() > 0)
+            {
+                int childIndex = getIndex(_x, _y, _width, _height);
+
+                // This request does not fit into one of my children so it spans multiple children, therefore collect all objects
+                if(childIndex == -1)
+                {
+                    int tl_index = getIndex(_x, _y, 0, 0); 						//  0 ->  1
+                    int tr_index = getIndex(_x + _width, _y, 0, 0); 			//  1 -> -1
+                    int bl_index = getIndex(_x, _y + _height, 0, 0); 			//  0 ->  1
+                    int br_index = getIndex(_x + _width, _y + _height, 0, 0); 	//  1 -> -1
+
+                    bool inTL = tl_index == 0 || tr_index == 0 || bl_index == 0 || br_index == 0;
+                    bool inTR = tl_index == 1 || tr_index == 1 || bl_index == 1 || br_index == 1;
+                    bool inBL = tl_index == 2 || tr_index == 2 || bl_index == 2 || br_index == 2;
+                    bool inBR = tl_index == 3 || tr_index == 3 || bl_index == 3 || br_index == 3;
+
+                    for(unsigned int i = 0; i < 4; i++)
+                    {
+                        switch(i)
+                        {
+                            case 0:
+                                if(inTL)
+                                {
+                                    nodes[i]->getAllObjectsWithin(fill, _x, _y, _width, _height);
+                                }
+                                break;
+                            case 1:
+                                if(inTR)
+                                {
+                                    nodes[i]->getAllObjectsWithin(fill, _x, _y, _width, _height);
+                                }
+                                break;
+                            case 2:
+                                if(inBL)
+                                {
+                                    nodes[i]->getAllObjectsWithin(fill, _x, _y, _width, _height);
+                                }
+                                break;
+                            case 3:
+                                if(inBR)
+                                {
+                                    nodes[i]->getAllObjectsWithin(fill, _x, _y, _width, _height);
+                                }
+                                break;
+                        }
+                    }
+                }
+                // This request fits within a child so re-request from child
+                else
+                {
+                    nodes[childIndex]->getAllObjectsWithin(fill, _x, _y, _width, _height);
+                }
+            }
             else
             {
-                for(int i = 0; i < objects.size(); i++)
-                {
-                    fill.push_back(objects[i]);
-                }
+                // No child split nodes, so give them my content
+                getAllObjects(fill);
             }
         }
     };

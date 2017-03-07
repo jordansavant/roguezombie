@@ -29,6 +29,8 @@ Tiles and lights are still performance hogs
 - But the list of tiles is still updating
 - Consider implementing the range based updates mentioned in the features below
 
+Rename Node -> AstarNode
+
 CURRENTLY
 - QuadTree has been implemented but needs to be moved back into a Template so I can fill lists of the subclass data type
 - I need to settle on a QuadSize limit
