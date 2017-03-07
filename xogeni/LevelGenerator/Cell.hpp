@@ -63,6 +63,8 @@ namespace XoGeni
 
         bool isTagUnreachable;
 
+        unsigned int metadata_floodfillId;
+
     };
 }
 

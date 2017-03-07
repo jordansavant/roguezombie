@@ -598,11 +598,8 @@ void XoGeni::CellMap::buildEntrance()
     centerCell->isEntranceTransition = true;
     centerCell->entranceTransition = entrance;
 
-    // Build entrance landing pad (TODO: floodfill priorities for multiple cells)
-    Cell* landingCell = getCellAtPosition(centerX + 0, centerY + 1);
-    landingCell->isEntrance = true;
-    landingCell->entranceId = entranceId;
-    landingCell->entrancePriority = 1;
+    // Build  landing pad
+    buildLandingPad(centerCell, entranceId);
 
     // Set our maps entrance room
     entranceRoom = room;
@@ -631,15 +628,42 @@ void XoGeni::CellMap::buildExit()
     centerCell->isExitTransition = true;
     centerCell->exitTransition = exit;
 
-    // Build exit landing pad (TODO: floodfill priorities for multiple cells)
-    Cell* landingCell = getCellAtPosition(centerX + 0, centerY + 1);
-    landingCell->isEntrance = true;
-    landingCell->entranceId = exitId;
-    landingCell->entrancePriority = 1;
+    // Build  landing pad
+    buildLandingPad(centerCell, exitId);
 
     // Set our maps exit room
     exitRoom = room;
 }
+
+void XoGeni::CellMap::buildLandingPad(Cell* startCell, unsigned int entranceId)
+{
+    // Build entrance landing pad
+    unsigned int maxRadius = 3;
+    CellMap* cellMap = this;
+    bit::FloodFill::compute(startCell->x, startCell->y,
+        [cellMap, &entranceId, startCell] (int x, int y, int depth) {
+            Cell* cell = cellMap->getCellAtPosition(x, y);
+            if(cell->metadata_floodfillId != bit::FloodFill::floodfillId)
+            {
+                // Entrance transition is not blocked so we can flodd from it outward, so dont assign it as a pad
+                if(cell->isEntranceTransition == false && cell->isExitTransition == false)
+                {
+                    unsigned int radius = bit::VectorMath::distance(cell->x, cell->y, startCell->x, startCell->y);
+                    cell->isEntrance = true;
+                    cell->entranceId = entranceId;
+                    cell->entrancePriority = radius;
+                    cell->metadata_floodfillId = bit::FloodFill::floodfillId;
+                }
+            }
+        },
+        [cellMap, maxRadius, startCell] (int x, int y, int depth) -> bool {
+            Cell* cell = cellMap->getCellAtPosition(x, y);
+            unsigned int radius = bit::VectorMath::distance(cell->x, cell->y, startCell->x, startCell->y);
+            return radius > maxRadius || cell->metadata_floodfillId == bit::FloodFill::floodfillId || cell->isRoomPermiter;
+        }
+    );
+}
+
 
 void XoGeni::CellMap::connectToParent(CellMap* parentMap)
 {
@@ -1000,9 +1024,9 @@ void XoGeni::CellMap::buildLights()
     entranceCell->hasLight = true;
     entranceCell->lightRadius = 4;
     entranceCell->lightOpacity = .6;
-    entranceCell->lightColorR = 255;
-    entranceCell->lightColorG = 225;
-    entranceCell->lightColorB = 100;
+    entranceCell->lightColorR = 200;
+    entranceCell->lightColorG = 70;
+    entranceCell->lightColorB = 0;
 
     // Add a light to the exit
     Cell* exitCell = getCellAtPosition(exit->x, exit->y);
@@ -1010,20 +1034,9 @@ void XoGeni::CellMap::buildLights()
     exitCell->hasLight = true;
     exitCell->lightRadius = 4;
     exitCell->lightOpacity = .6;
-    exitCell->lightColorR = 255;
-    exitCell->lightColorG = 225;
-    exitCell->lightColorB = 100;
-
-    for(unsigned int i = 0; i < doors.size(); i++)
-    {
-        Cell* doorCell = getCellAtPosition(doors[i]->x, doors[i]->y);
-        doorCell->hasLight = true;
-        doorCell->lightRadius = 4;
-        doorCell->lightOpacity = .6;
-        doorCell->lightColorR = 200;
-        doorCell->lightColorG = 70;
-        doorCell->lightColorB = 0;
-    }
+    exitCell->lightColorR = 200;
+    exitCell->lightColorG = 70;
+    exitCell->lightColorB = 0;
 }
 
 /////////////////////////////////////////
