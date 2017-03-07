@@ -1021,6 +1021,40 @@ void XoGeni::CellMap::buildLights()
 
 
 
+
+/////////////////////////////////////////
+// TAG BUILDING START
+////////////////////////////////////////
+
+void XoGeni::CellMap::buildTags()
+{
+    // Identify cells that are unreachable
+    tagUnreachableCells();
+}
+
+void XoGeni::CellMap::tagUnreachableCells()
+{
+    for(unsigned int i = 0; i < width ; i++) // cols
+    {
+        for(unsigned int j = 0; j < height; j++) // rows
+        {
+            Cell* cell = getCellAtPosition(i, j);
+
+            if(cell->room == NULL && !cell->isDoor && !cell->isTunnel && !cell->isWall)
+            {
+                cell->isTagUnreachable = true;
+            }
+        }
+    }
+}
+
+/////////////////////////////////////////
+// TAG BUILDING END
+////////////////////////////////////////
+
+
+
+
 bool XoGeni::CellMap::canHouseDimension(unsigned int x, unsigned int y, unsigned int w, unsigned int h)
 {
     if(x > mapPadding && y > mapPadding)

@@ -61,6 +61,8 @@ namespace XoGeni
         unsigned int lightColorG;
         unsigned int lightColorB;
 
+        bool isTagUnreachable;
+
     };
 }
 

@@ -11,7 +11,8 @@ XoGeni::Cell::Cell(unsigned int index, unsigned int x, unsigned int y)
       isEntrance(false), entranceId(0), entrancePriority(0),
       isEntranceTransition(false), entranceTransition(NULL),
       isExitTransition(false), exitTransition(NULL),
-      hasLight(false), lightRadius(0), lightOpacity(0), lightColorR(0), lightColorG(0), lightColorB(0)
+      hasLight(false), lightRadius(0), lightOpacity(0), lightColorR(0), lightColorG(0), lightColorB(0),
+      isTagUnreachable(false)
 {
     aStarX = x;
     aStarY = y;

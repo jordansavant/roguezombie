@@ -82,10 +82,11 @@ void XoGeni::XoLevelRenderer::paint()
         sf::Color colorExitTransition = sf::Color::Blue;
         sf::Color colorEntrance = sf::Color(255, 125, 0);
         sf::Color colorWall = sf::Color(0, 40, 60);
+        sf::Color colorTagUnreachable = sf::Color(0, 15, 30);
 
         sf::Color color = colorGround;
 
-        unsigned int stateCount = 11;
+        unsigned int stateCount = 12;
         switch(renderState % stateCount)
         {
             // Rooms only
@@ -246,6 +247,30 @@ void XoGeni::XoLevelRenderer::paint()
                     color = colorEntrance;
                 break;
             // Walls added
+            case 11:
+                if(cell->room)
+                    if(cell->isRoomEdge)
+                        color = colorRoomEdge;
+                    else
+                        color = colorRoom;
+                if(cell->isSill)
+                    color = colorSill;
+                if(cell->isRoomPermiter)
+                    color = colorRoomPerimeter;
+                if(cell->isTunnel)
+                    color = colorTunnel;
+                if(cell->isDoor)
+                    color = sf::Color::Yellow;
+                if(cell->isEntranceTransition)
+                    color = colorEntranceTransition;
+                if(cell->isExitTransition)
+                    color = colorExitTransition;
+                if(cell->isEntrance)
+                    color = colorEntrance;
+                if(cell->isWall)
+                    color = colorWall;
+                break;
+            // Tags added
             // Final
             default:
             case 0:
@@ -270,6 +295,8 @@ void XoGeni::XoLevelRenderer::paint()
                     color = colorEntrance;
                 if(cell->isWall)
                     color = colorWall;
+                if(cell->isTagUnreachable)
+                    color = colorTagUnreachable;
                 break;
         }
         

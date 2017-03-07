@@ -133,6 +133,13 @@ namespace XoGeni
         void buildLights();
 
 
+        // Tag building
+
+        void buildTags();
+
+        void tagUnreachableCells();
+
+
         bool canHouseDimension(unsigned int x, unsigned int y, unsigned int w, unsigned int h);
 
         void inspectAllCellsInSpiral(const std::function<bool(Cell* cell)> &inspector);
