@@ -1012,6 +1012,18 @@ void XoGeni::CellMap::buildLights()
     exitCell->lightOpacity = .6;
     exitCell->lightColorR = 255;
     exitCell->lightColorG = 225;
+    exitCell->lightColorB = 100;
+
+    for(unsigned int i = 0; i < doors.size(); i++)
+    {
+        Cell* doorCell = getCellAtPosition(doors[i]->x, doors[i]->y);
+        doorCell->hasLight = true;
+        doorCell->lightRadius = 4;
+        doorCell->lightOpacity = .6;
+        doorCell->lightColorR = 200;
+        doorCell->lightColorG = 70;
+        doorCell->lightColorB = 0;
+    }
 }
 
 /////////////////////////////////////////

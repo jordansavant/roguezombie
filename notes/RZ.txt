@@ -24,10 +24,9 @@ Characters retain pointers to attack targets
 - If the tile has no body (character) then we can skip attack
 - Same for all server side elements, they should point to tiles, not to characters (or structures) etc
 
-Tiles and lights are still performance hogs
+Lights are still performance hogs
 - Currently lights only update if they are in the player range
-- But the list of tiles is still updating
-- Consider implementing the range based updates mentioned in the features below
+- Consider implementing as quadtree as well
 
 Rename Node -> AstarNode
 

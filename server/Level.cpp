@@ -34,7 +34,7 @@
 #include <map>
 
 Level::Level()
-    : server(NULL), id(0), state(State::Free), tileWidth(0), tileHeight(0), tileRows(0), tileColumns(0), tileCount(0), characterInTurn(NULL), tileQuadTree(NULL)
+    : server(NULL), id(0), state(State::Free), tileWidth(0), tileHeight(0), tileRows(0), tileColumns(0), tileCount(0), characterInTurn(NULL), tileQuadTree(NULL), metadata_playerNearbyUpdateId(1)
 {
 }
 
@@ -70,6 +70,17 @@ Level::~Level()
 
 void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
 {
+    // INFORMATION ON HOW THIS CRAP WORKS:
+    // - All entities have a master list passed into the LevelRunner below
+    // - This master list is what is used for memory management
+    // - Additional quadtrees are created for big lists or nonperformant static entitites like tiles
+    // - Thus they have have their primary update flag as false
+    // - TILES
+    // - Given there are a lot of them, they are updated through a Quadtree in range of player
+    // - But they are also non mobile between maps, unlike items, lights and characters
+    // - OTHER
+    // - Everything else runs a typical update loop, lights and characters can migrate between levels
+
     server = _server;
     id = levelDef.id;
     defaultEntranceId = levelDef.defaultEntranceId;
@@ -84,7 +95,6 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
     runners.push_back(new LevelRunner<Door>(this, &doors));
     runners.push_back(new LevelRunner<Chest>(this, &chests));
     runners.push_back(new LevelRunner<Light>(this, &lights));
-
 
     // Map
     tileRows = levelDef.rows;
@@ -113,7 +123,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
             // Load our tile
             Tile* t = new Tile();
             t->load(this, index, tileType, originX, originY, tileWidth, tileHeight);
-            //t->isUnreachable = tileDef.isUnreachable;
+            t->isUnreachable = tileDef.isUnreachable;
             tiles[index] = t;
 
             // Append events
@@ -301,8 +311,6 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
     }
 
     // Build quadtrees
-    // Todo: only insert tiles that are "smart" meaning they are not walled off behind walls
-    // this should be indicated by the XoGeni generator
     tileQuadTree = new bit::QuadTree<Tile>(0, 0, mapWidth, mapHeight);
     tileQuadTree->maxObjects = 16;
     tileQuadTree->maxLevels = 100;
@@ -396,19 +404,27 @@ void Level::update(sf::Time &gameTime)
     // Quad updated tiles
     for(auto iterator = players.begin(); iterator != players.end(); iterator++)
     {
-        float rangeWidth = 32 * tileWidth;
-        float rangeHeight = 32 * tileHeight;
         Player* player = iterator->second;
         Character* playerCharacter = player->character ? player->character : player->spectatee ? player->spectatee : NULL;
         if(playerCharacter)
         {
+            unsigned int updateId = metadata_playerNearbyUpdateId;
+            float rangeWidth = playerCharacter->visionRadius * tileWidth;
+            float rangeHeight = playerCharacter->visionRadius * tileHeight;
             float _x = playerCharacter->Body::schema.x - rangeWidth / 2 + tileWidth / 2;
             float _y = playerCharacter->Body::schema.y - rangeHeight / 2 + tileHeight / 2;
-            tileQuadTree->onAllObjectsWithin(_x, _y, rangeWidth, rangeHeight, [&gameTime, playerCharacter] (Tile* tile) {
-                tile->playerNearbyUpdate(gameTime, playerCharacter);
+
+            // Update tiles
+            tileQuadTree->onAllObjectsWithin(_x, _y, rangeWidth, rangeHeight, [&gameTime, &updateId, playerCharacter] (Tile* tile) {
+                if(tile->metadata_playerNearbyUpdateId != updateId)
+                {
+                    tile->playerNearbyUpdate(gameTime, playerCharacter);
+                    tile->metadata_playerNearbyUpdateId = updateId;
+                }
             });
         }
     }
+    metadata_playerNearbyUpdateId++;
 
     // Update entities
     for(unsigned int i=0; i < runners.size(); i++)

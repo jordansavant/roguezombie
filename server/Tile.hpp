@@ -102,6 +102,7 @@ public:
     std::vector<Entrance> entrances;
     unsigned int metadata_shadowcastId;
     unsigned int metadata_floodfillId;
+    unsigned int metadata_playerNearbyUpdateId;
     bit::Event<std::function<void(Tile* t, Body* body)>> onBodyEnter;
     bit::Event<std::function<void(Tile* t, Body* body)>> onBodyLeave;
     bool isUnreachable;

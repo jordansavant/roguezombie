@@ -5,7 +5,7 @@
 #include "../bitengine/Math.hpp"
 
 Tile::Tile()
-    : bit::Node(0, 0), level(NULL), body(NULL), door(NULL), metadata_shadowcastId(0), metadata_floodfillId(0), schema(), isUnreachable(false)
+    : bit::Node(0, 0), level(NULL), body(NULL), door(NULL), metadata_shadowcastId(0), metadata_floodfillId(0), metadata_playerNearbyUpdateId(0), schema(), isUnreachable(false)
 {
 }
 
@@ -35,14 +35,17 @@ void Tile::load(Level* _level, unsigned int _id, Type _type, int _x, int _y, int
 
 void Tile::update(sf::Time &gameTime)
 {
+    // Will not run because we specify Tiles to not run on primary updates
 }
 
 void Tile::distributedUpdate(sf::Time &gameTime)
 {
+    // Will not run because we specify Tiles to not run on primary updates
 }
 
 void Tile::playerNearbyUpdate(sf::Time &gameTime, Body* playerCharacterOrSpectatee)
 {
+    // Will run for each player, so be careful not to do additive work
     rebaseLighting();
 }
 

@@ -8,6 +8,7 @@
 #include "LevelRunnable.hpp"
 
 class Level;
+class Body;
 
 class Light : public LevelRunnable
 {

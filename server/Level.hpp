@@ -62,6 +62,7 @@ public:
     unsigned int tileRows, tileColumns, tileCount; // number of tiles in units e.g. 100, 100, 10000
     unsigned int mapWidth, mapHeight; // size of map in tile dimesions 3200, 3200
     std::vector<BaseLevelRunner*> runners;
+    unsigned int metadata_playerNearbyUpdateId;
 
     Character* characterInTurn;
     std::deque<Character*> turnQueue;
