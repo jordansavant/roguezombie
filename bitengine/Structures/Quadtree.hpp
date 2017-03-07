@@ -5,16 +5,16 @@
 #include <vector>
 #include <iostream>
 #include <sstream>
+#include "QuadTreeObject.hpp"
 
 namespace bit
 {
     class Object;
 
-    template<class T>
-    class Quadtree
+    class QuadTree
     {
     public:
-        Quadtree(int _level, float x, float y, float width, float height, int poolSize = 100)
+        QuadTree(int _level, float x, float y, float width, float height, int poolSize = 100)
             : nodes()
         {
             maxObjects = 7;
@@ -43,7 +43,7 @@ namespace bit
             }
         }
 
-        ~Quadtree()
+        ~QuadTree()
         {
             if(level == 0)
             {
@@ -70,14 +70,14 @@ namespace bit
         int maxObjects;
         int maxLevels;
         int level;
-        std::vector<T*> objects;
-        sf::FloatRect bounds;
+        std::vector<QuadTreeObject*> objects;
+        float x, y;
+        float width, height;
         std::vector<QuadTree*>* pool;
         std::vector<QuadTree*> nodes;
-        sf::RectangleShape shape;
 
         /*
-         * Clears the quadtree
+         * Clears the QuadTree
          */
         void clear()
         {
