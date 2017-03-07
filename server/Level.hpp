@@ -56,7 +56,7 @@ public:
     std::vector<Chest*> chests;
     std::vector<Tile*> tiles;
     std::vector<Light*> lights;
-    bit::QuadTree* tileQuadTree;
+    bit::QuadTree<Tile>* tileQuadTree;
     std::map<unsigned int, Player*> players;
     unsigned int tileWidth, tileHeight; // size of individual tile e.g. 32, 32
     unsigned int tileRows, tileColumns, tileCount; // number of tiles in units e.g. 100, 100, 10000

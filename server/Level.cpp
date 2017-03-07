@@ -303,7 +303,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
     // Build quadtrees
     // Todo: only insert tiles that are "smart" meaning they are not walled off behind walls
     // this should be indicated by the XoGeni generator
-    tileQuadTree = new bit::QuadTree(0, 0, mapWidth, mapHeight);
+    tileQuadTree = new bit::QuadTree<Tile>(0, 0, mapWidth, mapHeight);
     tileQuadTree->maxObjects = 256;
     for(unsigned int i=0; i < tiles.size(); i++)
     {
@@ -314,7 +314,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
     }
 
     // Test
-    std::vector<bit::QuadTreeObject*> tiles;
+    std::vector<Tile*> tiles;
     tileQuadTree->getObjectsNear(tiles, 1500, 400, 0, 0);
     int here = 1;
 }
