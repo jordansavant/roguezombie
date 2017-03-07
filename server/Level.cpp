@@ -76,7 +76,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
     state = State::Free;
 
     // Runners
-    runners.push_back(new LevelRunner<Tile>(this, &tiles));
+    runners.push_back(new LevelRunner<Tile>(this, &tiles, false));
     runners.push_back(new LevelRunner<Zombie>(this, &zombies));
     runners.push_back(new LevelRunner<Ogre>(this, &ogres));
     runners.push_back(new LevelRunner<Hunter>(this, &hunters));
@@ -393,10 +393,7 @@ void Level::loadEventIntoTile(bit::Event<std::function<void(Tile* t, Body* body)
 
 void Level::update(sf::Time &gameTime)
 {
-    // Test quad update
-    sf::Clock q;
-    float qmicro = 0;
-    float umicro = 0;
+    // Quad updated tiles
     for(auto iterator = players.begin(); iterator != players.end(); iterator++)
     {
         float rangeWidth = 32 * tileWidth;
@@ -412,21 +409,11 @@ void Level::update(sf::Time &gameTime)
             });
         }
     }
-    qmicro = q.getElapsedTime().asMicroseconds();
 
     // Update entities
     for(unsigned int i=0; i < runners.size(); i++)
     {
-        if(i == 0)
-        {
-            q.restart();
-        }
         runners[i]->update(gameTime);
-        
-        if(i == 0)
-        {
-            umicro = q.getElapsedTime().asMicroseconds();
-        }
     }
     
     switch(state)

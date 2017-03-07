@@ -24,8 +24,8 @@ template <class T>
 class LevelRunner : public BaseLevelRunner
 {
 public:
-    LevelRunner(Level* _level, std::vector<T*>* _list)
-        : BaseLevelRunner(), level(_level), list(_list), distributedUpdateCounter(0)
+    LevelRunner(Level* _level, std::vector<T*>* _list, bool runUpdate = true)
+        : BaseLevelRunner(), level(_level), list(_list), distributedUpdateCounter(0), runUpdate(runUpdate)
     {
     }
 
@@ -41,19 +41,13 @@ public:
     Level* level;
     std::vector<T*>* list;
     unsigned int distributedUpdateCounter;
+    bool runUpdate;
 
     virtual void update(sf::Time &gameTime)
     {
-        // Update all runners
-        //for(unsigned int i=0; i < list->size(); i++)
-        //{
-        //    (*list)[i]->update(gameTime);
-        //
-        //    if(distributedUpdateCounter == i)
-        //    {
-        //        (*list)[i]->distributedUpdate(gameTime);
-        //    }
-        //}
+        // Don't run update for entities with this flag
+        if(!runUpdate)
+            return;
 
         // Update with allowance for adding / removing entities mid loop
         unsigned int i = 0;
