@@ -18,27 +18,10 @@ Hunters firing after dead
 Fat gap under Loot Interaction popup
 - Only looks weird under singular loot option (like looting a dead guy)
 
-Characters retain pointers to attack targets
-- If the attack target disappears between decision to attack and attack sequence we will have a memory violation
-- Change the pointer to a Tile* or an X and Y which will fetch a tile and therefore a character
-- If the tile has no body (character) then we can skip attack
-- Same for all server side elements, they should point to tiles, not to characters (or structures) etc
-
-Lights are still performance hogs
-- Currently lights only update if they are in the player range
-- Consider implementing as quadtree as well
-
 Rename Node -> AstarNode
 
-CURRENTLY
-- I need to settle on a QuadSize limit
-	- rooms are currently max 16x16, this means I need to be able to stand on one side and see changes on the other
-	- That would indicate being able to get tiles up to 32 away
-	- That would give us a maxSize of 1024, which is 1/4 of the current tile set
-	- We could further optimize by flagging tiles as unreachable in the mapgenerator, then never adding them to the quadtree
-- Also I need to eliminate the normal update methods for Tile and Light
-	- This should reduce processing overhead instead of iterating entire list each cycle
-	- This quadtree reduction is useless if I am still running normal updates
+Dead enemies can block doors and tunnels, need a way to traverse without them
+
 
 --------------------
 RZ Features
@@ -61,20 +44,14 @@ Procedural levels
 	- Lights, enemies, structures, items
 	- Given hallways we must figure out how to move over and beyond dead bodies
 
-Implement playerRangeUpdate
-- Organize tiles and lights into quadTree structures
-- On level update only run PlayerRangeUpdate for tiles or lights within X range of players
-- Could do this also with characters and structures
-- This should reduce the update overhead of a large map, only loading and running updates on elements within certain ranges
-- Modernize QuadTree
-	- Remove old crap code
-- Put lights and tiles into quadtrees
-- During update cycle get quads where players are located and update them using rangedUpdate
-- Probably going to have to abandon LevelRunner now, too much divergent processing
-
 Better stair tiles
+- For stairs up we should just make nonblocking sprites special for those tiles
+- Otherwise they look like poo
 
 Map
+- Shows revealed areas
+- Possibly a minimap
+- Try without isometric, rendering similar to our XoGeni game
 
 Ability to move with WASD, even in combat
 - Display combat movements remaining in HUD
@@ -85,12 +62,12 @@ Flavor console line
 
 Upgrade SFML to v2.4
 
+Non networked single Player
+- Look at possibility of local semaphor packet sending
 
 --------------------
 RZ Potential issues
 
-Laggy while debugging
-- Look at possibility of local semaphor packet sending?
 
 
 --------------------

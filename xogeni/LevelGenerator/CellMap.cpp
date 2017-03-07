@@ -641,8 +641,8 @@ XoGeni::Cell* XoGeni::CellMap::pickTransitionCellForRoom(XoGeni::Room* room)
 {
     // Default to the center of the room because its guaranteed, though not amazing
     Cell* pick = NULL;
-    unsigned int centerX = room->x + room->width / 2 - 1;
-    unsigned int centerY = room->y + room->height / 2 - 1;
+    unsigned int centerX = room->x + room->width / 2;
+    unsigned int centerY = room->y + room->height / 2;
     pick = getCellAtPosition(centerX, centerY);
 
     // First pick is the northwest corner
@@ -658,40 +658,6 @@ XoGeni::Cell* XoGeni::CellMap::pickTransitionCellForRoom(XoGeni::Room* room)
         pick->transitionDir.x = 0;
         pick->transitionDir.y = 1;
         return pick;
-    }
-
-    // Second pick is a blank spot along the north wall
-    for(unsigned int i = room->x; i < room->x + room->width; i++)
-    {
-        // It must have a wall to north and to west
-        unsigned int nX = i;
-        unsigned int nY = room->y;
-        Cell* nCell = getCellAtPosition(nX, nY);
-        Cell* nnCell = getCellAtPosition(nX, nY - 1);
-        if(!nnCell->isDoor && !nnCell->isTunnel)
-        {
-            pick = nCell;
-            pick->transitionDir.x = 0;
-            pick->transitionDir.y = 1;
-            return pick;
-        }
-    }
-
-    // Third pick is a blank spot along the west wall
-    for(unsigned int i = room->y; i < room->y + room->height; i++)
-    {
-        // It must have a wall to north and to west
-        unsigned int wX = room->x;
-        unsigned int wY = i;
-        Cell* wCell = getCellAtPosition(wX, wY);
-        Cell* wwCell = getCellAtPosition(wX, wY - 1);
-        if(!wwCell->isDoor && !wwCell->isTunnel)
-        {
-            pick = wCell;
-            pick->transitionDir.x = 1;
-            pick->transitionDir.y = 0;
-            return pick;
-        }
     }
 
     return pick;

@@ -71,12 +71,23 @@ void TileClient::clientUpdate(sf::Time &gameTime)
     // Sprite
     sprite->applyToQuad(&level->vertexMap_charactersNormal.vertexArray[quadIndex]);
 
+
     // Position
     bit::Vertex3* quad = &level->vertexMap_charactersNormal.vertexArray[quadIndex];
     sf::Vector2f isoPosition = bit::VectorMath::normalToIsometric(schema.x, schema.y);
     renderX = isoPosition.x - schema.width;
     renderY = isoPosition.y;
-    bit::VertexHelper::positionQuad(quad, renderX, renderY, RZConfig::zrenderTile, width, height);
+    float z = RZConfig::zrenderTile;
+    switch(schema.type)
+    {
+        case Tile::Type::StairwellUp_East:
+        case Tile::Type::StairwellUp_North:
+        case Tile::Type::StairwellUp_South:
+        case Tile::Type::StairwellUp_West:
+            z = RZConfig::getDrawDepthForGameplay(isoPosition.y + schema.height);
+            break;
+    }
+    bit::VertexHelper::positionQuad(quad, renderX, renderY, z, width, height);
     centerRenderX = renderX + width / 2;
     centerRenderY = renderY + height / 2;
 
