@@ -376,23 +376,11 @@ void Level::loadEventIntoTile(bit::Event<std::function<void(Tile* t, Body* body)
 
 void Level::update(sf::Time &gameTime)
 {
-    //bit::Output::Debug("------------------------------");
     // Update entities
     std::stringstream ss;
     for(unsigned int i=0; i < runners.size(); i++)
     {
-        //sf::Clock clock;
-
-        //ss.str("");
-        //ss << "Runner [" << i << "] start";
-        //bit::Output::Debug(ss.str());
-
         runners[i]->update(gameTime);
-
-        //sf::Time elapsed = clock.getElapsedTime();
-        //ss.str("");
-        //ss << "Runner [" << i << "] duration (ms): " << elapsed.asMilliseconds();
-        //bit::Output::Debug(ss.str());
     }
     
     switch(state)

@@ -55,6 +55,11 @@ Implement playerRangeUpdate
 - On level update only run PlayerRangeUpdate for tiles or lights within X range of players
 - Could do this also with characters and structures
 - This should reduce the update overhead of a large map, only loading and running updates on elements within certain ranges
+- Modernize QuadTree
+	- Remove old crap code
+- Put lights and tiles into quadtrees
+- During update cycle get quads where players are located and update them using rangedUpdate
+- Probably going to have to abandon LevelRunner now, too much divergent processing
 
 Better stair tiles
 
