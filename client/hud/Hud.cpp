@@ -137,20 +137,7 @@ void Hud::update(sf::RenderWindow &window, sf::Time &gameTime)
     // Minimap
     if(liveMinimap)
     {
-        float powscale = bit::Math::roundPowerOf2(state->rogueZombieGame->currentResolutionRatio);
-        float smoothscale = state->rogueZombieGame->currentResolutionRatio;
-
-        float mapW = 400;
-        float smoothW = smoothscale * mapW; // 200 / 300
-        float powW = powscale * mapW; // 150 / 300
-        float diffW = smoothW - powW; // +-50
-        float mapH = 10;
-        float smoothH = smoothscale * mapH; // 200 / 300
-        float powH = powscale * mapH; // 150 / 300
-        float diffH = smoothH - powH; // +-50
-
-        liveMinimap->setScale(powscale, powscale);
-        liveMinimap->setPosition((targetWidth - mapW) * smoothscale + diffW, mapH * smoothscale);
+        liveMinimap->update(gameTime);
     }
 }
 

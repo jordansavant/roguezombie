@@ -10,7 +10,7 @@
 #include <string>
 #include <SFML/OpenGL.hpp>
 
-bit::VideoGame::VideoGame(std::string gameTitle, int width, int height, bool fullscreen)
+bit::VideoGame::VideoGame(std::string gameTitle, int width, int height, bool fullscreen, unsigned int antialiasingLevel)
     : bit::Game()
 {
     title = gameTitle;
@@ -28,7 +28,7 @@ bit::VideoGame::VideoGame(std::string gameTitle, int width, int height, bool ful
 
     settings.depthBits = 24;
     settings.stencilBits = 8;
-    settings.antialiasingLevel = 4;
+    settings.antialiasingLevel = antialiasingLevel;
     settings.majorVersion = 3;
     settings.minorVersion = 0;
 

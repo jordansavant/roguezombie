@@ -18,7 +18,7 @@ namespace bit
     class VideoGame : public Game
     {
     public:
-        VideoGame(std::string gameTitle, int width, int height, bool fullscreen);
+        VideoGame(std::string gameTitle, int width, int height, bool fullscreen, unsigned int antialiasingLevel = 4);
 
         virtual ~VideoGame();
 

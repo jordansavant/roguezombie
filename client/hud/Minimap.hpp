@@ -26,6 +26,7 @@ public:
             Ground,
             Wall,
             Door,
+            Player,
         };
         unsigned int tileId;
         int x, y;
@@ -45,6 +46,8 @@ public:
     Marker player;
 
     void load(Hud* hud);
+
+    void update(sf::Time& gameTime);
 
     void addPoint(unsigned int tileId, int x, int y, Marker::Type type);
 

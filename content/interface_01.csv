@@ -25,7 +25,9 @@ icon_Medkit,230,2,64,64,0,0,64,64,false
 icon_RacingPants,230,68,64,64,0,0,64,64,false
 icon_Z4Rifle,408,2,64,64,0,0,64,64,false
 icon_unknown,408,68,64,64,0,0,64,64,false
-minimap_mark,20,500,14,7,0,0,14,7,false
+minimap_mark,30,500,14,7,0,0,14,7,false
+minimap_mark_square,20,500,8,8,0,0,8,8,false
+minimap_player_square,20,500,8,8,0,0,8,8,false
 optionbar_character,408,134,64,64,0,0,64,64,false
 optionbar_crosshair,276,167,64,64,0,0,64,64,false
 optionbar_hourglass,342,167,64,64,0,0,64,64,false
