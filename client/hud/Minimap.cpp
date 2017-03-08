@@ -5,6 +5,18 @@
 
 Minimap::Minimap()
 {
+    unsigned char baseAlpha = 185;
+    // Grays
+    groundColor = sf::Color(135, 135, 135, baseAlpha);
+    wallColor = sf::Color(220, 220, 220, baseAlpha);
+    doorColor = sf::Color(255, 150, 0, baseAlpha);
+    playerColor = sf::Color(255, 255, 255, baseAlpha);
+
+    // Dark Greens
+    groundColor = sf::Color(0, 35, 0, baseAlpha);
+    wallColor = sf::Color(0, 135, 0, baseAlpha);
+    doorColor = sf::Color(0, 255, 0, baseAlpha);
+    playerColor = sf::Color(255, 255, 255, baseAlpha);
 }
 
 Minimap::Marker::Marker()
@@ -22,10 +34,10 @@ void Minimap::Marker::draw()
     sf::Color c;
     switch(type)
     {
-        case Type::Ground: c = sf::Color(135, 135, 135, op); break;
-        case Type::Wall: c = sf::Color(220, 220, 220, op); break;
-        case Type::Door: c = sf::Color(255, 150, 0, op); break;
-        case Type::Player: c = sf::Color(255, 255, 255, 255); z -= .001f; break;
+        case Type::Ground: c = minimap->groundColor; break;
+        case Type::Wall: c = minimap->wallColor; break;
+        case Type::Door: c = minimap->doorColor; break;
+        case Type::Player: c = minimap->playerColor; z -= .001f; break;
     }
 
     bit::Vertex3* quad = &minimap->vertexMap.vertexArray[quadIndex];
@@ -63,7 +75,7 @@ void Minimap::update(sf::Time& gameTime)
     float diffH = smoothH - powH; // +-50
 
     float positionX = (hud->targetWidth - mapW) * smoothscale + diffW;
-    float positionY = mapH * smoothscale;
+    float positionY = mapH * smoothscale + diffH;
 
     setScale(powscale, powscale);
     setPosition(positionX, positionY);

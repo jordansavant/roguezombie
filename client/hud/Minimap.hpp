@@ -45,6 +45,12 @@ public:
     std::map<unsigned int, Marker> points;
     Marker player;
 
+    sf::Color groundColor;
+    sf::Color wallColor;
+    sf::Color doorColor;
+    sf::Color playerColor;
+    unsigned char baseAlpha;
+
     void load(Hud* hud);
 
     void update(sf::Time& gameTime);
