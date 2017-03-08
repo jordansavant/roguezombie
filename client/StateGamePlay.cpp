@@ -112,11 +112,12 @@ void StateGamePlay::load()
 
 void StateGamePlay::switchLevels(unsigned int newId)
 {
+    hud->onLevelChange(levelClient->levelId, newId);
+
     delete levelClient;
     levelClient = new LevelClient();
     levelClient->levelId = newId;
     levelClient->load(this);
-    hud->resetMinimap();
 }
 
 void StateGamePlay::changeMode(Mode _mode)
@@ -892,9 +893,11 @@ void StateGamePlay::handlePacket_InitializeWorld(bit::ServerPacket &packet)
 
     sf::Uint32 levelId;
     packet >> levelId;
+    hud->onLevelChange(levelClient->levelId, levelId);
     levelClient->levelId = levelId;
     levelClient->handleSnapshot(packet, true);
     displayMessage(std::string("World initialized"));
+
 }
 
 void StateGamePlay::handlePacket_PeerClientConnected(bit::ServerPacket &packet)

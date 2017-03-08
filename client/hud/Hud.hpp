@@ -46,7 +46,8 @@ public:
     Console* console;
     TurnQueue* turnQueue;
     ActionBar* actionBar;
-    Minimap* minimap;
+    std::map<unsigned int, Minimap*> minimaps;
+    Minimap* liveMinimap;
     sf::Texture interfaceTexture;
     bit::VertexMap interfaceVertexMap;
     sf::Font journalFont;
@@ -118,7 +119,7 @@ public:
 
     void playSlotAcceptSound();
 
-    void resetMinimap();
+    void onLevelChange(unsigned int oldLevelId, unsigned int newLevelId);
 
     static float getDrawDepth(float targetDepth);
 };

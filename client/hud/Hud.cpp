@@ -40,7 +40,7 @@ sf::Color Hud::font_primaryColor = RZConfig::fontGreen;
 
 Hud::Hud(StateGamePlay* _state)
     : bit::Container(0, 0, _state->rogueZombieGame->targetResolution.x, _state->rogueZombieGame->targetResolution.y, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, this, std::placeholders::_1, std::placeholders::_2,  std::placeholders::_3)),
-    state(_state), inventoryIconPool(500, std::bind(&Hud::createInventoryIcon, this)), minimap(NULL)
+    state(_state), inventoryIconPool(500, std::bind(&Hud::createInventoryIcon, this)), liveMinimap(NULL)
 {
     destroying = false;
     fullscreen = true;
@@ -77,7 +77,7 @@ Hud::Hud(StateGamePlay* _state)
     lootMenu = new LootMenu(this);
     addChild(lootMenu);
 
-    resetMinimap();
+    // Minimaps
 
     // Hud Menus
     journal = new Journal(this);
@@ -123,7 +123,10 @@ Hud::~Hud()
 {
     destroying = true;
 
-    delete minimap;
+    for(auto iterator = minimaps.begin(); iterator != minimaps.end(); iterator++)
+    {
+        delete iterator->second;
+    }
 }
 
 void Hud::update(sf::RenderWindow &window, sf::Time &gameTime)
@@ -132,20 +135,23 @@ void Hud::update(sf::RenderWindow &window, sf::Time &gameTime)
     this->actionBar;
 
     // Minimap
-    float powscale = bit::Math::roundPowerOf2(state->rogueZombieGame->currentResolutionRatio);
-    float smoothscale = state->rogueZombieGame->currentResolutionRatio;
+    if(liveMinimap)
+    {
+        float powscale = bit::Math::roundPowerOf2(state->rogueZombieGame->currentResolutionRatio);
+        float smoothscale = state->rogueZombieGame->currentResolutionRatio;
 
-    float mapW = 400;
-    float smoothW = smoothscale * mapW; // 200 / 300
-    float powW = powscale * mapW; // 150 / 300
-    float diffW = smoothW - powW; // +-50
-    float mapH = 10;
-    float smoothH = smoothscale * mapH; // 200 / 300
-    float powH = powscale * mapH; // 150 / 300
-    float diffH = smoothH - powH; // +-50
+        float mapW = 400;
+        float smoothW = smoothscale * mapW; // 200 / 300
+        float powW = powscale * mapW; // 150 / 300
+        float diffW = smoothW - powW; // +-50
+        float mapH = 10;
+        float smoothH = smoothscale * mapH; // 200 / 300
+        float powH = powscale * mapH; // 150 / 300
+        float diffH = smoothH - powH; // +-50
 
-    minimap->setScale(powscale, powscale);
-    minimap->setPosition((targetWidth - mapW + diffW) * smoothscale , (mapH + diffH) * smoothscale);
+        liveMinimap->setScale(powscale, powscale);
+        liveMinimap->setPosition((targetWidth - mapW) * smoothscale + diffW, mapH * smoothscale);
+    }
 }
 
 void Hud::draw(sf::RenderWindow &window, sf::Time &gameTime)
@@ -158,9 +164,12 @@ void Hud::draw(sf::RenderWindow &window, sf::Time &gameTime)
     window.draw(interfaceVertexMap.vertexArray, states);
 
     // Minimap
-    states.transform *= minimap->getTransform();
-    window.draw(minimap->rect, states);
-    window.draw(minimap->vertexMap.vertexArray, states);
+    if(liveMinimap)
+    {
+        states.transform *= liveMinimap->getTransform();
+        window.draw(liveMinimap->rect, states);
+        window.draw(liveMinimap->vertexMap.vertexArray, states);
+    }
 
     state->rogueZombieGame->depthTestEnd();
 
@@ -406,14 +415,31 @@ void Hud::playSlotAcceptSound()
     state->rogueZombieGame->soundManager->play(slotAcceptSoundId);
 }
 
-void Hud::resetMinimap()
+void Hud::onLevelChange(unsigned int oldLevelId, unsigned int newLevelId)
 {
-    if(minimap)
+    // Find the old map and hide it
+    auto curIter = minimaps.find(newLevelId);
+    if(curIter != minimaps.end())
     {
-        delete minimap;
+        Minimap* currentMinimap = curIter->second;
+        currentMinimap->move(10000,0);
     }
-    minimap = new Minimap();
-    minimap->load(this);
+
+    // Find the new map and show it or create it
+    auto newIter = minimaps.find(newLevelId);
+    if(newIter != minimaps.end())
+    {
+        Minimap* newMinimap = newIter->second;
+        newMinimap->move(-10000,0);
+        liveMinimap = newMinimap;
+    }
+    else
+    {
+        Minimap* minimap = new Minimap();
+        minimap->load(this);
+        minimaps.insert(std::pair<unsigned int, Minimap*>(newLevelId, minimap));
+        liveMinimap = minimap;
+    }
 }
 
 float Hud::getDrawDepth(float targetDepth)

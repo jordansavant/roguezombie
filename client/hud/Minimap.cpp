@@ -20,15 +20,15 @@ void Minimap::Marker::draw()
     sf::Color c;
     switch(type)
     {
-        case Type::Ground: c = sf::Color(0, 135, 0); break;
-        case Type::Wall: c = sf::Color(0, 255, 0); break;
+        case Type::Ground: c = sf::Color(135, 135, 135); break;
+        case Type::Wall: c = sf::Color(220, 220, 220); break;
         case Type::Door: c = sf::Color(255, 150, 0); break;
     }
-    c.a = 150;
+    c.a = 100;
 
     bit::Vertex3* quad = &minimap->vertexMap.vertexArray[quadIndex];
     sprite->applyToQuad(quad);
-    bit::VertexHelper::positionQuad(quad, minimapIso.x, minimapIso.y, z, 16, 9);
+    bit::VertexHelper::positionQuad(quad, minimapIso.x, minimapIso.y, z, sprite->width, sprite->height);
     bit::VertexHelper::colorQuad(quad, c);
 }
 

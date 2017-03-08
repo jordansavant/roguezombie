@@ -378,11 +378,11 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
             {
                 bool is = true;
             }
-            state->hud->minimap->addPoint(t->schema.id, t->schema.x, t->schema.y, mtype);
+            state->hud->liveMinimap->addPoint(t->schema.id, t->schema.x, t->schema.y, mtype);
         }
         if(isMiniPlayer)
         {
-            state->hud->minimap->setPlayerPosition(t->schema.id, t->schema.x, t->schema.y);
+            state->hud->liveMinimap->setPlayerPosition(t->schema.id, t->schema.x, t->schema.y);
         }
     }
 

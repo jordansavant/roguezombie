@@ -7,7 +7,7 @@ Silohuette,2,2,160,192,0,0,160,192,false
 hud_frame_background,474,2,12,12,0,0,12,12,false
 hud_frame_background_green,488,2,12,12,0,0,12,12,false
 hud_frame_bottom,474,16,12,12,0,0,12,12,false
-hud_frame_bottompointer,20,500,16,8,0,0,16,8,false
+hud_frame_bottompointer,2,500,16,8,0,0,16,8,false
 hud_frame_corner,488,16,12,12,0,0,12,12,false
 hud_frame_left,474,30,12,12,0,0,12,12,false
 hud_frame_right,488,30,12,12,0,0,12,12,false
@@ -25,7 +25,7 @@ icon_Medkit,230,2,64,64,0,0,64,64,false
 icon_RacingPants,230,68,64,64,0,0,64,64,false
 icon_Z4Rifle,408,2,64,64,0,0,64,64,false
 icon_unknown,408,68,64,64,0,0,64,64,false
-minimap_mark,2,500,16,9,0,0,16,9,false
+minimap_mark,20,500,14,7,0,0,14,7,false
 optionbar_character,408,134,64,64,0,0,64,64,false
 optionbar_crosshair,276,167,64,64,0,0,64,64,false
 optionbar_hourglass,342,167,64,64,0,0,64,64,false
