@@ -21,10 +21,13 @@ public:
     bit::Sprite* sprite;
     bit::VertexMap vertexMap;
     std::map<unsigned int, sf::Vector2i> points;
+    sf::RectangleShape rect;
+    float minL, maxR, minT, maxB;
 
     void load(Hud* hud);
 
     void addPoint(unsigned int tileId, int x, int y);
+
 };
 
 #endif

@@ -153,7 +153,7 @@ public:
 
     void loadFromXML(std::string file);
 
-    void loadFromXoGeni(XoGeni::LevelGenerator &levelGenerator, unsigned int seed, unsigned int width, unsigned int height);
+    void loadFromXoGeni(XoGeni::LevelGenerator &levelGenerator, unsigned int seed);
 
 };
 

@@ -265,7 +265,7 @@ void LevelLoader::loadFromXML(std::string file)
     }
 }
  
-void LevelLoader::loadFromXoGeni(XoGeni::LevelGenerator &levelGenerator, unsigned int seed, unsigned int width, unsigned int height)
+void LevelLoader::loadFromXoGeni(XoGeni::LevelGenerator &levelGenerator, unsigned int seed)
 {
     std::vector<XoGeni::CellMap*> tower = levelGenerator.buildTower(seed);
 

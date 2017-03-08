@@ -33,7 +33,7 @@ void GameplayServer::load()
 {
     // Generate levels
     XoGeni::LevelGenerator levelGenerator;
-    levelLoader.loadFromXoGeni(levelGenerator, 2006, 64, 64);
+    levelLoader.loadFromXoGeni(levelGenerator, 27065);
 
     //levelLoader.loadFromXML("HunterAI.xml");
 

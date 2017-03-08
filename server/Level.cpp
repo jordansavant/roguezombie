@@ -409,8 +409,8 @@ void Level::update(sf::Time &gameTime)
         if(playerCharacter)
         {
             unsigned int updateId = metadata_playerNearbyUpdateId;
-            float rangeWidth = playerCharacter->visionRadius * tileWidth;
-            float rangeHeight = playerCharacter->visionRadius * tileHeight;
+            float rangeWidth = playerCharacter->visionRadius * 2 * tileWidth;
+            float rangeHeight = playerCharacter->visionRadius * 2 * tileHeight;
             float _x = playerCharacter->Body::schema.x - rangeWidth / 2 + tileWidth / 2;
             float _y = playerCharacter->Body::schema.y - rangeHeight / 2 + tileHeight / 2;
 

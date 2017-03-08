@@ -40,13 +40,8 @@ Procedural levels
 - http://donjon.bin.sh/code/dungeon/
 - http://donjon.bin.sh/code/dungeon/dungeon.pl
 - TO DO:
-	- Floodfill entrance landing pads
 	- Lights, enemies, structures, items
 	- Given hallways we must figure out how to move over and beyond dead bodies
-
-Better stair tiles
-- For stairs up we should just make nonblocking sprites special for those tiles
-- Otherwise they look like poo
 
 Map
 - Shows revealed areas

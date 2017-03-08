@@ -57,6 +57,7 @@ public:
     static bool destroying;
     static float hoverlessOpacity;
     static float popupOpacity;
+    static float zindex_minimap;
     static float zindex_icons;
     static float zindex_iconsDragged;
     static float zindex_cells;

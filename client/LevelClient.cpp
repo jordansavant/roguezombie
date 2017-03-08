@@ -368,7 +368,7 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
         // Mini map tracker for viewed tiles
         if(addMini)
         {
-            //state->hud->minimap.addPoint(t->schema.id, t->schema.x, t->schema.y);
+            state->hud->minimap.addPoint(t->schema.id, t->schema.x, t->schema.y);
         }
     }
 

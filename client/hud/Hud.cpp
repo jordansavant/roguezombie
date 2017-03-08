@@ -26,6 +26,7 @@ bool Hud::destroying = false;
 float Hud::hoverlessOpacity = .5f;
 float Hud::popupOpacity = .7f;
 
+float Hud::zindex_minimap = .08f; // inventory icons
 float Hud::zindex_icons = .8f; // inventory icons
 float Hud::zindex_iconsDragged = 1.0f; // icons being dragged
 float Hud::zindex_cells = .1f; // containers for inventory icons
@@ -128,9 +129,20 @@ void Hud::update(sf::RenderWindow &window, sf::Time &gameTime)
     this->actionBar;
 
     // Minimap
-    float scale = bit::Math::roundPowerOf2(state->rogueZombieGame->currentResolutionRatio);
-    //minimap.setPosition(175 * state->rogueZombieGame->currentResolutionRatioX, 125 * state->rogueZombieGame->currentResolutionRatioY);
-    //minimap.setScale(scale, scale);
+    float powscale = bit::Math::roundPowerOf2(state->rogueZombieGame->currentResolutionRatio);
+    float smoothscale = state->rogueZombieGame->currentResolutionRatio;
+
+    float mapW = 350;
+    float smoothW = smoothscale * mapW; // 200 / 300
+    float powW = powscale * mapW; // 150 / 300
+    float diffW = smoothW - powW; // +-50
+    float mapH = 10;
+    float smoothH = smoothscale * mapH; // 200 / 300
+    float powH = powscale * mapH; // 150 / 300
+    float diffH = smoothH - powH; // +-50
+
+    minimap.setScale(powscale, powscale);
+    minimap.setPosition((targetWidth - mapW + diffW) * smoothscale , (mapH + diffH) * smoothscale);
 }
 
 void Hud::draw(sf::RenderWindow &window, sf::Time &gameTime)
@@ -143,8 +155,9 @@ void Hud::draw(sf::RenderWindow &window, sf::Time &gameTime)
     window.draw(interfaceVertexMap.vertexArray, states);
 
     // Minimap
-    //states.transform *= minimap.getTransform();
-    //window.draw(minimap.vertexMap.vertexArray, states);
+    states.transform *= minimap.getTransform();
+    window.draw(minimap.rect, states);
+    window.draw(minimap.vertexMap.vertexArray, states);
 
     state->rogueZombieGame->depthTestEnd();
 
