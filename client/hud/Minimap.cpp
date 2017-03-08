@@ -7,16 +7,18 @@ Minimap::Minimap()
 {
     unsigned char baseAlpha = 185;
     // Grays
-    groundColor = sf::Color(135, 135, 135, baseAlpha);
-    wallColor = sf::Color(220, 220, 220, baseAlpha);
-    doorColor = sf::Color(255, 150, 0, baseAlpha);
-    playerColor = sf::Color(255, 255, 255, baseAlpha);
+    //groundColor = sf::Color(135, 135, 135, baseAlpha);
+    //wallColor = sf::Color(220, 220, 220, baseAlpha);
+    //doorColor = sf::Color(255, 150, 0, baseAlpha);
+    //playerColor = sf::Color(255, 255, 255, baseAlpha);
+    //stairsColor = sf::Color(150, 150, 150, baseAlpha);
 
     // Dark Greens
-    groundColor = sf::Color(0, 35, 0, baseAlpha);
+    groundColor = sf::Color(0, 70, 0, baseAlpha);
     wallColor = sf::Color(0, 135, 0, baseAlpha);
     doorColor = sf::Color(0, 255, 0, baseAlpha);
     playerColor = sf::Color(255, 255, 255, baseAlpha);
+    stairsColor = sf::Color(255, 255, 0, baseAlpha);
 }
 
 Minimap::Marker::Marker()
@@ -37,6 +39,8 @@ void Minimap::Marker::draw()
         case Type::Ground: c = minimap->groundColor; break;
         case Type::Wall: c = minimap->wallColor; break;
         case Type::Door: c = minimap->doorColor; break;
+        case Type::Downstairs: c = minimap->stairsColor; break;
+        case Type::Upstairs: c = minimap->stairsColor; break;
         case Type::Player: c = minimap->playerColor; z -= .001f; break;
     }
 
@@ -81,7 +85,7 @@ void Minimap::update(sf::Time& gameTime)
     setPosition(positionX, positionY);
 }
 
-void Minimap::addPoint(unsigned int tileId, int x, int y, Marker::Type type)
+void Minimap::addPoint(unsigned int tileId, int x, int y, Tile::Type tileType, Structure::Type structureType)
 {
     if(points.find(tileId) == points.end())
     {
@@ -93,7 +97,34 @@ void Minimap::addPoint(unsigned int tileId, int x, int y, Marker::Type type)
         marker.quadIndex = vertexMap.requestVertexIndex();
         marker.minimap = this;
         marker.sprite = markerSprite;
-        marker.type = type;
+        switch(tileType)
+        {
+            default:
+            case Tile::Type::Ground:
+                marker.type = Marker::Type::Ground;
+                break;
+            case Tile::Type::StairwellDown_East:
+            case Tile::Type::StairwellDown_South:
+            case Tile::Type::StairwellDown_West:
+            case Tile::Type::StairwellDown_North:
+                marker.type = Marker::Type::Downstairs;
+                break;
+            case Tile::Type::StairwellUp_East:
+            case Tile::Type::StairwellUp_South:
+            case Tile::Type::StairwellUp_West:
+            case Tile::Type::StairwellUp_North:
+                marker.type = Marker::Type::Upstairs;
+                break;
+        }
+        switch(structureType)
+        {
+            case Structure::Type::Door:
+                marker.type = Marker::Type::Door;
+                break;
+            case Structure::Type::Wall:
+                marker.type = Marker::Type::Wall;
+                break;
+        }
 
         marker.draw();
 

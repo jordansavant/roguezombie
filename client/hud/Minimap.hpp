@@ -7,6 +7,7 @@
 #include "../../bitengine/Game.hpp"
 #include "../../bitengine/Graphics.hpp"
 #include "../../server/Tile.hpp"
+#include "../../server/Structure.hpp"
 #include <map>
 
 class Hud;
@@ -27,6 +28,8 @@ public:
             Wall,
             Door,
             Player,
+            Downstairs,
+            Upstairs,
         };
         unsigned int tileId;
         int x, y;
@@ -49,13 +52,14 @@ public:
     sf::Color wallColor;
     sf::Color doorColor;
     sf::Color playerColor;
+    sf::Color stairsColor;
     unsigned char baseAlpha;
 
     void load(Hud* hud);
 
     void update(sf::Time& gameTime);
 
-    void addPoint(unsigned int tileId, int x, int y, Marker::Type type);
+    void addPoint(unsigned int tileId, int x, int y, Tile::Type tileType, Structure::Type structureType);
 
     void setPlayerPosition(unsigned int tileId, int x, int y);
 

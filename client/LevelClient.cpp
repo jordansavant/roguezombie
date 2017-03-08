@@ -288,10 +288,9 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
     packet >> packetTileCount;
     for(unsigned int i=0; i < packetTileCount; i++)
     {
-        bool addMini = true;
+        Tile::Type minimarkerTileType = Tile::Type::None;
+        Structure::Type minimarkerStructureType = Structure::Type::None;
         bool isMiniPlayer = false;
-        bool isMiniWall = false;
-        bool isMiniDoor = false;
 
         // unpack tile
         TileClient* t = unpackNetworkEntity<TileClient>(packet, full, tiles, tilePool);
@@ -299,6 +298,7 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
         {
             // add to tile map
             tileMap[t->schema.id] = t;
+            minimarkerTileType = t->schema.type;
         }
 
         // unpack body
@@ -340,11 +340,9 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
                 {
                     case Structure::Type::Wall:
                         s = unpackNetworkEntity<WallClient>(packet, full, walls, wallPool);
-                        isMiniWall = true;
                         break;
                     case Structure::Type::Door:
                         s = unpackNetworkEntity<DoorClient>(packet, full, doors, doorPool);
-                        isMiniDoor = true;
                         break;
                     case Structure::Type::Chest:
                         s = unpackNetworkEntity<ChestClient>(packet, full, chests, chestPool);
@@ -356,6 +354,8 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
                 t->hasStructure = true;
                 t->bodyClient = s;
                 t->structureClient = s;
+                
+                minimarkerStructureType = s->schema.type;
 
                 break;
             }
@@ -371,15 +371,7 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
         }
 
         // Mini map tracker for viewed tiles
-        if(addMini)
-        {
-            Minimap::Marker::Type mtype = isMiniWall ? Minimap::Marker::Type::Wall : isMiniDoor ? Minimap::Marker::Type::Door : Minimap::Marker::Type::Ground;
-            if(mtype == Minimap::Marker::Type::Door)
-            {
-                bool is = true;
-            }
-            state->hud->liveMinimap->addPoint(t->schema.id, t->schema.x, t->schema.y, mtype);
-        }
+        state->hud->liveMinimap->addPoint(t->schema.id, t->schema.x, t->schema.y, minimarkerTileType, minimarkerStructureType);
         if(isMiniPlayer)
         {
             state->hud->liveMinimap->setPlayerPosition(t->schema.id, t->schema.x, t->schema.y);
