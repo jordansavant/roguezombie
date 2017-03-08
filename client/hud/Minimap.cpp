@@ -39,14 +39,6 @@ void Minimap::load(Hud* _hud)
     markerSprite = hud->state->rogueZombieGame->spriteLoader->getSprite("minimap_mark");
     playerSprite = hud->state->rogueZombieGame->spriteLoader->getSprite("minimap_mark");
     vertexMap.load(&hud->interfaceTexture, sf::PrimitiveType::Quads);
-
-
-
-    rect.setPosition(-500, 0);
-    rect.setSize(sf::Vector2f(830, 450));
-    rect.setOutlineColor(sf::Color(0, 0, 0, 0));
-    rect.setOutlineThickness(2);
-    rect.setFillColor(sf::Color(0, 0, 0, 0));
 }
 
 void Minimap::addPoint(unsigned int tileId, int x, int y, Marker::Type type)

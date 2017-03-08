@@ -43,7 +43,6 @@ public:
     bit::VertexMap vertexMap;
     std::map<unsigned int, Marker> points;
     Marker player;
-    sf::RectangleShape rect;
 
     void load(Hud* hud);
 

@@ -167,7 +167,6 @@ void Hud::draw(sf::RenderWindow &window, sf::Time &gameTime)
     if(liveMinimap)
     {
         states.transform *= liveMinimap->getTransform();
-        window.draw(liveMinimap->rect, states);
         window.draw(liveMinimap->vertexMap.vertexArray, states);
     }
 
