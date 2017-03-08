@@ -48,6 +48,7 @@ public:
     ActionBar* actionBar;
     std::map<unsigned int, Minimap*> minimaps;
     Minimap* liveMinimap;
+    bool isMapActive;
     sf::Texture interfaceTexture;
     bit::VertexMap interfaceVertexMap;
     sf::Font journalFont;
@@ -98,6 +99,8 @@ public:
     void showCloseButton();
 
     void hideCloseButton();
+
+    void toggleMap();
 
     void onEnterCombat();
 

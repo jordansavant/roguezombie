@@ -76,6 +76,9 @@ OptionsBar::OptionsBar(Hud* _hud)
 
     map = new HudElement(originX, 0, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     map->load(hud, std::string("optionbar_map"));
+    map->onActivate = [_hud] (Element* e) {
+        _hud->toggleMap();
+    };
     addChild(map);
     originX += map->sprite->width + xpadding;
 

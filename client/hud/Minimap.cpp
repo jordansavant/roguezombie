@@ -25,7 +25,7 @@ void Minimap::Marker::draw()
         case Type::Ground: c = sf::Color(135, 135, 135, op); break;
         case Type::Wall: c = sf::Color(220, 220, 220, op); break;
         case Type::Door: c = sf::Color(255, 150, 0, op); break;
-        case Type::Player: c = sf::Color(255, 255, 255, 255); break;
+        case Type::Player: c = sf::Color(255, 255, 255, 255); z -= .001f; break;
     }
 
     bit::Vertex3* quad = &minimap->vertexMap.vertexArray[quadIndex];
@@ -53,7 +53,7 @@ void Minimap::update(sf::Time& gameTime)
     float powscale = bit::Math::roundPowerOf2(hud->state->rogueZombieGame->currentResolutionRatio);
     float smoothscale = hud->state->rogueZombieGame->currentResolutionRatio;
 
-    float mapW = 520;
+    float mapW = 540;
     float smoothW = smoothscale * mapW; // 200 / 300
     float powW = powscale * mapW; // 150 / 300
     float diffW = smoothW - powW; // +-50

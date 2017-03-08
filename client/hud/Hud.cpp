@@ -40,7 +40,7 @@ sf::Color Hud::font_primaryColor = RZConfig::fontGreen;
 
 Hud::Hud(StateGamePlay* _state)
     : bit::Container(0, 0, _state->rogueZombieGame->targetResolution.x, _state->rogueZombieGame->targetResolution.y, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, this, std::placeholders::_1, std::placeholders::_2,  std::placeholders::_3)),
-    state(_state), inventoryIconPool(500, std::bind(&Hud::createInventoryIcon, this)), liveMinimap(NULL)
+    state(_state), inventoryIconPool(500, std::bind(&Hud::createInventoryIcon, this)), liveMinimap(NULL), isMapActive(true)
 {
     destroying = false;
     fullscreen = true;
@@ -151,7 +151,7 @@ void Hud::draw(sf::RenderWindow &window, sf::Time &gameTime)
     window.draw(interfaceVertexMap.vertexArray, states);
 
     // Minimap
-    if(liveMinimap)
+    if(liveMinimap && isMapActive)
     {
         states.transform *= liveMinimap->getTransform();
         window.draw(liveMinimap->vertexMap.vertexArray, states);
@@ -320,6 +320,11 @@ void Hud::hideTooltip(std::string &tag)
             break;
         }
     }
+}
+
+void Hud::toggleMap()
+{
+    isMapActive = !isMapActive;
 }
 
 bool Hud::canMoveInventory()
