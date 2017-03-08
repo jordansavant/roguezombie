@@ -116,6 +116,7 @@ void StateGamePlay::switchLevels(unsigned int newId)
     levelClient = new LevelClient();
     levelClient->levelId = newId;
     levelClient->load(this);
+    hud->resetMinimap();
 }
 
 void StateGamePlay::changeMode(Mode _mode)

@@ -43,10 +43,9 @@ Procedural levels
 	- Lights, enemies, structures, items
 	- Given hallways we must figure out how to move over and beyond dead bodies
 
-Map
-- Shows revealed areas
-- Possibly a minimap
-- Try without isometric, rendering similar to our XoGeni game
+Mini Map
+- Make a marker class and set identifiers like, isWall etc
+- Update the player position on the map
 
 Ability to move with WASD, even in combat
 - Display combat movements remaining in HUD

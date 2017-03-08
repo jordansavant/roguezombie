@@ -5,7 +5,7 @@
 #include "SFML/Graphics.hpp"
 #include "../../bitengine/Gui.hpp"
 #include "../../bitengine/Graphics.hpp"
-#include "Minimap.hpp"
+#include "../../bitengine/Structures.hpp"
 
 class StateGamePlay;
 class HudMenu;
@@ -23,6 +23,7 @@ class TurnQueue;
 class ActionBar;
 class Tooltip;
 class InventoryIcon;
+class Minimap;
 
 class Hud : public bit::Container
 {
@@ -45,7 +46,7 @@ public:
     Console* console;
     TurnQueue* turnQueue;
     ActionBar* actionBar;
-    Minimap minimap;
+    Minimap* minimap;
     sf::Texture interfaceTexture;
     bit::VertexMap interfaceVertexMap;
     sf::Font journalFont;
@@ -116,6 +117,8 @@ public:
     InventoryIcon* createInventoryIcon();
 
     void playSlotAcceptSound();
+
+    void resetMinimap();
 
     static float getDrawDepth(float targetDepth);
 };

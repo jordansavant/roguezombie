@@ -289,6 +289,9 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
     for(unsigned int i=0; i < packetTileCount; i++)
     {
         bool addMini = true;
+        bool isMiniPlayer = false;
+        bool isMiniWall = false;
+        bool isMiniDoor = false;
 
         // unpack tile
         TileClient* t = unpackNetworkEntity<TileClient>(packet, full, tiles, tilePool);
@@ -316,6 +319,7 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
                 {
                     playerCharacter = c;
                     playerTile = t;
+                    isMiniPlayer = true;
                 }
 
                 // Tile occupant data
@@ -336,10 +340,11 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
                 {
                     case Structure::Type::Wall:
                         s = unpackNetworkEntity<WallClient>(packet, full, walls, wallPool);
-                        addMini = false;
+                        isMiniWall = true;
                         break;
                     case Structure::Type::Door:
                         s = unpackNetworkEntity<DoorClient>(packet, full, doors, doorPool);
+                        isMiniDoor = true;
                         break;
                     case Structure::Type::Chest:
                         s = unpackNetworkEntity<ChestClient>(packet, full, chests, chestPool);
@@ -368,7 +373,16 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
         // Mini map tracker for viewed tiles
         if(addMini)
         {
-            state->hud->minimap.addPoint(t->schema.id, t->schema.x, t->schema.y);
+            Minimap::Marker::Type mtype = isMiniWall ? Minimap::Marker::Type::Wall : isMiniDoor ? Minimap::Marker::Type::Door : Minimap::Marker::Type::Ground;
+            if(mtype == Minimap::Marker::Type::Door)
+            {
+                bool is = true;
+            }
+            state->hud->minimap->addPoint(t->schema.id, t->schema.x, t->schema.y, mtype);
+        }
+        if(isMiniPlayer)
+        {
+            state->hud->minimap->setPlayerPosition(t->schema.id, t->schema.x, t->schema.y);
         }
     }
 

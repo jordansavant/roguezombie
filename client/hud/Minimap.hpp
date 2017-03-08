@@ -17,16 +17,39 @@ public:
 
     Minimap();
 
+    struct Marker
+    {
+        Marker();
+
+        enum Type
+        {
+            Ground,
+            Wall,
+            Door,
+        };
+        unsigned int tileId;
+        int x, y;
+        unsigned int quadIndex;
+        Minimap* minimap;
+        bit::Sprite* sprite;
+        Type type;
+
+        void draw();
+    };
+
     Hud* hud;
-    bit::Sprite* sprite;
+    bit::Sprite* markerSprite;
+    bit::Sprite* playerSprite;
     bit::VertexMap vertexMap;
-    std::map<unsigned int, sf::Vector2i> points;
+    std::map<unsigned int, Marker> points;
+    Marker player;
     sf::RectangleShape rect;
-    float minL, maxR, minT, maxB;
 
     void load(Hud* hud);
 
-    void addPoint(unsigned int tileId, int x, int y);
+    void addPoint(unsigned int tileId, int x, int y, Marker::Type type);
+
+    void setPlayerPosition(unsigned int tileId, int x, int y);
 
 };
 

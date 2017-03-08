@@ -14,6 +14,7 @@
 #include "ActionBar.hpp"
 #include "Tooltip.hpp"
 #include "InventoryIcon.hpp"
+#include "Minimap.hpp"
 #include "../../ResourcePath.h"
 #include "../../bitengine/Input.hpp"
 #include "../../bitengine/Audio.hpp"
@@ -39,7 +40,7 @@ sf::Color Hud::font_primaryColor = RZConfig::fontGreen;
 
 Hud::Hud(StateGamePlay* _state)
     : bit::Container(0, 0, _state->rogueZombieGame->targetResolution.x, _state->rogueZombieGame->targetResolution.y, bit::Element::AnchorType::Top, std::bind(&Hud::typicalContainerControl, this, std::placeholders::_1, std::placeholders::_2,  std::placeholders::_3)),
-    state(_state), inventoryIconPool(500, std::bind(&Hud::createInventoryIcon, this))
+    state(_state), inventoryIconPool(500, std::bind(&Hud::createInventoryIcon, this)), minimap(NULL)
 {
     destroying = false;
     fullscreen = true;
@@ -76,7 +77,7 @@ Hud::Hud(StateGamePlay* _state)
     lootMenu = new LootMenu(this);
     addChild(lootMenu);
 
-    minimap.load(this);
+    resetMinimap();
 
     // Hud Menus
     journal = new Journal(this);
@@ -121,6 +122,8 @@ Hud::Hud(StateGamePlay* _state)
 Hud::~Hud()
 {
     destroying = true;
+
+    delete minimap;
 }
 
 void Hud::update(sf::RenderWindow &window, sf::Time &gameTime)
@@ -132,7 +135,7 @@ void Hud::update(sf::RenderWindow &window, sf::Time &gameTime)
     float powscale = bit::Math::roundPowerOf2(state->rogueZombieGame->currentResolutionRatio);
     float smoothscale = state->rogueZombieGame->currentResolutionRatio;
 
-    float mapW = 350;
+    float mapW = 400;
     float smoothW = smoothscale * mapW; // 200 / 300
     float powW = powscale * mapW; // 150 / 300
     float diffW = smoothW - powW; // +-50
@@ -141,8 +144,8 @@ void Hud::update(sf::RenderWindow &window, sf::Time &gameTime)
     float powH = powscale * mapH; // 150 / 300
     float diffH = smoothH - powH; // +-50
 
-    minimap.setScale(powscale, powscale);
-    minimap.setPosition((targetWidth - mapW + diffW) * smoothscale , (mapH + diffH) * smoothscale);
+    minimap->setScale(powscale, powscale);
+    minimap->setPosition((targetWidth - mapW + diffW) * smoothscale , (mapH + diffH) * smoothscale);
 }
 
 void Hud::draw(sf::RenderWindow &window, sf::Time &gameTime)
@@ -155,9 +158,9 @@ void Hud::draw(sf::RenderWindow &window, sf::Time &gameTime)
     window.draw(interfaceVertexMap.vertexArray, states);
 
     // Minimap
-    states.transform *= minimap.getTransform();
-    window.draw(minimap.rect, states);
-    window.draw(minimap.vertexMap.vertexArray, states);
+    states.transform *= minimap->getTransform();
+    window.draw(minimap->rect, states);
+    window.draw(minimap->vertexMap.vertexArray, states);
 
     state->rogueZombieGame->depthTestEnd();
 
@@ -401,6 +404,16 @@ InventoryIcon* Hud::createInventoryIcon()
 void Hud::playSlotAcceptSound()
 {
     state->rogueZombieGame->soundManager->play(slotAcceptSoundId);
+}
+
+void Hud::resetMinimap()
+{
+    if(minimap)
+    {
+        delete minimap;
+    }
+    minimap = new Minimap();
+    minimap->load(this);
 }
 
 float Hud::getDrawDepth(float targetDepth)
