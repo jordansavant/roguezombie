@@ -29,6 +29,7 @@ public:
 
     static sf::Color fontGreen;
     static sf::Color fontRed;
+    static sf::Color fontGray;
 
     static float getDrawDepthForGameplay(float yPosition);
 

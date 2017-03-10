@@ -16,13 +16,14 @@ StateMenu::StateMenu(RogueZombieGame* rogueZombieGame)
     // Colors
     rzRed = RZConfig::fontRed;
     rzGreen = RZConfig::fontGreen;
+    rzGray = RZConfig::fontGray;
 
     // Assets
     std::string titleImagePath(resourcePath() + "ctrlziso.png");
     titleTexture.loadFromFile(titleImagePath);
     titleTexture.setSmooth(true);
 
-    std::string fontPath(resourcePath() + "Audimat.ttf");
+    std::string fontPath(resourcePath() + "Homespun.ttf");
     menuFont.loadFromFile(fontPath);
     menuFontSize = 48;
 
@@ -68,12 +69,12 @@ void StateMenu::configureLabel(bit::Label* label, std::string text)
     label->setSfFontSize(menuFontSize);
     label->setSfFontString(text);
     label->normalColor = rzGreen;
-    label->focusedColor = sf::Color::White;
+    label->focusedColor = rzGray;
     label->paddingTop = 0;
-    label->paddingLeft = 5;
+    label->paddingLeft = 15;
     label->paddingRight = 5;
     label->paddingBottom = 25;
-    label->opacity = 0;
+    label->opacity = 1;
 }
 
 void StateMenu::inflowLabel(bit::Element* element, float startingX, float startingY, float delay, float endX, float endY)
@@ -81,10 +82,12 @@ void StateMenu::inflowLabel(bit::Element* element, float startingX, float starti
     element->relativePosition.x = startingX;
     element->relativePosition.y = startingY;
     element->opacity = 0;
-    element->queueEffect(new bit::MoveEffect(delay, endX, endY))->queueEffect(new bit::FadeEffect(500, 1));
+    element->queueEffect(new bit::FadeEffect(delay, 0, bit::Easing::Type::Linear, [endX, endY] (bit::Element* el, bit::Effect* ef) {
+        el->immediateEffect(new bit::FadeEffect(350, 1))->immediateEffect(new bit::MoveEffect(1000, bit::Easing::Type::OutElastic, endX, endY));
+    }));
 }
 
 void StateMenu::outflowLabel(bit::Element* element, float delay, float endX, float endY)
 {
-    element->queueEffect(new bit::Effect(delay))->queueEffect(new bit::FadeEffect(500, 0));
+    element->queueEffect(new bit::Effect(delay))->queueEffect(new bit::FadeEffect(350, 0));
 }

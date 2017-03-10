@@ -12,7 +12,7 @@
 StartMainMenu::StartMainMenu(RogueZombieGame* rogueZombieGame, StateGameStart* state)
     : StateMenu(rogueZombieGame), state(state)
 {
-    unsigned int fSize = 28;
+    unsigned int fSize = 32;
 
     centroid = new bit::Container(0, 0, 800, 600, bit::Element::AnchorType::Center);
     centroid->scaleStyle = ScaleStyle::None;
@@ -23,7 +23,7 @@ StartMainMenu::StartMainMenu(RogueZombieGame* rogueZombieGame, StateGameStart* s
 
     // Title
     titlePicture = new bit::Picture(0, 0, 0, 0, bit::Element::AnchorType::Center);
-    titlePicture->opacity = 0;
+    //titlePicture->opacity = 0;
     titlePicture->setTexture(titleTexture);
     titlePicture->setColor(sf::Color::White);
     titlePicture->scaleStyle = ScaleStyle::None;
@@ -42,10 +42,18 @@ StartMainMenu::StartMainMenu(RogueZombieGame* rogueZombieGame, StateGameStart* s
             return false;
         }
     );
-    configureLabel(singleplayerLabel, "NEW GAME");
-    singleplayerLabel->normalColor = rzRed;
+    configureLabel(singleplayerLabel, "New Game");
+    singleplayerLabel->normalColor = rzGreen;
     singleplayerLabel->scaleStyle = ScaleStyle::None;
     singleplayerLabel->setSfFontSize(fSize);
+    singleplayerLabel->makeHoverable(rogueZombieGame->inputManager,
+        [] (bit::Hoverable* h, bit::Element* e) {
+            e->queueEffect(new bit::MoveEffect(100, -6, 0));
+        },
+        [] (bit::Hoverable* h, bit::Element* e) {
+            e->queueEffect(new bit::MoveEffect(100, 6, 0));
+        }
+    );
     centroid->addChild(singleplayerLabel);
 
     // Multiplayer
@@ -61,22 +69,38 @@ StartMainMenu::StartMainMenu(RogueZombieGame* rogueZombieGame, StateGameStart* s
             return false;
         }
     );
-    configureLabel(multiplayerLabel, "JOIN GAME");
-    multiplayerLabel->normalColor = rzRed;
+    configureLabel(multiplayerLabel, "Join Game");
+    multiplayerLabel->normalColor = rzGreen;
     multiplayerLabel->scaleStyle = ScaleStyle::None;
     multiplayerLabel->setSfFontSize(fSize);
+    multiplayerLabel->makeHoverable(rogueZombieGame->inputManager,
+        [] (bit::Hoverable* h, bit::Element* e) {
+            e->queueEffect(new bit::MoveEffect(100, -6, 0));
+        },
+        [] (bit::Hoverable* h, bit::Element* e) {
+            e->queueEffect(new bit::MoveEffect(100, 6, 0));
+        }
+    );
     centroid->addChild(multiplayerLabel);
 
     // Options
-    settingsLabel = new bit::Label(0, -600, 0, 0, bit::Element::AnchorType::TopRight, std::bind(&StartMainMenu::onActivate_Settings, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-    configureLabel(settingsLabel, "CONFIG");
-    settingsLabel->normalColor = rzRed;
+    settingsLabel = new bit::Label(0, -600, 0, 0, bit::Element::AnchorType::BottomLeft, std::bind(&StartMainMenu::onActivate_Settings, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    configureLabel(settingsLabel, "Configure");
+    settingsLabel->normalColor = rzGreen;
     settingsLabel->scaleStyle = ScaleStyle::None;
     settingsLabel->setSfFontSize(fSize);
+    settingsLabel->makeHoverable(rogueZombieGame->inputManager,
+        [] (bit::Hoverable* h, bit::Element* e) {
+            e->queueEffect(new bit::MoveEffect(100, 6, 0));
+        },
+        [] (bit::Hoverable* h, bit::Element* e) {
+            e->queueEffect(new bit::MoveEffect(100, -6, 0));
+        }
+    );
     centroid->addChild(settingsLabel);
 
     // Exit
-    exitLabel = new bit::Label(0, -600, 0, 0, bit::Element::AnchorType::TopRight,
+    exitLabel = new bit::Label(0, -600, 0, 0, bit::Element::AnchorType::BottomLeft,
         [rogueZombieGame, state] (Element* element, sf::RenderWindow* window, sf::Time* gameTime) -> bool
         {
             if(element->opacity == 1 && rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
@@ -88,10 +112,18 @@ StartMainMenu::StartMainMenu(RogueZombieGame* rogueZombieGame, StateGameStart* s
             return false;
         }
     );
-    configureLabel(exitLabel, "EXIT");
-    exitLabel->normalColor = rzRed;
+    configureLabel(exitLabel, "Exit");
+    exitLabel->normalColor = rzGreen;
     exitLabel->scaleStyle = ScaleStyle::None;
     exitLabel->setSfFontSize(fSize);
+    exitLabel->makeHoverable(rogueZombieGame->inputManager,
+        [] (bit::Hoverable* h, bit::Element* e) {
+            e->queueEffect(new bit::MoveEffect(100, 6, 0));
+        },
+        [] (bit::Hoverable* h, bit::Element* e) {
+            e->queueEffect(new bit::MoveEffect(100, -6, 0));
+        }
+    );
     centroid->addChild(exitLabel);
 }
 
@@ -101,7 +133,7 @@ void StartMainMenu::load()
     int titleFadeTime = 500;
     int titleMoveDelay = 500;
     int titleMoveTime = 1000;
-    titlePicture->queueEffect(new bit::Effect(titleFadeDelay))->queueEffect(new bit::FadeEffect(titleFadeTime, 1));
+    //titlePicture->queueEffect(new bit::Effect(titleFadeDelay))->queueEffect(new bit::FadeEffect(titleFadeTime, 1));
     //titlePicture->queueEffect(new bit::Effect(titleMoveDelay))->queueEffect(new bit::MoveEffect(titleMoveTime, bit::Easing::Type::InOutQuint, 0, -240));
 
     showMainMenu(2000);
@@ -109,11 +141,14 @@ void StartMainMenu::load()
 
 void StartMainMenu::showMainMenu(int additionalDelay)
 {
+    int fx = -510;
+    int fy = 40;
+    int yy = 10;
     int delay = 0 + additionalDelay;
-    inflowLabel(singleplayerLabel, 0, 0, delay + 1100, -80, 60);
-    inflowLabel(multiplayerLabel, 0, 0,  delay + 1000, -80,120);
-    inflowLabel(settingsLabel, 0, 0,  delay + 900, -80, 180);
-    inflowLabel(exitLabel, 0, 0,  delay + 800, -80, 240);
+    inflowLabel(singleplayerLabel, 500, yy, delay + 800, fx, 0);
+    inflowLabel(multiplayerLabel, 500, yy + fy,  delay + 700, fx, 0);
+    inflowLabel(settingsLabel, -500, -yy - fy,  delay + 600, -fx, 0);
+    inflowLabel(exitLabel, -500, -yy,  delay + 500, -fx, 0);
 }
 
 void StartMainMenu::hideMainMenu(int additionalDelay)

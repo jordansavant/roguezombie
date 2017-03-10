@@ -39,6 +39,7 @@ sf::Color RZConfig::tileTargetInRangeRadius(255, 255, 0);
 
 sf::Color RZConfig::fontGreen(0, 255, 0);
 sf::Color RZConfig::fontRed(140, 44, 16);
+sf::Color RZConfig::fontGray(77, 77, 77);
 
 float RZConfig::getDrawDepthForGameplay(float yPosition)
 {

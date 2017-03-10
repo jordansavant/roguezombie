@@ -18,6 +18,7 @@ public:
     RogueZombieGame* rogueZombieGame;
     sf::Color rzRed;
     sf::Color rzGreen;
+    sf::Color rzGray;
     sf::Font menuFont;
     int menuFontSize;
     sf::Texture titleTexture;
