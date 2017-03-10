@@ -5,15 +5,8 @@
 
 Minimap::Minimap()
 {
-    unsigned char baseAlpha = 185;
-    // Grays
-    //groundColor = sf::Color(135, 135, 135, baseAlpha);
-    //wallColor = sf::Color(220, 220, 220, baseAlpha);
-    //doorColor = sf::Color(255, 150, 0, baseAlpha);
-    //playerColor = sf::Color(255, 255, 255, baseAlpha);
-    //stairsColor = sf::Color(150, 150, 150, baseAlpha);
-
     // Dark Greens
+    unsigned char baseAlpha = 185;
     groundColor = sf::Color(0, 70, 0, baseAlpha);
     wallColor = sf::Color(0, 135, 0, baseAlpha);
     doorColor = sf::Color(0, 255, 0, baseAlpha);
@@ -29,9 +22,7 @@ Minimap::Marker::Marker()
 void Minimap::Marker::draw()
 {
     float z = Hud::getDrawDepth(Hud::zindex_minimap);
-    //sf::Vector2f minimapIso = bit::VectorMath::normalToIsometric(x / 4, y / 4);
     sf::Vector2f minimapIso(x / 4, y / 4);
-    unsigned int op = 100;
 
     sf::Color c;
     switch(type)

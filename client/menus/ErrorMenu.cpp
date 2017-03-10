@@ -16,6 +16,7 @@ ErrorMenu::ErrorMenu(RogueZombieGame* rogueZombieGame, StateGameError* state)
     configureLabel(errorMessageLabel, rogueZombieGame->errorMessage);
     errorMessageLabel->canHaveFocus = false;
     errorMessageLabel->opacity = 1;
+    addChild(errorMessageLabel);
 
     okLabel = new bit::Label(0, 25, 0, 0, bit::Element::AnchorType::Center,
         [rogueZombieGame, state] (bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime) -> bool
@@ -31,5 +32,5 @@ ErrorMenu::ErrorMenu(RogueZombieGame* rogueZombieGame, StateGameError* state)
     );
     configureLabel(okLabel, "ok");
     okLabel->opacity = 1;
-	okLabel->normalColor = rzRed;
+    okLabel->normalColor = rzRed;
 }

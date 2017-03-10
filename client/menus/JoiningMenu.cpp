@@ -35,6 +35,7 @@ JoiningMenu::JoiningMenu(RogueZombieGame* rogueZombieGame, StateGamePlay* state)
     configureLabel(joiningLabel, messages[currentMessage]);
     joiningLabel->canHaveFocus = false;
     joiningLabel->opacity = 0;
+    addChild(joiningLabel);
 }
 
 void JoiningMenu::effectMessage()

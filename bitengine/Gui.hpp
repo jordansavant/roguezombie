@@ -13,6 +13,7 @@
 #include "Gui/Mouse.hpp"
 #include "Gui/MoveEffect.hpp"
 #include "Gui/Picture.hpp"
+#include "Gui/ScaleEffect.hpp"
 #include "Gui/Slider.hpp"
 
 #endif

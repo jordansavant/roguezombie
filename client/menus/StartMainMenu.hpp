@@ -18,6 +18,7 @@ public:
     StartMainMenu(RogueZombieGame* rogueZombieGame, StateGameStart* state);
 
     StateGameStart* state;
+    bit::Container* centroid;
     bit::Picture* titlePicture;
     bit::Label* singleplayerLabel;
     bit::Label* multiplayerLabel;

@@ -10,14 +10,15 @@
 #include "../RZConfig.hpp"
 
 StateMenu::StateMenu(RogueZombieGame* rogueZombieGame)
-    : bit::Container(0, 0, rogueZombieGame->targetResolution.x, rogueZombieGame->targetResolution.y, bit::Element::AnchorType::Center), rogueZombieGame(rogueZombieGame)
+    : bit::Container(0, 0, rogueZombieGame->targetResolution.x, rogueZombieGame->targetResolution.y, bit::Element::AnchorType::Top), rogueZombieGame(rogueZombieGame)
 {
+    fullscreen = true;
     // Colors
     rzRed = RZConfig::fontRed;
     rzGreen = RZConfig::fontGreen;
 
     // Assets
-    std::string titleImagePath(resourcePath() + "minititle.png");
+    std::string titleImagePath(resourcePath() + "ctrlziso.png");
     titleTexture.loadFromFile(titleImagePath);
     titleTexture.setSmooth(true);
 
@@ -73,7 +74,6 @@ void StateMenu::configureLabel(bit::Label* label, std::string text)
     label->paddingRight = 5;
     label->paddingBottom = 25;
     label->opacity = 0;
-    addChild(label);
 }
 
 void StateMenu::inflowLabel(bit::Element* element, float startingX, float startingY, float delay, float endX, float endY)
