@@ -43,6 +43,7 @@ namespace bit
         sf::Clock clock;
         float FPS;
         bool verticalSync;
+        sf::Color bgColor;
 
         void run();
 

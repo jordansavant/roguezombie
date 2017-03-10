@@ -19,11 +19,11 @@ StateMenu::StateMenu(RogueZombieGame* rogueZombieGame)
     rzGray = RZConfig::fontGray;
 
     // Assets
-    std::string titleImagePath(resourcePath() + "ctrlziso.png");
+    std::string titleImagePath(resourcePath() + "ZRLiso.png");
     titleTexture.loadFromFile(titleImagePath);
     titleTexture.setSmooth(true);
 
-    std::string fontPath(resourcePath() + "Homespun.ttf");
+    std::string fontPath(resourcePath() + "Audimat.ttf");
     menuFont.loadFromFile(fontPath);
     menuFontSize = 48;
 
@@ -73,7 +73,7 @@ void StateMenu::configureLabel(bit::Label* label, std::string text)
     label->paddingTop = 0;
     label->paddingLeft = 15;
     label->paddingRight = 5;
-    label->paddingBottom = 25;
+    label->paddingBottom = 15;
     label->opacity = 1;
 }
 
@@ -89,5 +89,8 @@ void StateMenu::inflowLabel(bit::Element* element, float startingX, float starti
 
 void StateMenu::outflowLabel(bit::Element* element, float delay, float endX, float endY)
 {
-    element->queueEffect(new bit::Effect(delay))->queueEffect(new bit::FadeEffect(350, 0));
+    //element->queueEffect(new bit::Effect(delay))->queueEffect(new bit::FadeEffect(350, 0));
+    element->queueEffect(new bit::FadeEffect(delay, 1, bit::Easing::Type::Linear, [endX, endY] (bit::Element* el, bit::Effect* ef) {
+        el->immediateEffect(new bit::FadeEffect(100, 0));
+    }));
 }

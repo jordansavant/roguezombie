@@ -12,6 +12,7 @@
 StartMainMenu::StartMainMenu(RogueZombieGame* rogueZombieGame, StateGameStart* state)
     : StateMenu(rogueZombieGame), state(state)
 {
+    StartMainMenu* menu = this;
     unsigned int fSize = 32;
 
     centroid = new bit::Container(0, 0, 800, 600, bit::Element::AnchorType::Center);
@@ -31,7 +32,7 @@ StartMainMenu::StartMainMenu(RogueZombieGame* rogueZombieGame, StateGameStart* s
 
     // Singleplayer
     singleplayerLabel = new bit::Label(0, -600, 0, 0, bit::Element::AnchorType::TopRight,
-        [rogueZombieGame, state] (Element* element, sf::RenderWindow* window, sf::Time* gameTime) -> bool
+        [rogueZombieGame, state, menu] (Element* element, sf::RenderWindow* window, sf::Time* gameTime) -> bool
         {
             if(element->opacity == 1 && rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
             {
@@ -136,7 +137,7 @@ void StartMainMenu::load()
     //titlePicture->queueEffect(new bit::Effect(titleFadeDelay))->queueEffect(new bit::FadeEffect(titleFadeTime, 1));
     //titlePicture->queueEffect(new bit::Effect(titleMoveDelay))->queueEffect(new bit::MoveEffect(titleMoveTime, bit::Easing::Type::InOutQuint, 0, -240));
 
-    showMainMenu(2000);
+    showMainMenu(0000);
 }
 
 void StartMainMenu::showMainMenu(int additionalDelay)
@@ -145,19 +146,26 @@ void StartMainMenu::showMainMenu(int additionalDelay)
     int fy = 40;
     int yy = 10;
     int delay = 0 + additionalDelay;
-    inflowLabel(singleplayerLabel, 500, yy, delay + 800, fx, 0);
-    inflowLabel(multiplayerLabel, 500, yy + fy,  delay + 700, fx, 0);
+
+    inflowLabel(singleplayerLabel, 500, yy, delay + 500, fx, 0);
+    inflowLabel(multiplayerLabel, 500, yy + fy,  delay + 600, fx, 0);
+
     inflowLabel(settingsLabel, -500, -yy - fy,  delay + 600, -fx, 0);
     inflowLabel(exitLabel, -500, -yy,  delay + 500, -fx, 0);
 }
 
 void StartMainMenu::hideMainMenu(int additionalDelay)
 {
-    int delay = 0 + additionalDelay;
-    outflowLabel(singleplayerLabel, delay + 300, 0, 0);
-    outflowLabel(multiplayerLabel, delay + 200, 0, 0);
-    outflowLabel(settingsLabel, delay + 100, 0, 0);
-    outflowLabel(exitLabel, delay + 0, 0, 0);
+    int fx = -510;
+    int fy = 40;
+    int yy = 10;
+    int delay = 0;
+
+    outflowLabel(singleplayerLabel, delay + 100, 500, 0);
+    outflowLabel(multiplayerLabel,  delay + 000, 500, 0);
+
+    outflowLabel(settingsLabel,  delay + 000, -500, 0);
+    outflowLabel(exitLabel,  delay + 100, -500, 0);
 }
 
 bool StartMainMenu::onActivate_Settings(bit::Element* element, sf::RenderWindow* window, sf::Time* gameTime)

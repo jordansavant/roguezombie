@@ -732,6 +732,8 @@ void StateGamePlay::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::ClientServerState::draw(window, gameTime);
 
+    rogueZombieGame->bgColor = sf::Color::Black;
+
     hud->draw(window, gameTime);
     joiningMenu->draw(window, gameTime);
 

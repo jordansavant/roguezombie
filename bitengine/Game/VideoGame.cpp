@@ -26,6 +26,8 @@ bit::VideoGame::VideoGame(std::string gameTitle, int width, int height, bool ful
     gameComponents.push_back(musicManager);
     gameComponents.push_back(spriteLoader);
 
+    bgColor = sf::Color::Black;
+
     settings.depthBits = 24;
     settings.stencilBits = 8;
     settings.antialiasingLevel = antialiasingLevel;
@@ -78,7 +80,7 @@ void bit::VideoGame::run()
         }
 
         // Freshen draw
-        renderWindow->clear();
+        renderWindow->clear(bgColor);
 
         // UPDATE at fixed intervals
         float newTime = clock.getElapsedTime().asSeconds();
@@ -124,7 +126,11 @@ void bit::VideoGame::run()
         }
 
         // OpenGL Calls for clearing Depth
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        float glR = (float)bgColor.r / (float)255;
+        float glG = (float)bgColor.g / (float)255;
+        float glB = (float)bgColor.b / (float)255;
+        float glA = (float)bgColor.a / (float)255;
+        glClearColor(glR, glG, glB, glA);
         glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
