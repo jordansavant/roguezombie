@@ -12,7 +12,7 @@
 class Level;
 class Body;
 
-class Tile : public bit::Node, public bit::QuadTreeObject, public LevelRunnable
+class Tile : public bit::AstarNode, public bit::QuadTreeObject, public LevelRunnable
 {
 public:
 

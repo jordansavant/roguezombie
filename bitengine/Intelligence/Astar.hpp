@@ -7,7 +7,6 @@
 #include <list>
 #include <complex>
 #include <cmath>
-#include "Node.hpp"
 
 namespace bit
 {

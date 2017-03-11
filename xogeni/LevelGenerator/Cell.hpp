@@ -11,7 +11,7 @@ namespace XoGeni
     class Entrance;
     class Exit;
 
-    class Cell : public bit::Node
+    class Cell : public bit::AstarNode
     {
     public:
 

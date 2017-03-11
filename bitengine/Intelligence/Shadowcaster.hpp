@@ -5,7 +5,6 @@
 #include <functional>
 #include <complex>
 #include <vector>
-#include "Node.hpp"
 #include "../Math/Math.hpp"
 #include "../Math/VectorMath.hpp"
 

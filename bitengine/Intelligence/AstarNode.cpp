@@ -1,22 +1,22 @@
-#include "Node.hpp"
+#include "AstarNode.hpp"
 #include "SFML/System.hpp"
 
-bit::Node::Node()
+bit::AstarNode::AstarNode()
     : aStarID(0), aStarFCost(0), aStarGCost(0), aStarHCost(0), aStarX(0), aStarY(0), aStarParent(NULL)
 {
 }
 
-bit::Node::Node(int x, int y)
+bit::AstarNode::AstarNode(int x, int y)
     : aStarID(0), aStarFCost(0), aStarGCost(0), aStarHCost(0), aStarX(x), aStarY(y), aStarParent(NULL)
 {
 }
 
-bool bit::Node::equals(Node* compareNode)
+bool bit::AstarNode::equals(AstarNode* compareNode)
 {
     return (aStarX == compareNode->aStarX && aStarY == compareNode->aStarY);
 }
 
-void bit::Node::cleanAstar(unsigned int aStarID)
+void bit::AstarNode::cleanAstar(unsigned int aStarID)
 {
     // This allows us to reset in constant
     // time each time astar is run by avoiding
@@ -29,7 +29,7 @@ void bit::Node::cleanAstar(unsigned int aStarID)
     }
 }
 
-void bit::Node::resetAstar()
+void bit::AstarNode::resetAstar()
 {
     aStarGCost = 0;
     aStarHCost = 0;

@@ -1,16 +1,16 @@
 #pragma once
-#ifndef BIT_NODE_H
-#define BIT_NODE_H
+#ifndef BIT_ASTARNODE_H
+#define BIT_ASTARNODE_H
 
 namespace bit
 {
-    class Node
+    class AstarNode
     {
     public:
 
-        Node();
+        AstarNode();
 
-        Node(int x, int y);
+        AstarNode(int x, int y);
 
         unsigned int aStarID;
         bool aStarClosed;
@@ -20,9 +20,9 @@ namespace bit
         int aStarHCost;
         int aStarX;
         int aStarY;
-        Node* aStarParent;
+        AstarNode* aStarParent;
 
-        bool equals(Node* compareNode);
+        bool equals(AstarNode* compareNode);
 
         void cleanAstar(unsigned int aStarID);
 
