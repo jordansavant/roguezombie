@@ -910,6 +910,11 @@ bool XoGeni::CellMap::isRoomConnected(Room* room)
 
 bool XoGeni::CellMap::areRoomsConnected(Room* room, Room* otherRoom)
 {
+    if(room == otherRoom)
+    {
+        return true;
+    }
+
     std::vector<Cell*> cellPath;
     getRoomConnectionPath(room, otherRoom, cellPath);
 
