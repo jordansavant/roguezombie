@@ -16,10 +16,10 @@ OptionsBar::OptionsBar(Hud* _hud)
 
     makeHoverable(hud->state->rogueZombieGame->inputManager,
         [](bit::Hoverable* h, bit::Element* e){
-            e->immediateEffect(new bit::FadeEffect(100, 1));
+            //e->immediateEffect(new bit::FadeEffect(100, 1));
         },
         [](bit::Hoverable* h, bit::Element* e){
-            e->immediateEffect(new bit::FadeEffect(100, Hud::hoverlessOpacity));
+            //e->immediateEffect(new bit::FadeEffect(100, Hud::hoverlessOpacity));
         }
     );
     

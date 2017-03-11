@@ -32,6 +32,7 @@ Need much better AI for Hunters
 Items should have stat effects and perhaps magical (lambda) effects
 - Maybe rarity (green/blue/purple/orange)?
 - Better stat details in the window
+- Potions, totems etc
 
 Character Panel
 - Show stats, health, active effects

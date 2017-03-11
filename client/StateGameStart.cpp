@@ -46,7 +46,7 @@ void StateGameStart::draw(sf::RenderWindow &window, sf::Time &gameTime)
 {
     bit::State::draw(window, gameTime);
     
-    rogueZombieGame->bgColor = sf::Color(20, 20, 20);
+    rogueZombieGame->bgColor = sf::Color(0, 0, 0);
 
     mainMenu->draw(window, gameTime);
 }

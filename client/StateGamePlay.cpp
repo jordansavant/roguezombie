@@ -722,7 +722,7 @@ bool StateGamePlay::update(sf::Time &gameTime)
 
         sf::Vector2f position(levelClient->playerCharacter->BodyClient::schema.x, levelClient->playerCharacter->BodyClient::schema.y);
         position = bit::VectorMath::normalToIsometric(position.x, position.y);
-        cameras[0]->lock(position.x, position.y, toleranceX, toleranceY, 4.0, 100.0);
+        cameras[0]->lock(position.x, position.y, toleranceX, toleranceY, 8.0, 100.0);
     }
 
     return true;

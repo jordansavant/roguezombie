@@ -19,11 +19,11 @@ StateMenu::StateMenu(RogueZombieGame* rogueZombieGame)
     rzGray = RZConfig::fontGray;
 
     // Assets
-    std::string titleImagePath(resourcePath() + "ZRLiso.png");
+    std::string titleImagePath(resourcePath() + "ctrlzisosq.png");
     titleTexture.loadFromFile(titleImagePath);
     titleTexture.setSmooth(true);
 
-    std::string fontPath(resourcePath() + "Audimat.ttf");
+    std::string fontPath(resourcePath() + "Homespun.ttf");
     menuFont.loadFromFile(fontPath);
     menuFontSize = 48;
 
