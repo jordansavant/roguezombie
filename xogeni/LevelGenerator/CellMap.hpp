@@ -87,9 +87,6 @@ namespace XoGeni
 
 
         // Exit building
-
-        void buildExits();
-
         void buildEntrance();
 
         void buildExit();
@@ -155,6 +152,8 @@ namespace XoGeni
         Cell* getCellAtPositionNullable(unsigned int x, unsigned int y);
 
         void getShuffledDirections(std::vector<sf::Vector2i> &fill);
+
+        void getCardinalCells(unsigned int x, unsigned int y, std::vector<Cell*> &fill);
 
 
         // Test methods

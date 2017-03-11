@@ -1,0 +1,12 @@
+RZ - Enemy Balancing
+
+Writing automated tests for various characters and enemies should allow you to see how balanced something is over X iterations.
+
+For example, set the player with a given set of items, a weapon, and stats against an enemy of certain items, stats and weapon.
+Run combat scenarios in a test series to see how difficult it is, then adjust accordingly.
+
+Monsters should follow the Brogue pattern of OOD and Depth characteristics that essentially define their level.
+This will allow me to design monsters given certain stats, health and weapons in increasing power and define their level appearance.
+This will also theme them with plot and level progression.
+
+

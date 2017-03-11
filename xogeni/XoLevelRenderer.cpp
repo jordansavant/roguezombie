@@ -159,8 +159,6 @@ void XoGeni::XoLevelRenderer::paint()
                     color = colorTunnel;
                 if(cell->wasDoorTunnel)
                     color = colorTunnel;
-                if(cell->isSill)
-                    color = colorSill;
                 if(cell->wasDoor)
                     color = colorDoor;
                 break;
@@ -175,8 +173,6 @@ void XoGeni::XoLevelRenderer::paint()
                     color = colorRoomPerimeter;
                 if(cell->isTunnel && !cell->wasRoomFixTunnel)
                     color = colorTunnel;
-                if(cell->isSill)
-                    color = colorSill;
                 if(cell->wasDoor)
                     color = colorDoor;
                 break;
@@ -187,8 +183,6 @@ void XoGeni::XoLevelRenderer::paint()
                         color = colorRoomEdge;
                     else
                         color = colorRoom;
-                if(cell->isSill)
-                    color = colorSill;
                 if(cell->isRoomPermiter)
                     color = colorRoomPerimeter;
                 if(cell->isTunnel && !cell->wasRoomFixTunnel)
@@ -209,8 +203,6 @@ void XoGeni::XoLevelRenderer::paint()
                         color = colorRoomEdge;
                     else
                         color = colorRoom;
-                if(cell->isSill)
-                    color = colorSill;
                 if(cell->isRoomPermiter)
                     color = colorRoomPerimeter;
                 if(cell->isTunnel && !cell->wasRoomFixTunnel)
@@ -231,8 +223,6 @@ void XoGeni::XoLevelRenderer::paint()
                         color = colorRoomEdge;
                     else
                         color = colorRoom;
-                if(cell->isSill)
-                    color = colorSill;
                 if(cell->isRoomPermiter)
                     color = colorRoomPerimeter;
                 if(cell->isTunnel)
@@ -253,8 +243,6 @@ void XoGeni::XoLevelRenderer::paint()
                         color = colorRoomEdge;
                     else
                         color = colorRoom;
-                if(cell->isSill)
-                    color = colorSill;
                 if(cell->isRoomPermiter)
                     color = colorRoomPerimeter;
                 if(cell->isTunnel)
@@ -279,8 +267,6 @@ void XoGeni::XoLevelRenderer::paint()
                         color = colorRoomEdge;
                     else
                         color = colorRoom;
-                if(cell->isSill)
-                    color = colorSill;
                 if(cell->isRoomPermiter)
                     color = colorRoomPerimeter;
                 if(cell->isTunnel)

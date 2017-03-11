@@ -570,19 +570,12 @@ void XoGeni::CellMap::emplaceTunnel(Cell* cell, sf::Vector2i &dir)
 // EXIT BUILDING START
 ////////////////////////////////////////
 
-void XoGeni::CellMap::buildExits()
-{
-    // Exit and entrances depend on connecting parent maps
-    // If there is no parent map we can create an entrance and exit
-    // If there is a parent we should tie the entrance to their exit and create an exit
-    // In either scenario we are the master of exits so generate them
+// Exit and entrances depend on connecting parent maps
+// If there is no parent map we can create an entrance and exit
+// If there is a parent we should tie the entrance to their exit and create an exit
+// In either scenario we are the master of exits so generate them
 
-    buildEntrance();
-
-    buildExit();
-
-}
-
+// This is run before rooms are guaranteed connected because it is used as the primary connection point
 void XoGeni::CellMap::buildEntrance()
 {
     unsigned int entranceId = 1;
@@ -605,6 +598,7 @@ void XoGeni::CellMap::buildEntrance()
     entranceRoom = room;
 }
 
+// This is run after rooms are connected so their weights to the entrance are calculated for exit placement
 void XoGeni::CellMap::buildExit()
 {
     unsigned int exitId = 2; // must not be same as entrance id
@@ -818,6 +812,8 @@ void XoGeni::CellMap::fixDoors()
     }
 }
 
+// Finds rooms that cannot path to entrance and connects them with tunnels
+// Counts weights of distance from entrance room, valued by the number of other rooms traversed to reach them
 void XoGeni::CellMap::fixRooms()
 {
     //- If more than one room
@@ -948,9 +944,34 @@ void XoGeni::CellMap::tunnelFromRoomToRoom(Room* start, Room* end, bool stopOnRo
         pos.y += yPlus;
         path.push_back(pos);
     }
+
+    // Tunnel through path until another room is reached
     for(unsigned int i=0; i < path.size(); i++)
     {
         Cell* cell = getCellAtPosition(path[i].x, path[i].y);
+
+        // If this is supposed to stop when we hit any room
+        if(stopOnRoom)
+        {
+            // Check the local cell to see if we should stop
+            if(cell->room && cell->room != start)
+                return;
+
+            // Check to see if we are adjacent to a room
+            std::vector<Cell*> cardinalCells;
+            getCardinalCells(cell->x, cell->y, cardinalCells);
+            for(unsigned int j=0; j < cardinalCells.size(); j++)
+            {
+                Cell* cardinalCell = cardinalCells[j];
+                if(cardinalCell->room && cardinalCell->room != start)
+                {
+                    // Dig this cell and return
+                    emplaceRoomFix(cell);
+                    return;
+                }
+            }
+        }
+
         if(cell->room && cell->room != start && stopOnRoom)
             return;
 
@@ -1209,4 +1230,22 @@ bool XoGeni::CellMap::areAllRoomsConnected()
     }
 
     return true;
+}
+
+
+void XoGeni::CellMap::getCardinalCells(unsigned int x, unsigned int y, std::vector<Cell*> &fill)
+{
+    Cell* north = getCellAtPositionNullable(x, y - 1);
+    Cell* east = getCellAtPositionNullable(x + 1, y);
+    Cell* south = getCellAtPositionNullable(x, y + 1);
+    Cell* west = getCellAtPositionNullable(x - 1, y);
+
+    if(north)
+        fill.push_back(north);
+    if(east)
+        fill.push_back(east);
+    if(south)
+        fill.push_back(south);
+    if(west)
+        fill.push_back(west);
 }

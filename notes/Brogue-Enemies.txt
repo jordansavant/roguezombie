@@ -1,0 +1,51 @@
+Enemy Balancing & Spawning - Brogue
+- http://brogue.wikia.com/wiki/Monster_Stats
+- http://brogue.wikia.com/wiki/Clumping
+- http://brogue.wikia.com/wiki/Combat
+- http://brogue.wikia.com/wiki/Regen_delay
+
+
+OOD and Depth
+
+An enemy is spawned in two factors: OOD (Out of Depth) and Depth. Each represents the depth or level that the monster can be found in.
+
+Depth - represents the level that the monster can be found as a normal spawn
+OOD - represents the earliest level that the monster can spawn in as a rare spawn
+
+This ensures that enemies can be engineered for higher difficulties. When appearing in OOD they are like mini-bosses.
+Depth is always higher than OOD. OOD is usually between 1 and 3 levels lower than depth.
+
+
+
+Stats
+
+Enemies also have four primary stats: MD (Movement Delay), AD (Attack Delay), Damage and HP
+
+MD - Number of turns it takes for movement
+AD - Number of turns it takes per attack
+Damage - a range (such as 4-12) they can hit for generated in a Clumping distribution.
+HP - Health of the enemy
+XP - Amount of XP rewarded for dispatching
+Sight - Unsure, but likely range of vision for hostility checks, and ability to overcome stealth checks
+Scent - Unsure, but likey used in stealth detection or observing non-visible enemies or yourself (if your scent is stronger due to effects or items?)
+Regen - Number of turns to regenerate 1 health
+
+
+
+Ranged / Quirks / Mutations
+
+Ranged - powers and attacks that can be used at a range. Enemies also can have ranged attacks and quirks that define their behavior.
+Quirks - movement and attack behavior, passive effects, attack effects etc.
+Mutations - at higher levels one mutation can exist on monsters, which give boosts to stats, health or attacks
+
+A common quirk is "flitting" which is generally seen on flying characters to emulate random flying positioning.
+Quirks also include status powers, such as inanimate, which grants immunity to certain powers.
+An example mutation is Explosive, where radial damage occurs on death, or vampiric which regens health on melee attack.
+
+
+
+Combat
+
+Stealth
+
+

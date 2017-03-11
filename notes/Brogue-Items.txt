@@ -1,0 +1,24 @@
+Item Generation - Brogue
+- http://brogue.wikia.com/wiki/Item_Generation
+- https://hastebin.com/kehicipuru.erl
+- http://brogue.wikia.com/wiki/Key_Holder
+
+Some items are not totally randomly generated and include rules for a certain minimum or maximum appearance.
+Examples include food, health potions and plot items.
+
+Food and health guarantee possibility of success so a minimum and maximum appearance per level is enforced.
+Each level will average 6 - 9 food, 7 - 10 strength potions, and 7-10 enchanted item.
+These have rare seeds with lower and higher values but never less than one or more than 13-15.
+
+Also, there is a guaranteed key generated for each locked door, and rules for ensuring a key is never locked behind it's door.
+There are three types of keys in Brogue: Door Key, Cage Key and Crystal Orb.
+
+Door Key
+	Opens a door, guaranteed on same level, one for one.
+	Keys are held by Key Holders and the room is designated as a Reward Room.
+	A Key Holder is a challenge designed by the treasure generation machine, such as a room with a chasm that has forcefully generated a flight potion elsewhere on the level.
+	Often the Key Holder is a room with an altar and an obstacle to overcome to reach the key, which will unlock the door to the treasure room.
+		
+Cage Key - 
+
+

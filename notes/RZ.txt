@@ -18,8 +18,6 @@ Hunters firing after dead
 Fat gap under Loot Interaction popup
 - Only looks weird under singular loot option (like looting a dead guy)
 
-Rename Node -> AstarNode
-
 Dead enemies can block doors and tunnels, need a way to traverse without them
 
 
@@ -62,6 +60,7 @@ Upgrade SFML to v2.4
 
 Non networked single Player
 - Look at possibility of local semaphor packet sending
+
 
 --------------------
 RZ Potential issues

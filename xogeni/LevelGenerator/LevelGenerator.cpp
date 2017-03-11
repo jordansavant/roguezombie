@@ -58,8 +58,9 @@ XoGeni::CellMap* XoGeni::LevelGenerator::generate(unsigned int width, unsigned i
     cellMap->buildRooms();
     cellMap->buildTunnels();
     cellMap->buildDoors();
-    cellMap->buildExits();
+    cellMap->buildEntrance();
     cellMap->cleanupConnections();
+    cellMap->buildExit();
     cellMap->buildWalls();
     cellMap->buildLights();
     cellMap->buildTags();
