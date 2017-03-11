@@ -555,8 +555,13 @@ bool XoGeni::CellMap::canTunnel(Cell* cell, sf::Vector2i &dir)
 void XoGeni::CellMap::emplaceTunnel(Cell* cell, sf::Vector2i &dir)
 {
     Cell* nextCell = getCellAtPosition(cell->x + dir.x, cell->y + dir.y);
-    nextCell->isTunnel = true;
-    nextCell->wasCorridorTunnel = true;
+    markAsTunnel(nextCell);
+}
+
+void XoGeni::CellMap::markAsTunnel(Cell* cell)
+{
+    cell->isTunnel = true;
+    cell->wasCorridorTunnel = true;
 }
 
 /////////////////////////////////////////
@@ -822,6 +827,10 @@ void XoGeni::CellMap::fixDoors()
     //- Iterate all doors
     //	- If door direction has no tunnel, door or other room
     //		- delete door
+    //  - If door direction is another door
+    //      - delete door
+
+    // Fix dangling doors
     for(auto it = doors.begin(); it != doors.end();)
     {
         RoomDoor* door = (*it);
@@ -829,9 +838,29 @@ void XoGeni::CellMap::fixDoors()
         Cell* neighbor = getCellAtPosition(door->x + door->direction.x, door->y + door->direction.y);
 
         // See if we need to remove the element
-        if(neighbor->room == NULL && !neighbor->isDoor && !neighbor->isTunnel)
+        if((neighbor->room == NULL && !neighbor->isDoor && !neighbor->isTunnel))
         {
             doorCell->isDoor = false;
+            delete door;
+            it = doors.erase(it);
+        }
+        else
+        {
+            ++it; // iterate list pointer
+        }
+    }
+
+    // Fix doubled doors
+    for(auto it = doors.begin(); it != doors.end();)
+    {
+        RoomDoor* door = (*it);
+        Cell* doorCell = getCellAtPosition(door->x, door->y);
+        Cell* neighbor = getCellAtPosition(door->x + door->direction.x, door->y + door->direction.y);
+
+        if(neighbor->isDoor)
+        {
+            doorCell->isDoor = false;
+            markAsTunnel(doorCell);
             delete door;
             it = doors.erase(it);
         }

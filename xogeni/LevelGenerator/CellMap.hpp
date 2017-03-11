@@ -87,6 +87,8 @@ namespace XoGeni
 
         void emplaceTunnel(Cell* cell, sf::Vector2i &dir);
 
+        void markAsTunnel(Cell* cell);
+
 
         // Exit building
         void buildEntrance();
