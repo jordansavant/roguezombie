@@ -603,18 +603,9 @@ void XoGeni::CellMap::buildExit()
 {
     unsigned int exitId = 2; // must not be same as entrance id
 
-    // Pick a random room that is not the entrance room (in future give better heuristic)
-    Room* room;
-    unsigned int randI = LevelGenerator::random.next(rooms.size());
-    for(unsigned int i=0; i < rooms.size(); i++)
-    {
-        unsigned int testIndex = (randI + i) % rooms.size();
-        if(rooms[testIndex] != entranceRoom)
-        {
-            room = rooms[testIndex];
-            break;
-        }
-    }
+    // Pick a random room that is farthest from our entrance
+    auto end = roomsByWeight.rbegin()->second;
+    Room* room = end[LevelGenerator::random.next(end.size())];
     
     // Pick a good entrance cell
     Cell* exitCell = pickTransitionCellForRoom(room);
@@ -705,6 +696,45 @@ void XoGeni::CellMap::connectToChild(CellMap* childMap)
     exit->childEntranceId = childMap->entrance->id;
     Cell* exitCell = getCellAtPosition(exit->x, exit->y);
     int a = 1;
+}
+
+void XoGeni::CellMap::calculateEntranceWeights()
+{
+    for(unsigned int i=0; i < rooms.size(); i++)
+    {
+        Room* room = rooms[i];
+        unsigned int weight = 0;
+        Room* lastRoom = NULL;
+        if(room != entranceRoom)
+        {
+            // Get the path
+            std::vector<Cell*> path;
+            getRoomConnectionPath(room, entranceRoom, path);
+
+            // Iterate the path and total the number of rooms in between
+            for(unsigned int j=0; j < path.size(); j++)
+            {
+                Cell* cell = path[j];
+                // If this inspected room is not our starting room or the entrance room increment our weight
+                if(cell->room && cell->room != room && cell->room != entranceRoom && cell->room != lastRoom)
+                {
+                    lastRoom = cell->room;
+                    weight++;
+                }
+            }
+        }
+
+        // Add to our list of rooms organized by weights
+        auto itr = roomsByWeight.find(weight);
+        if(itr == roomsByWeight.end())
+        {
+            roomsByWeight[weight];
+        }
+
+        // Add weight to room
+        roomsByWeight[weight].push_back(room);
+        room->entranceWeight = weight;
+    }
 }
 
 /////////////////////////////////////////
@@ -851,13 +881,26 @@ bool XoGeni::CellMap::isRoomConnected(Room* room)
 
 bool XoGeni::CellMap::areRoomsConnected(Room* room, Room* otherRoom)
 {
+    std::vector<Cell*> cellPath;
+    getRoomConnectionPath(room, otherRoom, cellPath);
+
+    if(cellPath.size() != 0)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+void XoGeni::CellMap::getRoomConnectionPath(Room* room, Room* otherRoom, std::vector<Cell*> &fill)
+{
     CellMap* cellMap = this;
     unsigned int centerX = room->x + room->width / 2;
     unsigned int centerY = room->y + room->height / 2;
     Cell* roomCenterCell = getCellAtPosition(centerX, centerY);
 
     if(otherRoom == room)
-        return true;
+        return;
 
     unsigned int otherCenterX = otherRoom->x + otherRoom->width / 2;
     unsigned int otherCenterY = otherRoom->y + otherRoom->height / 2;
@@ -877,16 +920,7 @@ bool XoGeni::CellMap::areRoomsConnected(Room* room, Room* otherRoom)
         f.push_back(cellMap->getCellAtPosition(c->x - 1, c->y)); // left
     };
 
-    std::vector<Cell*> cellPath;
-    bit::Astar::pathfind(roomCenterCell, otherRoomCenterCell, isBlocked, getNeighbors, cellPath);
-
-    // If there is a path
-    if(cellPath.size() != 0)
-    {
-        return true;
-    }
-
-    return false;
+    bit::Astar::pathfind(roomCenterCell, otherRoomCenterCell, isBlocked, getNeighbors, fill);
 }
 
 XoGeni::Room* XoGeni::CellMap::getNearestRoom(Room* room)

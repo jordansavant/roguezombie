@@ -3,6 +3,7 @@
 #define XG_CELLMAP_H
 
 #include <vector>
+#include <map>
 #include <functional>
 #include "../../bitengine/Math.hpp"
 
@@ -31,6 +32,7 @@ namespace XoGeni
         std::vector<XoGeni::RoomDoor*> doors;
         XoGeni::Entrance* entrance;
         XoGeni::Exit* exit;
+        std::map<unsigned int, std::vector<XoGeni::Room*>> roomsByWeight;
 
         int roomCount;
         int roomAttemptCount;
@@ -99,6 +101,8 @@ namespace XoGeni
 
         void connectToChild(CellMap* child);
 
+        void calculateEntranceWeights();
+
 
         // Clean up connections
         void cleanupConnections();
@@ -116,6 +120,8 @@ namespace XoGeni
         bool isRoomConnected(Room* room);
 
         bool areRoomsConnected(Room* room, Room* other);
+
+        void getRoomConnectionPath(Room* start, Room* end, std::vector<Cell*> &fill);
 
         Room* getNearestRoom(Room* room);
 
