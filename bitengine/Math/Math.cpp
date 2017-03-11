@@ -179,3 +179,19 @@ bool bit::Math::bitwiseHasAll(unsigned int value, unsigned int filter)
 {
     return (value & filter) == filter;
 }
+
+unsigned int bit::Math::toHash(std::string &st)
+{
+    // s[0]*31^(n - 1) + s[1]*31^(n - 2) + ... + s[n - 1]
+    // where s[i] is the ith character of the string, n is the length of the string, and ^ indicates exponentiation
+    unsigned int tally = 0;
+    for(unsigned int i = 0; i < st.size(); i++)
+    {
+        unsigned int pos = i + 1;
+        char s = st[i];
+        double d = (double)s;
+        tally += d * std::pow((double)31, (double)(pos - 1));
+    }
+
+    return tally;
+}

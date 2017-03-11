@@ -1,4 +1,5 @@
 #include "String.hpp"
+#include "../Math/Math.hpp"
 #include <vector>
 #include <sstream>
 #include <string>
@@ -47,4 +48,9 @@ std::vector<std::string> bit::String::split(const std::string &s, char delim)
     std::vector<std::string> elems;
     split(s, delim, elems);
     return elems;
+}
+
+unsigned int bit::String::toHash(std::string &st)
+{
+    return bit::Math::toHash(st);
 }

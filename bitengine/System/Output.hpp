@@ -4,6 +4,7 @@
 
 #include "PlatformDefinitions.hpp"
 #include <string>
+#include <sstream>
 
 namespace bit
 {
@@ -18,6 +19,10 @@ namespace bit
         static void Debug(float floatVal);
 
         static void Debug(std::string message);
+
+        static std::stringstream stream;
+
+        static void Flush();
     };
 }
 

@@ -2,6 +2,8 @@
 #ifndef BIT_MATH_H
 #define BIT_MATH_H
 
+#include <string>
+
 namespace bit
 {
     class Math
@@ -40,6 +42,9 @@ namespace bit
         static bool bitwiseHasAny(unsigned int value, unsigned int filter);
 
         static bool bitwiseHasAll(unsigned int value, unsigned int filter);
+
+        static unsigned int toHash(std::string &s);
+
     };
 }
 

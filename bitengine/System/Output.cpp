@@ -6,6 +6,8 @@
 #include "windows.h"
 #endif
 
+std::stringstream bit::Output::stream;
+
 void bit::Output::Debug(unsigned int integer)
 {
     std::stringstream ss;
@@ -37,4 +39,10 @@ void bit::Output::Debug(std::string message)
 #else
     std::cout << message << std::endl;
 #endif
+}
+
+void bit::Output::Flush()
+{
+    Debug(stream.str());
+    stream.str("");
 }
