@@ -63,6 +63,9 @@ namespace XoGeni
 
         bool isTagUnreachable;
 
+        bool hasEnemy;
+        unsigned int enemyType;
+
         unsigned int metadata_floodfillId;
 
     };

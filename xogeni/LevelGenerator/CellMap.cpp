@@ -825,8 +825,8 @@ void XoGeni::CellMap::fixDoors()
 {
     //Door Cleanup
     //- Iterate all doors
-    //	- If door direction has no tunnel, door or other room
-    //		- delete door
+    //    - If door direction has no tunnel, door or other room
+    //        - delete door
     //  - If door direction is another door
     //      - delete door
 
@@ -876,14 +876,14 @@ void XoGeni::CellMap::fixDoors()
 void XoGeni::CellMap::fixRooms()
 {
     //- If more than one room
-    //	- Iterate rooms
-    //		- Iterate all doors connected to room
-    //			- Floodfill tunnel until a room is located
-    //				- If room is not origin room
-    //					- Increment origin room connections counter
-    //		- If connections is 0
-    //			- OPTION A: delete room
-    //			- OPTION B: find closest room and tunnel toward room
+    //    - Iterate rooms
+    //        - Iterate all doors connected to room
+    //            - Floodfill tunnel until a room is located
+    //                - If room is not origin room
+    //                    - Increment origin room connections counter
+    //        - If connections is 0
+    //            - OPTION A: delete room
+    //            - OPTION B: find closest room and tunnel toward room
 
     // Iterate rooms
     // Astar from their center to the center of every room
@@ -1194,6 +1194,61 @@ void XoGeni::CellMap::tagUnreachableCells()
 // TAG BUILDING END
 ////////////////////////////////////////
 
+
+
+
+/////////////////////////////////////////
+// ENEMY SPAWNING START
+////////////////////////////////////////
+
+void XoGeni::CellMap::spawnEnemies()
+{
+    // Iterate rooms, place random enemy
+    for (unsigned int i = 0; i < rooms.size(); i++)
+    {
+        // Test a random cell in the room until one is found
+        Cell* cell = getOpenRoomCell(rooms[i], true);
+        if (cell) {
+            cell->hasEnemy = true;
+            cell->enemyType = 1;
+        }
+    }
+}
+
+/////////////////////////////////////////
+// ENEMY SPAWNING END
+////////////////////////////////////////
+
+
+
+XoGeni::Cell* XoGeni::CellMap::getOpenRoomCell(Room* room, bool random)
+{
+    if (!random) {
+        Cell* openCell = NULL;
+        inspectCellsInDimension(room->x, room->y, room->width, room->height, [&openCell](Cell* cell) -> bool {
+            if (!cell->isTagUnreachable)
+            {
+                openCell = cell;
+                return true; // break inspection loop
+            }
+            return false;
+        });
+        return openCell;
+    }
+    else {
+        unsigned int cellCount = room->width * room->height;
+        std::vector<Cell*> openCells;
+        inspectCellsInDimension(room->x, room->y, room->width, room->height, [&openCells](Cell* cell) -> bool {
+            if (!cell->isTagUnreachable)
+            {
+                openCells.push_back(cell);
+            }
+            return false;
+        });
+        unsigned int r = LevelGenerator::random.next(openCells.size());
+        return openCells[r];
+    }
+}
 
 
 

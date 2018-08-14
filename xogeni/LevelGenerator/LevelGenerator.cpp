@@ -66,5 +66,9 @@ XoGeni::CellMap* XoGeni::LevelGenerator::generate(unsigned int width, unsigned i
     cellMap->buildLights();
     cellMap->buildTags();
 
+    cellMap->spawnEnemies();
+    // cellMap->spawnTreasure();
+    // cellMap->spawnTraps();
+
     return cellMap;
 }

@@ -19,10 +19,12 @@ int main(int argc, char* argv[])
 
     srand(time(NULL));
 
-    //XoGeni::XoGeniGame generator;
-    //generator.run();
-    
-    //return 0;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X)) {
+        XoGeni::XoGeniGame generator;
+        generator.run();
+
+        return 0;
+    }
     
     if(argc == 1)
     {

@@ -83,10 +83,11 @@ void XoGeni::XoLevelRenderer::paint()
         sf::Color colorEntrance = sf::Color(255, 125, 0);
         sf::Color colorWall = sf::Color(0, 40, 60);
         sf::Color colorTagUnreachable = sf::Color(0, 15, 30);
+        sf::Color colorEnemy = sf::Color(255, 155, 155);
 
         sf::Color color = colorGround;
 
-        unsigned int stateCount = 12;
+        unsigned int stateCount = 13;
         switch(renderState % stateCount)
         {
             // Rooms only
@@ -259,9 +260,7 @@ void XoGeni::XoLevelRenderer::paint()
                     color = colorWall;
                 break;
             // Tags added
-            // Final
-            default:
-            case 0:
+            case 12:
                 if(cell->room)
                     if(cell->isRoomEdge)
                         color = colorRoomEdge;
@@ -283,6 +282,34 @@ void XoGeni::XoLevelRenderer::paint()
                     color = colorWall;
                 if(cell->isTagUnreachable)
                     color = colorTagUnreachable;
+                break;
+            // Enemies added
+            // Final
+            default:
+            case 0:
+                if (cell->room)
+                    if (cell->isRoomEdge)
+                        color = colorRoomEdge;
+                    else
+                        color = colorRoom;
+                if (cell->isRoomPermiter)
+                    color = colorRoomPerimeter;
+                if (cell->isTunnel)
+                    color = colorTunnel;
+                if (cell->isDoor)
+                    color = sf::Color::Yellow;
+                if (cell->isEntranceTransition)
+                    color = colorEntranceTransition;
+                if (cell->isExitTransition)
+                    color = colorExitTransition;
+                if (cell->isEntrance)
+                    color = colorEntrance;
+                if (cell->isWall)
+                    color = colorWall;
+                if (cell->isTagUnreachable)
+                    color = colorTagUnreachable;
+                if (cell->hasEnemy)
+                    color = colorEnemy;
                 break;
         }
         
