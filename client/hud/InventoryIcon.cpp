@@ -14,7 +14,7 @@ InventoryIcon::InventoryIcon(Hud* hud)
     quadIndex = map->requestVertexIndex();
 }
 
-void InventoryIcon::set(std::string &spriteName)
+void InventoryIcon::set(std::string const&spriteName)
 {
     sprite = hud->state->rogueZombieGame->spriteLoader->getSprite(spriteName);
     bit::VertexHelper::resetQuad(&map->vertexArray[quadIndex]);

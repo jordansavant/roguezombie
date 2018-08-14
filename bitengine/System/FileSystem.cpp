@@ -28,13 +28,15 @@ std::string bit::FileSystem::AppDataDir(std::string const & appName)
 
 #elif defined(__OS_WIN__) // WINDOWS CODE
 
-    char* tmp = getenv("APPDATA");
+	return "";
 
-    if (tmp == 0) {
-        return "";
-    }
-
-    return std::string(tmp) + "\\" + appName + "\\";
+    //char* tmp = getenv("APPDATA");
+	//
+    //if (tmp == 0) {
+    //    return "";
+    //}
+	//
+    //return std::string(tmp) + "\\" + appName + "\\";
 
 #endif
 }
@@ -62,16 +64,8 @@ std::string bit::FileSystem::ExecutablePath()
 
 #elif defined(__OS_WIN__) // WINDOWS CODE
 
-    TCHAR szPath[MAX_PATH];
-    int charcount = GetModuleFileName(NULL, szPath, MAX_PATH);
-    if(charcount > 0)
-    {
-        std::wstring arr_w(szPath);
-        std::string arr_s(arr_w.begin(), arr_w.end());
-        return arr_s;
-    }
-
-    return "";
+	char result[MAX_PATH];
+	return std::string(result, GetModuleFileName(NULL, result, MAX_PATH));
 
 #endif
 }

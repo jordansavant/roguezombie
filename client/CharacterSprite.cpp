@@ -242,7 +242,7 @@ void CharacterSprite::unsetEquipmentSprite(Character::EquipmentSlot slot)
 //                     BODY SPRITING                       //
 /////////////////////////////////////////////////////////////
 
-void CharacterSprite::setBodySprites(std::string& head, std::string& frontarm, std::string& body, std::string& shadow)
+void CharacterSprite::setBodySprites(std::string const&head, std::string const&frontarm, std::string const&body, std::string const&shadow)
 {
     setHeadSprite(head);
     setFrontarmSprite(frontarm);
@@ -250,31 +250,31 @@ void CharacterSprite::setBodySprites(std::string& head, std::string& frontarm, s
     setShadowSprite(shadow);
 }
 
-void CharacterSprite::setHeadSprite(std::string& spriteName)
+void CharacterSprite::setHeadSprite(std::string const&spriteName)
 {
     headSprite = spriteLoader->getSprite(spriteName);
     headSprite->applyToQuad(&highlightMap->vertexArray[headQuadIndex]);
 }
 
-void CharacterSprite::setFrontarmSprite(std::string& spriteName)
+void CharacterSprite::setFrontarmSprite(std::string const&spriteName)
 {
     frontarmSprite = spriteLoader->getSprite(spriteName);
     frontarmSprite->applyToQuad(&highlightMap->vertexArray[frontarmQuadIndex]);
 }
 
-void CharacterSprite::setBodySprite(std::string& spriteName)
+void CharacterSprite::setBodySprite(std::string const&spriteName)
 {
     bodySprite = spriteLoader->getSprite(spriteName);
     bodySprite->applyToQuad(&highlightMap->vertexArray[bodyQuadIndex]);
 }
 
-void CharacterSprite::setShadowSprite(std::string& spriteName)
+void CharacterSprite::setShadowSprite(std::string const&spriteName)
 {
     shadowSprite = spriteLoader->getSprite(spriteName);
     shadowSprite->applyToQuad(&highlightMap->vertexArray[shadowQuadIndex]);
 }
 
-void CharacterSprite::setDeathSprite(std::string& spriteName)
+void CharacterSprite::setDeathSprite(std::string const&spriteName)
 {
     deathSprite = spriteLoader->getSprite(spriteName);
     deathSprite->applyToQuad(&highlightMap->vertexArray[deathQuadIndex]);
@@ -284,8 +284,9 @@ void CharacterSprite::setDeathSprite(std::string& spriteName)
 void CharacterSprite::syncSprites()
 {
     std::string moniker = getSpriteMoniker(character->schema.type);
-    setBodySprites(std::string(moniker + "_Head"), std::string(moniker + "_FrontArm"), std::string(moniker + "_Body"), std::string(moniker + "_Shadow"));
-    setDeathSprite(std::string(moniker + "_Dead"));
+	setBodySprites(std::string(moniker + "_Head"), std::string(moniker + "_FrontArm"), std::string(moniker + "_Body"), std::string(moniker + "_Shadow"));
+	setDeathSprite(std::string(moniker + "_Dead"));
+
 }
 
 std::string CharacterSprite::getSpriteMoniker(Character::Type t)

@@ -8,7 +8,7 @@ Console::Console(Hud* _hud)
     scaleStyle = ScaleStyle::PowerOfTwo;
 }
 
-void Console::print(std::string &message)
+void Console::print(std::string const&message)
 {
     // Create the new line
     bit::Label* line = new bit::Label(-400, 0, 0, 0, bit::Element::AnchorType::BottomLeft);

@@ -34,7 +34,7 @@ namespace bit
 
         void setSfFontSize(unsigned int fontSize);
 
-        void setSfFontString(std::string &string);
+        void setSfFontString(std::string const&string);
 
         void colorByFocus(bool focus);
 

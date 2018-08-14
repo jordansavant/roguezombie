@@ -43,7 +43,7 @@ namespace bit
 
         static bool bitwiseHasAll(unsigned int value, unsigned int filter);
 
-        static unsigned int toHash(std::string &s);
+        static unsigned int toHash(std::string const&s);
 
     };
 }

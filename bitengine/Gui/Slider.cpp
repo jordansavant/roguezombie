@@ -84,11 +84,11 @@ void bit::Slider::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     float handleY = top + textureOffsetY * elementScale;
 
     // Update drawables
-    backgroundSprite.setColor(getColor());
+    backgroundSprite.setColor(getFillColor());
     backgroundSprite.setScale(elementScale, elementScale);
     backgroundSprite.setPosition((int)backgroundX, (int)backgroundY);
 
-    handleSprite.setColor(getColor());
+    handleSprite.setColor(getFillColor());
     handleSprite.setScale(elementScale, elementScale);
     handleSprite.setPosition((int)handleX, (int)handleY);
 }

@@ -32,7 +32,7 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     std::string fpsFontPath(resourcePath() + "Agency.ttf");
     fps.load(fpsFontPath, 5, 3);
     fps.fpsText.setCharacterSize(11);
-    fps.fpsText.setColor(sf::Color(100, 100, 100));
+    fps.fpsText.setFillColor(sf::Color(100, 100, 100));
 
     createCamera(rogueZombieGame, 0, 0, 1, 1);
     cameras[0]->panSpeed = 3;
@@ -761,12 +761,12 @@ unsigned short StateGamePlay::getServerPort()
     return BIT_SERVER_PORT;
 }
 
-void StateGamePlay::displayMessage(std::string &message)
+void StateGamePlay::displayMessage(std::string const&message)
 {
     hud->displayMessage(message);
 }
 
-void StateGamePlay::displayPlayerMessage(CharacterClient* character, std::string &message)
+void StateGamePlay::displayPlayerMessage(CharacterClient* character, std::string const&message)
 {
     if(character == levelClient->playerCharacter)
     {

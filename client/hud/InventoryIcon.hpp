@@ -22,7 +22,7 @@ public:
     bit::VertexMap* map;
     bit::Sprite* sprite;
 
-    void set(std::string &spritename);
+    void set(std::string const&spritename);
 
     void position(int x, int y, int z, int width, int height, float scale);
 

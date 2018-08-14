@@ -51,7 +51,7 @@ namespace bit
 
             // Loop moves outward from current row (or column if octant) to final radius in rows
             // row is passed in since this is recursive
-            for (unsigned int i = row; i <= radius; i++)
+            for (int i = row; i <= radius; i++)
             {
                 bool blocked = false;
 

@@ -289,12 +289,12 @@ void Hud::hideCloseButton()
     closeIconElement->immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, 100, 0));
 }
 
-void Hud::displayMessage(std::string &message)
+void Hud::displayMessage(std::string const&message)
 {
     console->print(message);
 }
 
-void Hud::displayTooltipAt(std::string &info, std::string &tag, int screenX, int screenY, float opacity, int delay, int duration, int width, int height)
+void Hud::displayTooltipAt(std::string const&info, std::string const&tag, int screenX, int screenY, float opacity, int delay, int duration, int width, int height)
 {
     // Find an inactive tooltip
     for(unsigned int i = 0; i < toolTips.size(); i++)
@@ -308,7 +308,7 @@ void Hud::displayTooltipAt(std::string &info, std::string &tag, int screenX, int
     }
 }
 
-void Hud::hideTooltip(std::string &tag)
+void Hud::hideTooltip(std::string const&tag)
 {
     // Find tooltip and deactivate
     for(unsigned int i = 0; i < toolTips.size(); i++)

@@ -92,9 +92,13 @@ class LevelClientTileRunner : public LevelClientRunner<T>
 {
 public:
     LevelClientTileRunner(LevelClient* _level, std::map<unsigned int, T*>* _map, bit::Pool<T>* _pool, unsigned int _poolCount, std::vector<T*>* _vector)
-        : LevelClientRunner<T>(_level, _map, _pool, _poolCount), vector(_vector)
+        : LevelClientRunner<T>(_level, _map, _pool, _poolCount), vector(_vector), mymap(_map), mylevel(_level), mypool(_pool)
     {
     }
+
+	std::map<unsigned int, T*>* mymap;
+	LevelClient* mylevel;
+	bit::Pool<T>* mypool;
 
     virtual ~LevelClientTileRunner()
     {
@@ -106,14 +110,14 @@ public:
     virtual void diffNetwork()
     {
         // Clear the map of any entities that are no longer in client's state
-        auto itr = map->begin();
-        while(itr != map->end())
+        auto itr = mymap->begin();
+        while(itr != mymap->end())
         {
-            if (itr->second->lastSnapshotId != level->state->lastSnapshotId)
+            if (itr->second->lastSnapshotId != mylevel->state->lastSnapshotId)
             {
                 vector->at(itr->second->schema.id) = NULL;
-                pool->recycle(itr->second);
-                map->erase(itr++);
+				mypool->recycle(itr->second);
+				mymap->erase(itr++);
             }
             else
             {

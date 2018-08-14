@@ -70,7 +70,7 @@ void Tooltip::show()
     queueEffect(new bit::Effect(requestedDelay))->queueEffect(new bit::FadeEffect(0, requestedOpacity, bit::Easing::Instant));
 }
 
-void Tooltip::displayAt(std::string &info, std::string &tag, int screenX, int screenY, float opacity, int delay, int duration, int width, int height)
+void Tooltip::displayAt(std::string const&info, std::string const&tag, int screenX, int screenY, float opacity, int delay, int duration, int width, int height)
 {
     this->tag = tag;
 

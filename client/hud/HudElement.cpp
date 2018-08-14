@@ -21,7 +21,7 @@ HudElement::HudElement(float relativeX, float relativeY, float width, float heig
     color = sf::Color::White;
 }
 
-void HudElement::load(Hud* _hud, std::string &spritename)
+void HudElement::load(Hud* _hud, std::string const&spritename)
 {
     hud = _hud;
 

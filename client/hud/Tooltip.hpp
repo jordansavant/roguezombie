@@ -34,7 +34,7 @@ public:
 
     virtual void show();
 
-    void displayAt(std::string &info, std::string &tag, int screenX, int screenY, float opacity = 1, int delay = 750, int duration = 3000, int width = -1, int height = -1);
+    void displayAt(std::string const&info, std::string const&tag, int screenX, int screenY, float opacity = 1, int delay = 750, int duration = 3000, int width = -1, int height = -1);
 };
 
 #endif

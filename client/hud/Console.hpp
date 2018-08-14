@@ -16,7 +16,7 @@ public:
 
     Hud* hud;
 
-    virtual void print(std::string &message);
+    virtual void print(std::string const&message);
 
 };
 

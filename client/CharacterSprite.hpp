@@ -47,27 +47,27 @@ public:
     void unsetEquipmentSprite(Character::EquipmentSlot slot);
 
     // Body spriting
-    void setBodySprites(std::string& head, std::string& frontarm, std::string& body, std::string& shadow);
+    void setBodySprites(std::string const&head, std::string const&frontarm, std::string const&body, std::string const&shadow);
 
     bit::Sprite* headSprite;
     unsigned int headQuadIndex;
-    void setHeadSprite(std::string& spriteName);
+    void setHeadSprite(std::string const&spriteName);
 
     bit::Sprite* frontarmSprite;
     unsigned int frontarmQuadIndex;
-    void setFrontarmSprite(std::string& spriteName);
+    void setFrontarmSprite(std::string const&spriteName);
 
     bit::Sprite* bodySprite;
     unsigned int bodyQuadIndex;
-    void setBodySprite(std::string& spriteName);
+    void setBodySprite(std::string const&spriteName);
 
     bit::Sprite* shadowSprite;
     unsigned int shadowQuadIndex;
-    void setShadowSprite(std::string& spriteName);
+    void setShadowSprite(std::string const&spriteName);
     
     bit::Sprite* deathSprite;
     unsigned int deathQuadIndex;
-    void setDeathSprite(std::string& spriteName);
+    void setDeathSprite(std::string const&spriteName);
 
     // Stat spriting
     bit::Sprite* whiteSprite;

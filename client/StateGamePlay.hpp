@@ -149,9 +149,9 @@ public:
 
     virtual void drawForCamera(sf::RenderWindow &window, sf::Time &gameTime, bit::Camera &camera);
 
-    void displayMessage(std::string &message);
+    void displayMessage(std::string const&message);
 
-    void displayPlayerMessage(CharacterClient* character, std::string &message);
+    void displayPlayerMessage(CharacterClient* character, std::string const&message);
 
     void requestInteractionsForTile(unsigned int tileId);
 

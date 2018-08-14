@@ -19,7 +19,7 @@ XoGeni::XoGeniStateStart::XoGeniStateStart(bit::StateStack &stack, XoGeniGame* _
     std::string fpsFontPath(resourcePath() + "xogeni/Agency.ttf");
     fps.load(fpsFontPath, 5, 3);
     fps.fpsText.setCharacterSize(11);
-    fps.fpsText.setColor(sf::Color(100, 100, 100));
+    fps.fpsText.setFillColor(sf::Color(100, 100, 100));
 
     levelGenerator = new LevelGenerator();
     levelRenderer = new XoLevelRenderer(this);

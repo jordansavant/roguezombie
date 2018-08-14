@@ -50,7 +50,7 @@ std::vector<std::string> bit::String::split(const std::string &s, char delim)
     return elems;
 }
 
-unsigned int bit::String::toHash(std::string &st)
+unsigned int bit::String::toHash(std::string const&st)
 {
     return bit::Math::toHash(st);
 }

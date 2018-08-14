@@ -106,11 +106,11 @@ public:
 
     void onLeaveCombat();
 
-    void displayMessage(std::string &message);
+    void displayMessage(std::string const&message);
 
-    void displayTooltipAt(std::string &info, std::string &tag, int screenX, int screenY, float opacity = 1, int delay = 750, int duration = 3000, int width = -1, int height = -1);
+    void displayTooltipAt(std::string const&info, std::string const&tag, int screenX, int screenY, float opacity = 1, int delay = 750, int duration = 3000, int width = -1, int height = -1);
 
-    void hideTooltip(std::string &tag);
+    void hideTooltip(std::string const&tag);
 
     bool canMoveInventory();
 

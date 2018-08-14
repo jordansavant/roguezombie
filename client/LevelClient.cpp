@@ -332,7 +332,7 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
             }
             case Body::Type::Structure:
             {
-                StructureClient* s;
+                StructureClient* s = NULL;
 
                 unsigned int structureType;
                 packet >> structureType;

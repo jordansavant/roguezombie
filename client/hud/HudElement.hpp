@@ -22,7 +22,7 @@ public:
     bit::Sprite* sprite;
     sf::Color color;
 
-    void load(Hud* hud, std::string &spritename);
+    void load(Hud* hud, std::string const&spritename);
 
     void updateTargets(sf::RenderWindow &window, sf::Time &gameTime);
 

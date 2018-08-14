@@ -47,7 +47,7 @@ void bit::Label::colorByFocus(bool focus)
 {
     sf::Color color = focus ? focusedColor : normalColor;
     color.a = bit::Math::clamp(255 * opacity, 0, 255);
-    setColor(color);
+    setFillColor(color);
 }
 
 void bit::Label::setSfFont(sf::Font &font)
@@ -62,7 +62,7 @@ void bit::Label::setSfFontSize(unsigned int size)
     syncSizing();
 }
 
-void bit::Label::setSfFontString(std::string &string)
+void bit::Label::setSfFontString(std::string const&string)
 {
     setString(string);
     syncSizing();

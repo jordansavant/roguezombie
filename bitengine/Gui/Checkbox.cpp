@@ -43,7 +43,7 @@ void bit::CheckBox::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     Label::updateReals(window, gameTime);
 
     // Set Sprites details
-    currentSprite->setColor(getColor());
+    currentSprite->setColor(getFillColor());
     currentSprite->setScale(elementScale, elementScale);
     currentSprite->setPosition((int)(left + width - currentSprite->getLocalBounds().width * elementScale), (int)(top + textureOffsetY * elementScale));
 }

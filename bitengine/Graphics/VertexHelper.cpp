@@ -56,7 +56,7 @@ void bit::VertexHelper::positionQuad(Vertex3* quad, float x, float y, float z, f
     (quad + 3)->position.z = z;
 }
 
-void bit::VertexHelper::colorQuad(Vertex3* quad, sf::Color &color)
+void bit::VertexHelper::colorQuad(Vertex3* quad, sf::Color const&color)
 {
     (quad + 0)->color = color;
     (quad + 1)->color = color;
