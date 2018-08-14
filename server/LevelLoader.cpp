@@ -299,6 +299,7 @@ void LevelLoader::Level::unpack(XoGeni::CellMap* cellMap)
     unsigned int tId = 1;
     unsigned int sId = 1;
     unsigned int lId = 1;
+    unsigned int cId = 1;
     for(unsigned int i=0; i < cellMap->cells.size(); i++)
     {
         XoGeni::Cell* cell = cellMap->cells[i];
@@ -339,8 +340,21 @@ void LevelLoader::Level::unpack(XoGeni::CellMap* cellMap)
             lightIdMap.push_back(0);
         }
 
-        // Characters
-        characterIdMap.push_back(0);
+
+
+        // Structures
+        if (cell->hasCharacter)
+        {
+            characterIdMap.push_back(cId);
+            LevelLoader::Character characterDef;
+            characterDef.unpack(cell, cId);
+            characterDefs.push_back(characterDef);
+            cId++;
+        }
+        else
+        {
+            characterIdMap.push_back(0);
+        }
 
     }
 }
@@ -431,6 +445,16 @@ void LevelLoader::Structure::unpack(XoGeni::Cell* cell, unsigned int structureId
     // Items in structure
 
     // Lights in structure
+}
+
+void LevelLoader::Character::unpack(XoGeni::Cell* cell, unsigned int characterId)
+{
+    id = characterId;
+    type = 3; // Hunter
+
+    // Items in character
+
+    // Lights in character
 }
 
 void LevelLoader::Light::unpack(XoGeni::Cell* cell, unsigned int lightId)

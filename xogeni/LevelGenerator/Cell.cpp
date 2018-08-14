@@ -13,7 +13,7 @@ XoGeni::Cell::Cell(unsigned int index, unsigned int x, unsigned int y)
       isExitTransition(false), exitTransition(NULL), transitionDir(0, 0),
       hasLight(false), lightRadius(0), lightOpacity(0), lightColorR(0), lightColorG(0), lightColorB(0),
       isTagUnreachable(false),
-      hasEnemy(false), enemyType(0),
+      hasCharacter(false), characterType(0),
       metadata_floodfillId(0)
 {
     aStarX = x;

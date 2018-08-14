@@ -308,7 +308,7 @@ void XoGeni::XoLevelRenderer::paint()
                     color = colorWall;
                 if (cell->isTagUnreachable)
                     color = colorTagUnreachable;
-                if (cell->hasEnemy)
+                if (cell->hasCharacter)
                     color = colorEnemy;
                 break;
         }

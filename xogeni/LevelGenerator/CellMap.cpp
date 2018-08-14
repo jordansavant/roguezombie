@@ -1209,8 +1209,8 @@ void XoGeni::CellMap::spawnEnemies()
         // Test a random cell in the room until one is found
         Cell* cell = getOpenRoomCell(rooms[i], true);
         if (cell) {
-            cell->hasEnemy = true;
-            cell->enemyType = 1;
+            cell->hasCharacter = true;
+            cell->characterType = 3; // Hunter
         }
     }
 }

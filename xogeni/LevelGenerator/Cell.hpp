@@ -63,8 +63,8 @@ namespace XoGeni
 
         bool isTagUnreachable;
 
-        bool hasEnemy;
-        unsigned int enemyType;
+        bool hasCharacter;
+        unsigned int characterType;
 
         unsigned int metadata_floodfillId;
 

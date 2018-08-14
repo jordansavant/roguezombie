@@ -104,6 +104,8 @@ public:
         std::vector<Item> equipment;
 
         void unpack(tinyxml2::XMLElement* node);
+
+        void unpack(XoGeni::Cell* cell, unsigned int id);
     };
 
     struct Level
