@@ -40,6 +40,9 @@ namespace bit
         template <typename T, class G, typename Param1, typename Param2>
 	    void registerState(G* game, unsigned int stateId, Param1 arg1, Param2 arg2);
 
+        template <typename T, class G, typename Param1, typename Param2, typename Param3>
+        void registerState(G* game, unsigned int stateId, Param1 arg1, Param2 arg2, Param3 arg3);
+
         void pushState(unsigned int StateId);
 
         void popState();
@@ -100,6 +103,17 @@ void bit::StateStack::registerState(G* game, unsigned int stateId, Param1 arg1, 
         t->load();
         return t;
 	};
+}
+
+template <typename T, class G, typename Param1, typename Param2, typename Param3>
+void bit::StateStack::registerState(G* game, unsigned int stateId, Param1 arg1, Param2 arg2, Param3 arg3)
+{
+    factories[stateId] = [this, game, arg1, arg2, arg3]() -> T*
+    {
+        T* t = new T(*this, game, arg1, arg2, arg3);
+        t->load();
+        return t;
+    };
 }
 
 #endif

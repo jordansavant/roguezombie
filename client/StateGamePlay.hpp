@@ -20,7 +20,7 @@ class StateGamePlay : public bit::ClientServerState
 {
 public:
 
-    StateGamePlay(bit::StateStack &stack, RogueZombieGame* game, bool isClient, bool isHost);
+    StateGamePlay(bit::StateStack &stack, RogueZombieGame* game, bool isClient, bool isHost, bool isLocalOnly);
 
     virtual ~StateGamePlay();
 

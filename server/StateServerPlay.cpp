@@ -5,7 +5,7 @@
 #include "GameplayServer.hpp"
 
 StateServerPlay::StateServerPlay(bit::StateStack &stack, RogueZombieServer* _game)
-    : bit::ClientServerState(stack, _game, false, true), rogueZombieServer(_game)
+    : bit::ClientServerState(stack, _game, false, true, false), rogueZombieServer(_game)
 {
 }
 

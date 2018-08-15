@@ -10,12 +10,13 @@
 #include "SFML/System.hpp"
 #include "../System/Output.hpp"
 
-bit::ClientServerState::ClientServerState(StateStack &stack, Game* game, bool isClient, bool isHost)
+bit::ClientServerState::ClientServerState(StateStack &stack, Game* game, bool isClient, bool isHost, bool isLocalOnly)
     : bit::State(stack, game),
     clientId(0),
     lastSnapshotId(0),
     isClient(isClient),
     isHost(isHost),
+    isLocalOnly(isLocalOnly),
     server(NULL),
     isNetworkConnected(false),
     isConfirmed(false),
@@ -48,11 +49,25 @@ sf::Time bit::ClientServerState::now()
 
 void bit::ClientServerState::load()
 {
+    // Threaded local connection that avoids networking
+    if (isLocalOnly)
+    {
+        // Setup Server in a direct connection mode
+        server = newServer();
+        server->directClientState = this;
+        server->start();
+
+        // Setup Client in a direct connection mode
+        bit::Output::Debug("SERVER DIRECT-CONNECT ESTABLISHED");
+        isNetworkConnected = true;
+
+        return;
+    }
+
     // Establish whether server or client
     if(isHost)
     {
         server = newServer();
-        server->directClientState = this;
         server->start();
         ipAddress = "127.0.0.1";
         port = getServerPort();
@@ -85,16 +100,75 @@ bool bit::ClientServerState::update(sf::Time &gameTime)
 {
     bit::State::update(gameTime);
 
+    // LOCAL DIRECT CONNECTION VERSION
+
+    if (isLocalOnly)
+    {
+        // We are both a server and a client but without networking connections
+        // We use Mutexes to transmit our packets
+
+        // Confirm the server has loaded
+        if (!hasServerLoadCompleted())
+        {
+            return true;
+        }
+
+        // Confirm we are setup
+        if (isNetworkConnected)
+        {
+            ServerPacket packet;
+            while (direct_receiveFromServer(packet))
+            {
+                // Pull the header type and pass into handlePacket
+                timeSinceLastPacket = sf::seconds(0.0f);
+                sf::Uint32 packetType;
+                packet >> packetType;
+                handlePacket(packetType, packet);
+            }
+
+            // Check for connection timeout
+            if (timeSinceLastPacket > clientTimeout)
+            {
+                bit::Output::Debug("SERVER DIRECT-CONNECT TIMEOUT");
+                isNetworkConnected = false;
+                failedConnectionClock.restart();
+            }
+
+            // Send update to the server
+            if (tickTimer.update(gameTime) && isConfirmed)
+            {
+                // Send client update packet with last acknowledged snapshot id
+                bit::ClientPacket packet;
+                packet << static_cast<sf::Uint32>(Server::ClientPacketType::ClientUpdate) << lastSnapshotId;
+                preparePacket_ClientUpdate(packet);
+                direct_clientSendToServer(packet);
+            }
+
+            // Update packet duration via gameTime
+            timeSinceLastPacket += gameTime;
+
+            // Check for pending disconnect acknowledgement
+            if (awaitingDisconnect && disconnectTimer.update(gameTime))
+            {
+                handle_DisconnectTimeout();
+            }
+        }
+        else if (failedConnectionClock.getElapsedTime() >= sf::seconds(5.0f))
+        {
+            bit::Output::Debug("SERVER DIRECT-CONNECT CANNOT BE ESTABLISHED AFTER 5 SECONDS OF TRYING");
+            handle_ServerTimeout();
+        }
+
+        return true;
+    }
+
+    // NETWORK CONNECTION VERSION
+
     if(isHost)
     {
         // We are both a server and a client
         // It is possible that the server is still loading
-        bool serverLoadComplete = false;
-        server->isLoadCompleteMutex.lock();
-        serverLoadComplete = server->isLoadComplete;
-        server->isLoadCompleteMutex.unlock();
-
-        if(!serverLoadComplete)
+        if(!hasServerLoadCompleted())
         {
             return true;
         }
@@ -106,8 +180,7 @@ bool bit::ClientServerState::update(sf::Time &gameTime)
         {
             // Handle the network input
             ServerPacket packet;
-            if (this->direct_receiveFromServer(packet))
-            //if(socket.receive(packet) == sf::Socket::Done)
+            if(socket.receive(packet) == sf::Socket::Done)
             {
                 // Pull the header type and pass into handlePacket
                 timeSinceLastPacket = sf::seconds(0.0f);
@@ -115,15 +188,11 @@ bool bit::ClientServerState::update(sf::Time &gameTime)
                 packet >> packetType;
                 handlePacket(packetType, packet);
             }
-            else
+            else if(timeSinceLastPacket > clientTimeout)
             {
-                // Check for connection timeout
-                if(timeSinceLastPacket > clientTimeout)
-                {
-                    bit::Output::Debug("SERVER PACKET TIMEOUT");
-                    isNetworkConnected = false;
-                    failedConnectionClock.restart();
-                }
+                bit::Output::Debug("SERVER PACKET TIMEOUT");
+                isNetworkConnected = false;
+                failedConnectionClock.restart();
             }
 
             // Send update to the server
@@ -133,8 +202,7 @@ bool bit::ClientServerState::update(sf::Time &gameTime)
                 bit::ClientPacket packet;
                 packet << static_cast<sf::Uint32>(Server::ClientPacketType::ClientUpdate) << lastSnapshotId;
                 preparePacket_ClientUpdate(packet);
-                //socket.send(packet);
-                direct_clientSendToServer(packet);
+                socket.send(packet);
             }
 
             // Update packet duration via gameTime
@@ -158,14 +226,21 @@ bool bit::ClientServerState::update(sf::Time &gameTime)
 
 void bit::ClientServerState::disconnect()
 {
-    if(isClient && isNetworkConnected)
+    if (isLocalOnly && isNetworkConnected)
     {
         awaitingDisconnect = true;
         bit::ClientPacket packet;
         packet << static_cast<sf::Uint32>(Server::ClientPacketType::Quit);
         preparePacket_ClientDisconnect(packet);
-        //socket.send(packet);
         direct_clientSendToServer(packet);
+    }
+    else if(isClient && isNetworkConnected)
+    {
+        awaitingDisconnect = true;
+        bit::ClientPacket packet;
+        packet << static_cast<sf::Uint32>(Server::ClientPacketType::Quit);
+        preparePacket_ClientDisconnect(packet);
+        socket.send(packet);
     }
 }
 
@@ -190,8 +265,14 @@ void bit::ClientServerState::handlePacket(sf::Uint32 packetType, bit::ServerPack
                 bit::ClientPacket infoPacket;
                 infoPacket << static_cast<sf::Uint32>(Server::ClientPacketType::ClientInformation);
                 preparePacket_ClientInformation(infoPacket);
-                //socket.send(infoPacket);
-                direct_clientSendToServer(infoPacket);
+                if (isLocalOnly)
+                {
+                    direct_clientSendToServer(infoPacket);
+                }
+                else
+                {
+                    socket.send(infoPacket);
+                }
 
                 break;
             }
@@ -286,8 +367,23 @@ void bit::ClientServerState::serverRequest(std::function<void(ClientPacket&)> pr
     packet << static_cast<sf::Uint32>(Server::ClientPacketType::Request);
     packet << sf::Uint32(request.id);
     prepare(packet);
-    //socket.send(packet);
-    direct_clientSendToServer(packet);
+    if (isLocalOnly)
+    {
+        direct_clientSendToServer(packet);
+    }
+    else
+    {
+        socket.send(packet);
+    }
+}
+
+bool bit::ClientServerState::hasServerLoadCompleted()
+{
+    bool serverLoadComplete = false;
+    server->isLoadCompleteMutex.lock();
+    serverLoadComplete = server->isLoadComplete;
+    server->isLoadCompleteMutex.unlock();
+    return serverLoadComplete;
 }
 
 void bit::ClientServerState::direct_serverSendToClient(ServerPacket &packet)

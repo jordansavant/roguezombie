@@ -24,7 +24,7 @@ namespace bit
     {
     public:
 
-        ClientServerState(StateStack &stack, Game* game, bool isClient, bool isHost);
+        ClientServerState(StateStack &stack, Game* game, bool isClient, bool isHost, bool isLocalOnly);
 
         virtual ~ClientServerState();
 
@@ -61,6 +61,7 @@ namespace bit
 
         bool isClient;
         bool isHost;
+        bool isLocalOnly;
         Server* server;
         sf::IpAddress ipAddress;
         unsigned short port;
@@ -93,6 +94,8 @@ namespace bit
         void handlePacket(sf::Uint32 packetType, ServerPacket &packet);
 
         virtual void disconnect();
+
+        bool hasServerLoadCompleted();
 
 
         // Packet handling

@@ -24,8 +24,8 @@
 #include "items/ItemClient.hpp"
 #include <sstream>
 
-StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, bool isClient, bool isHost)
-    : bit::ClientServerState(stack, _game, isClient, isHost), rogueZombieGame(_game), levelClient(NULL), mode(Mode::Init), endGameReason(EndGameReason::Quit), fps(), isTileSelectActive(false)
+StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, bool isClient, bool isHost, bool isLocalOnly)
+    : bit::ClientServerState(stack, _game, isClient, isHost, isLocalOnly), rogueZombieGame(_game), levelClient(NULL), mode(Mode::Init), endGameReason(EndGameReason::Quit), fps(), isTileSelectActive(false)
 {
     levelClient = new LevelClient();
     

@@ -24,7 +24,8 @@ unsigned int RogueZombieGame::stateGameIntroduction = 1;
 unsigned int RogueZombieGame::stateGameStart = 2;
 unsigned int RogueZombieGame::stateGamePlayHost = 3;
 unsigned int RogueZombieGame::stateGamePlayClient = 4;
-unsigned int RogueZombieGame::stateGameError = 5;
+unsigned int RogueZombieGame::stateGamePlayLocal = 5;
+unsigned int RogueZombieGame::stateGameError = 6;
 
 void RogueZombieGame::update(sf::Time &gameTime)
 {
@@ -67,7 +68,8 @@ void RogueZombieGame::draw(sf::RenderWindow &window, sf::Time &gameTime)
 void RogueZombieGame::registerStates()
 {
     stateStack->registerState<StateGameStart, RogueZombieGame>(this, stateGameStart);
-    stateStack->registerState<StateGamePlay, RogueZombieGame>(this, stateGamePlayHost, true, true);
-    stateStack->registerState<StateGamePlay, RogueZombieGame>(this, stateGamePlayClient, true, false);
+    stateStack->registerState<StateGamePlay, RogueZombieGame>(this, stateGamePlayHost, true, true, false);
+    stateStack->registerState<StateGamePlay, RogueZombieGame>(this, stateGamePlayClient, true, false, false);
+    stateStack->registerState<StateGamePlay, RogueZombieGame>(this, stateGamePlayLocal, true, true, true);
     stateStack->registerState<StateGameError, RogueZombieGame>(this, stateGameError);
 }

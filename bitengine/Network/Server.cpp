@@ -143,8 +143,16 @@ void bit::Server::tick()
             packet << static_cast<sf::Uint32>(Server::ServerPacketType::ServerUpdate);
             packet << snapshotId;
             preparePacket_ServerUpdate(packet, *client);
-            //client->socket.send(packet);
-            directClientState->direct_serverSendToClient(packet);
+            if (directClientState)
+            {
+                // Local only
+                directClientState->direct_serverSendToClient(packet);
+            }
+            else
+            {
+                // Network
+                client->socket.send(packet);
+            }
         }
     }
 }
@@ -169,16 +177,34 @@ void bit::Server::handleIncomingPackets()
         // If this is a connected client, not a pending client slot
         if(client->isNetworkConnected)
         {
-            ClientPacket packet;
-            if(directClientState->direct_receiveFromClient(packet))
-            //while(client->socket.receive(packet) == sf::Socket::Done)
+            if (directClientState)
             {
-                // Handle incoming packet from client
-                handlePacket(packet, *client);
+                // Local Only
+                ClientPacket packet;
+                while (directClientState->direct_receiveFromClient(packet))
+                {
+                    // Handle incoming packet from client
+                    handlePacket(packet, *client);
 
-                // Packet received, update the ping timer
-                client->lastPacketTime = now();
-                packet.clear();
+                    // Packet received, update the ping timer
+                    client->lastPacketTime = now();
+                    packet.clear();
+                }
+            }
+            else
+            {
+                // Network
+                ClientPacket packet;
+                while(client->socket.receive(packet) == sf::Socket::Done)
+                {
+                    // Handle incoming packet from client
+                    handlePacket(packet, *client);
+
+                    // Packet received, update the ping timer
+                    client->lastPacketTime = now();
+                    packet.clear();
+                }
+
             }
 
             // Check if disconnected
@@ -196,9 +222,23 @@ void bit::Server::handleIncomingPackets()
 
 void bit::Server::handleConnections()
 {
+
     // If we are not accepting connections, skip
-    if(!isListening)
+    if (!isListening)
         return;
+
+    // If we are in a local only direct connection do not use networking to establish connection just direct connect to client thread
+    if (directClientState)
+    {
+        // Mark the new client as ready
+        RemoteClient* client = clients[connectedClients];
+        client->isNetworkConnected = true;
+        client->lastPacketTime = now();
+        client->id = ++clientIdentifier;
+
+        setListeningState(false);
+        handleNewClient(*client);
+    }
 
     // If our ready and waiting client's socket starts being awesome
     if(listenerSocket.accept(clients[connectedClients]->socket) == sf::TcpListener::Done)
@@ -270,8 +310,14 @@ void bit::Server::handlePacket(ClientPacket &packet, RemoteClient &client)
             handlePacket_ClientRequest(packet, client, responsePacket);
 
             // Send the response
-            //client.socket.send(responsePacket);
-            directClientState->direct_serverSendToClient(responsePacket);
+            if (directClientState)
+            {
+                directClientState->direct_serverSendToClient(responsePacket);
+            }
+            else
+            {
+                client.socket.send(responsePacket);
+            }
 
             break;
         }
@@ -286,8 +332,16 @@ void bit::Server::handlePacket(ClientPacket &packet, RemoteClient &client)
             bit::ServerPacket ackPacket;
             ackPacket << static_cast<sf::Uint32>(Server::ServerPacketType::DisconnectAcknowledged);
             preparePacket_DisconnectAcknowledge(ackPacket, client);
-            //client.socket.send(ackPacket);
-            directClientState->direct_serverSendToClient(ackPacket);
+
+            // Send the response
+            if (directClientState)
+            {
+                directClientState->direct_serverSendToClient(ackPacket);
+            }
+            else
+            {
+                client.socket.send(ackPacket);
+            }
 
             break;
         }
@@ -296,6 +350,38 @@ void bit::Server::handlePacket(ClientPacket &packet, RemoteClient &client)
 
 void bit::Server::handleDisconnections()
 {
+    // Local TODO NOT SURE IF THIS WORKS
+    if (directClientState)
+    {
+        for (auto itr = clients.begin(); itr != clients.end(); )
+        {
+            RemoteClient* client = (*itr);
+
+            if (client->hasTimedOut || client->hasDisconnected || client->hasBeenKicked)
+            {
+                if (client->hasTimedOut)
+                    bit::Output::Debug("CLIENT DIRECT-CONNECT TIMEOUT");
+                else if (client->hasDisconnected)
+                    bit::Output::Debug("CLIENT DIRECT-CONNECT QUIT");
+                else if (client->hasBeenKicked)
+                    bit::Output::Debug("CLIENT DIRECT-CONNECT KICKED");
+
+                // Erase client
+                delete client;
+                itr = clients.erase(itr);
+
+                setListeningState(false); // no more connections
+            }
+            else
+            {
+                itr++;
+            }
+        }
+
+        return;
+    }
+
+    // Network
     for(auto itr = clients.begin(); itr != clients.end(); )
     {
         RemoteClient* client = (*itr);
@@ -345,8 +431,14 @@ void bit::Server::kickClient(bit::RemoteClient &client, unsigned int kickCode)
         bit::ServerPacket packet;
         packet << static_cast<sf::Uint32>(Server::ServerPacketType::Kick);
         packet << sf::Uint32(kickCode);
-        //client.socket.send(packet);
-        directClientState->direct_serverSendToClient(packet);
+        if (directClientState)
+        {
+            directClientState->direct_serverSendToClient(packet);
+        }
+        else
+        {
+            client.socket.send(packet);
+        }
 
         client.hasBeenKicked = true;
     }
@@ -363,24 +455,37 @@ void bit::Server::sendWorldInitialization(bit::RemoteClient &client)
         bit::ServerPacket worldPacket;
         worldPacket << static_cast<sf::Uint32>(Server::ServerPacketType::InitializeWorld);
         preparePacket_InitializeWorld(worldPacket, client);
-        //client.socket.send(worldPacket);
-        directClientState->direct_serverSendToClient(worldPacket);
+        if (directClientState)
+        {
+            directClientState->direct_serverSendToClient(worldPacket);
+        }
+        else
+        {
+            client.socket.send(worldPacket);
+        }
 
     }
 }
 
 void bit::Server::sendToAllClients(ServerPacket &packet)
 {
+    // Local only
+    if (directClientState)
+    {
+        directClientState->direct_serverSendToClient(packet);
+        return;
+    }
+
+    // Network
     for(unsigned int i=0; i < clients.size(); i++)
     {
         RemoteClient* client = clients[i];
 
         if(client->canReceiveGamePackets())
         {
-            //client->socket.send(packet);
+            client->socket.send(packet);
         }
     }
-    directClientState->direct_serverSendToClient(packet);
 }
 
 void bit::Server::handleNewClient(RemoteClient &client)
@@ -390,14 +495,23 @@ void bit::Server::handleNewClient(RemoteClient &client)
     packet_InitializeSelf << static_cast<sf::Uint32>(Server::ServerPacketType::InitializeSelf);
     packet_InitializeSelf << sf::Uint32(client.id);
     preparePacket_InitializeSelf(packet_InitializeSelf, client);
-    //client.socket.send(packet_InitializeSelf);
-    directClientState->direct_serverSendToClient(packet_InitializeSelf);
 
-    // Notify all other clients of new connection
-    ServerPacket packet_clientConnected;
-    packet_clientConnected << static_cast<sf::Uint32>(Server::ServerPacketType::PeerClientConnected);
-    preparePacket_PeerClientConnected(packet_clientConnected);
-    sendToAllClients(packet_clientConnected);
+    if (directClientState)
+    {
+        // Local only
+        directClientState->direct_serverSendToClient(packet_InitializeSelf);
+    }
+    else
+    {
+        // Network
+        client.socket.send(packet_InitializeSelf);
+
+        // Notify all other clients of new connection
+        ServerPacket packet_clientConnected;
+        packet_clientConnected << static_cast<sf::Uint32>(Server::ServerPacketType::PeerClientConnected);
+        preparePacket_PeerClientConnected(packet_clientConnected);
+        sendToAllClients(packet_clientConnected);
+    }
 }
 
 void bit::Server::sendEventToClient(bit::RemoteClient &client, std::function<void(ServerPacket&)> prepare)
@@ -407,8 +521,17 @@ void bit::Server::sendEventToClient(bit::RemoteClient &client, std::function<voi
         ServerPacket packet;
         packet << static_cast<sf::Uint32>(Server::ServerPacketType::Event);
         prepare(packet);
-        //client.socket.send(packet);
-        directClientState->direct_serverSendToClient(packet);
+
+        if (directClientState)
+        {
+            // Local only
+            directClientState->direct_serverSendToClient(packet);
+        }
+        else
+        {
+            // Network
+            client.socket.send(packet);
+        }
     }
 }
 

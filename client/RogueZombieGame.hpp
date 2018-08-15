@@ -16,6 +16,7 @@ public:
         static unsigned int stateGameStart;
         static unsigned int stateGamePlayHost;
         static unsigned int stateGamePlayClient;
+        static unsigned int stateGamePlayLocal;
         static unsigned int stateGameError;
 
         std::string errorMessage;

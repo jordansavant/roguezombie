@@ -28,7 +28,7 @@ bool StateGameStart::update(sf::Time &gameTime)
     }
     else if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Return))
     {
-        requestStackPush(RogueZombieGame::stateGamePlayHost);
+        requestStackPush(RogueZombieGame::stateGamePlayLocal);
     }
     // TODO: REMOVE
     else if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Tilde))

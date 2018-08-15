@@ -36,7 +36,7 @@ StartMainMenu::StartMainMenu(RogueZombieGame* rogueZombieGame, StateGameStart* s
         {
             if(element->opacity == 1 && rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left))
             {
-                state->requestStackPush(RogueZombieGame::stateGamePlayHost);
+                state->requestStackPush(RogueZombieGame::stateGamePlayLocal);
                 return true;
             }
 
