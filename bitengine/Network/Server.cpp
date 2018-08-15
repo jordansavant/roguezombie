@@ -3,6 +3,7 @@
 #include "ServerPacket.hpp"
 #include "ClientPacket.hpp"
 #include "../System/Output.hpp"
+#include "ClientServerState.hpp"
 
 bit::Server::Server()
     : snapshotId(0),
@@ -15,7 +16,8 @@ bit::Server::Server()
       connectedClients(0),
       clientIdentifier(0),
       clients(1),
-      isLoadComplete(false)
+      isLoadComplete(false),
+      directClientState(NULL)
 {
     listenerSocket.setBlocking(false);
 
@@ -141,7 +143,8 @@ void bit::Server::tick()
             packet << static_cast<sf::Uint32>(Server::ServerPacketType::ServerUpdate);
             packet << snapshotId;
             preparePacket_ServerUpdate(packet, *client);
-            client->socket.send(packet);
+            //client->socket.send(packet);
+            directClientState->direct_serverSendToClient(packet);
         }
     }
 }
@@ -167,7 +170,8 @@ void bit::Server::handleIncomingPackets()
         if(client->isNetworkConnected)
         {
             ClientPacket packet;
-            while(client->socket.receive(packet) == sf::Socket::Done)
+            if(directClientState->direct_receiveFromClient(packet))
+            //while(client->socket.receive(packet) == sf::Socket::Done)
             {
                 // Handle incoming packet from client
                 handlePacket(packet, *client);
@@ -266,7 +270,8 @@ void bit::Server::handlePacket(ClientPacket &packet, RemoteClient &client)
             handlePacket_ClientRequest(packet, client, responsePacket);
 
             // Send the response
-            client.socket.send(responsePacket);
+            //client.socket.send(responsePacket);
+            directClientState->direct_serverSendToClient(responsePacket);
 
             break;
         }
@@ -281,7 +286,8 @@ void bit::Server::handlePacket(ClientPacket &packet, RemoteClient &client)
             bit::ServerPacket ackPacket;
             ackPacket << static_cast<sf::Uint32>(Server::ServerPacketType::DisconnectAcknowledged);
             preparePacket_DisconnectAcknowledge(ackPacket, client);
-            client.socket.send(ackPacket);
+            //client.socket.send(ackPacket);
+            directClientState->direct_serverSendToClient(ackPacket);
 
             break;
         }
@@ -339,7 +345,8 @@ void bit::Server::kickClient(bit::RemoteClient &client, unsigned int kickCode)
         bit::ServerPacket packet;
         packet << static_cast<sf::Uint32>(Server::ServerPacketType::Kick);
         packet << sf::Uint32(kickCode);
-        client.socket.send(packet);
+        //client.socket.send(packet);
+        directClientState->direct_serverSendToClient(packet);
 
         client.hasBeenKicked = true;
     }
@@ -356,7 +363,9 @@ void bit::Server::sendWorldInitialization(bit::RemoteClient &client)
         bit::ServerPacket worldPacket;
         worldPacket << static_cast<sf::Uint32>(Server::ServerPacketType::InitializeWorld);
         preparePacket_InitializeWorld(worldPacket, client);
-        client.socket.send(worldPacket);
+        //client.socket.send(worldPacket);
+        directClientState->direct_serverSendToClient(worldPacket);
+
     }
 }
 
@@ -368,9 +377,10 @@ void bit::Server::sendToAllClients(ServerPacket &packet)
 
         if(client->canReceiveGamePackets())
         {
-            client->socket.send(packet);
+            //client->socket.send(packet);
         }
     }
+    directClientState->direct_serverSendToClient(packet);
 }
 
 void bit::Server::handleNewClient(RemoteClient &client)
@@ -380,7 +390,8 @@ void bit::Server::handleNewClient(RemoteClient &client)
     packet_InitializeSelf << static_cast<sf::Uint32>(Server::ServerPacketType::InitializeSelf);
     packet_InitializeSelf << sf::Uint32(client.id);
     preparePacket_InitializeSelf(packet_InitializeSelf, client);
-    client.socket.send(packet_InitializeSelf);
+    //client.socket.send(packet_InitializeSelf);
+    directClientState->direct_serverSendToClient(packet_InitializeSelf);
 
     // Notify all other clients of new connection
     ServerPacket packet_clientConnected;
@@ -396,7 +407,8 @@ void bit::Server::sendEventToClient(bit::RemoteClient &client, std::function<voi
         ServerPacket packet;
         packet << static_cast<sf::Uint32>(Server::ServerPacketType::Event);
         prepare(packet);
-        client.socket.send(packet);
+        //client.socket.send(packet);
+        directClientState->direct_serverSendToClient(packet);
     }
 }
 

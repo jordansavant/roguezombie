@@ -15,6 +15,7 @@ namespace bit
     class RemoteClient;
     class ServerPacket;
     class ClientPacket;
+    class ClientServerState;
 
     class Server
     {
@@ -26,6 +27,7 @@ namespace bit
 
         sf::Mutex isLoadCompleteMutex;
         bool isLoadComplete;
+        ClientServerState* directClientState;
 
         enum ServerPacketType
         {

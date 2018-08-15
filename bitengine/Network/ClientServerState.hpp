@@ -8,6 +8,8 @@
 #include "../Game/GameTimer.hpp"
 #include <functional>
 #include <map>
+#include "ServerPacket.hpp"
+#include "ClientPacket.hpp"
 
 namespace bit
 {
@@ -33,6 +35,14 @@ namespace bit
         virtual bool update(sf::Time &gameTime);
 
         void serverRequest(std::function<void(ClientPacket&)> prepare, std::function<void(ServerPacket&)> onComplete);
+
+        void direct_serverSendToClient(ServerPacket &packet);
+
+        bool direct_receiveFromServer(ServerPacket &packet);
+
+        void direct_clientSendToServer(ClientPacket &packet);
+
+        bool direct_receiveFromClient(ClientPacket &packet);
 
     protected:
 
@@ -67,6 +77,9 @@ namespace bit
         GameTimer disconnectTimer;
         std::map<unsigned int, Request> requests;
         unsigned int requestCounter;
+        std::vector<ServerPacket> direct_serverToClientPackets;
+        std::vector<ClientPacket> direct_clientToServerPackets;
+        sf::Mutex directConnectMutex;
 
         virtual Server* newServer() = 0;
 

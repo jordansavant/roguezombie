@@ -12,19 +12,22 @@
 
 bit::ClientServerState::ClientServerState(StateStack &stack, Game* game, bool isClient, bool isHost)
     : bit::State(stack, game),
-      clientId(0),
-      lastSnapshotId(0),
-      isClient(isClient),
-      isHost(isHost),
-      server(NULL),
-      isNetworkConnected(false),
-      isConfirmed(false),
-      timeSinceLastPacket(sf::seconds(0.0f)),
-      clientTimeout(sf::seconds(20)),
-      tickTimer(1.0f / BIT_SERVER_TICK_FPS),
-      awaitingDisconnect(false),
-      disconnectTimer(1),
-      requestCounter(0)
+    clientId(0),
+    lastSnapshotId(0),
+    isClient(isClient),
+    isHost(isHost),
+    server(NULL),
+    isNetworkConnected(false),
+    isConfirmed(false),
+    timeSinceLastPacket(sf::seconds(0.0f)),
+    clientTimeout(sf::seconds(20)),
+    tickTimer(1.0f / BIT_SERVER_TICK_FPS),
+    awaitingDisconnect(false),
+    disconnectTimer(1),
+    requestCounter(0),
+    direct_serverToClientPackets(),
+    direct_clientToServerPackets(),
+    directConnectMutex()
 {
 }
 
@@ -49,6 +52,7 @@ void bit::ClientServerState::load()
     if(isHost)
     {
         server = newServer();
+        server->directClientState = this;
         server->start();
         ipAddress = "127.0.0.1";
         port = getServerPort();
@@ -102,7 +106,8 @@ bool bit::ClientServerState::update(sf::Time &gameTime)
         {
             // Handle the network input
             ServerPacket packet;
-            if(socket.receive(packet) == sf::Socket::Done)
+            if (this->direct_receiveFromServer(packet))
+            //if(socket.receive(packet) == sf::Socket::Done)
             {
                 // Pull the header type and pass into handlePacket
                 timeSinceLastPacket = sf::seconds(0.0f);
@@ -128,7 +133,8 @@ bool bit::ClientServerState::update(sf::Time &gameTime)
                 bit::ClientPacket packet;
                 packet << static_cast<sf::Uint32>(Server::ClientPacketType::ClientUpdate) << lastSnapshotId;
                 preparePacket_ClientUpdate(packet);
-                socket.send(packet);
+                //socket.send(packet);
+                direct_clientSendToServer(packet);
             }
 
             // Update packet duration via gameTime
@@ -158,7 +164,8 @@ void bit::ClientServerState::disconnect()
         bit::ClientPacket packet;
         packet << static_cast<sf::Uint32>(Server::ClientPacketType::Quit);
         preparePacket_ClientDisconnect(packet);
-        socket.send(packet);
+        //socket.send(packet);
+        direct_clientSendToServer(packet);
     }
 }
 
@@ -183,7 +190,8 @@ void bit::ClientServerState::handlePacket(sf::Uint32 packetType, bit::ServerPack
                 bit::ClientPacket infoPacket;
                 infoPacket << static_cast<sf::Uint32>(Server::ClientPacketType::ClientInformation);
                 preparePacket_ClientInformation(infoPacket);
-                socket.send(infoPacket);
+                //socket.send(infoPacket);
+                direct_clientSendToServer(infoPacket);
 
                 break;
             }
@@ -278,5 +286,48 @@ void bit::ClientServerState::serverRequest(std::function<void(ClientPacket&)> pr
     packet << static_cast<sf::Uint32>(Server::ClientPacketType::Request);
     packet << sf::Uint32(request.id);
     prepare(packet);
-    socket.send(packet);
+    //socket.send(packet);
+    direct_clientSendToServer(packet);
+}
+
+void bit::ClientServerState::direct_serverSendToClient(ServerPacket &packet)
+{
+    // TODO MUTEX THIS COPY
+    directConnectMutex.lock();
+    this->direct_serverToClientPackets.push_back(packet);
+    directConnectMutex.unlock();
+}
+
+bool bit::ClientServerState::direct_receiveFromServer(ServerPacket &packet)
+{
+    directConnectMutex.lock();
+    if (this->direct_serverToClientPackets.size() > 0) {
+        packet = direct_serverToClientPackets.back();
+        direct_serverToClientPackets.pop_back();
+        directConnectMutex.unlock();
+        return true;
+    }
+    directConnectMutex.unlock();
+    return false;
+}
+
+void bit::ClientServerState::direct_clientSendToServer(ClientPacket &packet)
+{
+    // TODO MUTEX THIS COPY
+    directConnectMutex.lock();
+    this->direct_clientToServerPackets.push_back(packet);
+    directConnectMutex.unlock();
+}
+
+bool bit::ClientServerState::direct_receiveFromClient(ClientPacket &packet)
+{
+    directConnectMutex.lock();
+    if (this->direct_clientToServerPackets.size() > 0) {
+        packet = direct_clientToServerPackets.back();
+        direct_clientToServerPackets.pop_back();
+        directConnectMutex.unlock();
+        return true;
+    }
+    directConnectMutex.unlock();
+    return false;
 }
