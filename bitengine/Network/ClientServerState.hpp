@@ -8,6 +8,7 @@
 #include "../Game/GameTimer.hpp"
 #include <functional>
 #include <map>
+#include <deque>
 #include "ServerPacket.hpp"
 #include "ClientPacket.hpp"
 
@@ -77,8 +78,8 @@ namespace bit
         GameTimer disconnectTimer;
         std::map<unsigned int, Request> requests;
         unsigned int requestCounter;
-        std::vector<ServerPacket> direct_serverToClientPackets;
-        std::vector<ClientPacket> direct_clientToServerPackets;
+        std::deque<ServerPacket> direct_serverToClientPackets;
+        std::deque<ClientPacket> direct_clientToServerPackets;
         sf::Mutex directConnectMutex;
 
         virtual Server* newServer() = 0;

@@ -292,42 +292,44 @@ void bit::ClientServerState::serverRequest(std::function<void(ClientPacket&)> pr
 
 void bit::ClientServerState::direct_serverSendToClient(ServerPacket &packet)
 {
-    // TODO MUTEX THIS COPY
     directConnectMutex.lock();
-    this->direct_serverToClientPackets.push_back(packet);
+    direct_serverToClientPackets.push_back(packet);
     directConnectMutex.unlock();
 }
 
 bool bit::ClientServerState::direct_receiveFromServer(ServerPacket &packet)
 {
+    bool hasPacket = false;
+
     directConnectMutex.lock();
-    if (this->direct_serverToClientPackets.size() > 0) {
-        packet = direct_serverToClientPackets.back();
-        direct_serverToClientPackets.pop_back();
-        directConnectMutex.unlock();
-        return true;
+    if (direct_serverToClientPackets.size() > 0) {
+        packet = direct_serverToClientPackets.front();
+        direct_serverToClientPackets.pop_front();
+        hasPacket = true;
     }
     directConnectMutex.unlock();
-    return false;
+
+    return hasPacket;
 }
 
 void bit::ClientServerState::direct_clientSendToServer(ClientPacket &packet)
 {
-    // TODO MUTEX THIS COPY
     directConnectMutex.lock();
-    this->direct_clientToServerPackets.push_back(packet);
+    direct_clientToServerPackets.push_back(packet);
     directConnectMutex.unlock();
 }
 
 bool bit::ClientServerState::direct_receiveFromClient(ClientPacket &packet)
 {
+    bool hasPacket = false;
+
     directConnectMutex.lock();
-    if (this->direct_clientToServerPackets.size() > 0) {
-        packet = direct_clientToServerPackets.back();
-        direct_clientToServerPackets.pop_back();
-        directConnectMutex.unlock();
-        return true;
+    if (direct_clientToServerPackets.size() > 0) {
+        packet = direct_clientToServerPackets.front();
+        direct_clientToServerPackets.pop_front();
+        hasPacket = true;
     }
     directConnectMutex.unlock();
-    return false;
+
+    return hasPacket;
 }
