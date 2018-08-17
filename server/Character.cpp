@@ -170,7 +170,12 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
 
             // Allows us to wait before next action point usage for delay between actions
             // Helps the simulation feel natural
-            if(actionDelayTimer.update(gameTime))
+            // We only want this delay to fire for characters who are within hostile attack range of a player
+            if (!isHostileCombatDetected) {
+                combat_SwitchStateDecide();
+                actionDelayTimer.reset();
+            }
+            else if(actionDelayTimer.update(gameTime))
             {
                 combat_SwitchStateDecide();
             }
