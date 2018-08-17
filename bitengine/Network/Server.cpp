@@ -39,6 +39,7 @@ bit::Server::~Server()
 
 void bit::Server::start()
 {
+    bit::Output::Debug("SERVER START");
     thread.launch();
 }
 

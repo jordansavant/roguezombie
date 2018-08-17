@@ -19,23 +19,24 @@ int main(int argc, char* argv[])
 
     srand(time(NULL));
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X))
+    {
         XoGeni::XoGeniGame generator;
         generator.run();
 
         return 0;
     }
     
-    if(argc == 1)
-    {
-        RogueZombieGame game;
-        game.run();
-    }
-    else
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
     {
         RogueZombieServer server;
         server.run();
+
+        return 0;
     }
+
+    RogueZombieGame game;
+    game.run();
 
     return 0;
 }

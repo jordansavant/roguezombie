@@ -22,6 +22,7 @@ public:
     bit::Picture* titlePicture;
     bit::Label* singleplayerLabel;
     bit::Label* multiplayerLabel;
+    bit::Label* joinLabel;
     bit::Label* settingsLabel;
     bit::Label* exitLabel;
 
