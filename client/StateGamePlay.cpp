@@ -1240,10 +1240,13 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 bit::NetworkHelper::unpackEnum<sf::Uint32, Character::Type>(packet, type);
                 switch(type)
                 {
+                    case Character::Type::Zombie:
+                        rogueZombieGame->soundManager->play(humanCharacterDeathSoundId);
+                        break;
                     case Character::Type::Hunter:
                         rogueZombieGame->soundManager->play(humanCharacterDeathSoundId);
                         break;
-                    case Character::Type::Zombie:
+                    case Character::Type::Scientist:
                         rogueZombieGame->soundManager->play(humanCharacterDeathSoundId);
                         break;
                 }

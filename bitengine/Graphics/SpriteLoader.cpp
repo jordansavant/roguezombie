@@ -112,5 +112,5 @@ void bit::SpriteLoader::loadSprites(std::string loadDescriptorFile)
 
 bit::Sprite* bit::SpriteLoader::getSprite(std::string spriteName)
 {
-    return sprites.at(spriteName);
+    return sprites.at(spriteName); 
 }

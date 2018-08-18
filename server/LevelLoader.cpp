@@ -450,7 +450,7 @@ void LevelLoader::Structure::unpack(XoGeni::Cell* cell, unsigned int structureId
 void LevelLoader::Character::unpack(XoGeni::Cell* cell, unsigned int characterId)
 {
     id = characterId;
-    type = 3; // Hunter
+    type = cell->characterType;
 
     // Items in character
 

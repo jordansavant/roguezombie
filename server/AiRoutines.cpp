@@ -100,7 +100,7 @@ void AiRoutines::Combat::Zombie_DecideCombat(Character* character)
 
 bool AiRoutines::Combat::Hunter_DetectHostility(Character* character, Character* other)
 {
-    return (other->schema.type != Character::Type::Hunter);
+    return (other->schema.type == Character::Type::Zombie);
 }
 
 void AiRoutines::Combat::Hunter_DecideCombat(Character* character)

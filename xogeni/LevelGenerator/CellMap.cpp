@@ -1208,11 +1208,33 @@ void XoGeni::CellMap::spawnEnemies()
     // Iterate rooms, place random enemy
     for (unsigned int i = 0; i < rooms.size(); i++)
     {
-        // Test a random cell in the room until one is found
-        Cell* cell = getOpenRoomCell(rooms[i], true);
-        if (cell) {
-            cell->hasCharacter = true;
-            cell->characterType = 3; // Hunter
+        unsigned int spawnCount = 1;
+
+        if (rooms[i] == entranceRoom)
+            continue;
+
+        spawnCount = rooms[i]->entranceWeight / 2 + 1;
+
+        for (unsigned int j = 0; j < spawnCount; j++)
+        {
+            // Test a random cell in the room until one is found
+            Cell* cell = getOpenRoomCell(rooms[i], true);
+            if (cell)
+            {
+                cell->hasCharacter = true;
+
+                switch (difficultyLevel)
+                {
+                    case 0:
+                        cell->characterType = 4; // Scientist
+                        break;
+
+                    default:
+                        cell->characterType = 3; // Hunter
+                        break;
+                }
+            }
+
         }
     }
 }
@@ -1222,6 +1244,9 @@ void XoGeni::CellMap::spawnTreasure()
     // Iterate rooms, place random enemy
     for (unsigned int i = 0; i < rooms.size(); i++)
     {
+        if (rooms[i] == entranceRoom)
+            continue;
+
         // Test a random cell in the room until one is found
         Cell* cell = getOpenRoomCell(rooms[i], true);
         if (cell) {

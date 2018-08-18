@@ -29,7 +29,8 @@ public:
         None,
         Zombie,
         Ogre,
-        Hunter
+        Hunter,
+        Scientist
     };
 
     enum EquipmentSlot

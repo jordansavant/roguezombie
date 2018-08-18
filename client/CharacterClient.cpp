@@ -26,8 +26,10 @@ void CharacterClient::reinitialize()
 {
     switch(schema.type)
     {
+        default:
         case Character::Type::Hunter:
         case Character::Type::Zombie:
+        case Character::Type::Scientist:
             sprite.width = 40;
             sprite.height = 40;
             sprite.baseOffsetX = 20;

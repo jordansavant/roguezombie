@@ -6,6 +6,7 @@
 #include "characters/Zombie.hpp"
 #include "characters/Ogre.hpp"
 #include "characters/Hunter.hpp"
+#include "characters/Scientist.hpp"
 #include "structures/Wall.hpp"
 #include "structures/Door.hpp"
 #include "structures/Chest.hpp"
@@ -91,6 +92,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
     runners.push_back(new LevelRunner<Zombie>(this, &zombies));
     runners.push_back(new LevelRunner<Ogre>(this, &ogres));
     runners.push_back(new LevelRunner<Hunter>(this, &hunters));
+    runners.push_back(new LevelRunner<Scientist>(this, &scientists));
     runners.push_back(new LevelRunner<Wall>(this, &walls));
     runners.push_back(new LevelRunner<Door>(this, &doors));
     runners.push_back(new LevelRunner<Chest>(this, &chests));
@@ -264,6 +266,19 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         hunter->combatDecisionAi = AiRoutines::Combat::Hunter_DecideCombat;
                         hunter->getStartingDialog = std::bind(&Level::getDialogTree, this);
                         c = hunter;
+                        break;
+                    }
+                    case Character::Type::Scientist:
+                    {
+                        Scientist* scientist = new Scientist();
+                        scientist->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                        scientist->moveToPosition(t->schema.x, t->schema.y);
+                        scientists.push_back(scientist);
+                        scientist->hostilityCheckAi = AiRoutines::Combat::Hunter_DetectHostility;
+                        scientist->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
+                        scientist->combatDecisionAi = AiRoutines::Combat::Hunter_DecideCombat;
+                        scientist->getStartingDialog = std::bind(&Level::getDialogTree, this);
+                        c = scientist;
                         break;
                     }
                 }
@@ -469,6 +484,9 @@ void Level::enterCombat()
         for(unsigned int i=0; i < hunters.size(); i++)
             if(!hunters[i]->schema.isDead())
                 turnQueue.push_back(hunters[i]);
+        for (unsigned int i = 0; i < scientists.size(); i++)
+            if (!scientists[i]->schema.isDead())
+                turnQueue.push_back(scientists[i]);
 
         // Sort the turn queue by initiative
         std::sort(turnQueue.begin(), turnQueue.end(), [] (Character* characterFirst, Character* characterSecond) -> bool {
@@ -1172,6 +1190,9 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
                         break;
                     case Character::Type::Hunter:
                         packNetworkBody<Hunter, Character>(packet, full, c, b->schema.type, c->schema.type);
+                        break;
+                    case Character::Type::Scientist:
+                        packNetworkBody<Scientist, Character>(packet, full, c, b->schema.type, c->schema.type);
                         break;
                 }
                 break;

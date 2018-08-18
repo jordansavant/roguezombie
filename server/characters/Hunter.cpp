@@ -1,15 +1,7 @@
 #include "Hunter.hpp"
-#include "SFML/Graphics.hpp"
-#include "../../bitengine/Game.hpp"
-#include "../../bitengine/Network.hpp"
-#include "../../bitengine/Math.hpp"
-#include "../../bitengine/System.hpp"
-#include "../GameplayServer.hpp"
 #include "../Level.hpp"
-#include "../Tile.hpp"
+#include "../GameplayServer.hpp"
 #include "../items/Item.hpp"
-#include "../dialog/DialogEntry.hpp"
-#include "../dialog/DialogNode.hpp"
 
 Hunter::Hunter()
     : Character()
