@@ -151,11 +151,13 @@ namespace XoGeni
         void tagUnreachableCells();
 
 
-        // Enemy spawning
+        // Environment spawning
+
+        void spawnDecor();
 
         void spawnEnemies();
 
-        void spawnTreasure();
+        //void spawnTreasure();
 
 
         Cell* getOpenRoomCell(Room* room, bool random);
@@ -165,6 +167,12 @@ namespace XoGeni
         void inspectAllCellsInSpiral(const std::function<bool(Cell* cell)> &inspector);
 
         void inspectCellsInDimension(unsigned int x, unsigned int y, unsigned int w, unsigned int h, const std::function<bool(Cell* cell)> &inspector);
+
+        void inspectRoomCells(Room* room, const std::function<bool(Cell* cell)> &inspector);
+
+        void inspectRoomNorthCells(Room* room, const std::function<bool(Cell* cell)> &inspector);
+
+        void inspectRoomEastCells(Room* room, const std::function<bool(Cell* cell)> &inspector);
 
         Cell* getCellAtPosition(unsigned int x, unsigned int y);
 
