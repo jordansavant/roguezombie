@@ -22,6 +22,7 @@ ActionBar::ActionBar(Hud* hud)
     attack = new HudElement(originX, originY, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     attack->load(hud, std::string("optionbar_crosshair"));
     attack->onActivate = [hud] (Element* e) {
+        hud->state->isHudInteractionOccurring = true;
         if(hud->state->levelClient->isPlayerDecisionMode && hud->state->mode == StateGamePlay::Mode::Free)
         {
             // Attack Command
@@ -54,6 +55,7 @@ ActionBar::ActionBar(Hud* hud)
     wait = new HudElement(originX, originY, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     wait->load(hud, std::string("optionbar_hourglass"));
     wait->onActivate = [hud] (Element* e) {
+        hud->state->isHudInteractionOccurring = true;
         if(hud->state->levelClient->isPlayerDecisionMode && hud->state->mode == StateGamePlay::Mode::Free)
         {
             // Skip Command
@@ -78,6 +80,7 @@ ActionBar::ActionBar(Hud* hud)
     swap = new HudElement(originX, originY, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3));
     swap->load(hud, std::string("optionbar_swap"));
     swap->onActivate = [hud] (Element* e) {
+        hud->state->isHudInteractionOccurring = true;
         if(hud->state->levelClient->isPlayerDecisionMode && hud->state->mode == StateGamePlay::Mode::Free)
         {
             // Swap Command

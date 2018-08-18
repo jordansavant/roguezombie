@@ -192,7 +192,7 @@ void TileClient::clientUpdate(sf::Time &gameTime)
                     c = getInRangeColor();
 
                     // Listen for selection input
-                    if(level->state->isTileSelectActive && this->hasCharacter && this->characterClient)
+                    if(level->state->inputActive_tileSelect && this->hasCharacter && this->characterClient)
                     {
                         // Run the character select operation
                         level->runSelectCharacter(characterClient, this);
@@ -219,7 +219,7 @@ void TileClient::clientUpdate(sf::Time &gameTime)
                     c = RZConfig::tileTargetInRangeRadius;
 
                     // Listen for selection
-                    if(level->state->isTileSelectActive)
+                    if(level->state->inputActive_tileSelect)
                     {
                         level->runSelectArea(this);
                     }

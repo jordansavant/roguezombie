@@ -25,7 +25,8 @@
 #include <sstream>
 
 StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, bool isClient, bool isHost, bool isLocalOnly)
-    : bit::ClientServerState(stack, _game, isClient, isHost, isLocalOnly), rogueZombieGame(_game), levelClient(NULL), mode(Mode::Init), endGameReason(EndGameReason::Quit), fps(), isTileSelectActive(false)
+    : bit::ClientServerState(stack, _game, isClient, isHost, isLocalOnly), rogueZombieGame(_game), levelClient(NULL), mode(Mode::Init), endGameReason(EndGameReason::Quit), fps(),
+    isHudInteractionOccurring(false), input_tileSelect(false), inputActive_tileSelect(false)
 {
     levelClient = new LevelClient();
     
@@ -60,38 +61,47 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     // Game play mode logic
     modeEnter.resize(Mode::_count, NULL);
     modeExit.resize(Mode::_count, NULL);
+    modeCaptureInput.resize(Mode::_count, NULL);
     modeUpdate.resize(Mode::_count, NULL);
     
     modeEnter[Mode::Joining] = std::bind(&StateGamePlay::modeOnEnterJoining, this);
     modeExit[Mode::Joining] = std::bind(&StateGamePlay::modeOnExitJoining, this);
+    modeCaptureInput[Mode::Joining] = std::bind(&StateGamePlay::modeOnCaptureInputJoining, this, std::placeholders::_1);
     modeUpdate[Mode::Joining] = std::bind(&StateGamePlay::modeOnUpdateJoining, this, std::placeholders::_1);
 
     modeEnter[Mode::Free] = std::bind(&StateGamePlay::modeOnEnterFree, this);
     modeExit[Mode::Free] = std::bind(&StateGamePlay::modeOnExitFree, this);
+    modeCaptureInput[Mode::Free] = std::bind(&StateGamePlay::modeOnCaptureInputFree, this, std::placeholders::_1);
     modeUpdate[Mode::Free] = std::bind(&StateGamePlay::modeOnUpdateFree, this, std::placeholders::_1);
     
     modeEnter[Mode::Loot] = std::bind(&StateGamePlay::modeOnEnterLoot, this);
     modeExit[Mode::Loot] = std::bind(&StateGamePlay::modeOnExitLoot, this);
+    modeCaptureInput[Mode::Loot] = std::bind(&StateGamePlay::modeOnCaptureInputLoot, this, std::placeholders::_1);
     modeUpdate[Mode::Loot] = std::bind(&StateGamePlay::modeOnUpdateLoot, this, std::placeholders::_1);
     
     modeEnter[Mode::Interact] = std::bind(&StateGamePlay::modeOnEnterInteract, this);
     modeExit[Mode::Interact] = std::bind(&StateGamePlay::modeOnExitInteract, this);
+    modeCaptureInput[Mode::Interact] = std::bind(&StateGamePlay::modeOnCaptureInputInteract, this, std::placeholders::_1);
     modeUpdate[Mode::Interact] = std::bind(&StateGamePlay::modeOnUpdateInteract, this, std::placeholders::_1);
     
     modeEnter[Mode::Dialog] = std::bind(&StateGamePlay::modeOnEnterDialog, this);
     modeExit[Mode::Dialog] = std::bind(&StateGamePlay::modeOnExitDialog, this);
+    modeCaptureInput[Mode::Dialog] = std::bind(&StateGamePlay::modeOnCaptureInputDialog, this, std::placeholders::_1);
     modeUpdate[Mode::Dialog] = std::bind(&StateGamePlay::modeOnUpdateDialog, this, std::placeholders::_1);
     
     modeEnter[Mode::Inventory] = std::bind(&StateGamePlay::modeOnEnterInventory, this);
     modeExit[Mode::Inventory] = std::bind(&StateGamePlay::modeOnExitInventory, this);
+    modeCaptureInput[Mode::Inventory] = std::bind(&StateGamePlay::modeOnCaptureInputInventory, this, std::placeholders::_1);
     modeUpdate[Mode::Inventory] = std::bind(&StateGamePlay::modeOnUpdateInventory, this, std::placeholders::_1);
     
     modeEnter[Mode::Journal] = std::bind(&StateGamePlay::modeOnEnterJournal, this);
     modeExit[Mode::Journal] = std::bind(&StateGamePlay::modeOnExitJournal, this);
+    modeCaptureInput[Mode::Journal] = std::bind(&StateGamePlay::modeOnCaptureInputJournal, this, std::placeholders::_1);
     modeUpdate[Mode::Journal] = std::bind(&StateGamePlay::modeOnUpdateJournal, this, std::placeholders::_1);
     
     modeEnter[Mode::Options] = std::bind(&StateGamePlay::modeOnEnterOptions, this);
     modeExit[Mode::Options] = std::bind(&StateGamePlay::modeOnExitOptions, this);
+    modeCaptureInput[Mode::Options] = std::bind(&StateGamePlay::modeOnCaptureInputOptions, this, std::placeholders::_1);
     modeUpdate[Mode::Options] = std::bind(&StateGamePlay::modeOnUpdateOptions, this, std::placeholders::_1);
     
     changeMode(Mode::Joining);
@@ -165,6 +175,11 @@ void StateGamePlay::modeOnExitJoining()
     hud->show();
 }
 
+void StateGamePlay::modeOnCaptureInputJoining(sf::Time &gameTime)
+{
+    modeOnCaptureInputCommonListener(gameTime);
+}
+
 void StateGamePlay::modeOnUpdateJoining(sf::Time &gameTime)
 {
     // Exit to free mode when world has been initalized
@@ -188,6 +203,13 @@ void StateGamePlay::modeOnEnterFree()
 void StateGamePlay::modeOnExitFree()
 {
     levelClient->cancelSelectMode();
+}
+
+void StateGamePlay::modeOnCaptureInputFree(sf::Time &gameTime)
+{
+    input_tileSelect = rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left);
+
+    modeOnCaptureInputCommonListener(gameTime);
 }
 
 void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
@@ -237,8 +259,7 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
 
 
     // Global Input Mappings
-    isTileSelectActive = rogueZombieGame->inputManager->isButtonReleased(sf::Mouse::Left);
-
+    inputActive_tileSelect = input_tileSelect && !isHudInteractionOccurring;
 
     switch(levelClient->levelState)
     {
@@ -247,7 +268,7 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
             if(levelClient->selectMode == LevelClient::SelectMode::None)
             {
                 // Explore Mode Commands
-                if(isTileSelectActive)
+                if(inputActive_tileSelect)
                 {
                     // See if a tile is being hovered over
                     if(levelClient->hoveredTile)
@@ -285,7 +306,7 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
             if(levelClient->selectMode == LevelClient::SelectMode::None)
             {
                 // Combat Mode Commands
-                if(isTileSelectActive)
+                if(inputActive_tileSelect)
                 {
                     // Always deactivate the stat bubble if something is clicked
                     hud->statBubble->deactivate();
@@ -415,6 +436,11 @@ void StateGamePlay::modeOnExitLoot()
     }
 }
 
+void StateGamePlay::modeOnCaptureInputLoot(sf::Time &gameTime)
+{
+    modeOnCaptureInputCommonListener(gameTime);
+}
+
 void StateGamePlay::modeOnUpdateLoot(sf::Time &gameTime)
 {
     // Exit
@@ -437,6 +463,11 @@ void StateGamePlay::modeOnExitInteract()
     hud->interactionMenu->deactivate();
 }
 
+void StateGamePlay::modeOnCaptureInputInteract(sf::Time &gameTime)
+{
+    modeOnCaptureInputCommonListener(gameTime);
+}
+
 void StateGamePlay::modeOnUpdateInteract(sf::Time &gameTime)
 {
     // Exit
@@ -457,6 +488,11 @@ void StateGamePlay::modeOnEnterDialog()
 void StateGamePlay::modeOnExitDialog()
 {
     hud->dialogMenu->deactivate();
+}
+
+void StateGamePlay::modeOnCaptureInputDialog(sf::Time &gameTime)
+{
+    modeOnCaptureInputCommonListener(gameTime);
 }
 
 void StateGamePlay::modeOnUpdateDialog(sf::Time &gameTime)
@@ -489,6 +525,11 @@ void StateGamePlay::modeOnExitInventory()
         hud->deactivateActionBar();
 }
 
+void StateGamePlay::modeOnCaptureInputInventory(sf::Time &gameTime)
+{
+    modeOnCaptureInputCommonListener(gameTime);
+}
+
 void StateGamePlay::modeOnUpdateInventory(sf::Time &gameTime)
 {
     modeOnUpdateCommonListener(gameTime);
@@ -507,6 +548,11 @@ void StateGamePlay::modeOnEnterJournal()
 void StateGamePlay::modeOnExitJournal()
 {
     hud->deactivateJournal();
+}
+
+void StateGamePlay::modeOnCaptureInputJournal(sf::Time &gameTime)
+{
+    modeOnCaptureInputCommonListener(gameTime);
 }
 
 void StateGamePlay::modeOnUpdateJournal(sf::Time &gameTime)
@@ -529,6 +575,11 @@ void StateGamePlay::modeOnExitOptions()
     hud->deactivateOptions();
 }
 
+void StateGamePlay::modeOnCaptureInputOptions(sf::Time &gameTime)
+{
+    modeOnCaptureInputCommonListener(gameTime);
+}
+
 void StateGamePlay::modeOnUpdateOptions(sf::Time &gameTime)
 {
     modeOnUpdateCommonListener(gameTime);
@@ -539,6 +590,11 @@ void StateGamePlay::modeOnUpdateOptions(sf::Time &gameTime)
 /// /////////////////////////////////////////////////////////////////////
 ///                          COMMON MODES                              //
 /// /////////////////////////////////////////////////////////////////////
+
+void StateGamePlay::modeOnCaptureInputCommonListener(sf::Time &gameTime)
+{
+    // TODO, Copy Input Detection from Update function into Booleans here
+}
 
 void StateGamePlay::modeOnUpdateCommonListener(sf::Time &gameTime)
 {
@@ -690,8 +746,8 @@ bool StateGamePlay::handleInput(sf::Time &gameTime)
         // Global input checking
         captureModelessInput(gameTime);
 
-        // Update gameplay mode input
-        modeUpdate[mode](gameTime);
+        // Set input variables for mode
+        modeCaptureInput[mode](gameTime);
     }
 
     return true;
@@ -709,8 +765,17 @@ bool StateGamePlay::update(sf::Time &gameTime)
 
     fps.update(gameTime);
 
+    // Clear our state that our player has interacted with HUD
+    isHudInteractionOccurring = false;
+
+    // Update the HUD and mark if interaction has occurred (run before world events to make sure we dont have players clicking on some stuff and it triggering tile clicks and stuff)
     hud->update(*rogueZombieGame->renderWindow, gameTime);
+
+    // Update the joining menu
     joiningMenu->update(*rogueZombieGame->renderWindow, gameTime);
+
+    // Update gameplay mode input
+    modeUpdate[mode](gameTime);
 
     levelClient->update(gameTime);
 

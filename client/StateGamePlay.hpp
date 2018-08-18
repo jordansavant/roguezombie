@@ -62,13 +62,16 @@ public:
     Mode mode;
     EndGameReason endGameReason;
     std::vector<std::function<void()>> modeEnter;
+    std::vector<std::function<void(sf::Time&)>> modeCaptureInput;
     std::vector<std::function<void(sf::Time&)>> modeUpdate;
     std::vector<std::function<void()>> modeExit;
     LevelClient* levelClient;
     std::vector<Command> commandQueue;
     sf::Vector2f mousePositionInLevel;
     bit::FrameTimer fps;
-    bool isTileSelectActive;
+    bool isHudInteractionOccurring;
+    bool input_tileSelect;
+    bool inputActive_tileSelect;
     bool isShiftModifierDown;
     Target target;
     
@@ -100,36 +103,45 @@ public:
 
     void modeOnEnterJoining();
     void modeOnExitJoining();
+    void modeOnCaptureInputJoining(sf::Time &gameTime);
     void modeOnUpdateJoining(sf::Time &gameTime);
 
     void modeOnEnterFree();
     void modeOnExitFree();
+    void modeOnCaptureInputFree(sf::Time &gameTime);
     void modeOnUpdateFree(sf::Time &gameTime);
     
     void modeOnEnterLoot();
     void modeOnExitLoot();
+    void modeOnCaptureInputLoot(sf::Time &gameTime);
     void modeOnUpdateLoot(sf::Time &gameTime);
     
     void modeOnEnterInteract();
     void modeOnExitInteract();
+    void modeOnCaptureInputInteract(sf::Time &gameTime);
     void modeOnUpdateInteract(sf::Time &gameTime);
     
     void modeOnEnterDialog();
     void modeOnExitDialog();
+    void modeOnCaptureInputDialog(sf::Time &gameTime);
     void modeOnUpdateDialog(sf::Time &gameTime);
 
     void modeOnEnterInventory();
     void modeOnExitInventory();
+    void modeOnCaptureInputInventory(sf::Time &gameTime);
     void modeOnUpdateInventory(sf::Time &gameTime);
 
     void modeOnEnterJournal();
     void modeOnExitJournal();
+    void modeOnCaptureInputJournal(sf::Time &gameTime);
     void modeOnUpdateJournal(sf::Time &gameTime);
 
     void modeOnEnterOptions();
     void modeOnExitOptions();
+    void modeOnCaptureInputOptions(sf::Time &gameTime);
     void modeOnUpdateOptions(sf::Time &gameTime);
 
+    void modeOnCaptureInputCommonListener(sf::Time &gameTime);
     void modeOnUpdateCommonListener(sf::Time &gameTime);
 
     void onEnterCombat();
