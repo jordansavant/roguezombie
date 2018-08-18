@@ -18,7 +18,7 @@ std::vector<XoGeni::CellMap*> XoGeni::LevelGenerator::buildTower(unsigned int se
 {
     random.seed(seed);
 
-    unsigned int mapCount = 2;
+    unsigned int mapCount = 1;
     std::vector<CellMap*> maps;
     CellMap* parent = NULL;
 
