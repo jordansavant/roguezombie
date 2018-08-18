@@ -26,3 +26,10 @@ void Terminal::update(sf::Time &gameTime)
 {
     Structure::update(gameTime);
 }
+
+void Terminal::prepareSnapshot(bit::ServerPacket &packet, bool full)
+{
+    Structure::prepareSnapshot(packet, full);
+
+    packet << schema;
+}

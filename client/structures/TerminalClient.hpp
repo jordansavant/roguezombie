@@ -19,7 +19,8 @@ public:
     TerminalClient();
 
     Terminal::Schema schema;
-    bit::Sprite* sprite;
+    bit::Sprite* terminalASprite;
+    bit::Sprite* columnASprite;
     unsigned int quadIndex;
 
     void clientLoad(LevelClient* level);

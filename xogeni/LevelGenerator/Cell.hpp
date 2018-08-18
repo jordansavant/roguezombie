@@ -68,6 +68,7 @@ namespace XoGeni
 
         bool hasStructure;
         unsigned int structureType;
+        unsigned int structureSubType;
 
         unsigned int metadata_floodfillId;
 

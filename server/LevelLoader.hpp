@@ -85,6 +85,7 @@ public:
     {
         unsigned int id;
         unsigned int type;
+        unsigned int subtype;
         bool isOpen;
         bool isLocked;
         std::vector<Item> items;

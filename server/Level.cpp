@@ -97,6 +97,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
     runners.push_back(new LevelRunner<Wall>(this, &walls));
     runners.push_back(new LevelRunner<Door>(this, &doors));
     runners.push_back(new LevelRunner<Chest>(this, &chests));
+    runners.push_back(new LevelRunner<Terminal>(this, &terminals));
     runners.push_back(new LevelRunner<Light>(this, &lights));
 
     // Map
@@ -205,6 +206,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         Terminal* terminal = new Terminal();
                         terminal->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
                         terminal->setPosition(t->schema.x, t->schema.y);
+                        terminal->schema.subtype = static_cast<Terminal::SubType>(structureDef.subtype);
                         terminals.push_back(terminal);
                         s = terminal;
                         break;

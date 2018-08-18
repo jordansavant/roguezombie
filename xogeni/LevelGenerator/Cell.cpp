@@ -14,7 +14,7 @@ XoGeni::Cell::Cell(unsigned int index, unsigned int x, unsigned int y)
     hasLight(false), lightRadius(0), lightOpacity(0), lightColorR(0), lightColorG(0), lightColorB(0),
     isTagUnreachable(false),
     hasCharacter(false), characterType(0),
-    hasStructure(false), structureType(0),
+    hasStructure(false), structureType(0), structureSubType(0),
     metadata_floodfillId(0)
 {
     aStarX = x;

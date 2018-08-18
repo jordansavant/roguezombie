@@ -22,13 +22,25 @@ void TerminalClient::clientLoad(LevelClient* _level)
     level = _level;
 
     quadIndex = level->vertexMap_charactersToggleIlluminated.requestVertexIndex();
-    sprite = level->state->rogueZombieGame->spriteLoader->getSprite("TerminalA");
-    sprite->applyToQuad(&level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex]);
+    terminalASprite = level->state->rogueZombieGame->spriteLoader->getSprite("TerminalA");
+    columnASprite = level->state->rogueZombieGame->spriteLoader->getSprite("ColumnA");
+    //sprite->applyToQuad(&level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex]);
 }
 
 void TerminalClient::clientUpdate(sf::Time &gameTime)
 {
     // Sprite
+    bit::Sprite* sprite = NULL;
+    switch (schema.subtype) {
+        default:
+        case Terminal::SubType::TerminalA:
+            sprite = terminalASprite;
+            break;
+        case Terminal::SubType::ColumnA:
+            sprite = columnASprite;
+            break;
+    }
+
     sprite->applyToQuad(&level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex]);
 
     // Position

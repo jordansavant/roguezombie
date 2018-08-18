@@ -441,11 +441,12 @@ void LevelLoader::Structure::unpack(XoGeni::Cell* cell, unsigned int structureId
     if (cell->isWall) {
         type = 1;
     }
-    if (cell->isDoor) {
+    else if (cell->isDoor) {
         type = 2;
     }
-    if (cell->hasStructure) {
+    else if (cell->hasStructure) {
         type = cell->structureType;
+        subtype = cell->structureSubType;
     }
     isOpen = false;
     isLocked = false;
