@@ -26,6 +26,7 @@ class Player;
 class Tile;
 class Door;
 class Chest;
+class Terminal;
 class Wall;
 class Light;
 
@@ -56,6 +57,7 @@ public:
     std::vector<Wall*> walls;
     std::vector<Door*> doors;
     std::vector<Chest*> chests;
+    std::vector<Terminal*> terminals;
     std::vector<Tile*> tiles;
     std::vector<Light*> lights;
     bit::QuadTree<Tile>* tileQuadTree;

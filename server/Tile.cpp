@@ -52,7 +52,7 @@ void Tile::playerNearbyUpdate(sf::Time &gameTime, Body* playerCharacterOrSpectat
 void Tile::rebaseLighting()
 {
     // Reset brightness to none
-    schema.illumination = 0.05f;
+    schema.illumination = 0.1f;
 
     // Reset color to black
     schema.rshade = 255;

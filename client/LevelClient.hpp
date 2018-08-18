@@ -20,6 +20,7 @@ class TileClient;
 class WallClient;
 class DoorClient;
 class ChestClient;
+class TerminalClient;
 class CharacterClient;
 
 class LevelClient : public sf::Drawable, public sf::Transformable
@@ -50,11 +51,13 @@ public:
     std::map<unsigned int, WallClient*> walls;
     std::map<unsigned int, DoorClient*> doors;
     std::map<unsigned int, ChestClient*> chests;
+    std::map<unsigned int, TerminalClient*> terminals;
     bit::Pool<TileClient> tilePool;
     bit::Pool<CharacterClient> characterPool;
     bit::Pool<WallClient> wallPool;
     bit::Pool<DoorClient> doorPool;
     bit::Pool<ChestClient> chestPool;
+    bit::Pool<TerminalClient> terminalPool;
     TileClient* hoveredTile;
     TileClient* playerTile;
     CharacterClient* playerCharacter;

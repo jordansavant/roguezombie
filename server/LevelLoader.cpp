@@ -313,7 +313,7 @@ void LevelLoader::Level::unpack(XoGeni::CellMap* cellMap)
 
 
         // Structures
-        if(cell->isWall || cell->isDoor)
+        if(cell->isWall || cell->isDoor || cell->hasStructure)
         {
             structureIdMap.push_back(sId);
             LevelLoader::Structure structureDef;
@@ -342,7 +342,7 @@ void LevelLoader::Level::unpack(XoGeni::CellMap* cellMap)
 
 
 
-        // Structures
+        // Characters
         if (cell->hasCharacter)
         {
             characterIdMap.push_back(cId);
@@ -438,7 +438,15 @@ void LevelLoader::Tile::unpack(XoGeni::Cell* cell, unsigned int tileId)
 void LevelLoader::Structure::unpack(XoGeni::Cell* cell, unsigned int structureId)
 {
     id = structureId;
-    type = cell->isWall ? 1 : 2; // wall or door currently
+    if (cell->isWall) {
+        type = 1;
+    }
+    if (cell->isDoor) {
+        type = 2;
+    }
+    if (cell->hasStructure) {
+        type = cell->structureType;
+    }
     isOpen = false;
     isLocked = false;
 

@@ -29,6 +29,7 @@ bool StructureClient::isOfInteractableType()
             return true;
         }
         default:
+        case Structure::Type::Terminal:
         {
             return false;
         }

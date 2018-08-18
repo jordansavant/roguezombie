@@ -1244,14 +1244,11 @@ void XoGeni::CellMap::spawnTreasure()
     // Iterate rooms, place random enemy
     for (unsigned int i = 0; i < rooms.size(); i++)
     {
-        if (rooms[i] == entranceRoom)
-            continue;
-
         // Test a random cell in the room until one is found
         Cell* cell = getOpenRoomCell(rooms[i], true);
         if (cell) {
             cell->hasStructure = true;
-            cell->structureType = 3; // Chest
+            cell->structureType = 4; // Chest
         }
     }
 }

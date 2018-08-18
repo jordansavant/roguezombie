@@ -7,6 +7,7 @@
 #include "structures/WallClient.hpp"
 #include "structures/DoorClient.hpp"
 #include "structures/ChestClient.hpp"
+#include "structures/TerminalClient.hpp"
 #include "hud/Hud.hpp"
 #include "hud/Minimap.hpp"
 #include "hud/TurnQueue.hpp"
@@ -19,7 +20,7 @@
 #include <map>
 
 LevelClient::LevelClient()
-    : state(NULL), tileCount(0), tileRows(0), tileColumns(0), tileWidth(0), tileHeight(0), levelState(Level::State::Free), tilePool(), characterPool(), doorPool(), chestPool(), hoveredTile(NULL), playerTile(NULL), playerCharacter(NULL), isPlayerDecisionMode(false), isPlayerSpecating(false),
+    : state(NULL), tileCount(0), tileRows(0), tileColumns(0), tileWidth(0), tileHeight(0), levelState(Level::State::Free), tilePool(), characterPool(), doorPool(), chestPool(), terminalPool(), hoveredTile(NULL), playerTile(NULL), playerCharacter(NULL), isPlayerDecisionMode(false), isPlayerSpecating(false),
       selectMode(SelectMode::None), onCharacterSelect(NULL), selectRange(1), selectRadius(1), renderMoveMarkersOnNextSnapshot(false)
 {
 }
@@ -51,6 +52,7 @@ void LevelClient::load(StateGamePlay* _state)
     runners.push_back(new LevelClientRunner<WallClient>(this, &walls, &wallPool, 200));
     runners.push_back(new LevelClientRunner<DoorClient>(this, &doors, &doorPool, 10));
     runners.push_back(new LevelClientRunner<ChestClient>(this, &chests, &chestPool, 10));
+    runners.push_back(new LevelClientRunner<TerminalClient>(this, &terminals, &terminalPool, 10));
 
     // Fill pools
     for(unsigned int i=0; i < runners.size(); i++)
@@ -346,6 +348,9 @@ void LevelClient::handleSnapshot(bit::ServerPacket &packet, bool full)
                         break;
                     case Structure::Type::Chest:
                         s = unpackNetworkEntity<ChestClient>(packet, full, chests, chestPool);
+                        break;
+                    case Structure::Type::Terminal:
+                        s = unpackNetworkEntity<TerminalClient>(packet, full, terminals, terminalPool);
                         break;
                 }
 

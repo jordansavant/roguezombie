@@ -1,5 +1,5 @@
-#include "DoorClient.hpp"
-#include "../../server/structures/Door.hpp"
+#include "TerminalClient.hpp"
+#include "../../server/structures/Terminal.hpp"
 #include "SFML/Graphics.hpp"
 #include "../LevelClient.hpp"
 #include "../StateGamePlay.hpp"
@@ -12,24 +12,24 @@
 #include "../../bitengine/Math.hpp"
 #include "../../bitengine/System.hpp"
 
-DoorClient::DoorClient()
+TerminalClient::TerminalClient()
     : StructureClient()
 {
 }
 
-void DoorClient::clientLoad(LevelClient* _level)
+void TerminalClient::clientLoad(LevelClient* _level)
 {
     level = _level;
 
-    quadIndex = level->vertexMap_charactersNormal.requestVertexIndex();
-    sprite = level->state->rogueZombieGame->spriteLoader->getSprite("Door");
-    sprite->applyToQuad(&level->vertexMap_charactersNormal.vertexArray[quadIndex]);
+    quadIndex = level->vertexMap_charactersToggleIlluminated.requestVertexIndex();
+    sprite = level->state->rogueZombieGame->spriteLoader->getSprite("TerminalA");
+    sprite->applyToQuad(&level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex]);
 }
 
-void DoorClient::clientUpdate(sf::Time &gameTime)
+void TerminalClient::clientUpdate(sf::Time &gameTime)
 {
     // Sprite
-    sprite->applyToQuad(&level->vertexMap_charactersNormal.vertexArray[quadIndex]);
+    sprite->applyToQuad(&level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex]);
 
     // Position
     float spriteWidth = sprite->width;
@@ -47,7 +47,7 @@ void DoorClient::clientUpdate(sf::Time &gameTime)
     float renderY = renderPosition.y - spriteHeight + yFootOffset;
 
     float z = RZConfig::getDrawDepthForGameplay(renderY + spriteHeight);
-    bit::Vertex3* quad = &level->vertexMap_charactersNormal.vertexArray[quadIndex];
+    bit::Vertex3* quad = &level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex];
     bit::VertexHelper::positionQuad(quad, renderX, renderY, z, spriteWidth, spriteHeight);
 
     // Color and luminence
@@ -56,20 +56,14 @@ void DoorClient::clientUpdate(sf::Time &gameTime)
     int b = BodyClient::schema.bshade * BodyClient::schema.illumination;
     sf::Color color(r, g, b);
     bit::VertexHelper::colorQuad(quad, color);
-
-    if(schema.isOpen)
-    {
-        sf::Color dc(color.r, color.g, color.b, 0);
-        bit::VertexHelper::colorQuad(quad, dc);
-    }
 }
 
-void DoorClient::reset()
+void TerminalClient::reset()
 {
-    bit::VertexHelper::resetQuad(&level->vertexMap_charactersNormal.vertexArray[quadIndex]);
+    bit::VertexHelper::resetQuad(&level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex]);
 }
 
-void DoorClient::handleSnapshot(bit::ServerPacket &packet, bool full)
+void TerminalClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
     StructureClient::handleSnapshot(packet, full);
 

@@ -10,6 +10,7 @@
 #include "structures/Wall.hpp"
 #include "structures/Door.hpp"
 #include "structures/Chest.hpp"
+#include "structures/Terminal.hpp"
 #include "levels/Interior.hpp"
 #include "items/Item.hpp"
 #include "lights/Flare.hpp"
@@ -197,6 +198,15 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         chest->schema.isLocked = structureDef.isLocked;
                         chests.push_back(chest);
                         s = chest;
+                        break;
+                    }
+                    case Structure::Type::Terminal:
+                    {
+                        Terminal* terminal = new Terminal();
+                        terminal->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                        terminal->setPosition(t->schema.x, t->schema.y);
+                        terminals.push_back(terminal);
+                        s = terminal;
                         break;
                     }
                 }
@@ -1211,6 +1221,9 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
                         break;
                     case Structure::Type::Chest:
                         packNetworkBody<Chest, Structure>(packet, full, s, b->schema.type, s->schema.type);
+                        break;
+                    case Structure::Type::Terminal:
+                        packNetworkBody<Terminal, Structure>(packet, full, s, b->schema.type, s->schema.type);
                         break;
                 }
                 break;
