@@ -21,6 +21,8 @@ public:
         TerminalA, // 1
         ColumnA, // 2
         TerminalB, // 3
+        DeskA, // 4
+        DeskB, // 5
     };
 
     struct Schema

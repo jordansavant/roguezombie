@@ -1256,7 +1256,15 @@ void XoGeni::CellMap::spawnDecor()
                 {
                     cell->hasStructure = true;
                     cell->structureType = 4; // Furnishing
-                    cell->structureSubType = 1; // Terminal facing South
+                    switch (LevelGenerator::random.next(2))
+                    {
+                        case 0:
+                            cell->structureSubType = 1; // Terminal facing South
+                            break;
+                        case 1:
+                            cell->structureSubType = 4; // Desk South
+                            break;
+                    }
                 }
             }
             return false;
@@ -1274,7 +1282,15 @@ void XoGeni::CellMap::spawnDecor()
                 {
                     cell->hasStructure = true;
                     cell->structureType = 4; // Furnishing
-                    cell->structureSubType = 3; // Terminal facing South
+                    switch (LevelGenerator::random.next(2))
+                    {
+                    case 0:
+                        cell->structureSubType = 3; // Terminal facing East
+                        break;
+                    case 1:
+                        cell->structureSubType = 5; // Desk East
+                        break;
+                    }
                 }
             }
             return false;

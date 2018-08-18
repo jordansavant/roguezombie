@@ -22,6 +22,8 @@ public:
     bit::Sprite* terminalASprite;
     bit::Sprite* terminalBSprite;
     bit::Sprite* columnASprite;
+    bit::Sprite* deskASprite;
+    bit::Sprite* deskBSprite;
     unsigned int quadIndex;
 
     void clientLoad(LevelClient* level);
