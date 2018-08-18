@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
 
     srand(time(NULL));
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X) || true)
     {
         XoGeni::XoGeniGame generator;
         generator.run();

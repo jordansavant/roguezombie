@@ -11,7 +11,7 @@
 #include <sstream>
 
 XoGeni::XoGeniStateStart::XoGeniStateStart(bit::StateStack &stack, XoGeniGame* _game)
-    : bit::State(stack, _game), xoGeniGame(_game), levelGenerator(NULL), cellMap(NULL), seedCounter(0)
+    : bit::State(stack, _game), xoGeniGame(_game), levelGenerator(NULL), cellMap(NULL), seedCounter(0), difficultyCounter(0)
 {
     createCamera(xoGeniGame, 0, 0, 1, 1);
     cameras[0]->panSpeed = 5;
@@ -63,7 +63,7 @@ bool XoGeni::XoGeniStateStart::update(sf::Time &gameTime)
     if(ticks != 0)
     {
         //cameras[0]->changeZoom(ticks);
-        levelRenderer->renderState += ticks > 0 ? 1 : -1;
+        levelRenderer->renderState++;
         levelRenderer->paint();
     }
 
@@ -72,22 +72,29 @@ bool XoGeni::XoGeniStateStart::update(sf::Time &gameTime)
     if(xoGeniGame->inputManager->isButtonPressed(sf::Keyboard::Space))
     {
         run = true;
-        if(xoGeniGame->inputManager->isButtonDown(sf::Keyboard::LShift))
+        if (xoGeniGame->inputManager->isButtonDown(sf::Keyboard::LShift))
+        {
             seedCounter--;
+            difficultyCounter = (difficultyCounter - 1) % CellMap::difficultyMax;
+        }
         else
+        {
             seedCounter++;
+            difficultyCounter = (difficultyCounter + 1) % CellMap::difficultyMax;
+        }
     }
 
     if(cellMap == NULL || run)
     {
         run = false;
         std::stringstream ss;
-        ss << "SEED: " << seedCounter;
+        ss << "SEED: " << seedCounter << std::endl;
+        ss << "DIFF: " << difficultyCounter;
         bit::Output::Debug(ss.str());
 
         if(cellMap)
             delete cellMap;
-        cellMap = levelGenerator->buildMap(seedCounter);
+        cellMap = levelGenerator->buildMap(seedCounter, difficultyCounter);
         levelRenderer->load(cellMap);
 
         // Center camera
@@ -99,6 +106,7 @@ bool XoGeni::XoGeniStateStart::update(sf::Time &gameTime)
         // Special validation routine
         unsigned int testSeed = std::rand(); //seedCounter;
         unsigned int iterations = 10000;
+        unsigned int difficultyLevel = 0;
         std::stringstream ssa;
         ssa << "TESTING " << iterations << " ITERATIONS FROM " << testSeed; 
         bit::Output::Debug(ssa.str());
@@ -111,7 +119,7 @@ bool XoGeni::XoGeniStateStart::update(sf::Time &gameTime)
                 bit::Output::Debug(ssb.str());
             }
 
-            CellMap* testMap = levelGenerator->buildMap(testSeed);
+            CellMap* testMap = levelGenerator->buildMap(testSeed, difficultyLevel);
 
             if(!testMap->testValidity())
             {

@@ -36,7 +36,7 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     fps.fpsText.setFillColor(sf::Color(100, 100, 100));
 
     createCamera(rogueZombieGame, 0, 0, 1, 1);
-    cameras[0]->panSpeed = 3;
+    cameras[0]->panSpeed = 5;
 
     hud = new Hud(this);
     joiningMenu = new JoiningMenu(rogueZombieGame, this);

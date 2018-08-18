@@ -9,8 +9,8 @@
 #include "../../bitengine/Intelligence.hpp"
 #include "../../bitengine/System.hpp"
 
-XoGeni::CellMap::CellMap(unsigned int id, unsigned int width, unsigned int height)
-    : id(id), width(width), height(height), size(width * height),
+XoGeni::CellMap::CellMap(unsigned int id, unsigned int width, unsigned int height, unsigned int difficultyLevel)
+    : id(id), width(width), height(height), size(width * height), difficultyLevel(difficultyLevel),
       entranceRoom(NULL), exitRoom(NULL)
 {
     mapPadding = 1;
@@ -70,6 +70,8 @@ XoGeni::CellMap::~CellMap()
     delete entrance;
     delete exit;
 }
+
+unsigned int XoGeni::CellMap::difficultyMax = 4;
 
 void XoGeni::CellMap::buildGround()
 {
@@ -1215,6 +1217,20 @@ void XoGeni::CellMap::spawnEnemies()
     }
 }
 
+void XoGeni::CellMap::spawnTreasure()
+{
+    // Iterate rooms, place random enemy
+    for (unsigned int i = 0; i < rooms.size(); i++)
+    {
+        // Test a random cell in the room until one is found
+        Cell* cell = getOpenRoomCell(rooms[i], true);
+        if (cell) {
+            cell->hasStructure = true;
+            cell->structureType = 3; // Chest
+        }
+    }
+}
+
 /////////////////////////////////////////
 // ENEMY SPAWNING END
 ////////////////////////////////////////
@@ -1226,7 +1242,7 @@ XoGeni::Cell* XoGeni::CellMap::getOpenRoomCell(Room* room, bool random)
     if (!random) {
         Cell* openCell = NULL;
         inspectCellsInDimension(room->x, room->y, room->width, room->height, [&openCell](Cell* cell) -> bool {
-            if (!cell->isTagUnreachable)
+            if (!cell->isOccupied())
             {
                 openCell = cell;
                 return true; // break inspection loop

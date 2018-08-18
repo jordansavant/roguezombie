@@ -19,13 +19,15 @@ namespace XoGeni
     {
     public:
 
-        CellMap(unsigned int id, unsigned int width, unsigned int height);
+        CellMap(unsigned int id, unsigned int width, unsigned int height, unsigned int difficultyLevel);
 
         ~CellMap();
 
         unsigned int id;
         unsigned int width, height;
         unsigned int size;
+        unsigned int difficultyLevel;
+        static unsigned int difficultyMax;
 
         std::vector<XoGeni::Cell*> cells;
         std::vector<XoGeni::Room*> rooms;
@@ -152,6 +154,8 @@ namespace XoGeni
         // Enemy spawning
 
         void spawnEnemies();
+
+        void spawnTreasure();
 
 
         Cell* getOpenRoomCell(Room* room, bool random);

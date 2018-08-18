@@ -18,13 +18,14 @@ std::vector<XoGeni::CellMap*> XoGeni::LevelGenerator::buildTower(unsigned int se
 {
     random.seed(seed);
 
-    unsigned int mapCount = 1;
+    unsigned int mapCount = 2;
     std::vector<CellMap*> maps;
     CellMap* parent = NULL;
+    unsigned int difficultyLevel = 0;
 
     for(unsigned int mapId = 1; mapId <= mapCount; mapId++)
     {
-        CellMap* map = generate(64, 64, mapId);
+        CellMap* map = generate(64, 64, mapId, difficultyLevel);
         
         // If we have a parent map then connect us
         if(parent != NULL)
@@ -35,24 +36,26 @@ std::vector<XoGeni::CellMap*> XoGeni::LevelGenerator::buildTower(unsigned int se
 
         parent = map;
         maps.push_back(map);
+
+        difficultyLevel++;
     }
 
     return maps;
 }
 
-XoGeni::CellMap* XoGeni::LevelGenerator::buildMap(unsigned int seed)
+XoGeni::CellMap* XoGeni::LevelGenerator::buildMap(unsigned int seed, unsigned int difficultyLevel)
 {
     random.seed(seed);
 
-    CellMap* cellMap = generate(64, 64, 1);
+    CellMap* cellMap = generate(64, 64, 1, difficultyLevel);
 
     return cellMap;
 
 }
 
-XoGeni::CellMap* XoGeni::LevelGenerator::generate(unsigned int width, unsigned int height, unsigned int mapId)
+XoGeni::CellMap* XoGeni::LevelGenerator::generate(unsigned int width, unsigned int height, unsigned int mapId, unsigned int difficultyLevel)
 {
-    CellMap* cellMap = new CellMap(mapId, width, height);
+    CellMap* cellMap = new CellMap(mapId, width, height, difficultyLevel);
 
     cellMap->buildGround();
     cellMap->buildRooms();
@@ -67,7 +70,7 @@ XoGeni::CellMap* XoGeni::LevelGenerator::generate(unsigned int width, unsigned i
     cellMap->buildTags();
 
     cellMap->spawnEnemies();
-    // cellMap->spawnTreasure();
+    cellMap->spawnTreasure();
     // cellMap->spawnTraps();
 
     return cellMap;

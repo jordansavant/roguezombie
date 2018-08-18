@@ -66,7 +66,12 @@ namespace XoGeni
         bool hasCharacter;
         unsigned int characterType;
 
+        bool hasStructure;
+        unsigned int structureType;
+
         unsigned int metadata_floodfillId;
+
+        bool isOccupied();
 
     };
 }

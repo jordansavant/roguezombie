@@ -83,11 +83,12 @@ void XoGeni::XoLevelRenderer::paint()
         sf::Color colorEntrance = sf::Color(255, 125, 0);
         sf::Color colorWall = sf::Color(0, 40, 60);
         sf::Color colorTagUnreachable = sf::Color(0, 15, 30);
-        sf::Color colorEnemy = sf::Color(255, 155, 155);
+        sf::Color colorEnemy = sf::Color::Magenta;
+        sf::Color colorStructure = sf::Color(200, 100, 0);
 
         sf::Color color = colorGround;
 
-        unsigned int stateCount = 13;
+        unsigned int stateCount = 14;
         switch(renderState % stateCount)
         {
             // Rooms only
@@ -285,6 +286,33 @@ void XoGeni::XoLevelRenderer::paint()
                 break;
             // Enemies added
             // Final
+            case 13:
+                if (cell->room)
+                    if (cell->isRoomEdge)
+                        color = colorRoomEdge;
+                    else
+                        color = colorRoom;
+                if (cell->isRoomPermiter)
+                    color = colorRoomPerimeter;
+                if (cell->isTunnel)
+                    color = colorTunnel;
+                if (cell->isDoor)
+                    color = sf::Color::Yellow;
+                if (cell->isEntranceTransition)
+                    color = colorEntranceTransition;
+                if (cell->isExitTransition)
+                    color = colorExitTransition;
+                if (cell->isEntrance)
+                    color = colorEntrance;
+                if (cell->isWall)
+                    color = colorWall;
+                if (cell->isTagUnreachable)
+                    color = colorTagUnreachable;
+                if (cell->hasCharacter)
+                    color = colorEnemy;
+                break;
+            // Treasure added
+            // Final
             default:
             case 0:
                 if (cell->room)
@@ -310,6 +338,8 @@ void XoGeni::XoLevelRenderer::paint()
                     color = colorTagUnreachable;
                 if (cell->hasCharacter)
                     color = colorEnemy;
+                if (cell->hasStructure)
+                    color = colorStructure;
                 break;
         }
         

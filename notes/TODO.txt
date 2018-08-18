@@ -1,0 +1,74 @@
+
+Bugs:
+
+
+Improvements:
+
+
+Story:
+
+Labratory experiment escaped, part zombie, part human
+Start deep underground several levels down
+Must get to surface level to escape
+At surface level, tower ascends as optional boss up top
+
+
+Enemies:
+- Brogue uses depth and out-of-depth concepts to only spawn enemies of certain powers at certain depths (ood is miniboss stuff)
+- Get a list of some basic enemies, stat ranges, starting weapons and depth numbers
+- Spawn one random enemy per room for that depth, don't spawn in entry rooms
+- Spawn one chest in a random room, and one in the exit room
+
+
+Tier 0
+
+	Enemy
+	- Scientists
+	
+	Weapons
+	- Fists
+	- Bricks
+
+	Armor
+	- Rubber Gloves
+	
+	Items
+	- None
+
+Tier 1
+	Enemy
+	- Security Guards w/ Batons
+	- Security Guards w/ Pistols
+	
+	Weapons
+	- Pistol
+	- Baton
+	
+	Armor
+	- Football Pads
+	
+	Items
+	- Medkit?
+	
+Tier 2
+
+	Enemy
+	- Hunter
+
+	Weapons
+	- Rifle
+	- Grenade
+
+Tier 3
+	
+	Enemy
+	- Androids
+	- Ogres
+
+	Weapons
+	- Laser cannon
+
+
+
+
+
