@@ -1,6 +1,6 @@
 #pragma once
-#ifndef RZ_TERMINAL_H
-#define RZ_TERMINAL_H
+#ifndef RZ_Furnishing_H
+#define RZ_Furnishing_H
 
 #include "SFML/Graphics.hpp"
 #include "../../bitengine/Game.hpp"
@@ -9,11 +9,11 @@
 
 class Level;
 
-class Terminal : public Structure
+class Furnishing : public Structure
 {
 public:
 
-    Terminal();
+    Furnishing();
 
     enum SubType
     {
@@ -25,7 +25,7 @@ public:
     struct Schema
     {
         Schema()
-            : subtype(Terminal::SubType::None)
+            : subtype(Furnishing::SubType::None)
         {
         }
 
@@ -38,7 +38,7 @@ public:
         }
         friend sf::Packet& operator >>(sf::Packet& packet, Schema &schema)
         {
-            bit::NetworkHelper::unpackEnum<sf::Uint32, Terminal::SubType>(packet, schema.subtype);
+            bit::NetworkHelper::unpackEnum<sf::Uint32, Furnishing::SubType>(packet, schema.subtype);
             return packet;
         }
     };

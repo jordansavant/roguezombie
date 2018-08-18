@@ -24,7 +24,7 @@ public:
         Wall,
         Door,
         Chest,
-        Terminal
+        Furnishing
     };
 
     struct Schema

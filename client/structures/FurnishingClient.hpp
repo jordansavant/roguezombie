@@ -1,8 +1,8 @@
 #pragma once
-#ifndef RZ_TERMINALCLIENT_H
-#define RZ_TERMINALCLIENT_H
+#ifndef RZ_FURNISHINGCLIENT_H
+#define RZ_FURNISHINGCLIENT_H
 
-#include "../../server/structures/Terminal.hpp"
+#include "../../server/structures/Furnishing.hpp"
 #include "../StructureClient.hpp"
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
@@ -12,13 +12,13 @@
 
 class LevelClient;
 
-class TerminalClient : public StructureClient
+class FurnishingClient : public StructureClient
 {
 public:
 
-    TerminalClient();
+    FurnishingClient();
 
-    Terminal::Schema schema;
+    Furnishing::Schema schema;
     bit::Sprite* terminalASprite;
     bit::Sprite* columnASprite;
     unsigned int quadIndex;

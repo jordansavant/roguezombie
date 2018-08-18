@@ -1248,7 +1248,7 @@ void XoGeni::CellMap::spawnTreasure()
         Cell* cell = getOpenRoomCell(rooms[i], true);
         if (cell) {
             cell->hasStructure = true;
-            cell->structureType = 4; // Terminal
+            cell->structureType = 4; // Furnishing
             cell->structureSubType = 1 + LevelGenerator::random.next(2);
             int brk = 0;
         }

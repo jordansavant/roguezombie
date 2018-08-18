@@ -1,5 +1,5 @@
-#include "TerminalClient.hpp"
-#include "../../server/structures/Terminal.hpp"
+#include "FurnishingClient.hpp"
+#include "../../server/structures/Furnishing.hpp"
 #include "SFML/Graphics.hpp"
 #include "../LevelClient.hpp"
 #include "../StateGamePlay.hpp"
@@ -12,12 +12,12 @@
 #include "../../bitengine/Math.hpp"
 #include "../../bitengine/System.hpp"
 
-TerminalClient::TerminalClient()
+FurnishingClient::FurnishingClient()
     : StructureClient()
 {
 }
 
-void TerminalClient::clientLoad(LevelClient* _level)
+void FurnishingClient::clientLoad(LevelClient* _level)
 {
     level = _level;
 
@@ -27,16 +27,16 @@ void TerminalClient::clientLoad(LevelClient* _level)
     //sprite->applyToQuad(&level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex]);
 }
 
-void TerminalClient::clientUpdate(sf::Time &gameTime)
+void FurnishingClient::clientUpdate(sf::Time &gameTime)
 {
     // Sprite
     bit::Sprite* sprite = NULL;
     switch (schema.subtype) {
         default:
-        case Terminal::SubType::TerminalA:
+        case Furnishing::SubType::TerminalA:
             sprite = terminalASprite;
             break;
-        case Terminal::SubType::ColumnA:
+        case Furnishing::SubType::ColumnA:
             sprite = columnASprite;
             break;
     }
@@ -70,12 +70,12 @@ void TerminalClient::clientUpdate(sf::Time &gameTime)
     bit::VertexHelper::colorQuad(quad, color);
 }
 
-void TerminalClient::reset()
+void FurnishingClient::reset()
 {
     bit::VertexHelper::resetQuad(&level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex]);
 }
 
-void TerminalClient::handleSnapshot(bit::ServerPacket &packet, bool full)
+void FurnishingClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
     StructureClient::handleSnapshot(packet, full);
 

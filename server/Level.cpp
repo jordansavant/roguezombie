@@ -10,7 +10,7 @@
 #include "structures/Wall.hpp"
 #include "structures/Door.hpp"
 #include "structures/Chest.hpp"
-#include "structures/Terminal.hpp"
+#include "structures/Furnishing.hpp"
 #include "levels/Interior.hpp"
 #include "items/Item.hpp"
 #include "lights/Flare.hpp"
@@ -97,7 +97,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
     runners.push_back(new LevelRunner<Wall>(this, &walls));
     runners.push_back(new LevelRunner<Door>(this, &doors));
     runners.push_back(new LevelRunner<Chest>(this, &chests));
-    runners.push_back(new LevelRunner<Terminal>(this, &terminals));
+    runners.push_back(new LevelRunner<Furnishing>(this, &furnishings));
     runners.push_back(new LevelRunner<Light>(this, &lights));
 
     // Map
@@ -201,14 +201,14 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         s = chest;
                         break;
                     }
-                    case Structure::Type::Terminal:
+                    case Structure::Type::Furnishing:
                     {
-                        Terminal* terminal = new Terminal();
-                        terminal->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
-                        terminal->setPosition(t->schema.x, t->schema.y);
-                        terminal->schema.subtype = static_cast<Terminal::SubType>(structureDef.subtype);
-                        terminals.push_back(terminal);
-                        s = terminal;
+                        Furnishing* furnishing = new Furnishing();
+                        furnishing->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                        furnishing->setPosition(t->schema.x, t->schema.y);
+                        furnishing->schema.subtype = static_cast<Furnishing::SubType>(structureDef.subtype);
+                        furnishings.push_back(furnishing);
+                        s = furnishing;
                         break;
                     }
                 }
@@ -1224,8 +1224,8 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
                     case Structure::Type::Chest:
                         packNetworkBody<Chest, Structure>(packet, full, s, b->schema.type, s->schema.type);
                         break;
-                    case Structure::Type::Terminal:
-                        packNetworkBody<Terminal, Structure>(packet, full, s, b->schema.type, s->schema.type);
+                    case Structure::Type::Furnishing:
+                        packNetworkBody<Furnishing, Structure>(packet, full, s, b->schema.type, s->schema.type);
                         break;
                 }
                 break;
