@@ -10,7 +10,7 @@
 #include <sstream>
 
 RogueZombieGame::RogueZombieGame()
-    : VideoGame("Rogue Zombie", 1280, 720, false, 0), errorMessage(""), mouse(resourcePath() + "mouse.png")
+    : VideoGame("Rogue Zombie", 1920, 1080, false, 0), errorMessage(""), mouse(resourcePath() + "mouse.png")
 {
     Game::stateStack->pushState(stateGameStart);
     exploreMusic = musicManager->loadMusic(resourcePath() + "bit_song_heartbeat.ogg");

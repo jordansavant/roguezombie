@@ -40,75 +40,31 @@ sf::Vector2f bit::VectorMath::lerp(float x1, float y1, float x2, float y2, float
 
 void bit::VectorMath::incrementTowards(float &x1, float &y1, float x2, float y2, float xAmount, float yAmount)
 {
-    if((std::abs(x2 - x1) > xAmount || std::abs(y2 - y1) > yAmount))
-    {
-        if(x2 > x1)
-            x1 += xAmount;
-        else if(x2 < x1)
-            x1 -= xAmount;
+    float tx = x2 - x1;
+    float ty = y2 - y1;
+    float dist = std::sqrt(tx*tx + ty*ty);
 
-        if(y2 > y1)
-            y1 += yAmount;
-        else if(y2 < y1)
-            y1 -= yAmount;
+    float velX = (tx / dist)*xAmount;
+    float velY = (ty / dist)*yAmount;
+
+    if (dist > xAmount) {
+        // add our velocities
+        x1 += velX;
+        y1 += velY;
     }
-    else
-    {
+    else {
         x1 = x2;
         y1 = y2;
     }
+
+    return;
 }
 
-void bit::VectorMath::functionTowards(float &x, float &y, float startX, float startY, float endX, float endY, float lerpX, float lerpY, float xAmount, float yAmount)
+void bit::VectorMath::functionTowards(float &x1, float &y1, float x2, float y2, float xAmount, float yAmount)
 {
-    // If we need to move
-    if ((std::abs(endX - lerpX) > xAmount || std::abs(endY - lerpY) > yAmount))
-    {
-        // Get the total distance
-        float distX = std::abs(endX - startX);
-        float distY = std::abs(endY - startY);
-
-        // Get the distance traveled
-        float curX = std::abs(lerpX - startX);
-        float curY = std::abs(lerpY - startY);
-
-        float ratioX = curX / distX;
-        float ratioY = curY / distY;
-
-        // Get our sin values for this travel distance
-        if (distX > 0)
-        {
-            float sinX = std::sin(ratioX * Math::Pi);
-            sinX = sinX < .001 ? 0 : sinX;
-            float goX = sinX * xAmount;
-
-            if (endX > x)
-                x += goX;
-            else if (endX < x)
-                x -= goX;
-            else
-                x = endX;
-        }
-
-        if (distY > 0)
-        {
-            float sinY = std::sin(ratioY * Math::Pi);
-            sinY = sinY < .001 ? 0 : sinY;
-            float goY = sinY * yAmount;
-
-            if (endY > y)
-                y += goY;
-            else if (endY < y)
-                y -= goY;
-            else
-                y = endY;
-        }
-    }
-    else
-    {
-        x = lerpX;
-        y = lerpY;
-    }
+    x1 += (x2 - x1) / xAmount;
+    y1 += (y2 - y1) / yAmount;
+    return;
 }
 
 void bit::VectorMath::applyDeadZone(sf::Vector2f* v, float deadZone)

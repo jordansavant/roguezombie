@@ -20,7 +20,7 @@ namespace bit
 
         static void incrementTowards(float &x1, float &y1, float x2, float y2, float xAmount, float yAmount);
 
-        static void functionTowards(float &x, float &y, float startX, float startY, float endX, float endY, float lerpX, float lerpY, float xAmount, float yAmount);
+        static void functionTowards(float &x1, float &y1, float x2, float y2, float xAmount, float yAmount);
 
         static void applyDeadZone(sf::Vector2f* v, float deadZone);
 
