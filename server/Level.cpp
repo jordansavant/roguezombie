@@ -1088,7 +1088,7 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
             packet << sf::Uint32(turnQueue.size());
             for(unsigned int i=0; i < turnQueue.size(); i++)
             {
-                if(!turnQueue[i]->schema.isDead())
+                if((!turnQueue[i]->schema.isDead() && turnQueue[i]->isHostileCombatDetected) || turnQueue[i]->schema.isPlayerCharacter)
                 {
                     packet << true;
                     if(first)

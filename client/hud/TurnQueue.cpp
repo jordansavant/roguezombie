@@ -45,10 +45,10 @@ void TurnQueue::handleTurnQueue(bit::ServerPacket &packet)
     bool first = true;
     for(unsigned int i=0; i < size; i++)
     {
-        bool alive;
-        packet >> alive;
+        bool shown;
+        packet >> shown;
 
-        if(alive)
+        if(shown)
         {
             if(first)
             {
@@ -74,7 +74,7 @@ void TurnQueue::handleTurnQueue(bit::ServerPacket &packet)
             he->sprite->applyToQuad(&hud->interfaceVertexMap.vertexArray[he->quadIndex]);
             he->scaleStyle = Element::ScaleStyle::PowerOfTwo;
             he->relativePosition.y = y;
-            he->color = first ?  sf::Color(100, 255, 100) : sf::Color(25, 75, 25);
+            he->color = first ?  sf::Color(125, 255, 125) : sf::Color(200, 200, 200);
 
             y -= 40;
             first = false;
