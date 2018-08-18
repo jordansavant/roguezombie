@@ -261,7 +261,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         hunter->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
                         hunter->moveToPosition(t->schema.x, t->schema.y);
                         hunters.push_back(hunter);
-                        hunter->hostilityCheckAi = AiRoutines::Combat::Hunter_DetectHostility;
+                        hunter->hostilityCheckAi = AiRoutines::Combat::Generic_DetectHostility;
                         hunter->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
                         hunter->combatDecisionAi = AiRoutines::Combat::Hunter_DecideCombat;
                         hunter->getStartingDialog = std::bind(&Level::getDialogTree, this);
@@ -274,9 +274,9 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         scientist->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
                         scientist->moveToPosition(t->schema.x, t->schema.y);
                         scientists.push_back(scientist);
-                        scientist->hostilityCheckAi = AiRoutines::Combat::Hunter_DetectHostility;
+                        scientist->hostilityCheckAi = AiRoutines::Combat::Generic_DetectHostility;
                         scientist->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
-                        scientist->combatDecisionAi = AiRoutines::Combat::Hunter_DecideCombat;
+                        scientist->combatDecisionAi = AiRoutines::Combat::Scientist_DecideCombat;
                         scientist->getStartingDialog = std::bind(&Level::getDialogTree, this);
                         c = scientist;
                         break;

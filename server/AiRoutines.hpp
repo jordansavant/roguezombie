@@ -27,9 +27,11 @@ public:
 
         static void Zombie_DecideCombat(Character* character);
 
-        static bool Hunter_DetectHostility(Character* character, Character* other);
+        static bool Generic_DetectHostility(Character* character, Character* other);
 
         static void Hunter_DecideCombat(Character* character);
+
+        static void Scientist_DecideCombat(Character* character);
 
     };
 };
