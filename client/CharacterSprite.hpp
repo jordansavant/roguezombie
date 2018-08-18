@@ -20,9 +20,11 @@ public:
     CharacterClient* character;
     bool cleanRender;
     float renderX, renderY;
+    float lerpX, lerpY;
     float screenX, screenY;
     unsigned int width, height, baseOffsetX, baseOffsetY;
     bool facingRight;
+    float startRenderX, startRenderY;
     float lastRenderX, lastRenderY;
     bit::VertexMap* highlightMap;
     bit::VertexMap* normalMap;

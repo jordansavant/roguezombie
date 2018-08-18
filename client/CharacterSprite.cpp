@@ -7,7 +7,7 @@
 #include "RZConfig.hpp"
 
 CharacterSprite::CharacterSprite(unsigned int width, unsigned int height, unsigned int baseOffsetX, unsigned int baseOffsetY)
-    : character(NULL), cleanRender(true), renderX(0), renderY(0), width(width), height(height), baseOffsetX(baseOffsetX), baseOffsetY(baseOffsetY), facingRight(true), lastRenderX(0), lastRenderY(0),
+    : character(NULL), cleanRender(true), renderX(0), renderY(0), lerpX(0), lerpY(0), width(width), height(height), baseOffsetX(baseOffsetX), baseOffsetY(baseOffsetY), facingRight(true), startRenderX(0), startRenderY(0), lastRenderX(0), lastRenderY(0),
       highlightMap(NULL), normalMap(NULL), spriteLoader(NULL), headSprite(NULL), frontarmSprite(NULL), bodySprite(NULL), shadowSprite(NULL)
 {
     equipmentProfiles.resize(Character::EquipmentSlot::_count);
@@ -47,16 +47,34 @@ void CharacterSprite::update(sf::Time &gameTime)
     lastRenderY = renderY;
     if(cleanRender || (renderX == 0 && renderY == 0))
     {
+        // First Render
         renderX = character->BodyClient::schema.x;
         renderY = character->BodyClient::schema.y;
+        lerpX = renderX;
+        lerpY = renderY;
+        startRenderX = renderX;
+        startRenderY = renderY;
         lastRenderX = renderX;
         lastRenderY = renderY;
         cleanRender = false;
     }
+    else if (lerpX != character->BodyClient::schema.x || lerpY != character->BodyClient::schema.y)
+    {
+        // Not where we should be so interpolate to destination
+        bit::VectorMath::incrementTowards(lerpX, lerpY, character->BodyClient::schema.x, character->BodyClient::schema.y, 3, 3);
+
+        // Make my render position be a lerp of the value towards it
+        //bit::VectorMath::functionTowards(renderX, renderY, startRenderX, startRenderY, character->BodyClient::schema.x, character->BodyClient::schema.y, lerpX, lerpY, 1, 1);
+    }
     else
     {
-        bit::VectorMath::incrementTowards(renderX, renderY, character->BodyClient::schema.x, character->BodyClient::schema.y, 4, 4);
+        // We are at a stationary position
+        startRenderX = lerpX;
+        startRenderY = lerpY;
     }
+
+    renderX = lerpX;
+    renderY = lerpY;
 
     sf::Vector2f facing = bit::VectorMath::normalToIsometric(character->schema.direction.x, character->schema.direction.y);
     if(facing.x != 0)
