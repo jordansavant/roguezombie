@@ -1254,7 +1254,6 @@ void XoGeni::CellMap::spawnDecor()
                     && !northCell->isTunnel && !eastCell->isTunnel && !westCell->isTunnel && !southCell->isTunnel
                     && LevelGenerator::random.next(3) == 0)
                 {
-
                     cell->hasStructure = true;
                     cell->structureType = 4; // Furnishing
                     cell->structureSubType = 1; // Terminal facing South
@@ -1273,10 +1272,9 @@ void XoGeni::CellMap::spawnDecor()
                     && !northCell->isTunnel && !eastCell->isTunnel && !westCell->isTunnel && !southCell->isTunnel
                     && LevelGenerator::random.next(3) == 0)
                 {
-
                     cell->hasStructure = true;
                     cell->structureType = 4; // Furnishing
-                    cell->structureSubType = 1; // Terminal facing South (TODO MAKE FACING WEST)!
+                    cell->structureSubType = 3; // Terminal facing South
                 }
             }
             return false;

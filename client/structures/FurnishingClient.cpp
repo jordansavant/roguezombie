@@ -23,6 +23,7 @@ void FurnishingClient::clientLoad(LevelClient* _level)
 
     quadIndex = level->vertexMap_charactersToggleIlluminated.requestVertexIndex();
     terminalASprite = level->state->rogueZombieGame->spriteLoader->getSprite("TerminalA");
+    terminalBSprite = level->state->rogueZombieGame->spriteLoader->getSprite("TerminalB");
     columnASprite = level->state->rogueZombieGame->spriteLoader->getSprite("ColumnA");
     //sprite->applyToQuad(&level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex]);
 }
@@ -35,6 +36,9 @@ void FurnishingClient::clientUpdate(sf::Time &gameTime)
         default:
         case Furnishing::SubType::TerminalA:
             sprite = terminalASprite;
+            break;
+        case Furnishing::SubType::TerminalB:
+            sprite = terminalBSprite;
             break;
         case Furnishing::SubType::ColumnA:
             sprite = columnASprite;

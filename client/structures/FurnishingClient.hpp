@@ -20,6 +20,7 @@ public:
 
     Furnishing::Schema schema;
     bit::Sprite* terminalASprite;
+    bit::Sprite* terminalBSprite;
     bit::Sprite* columnASprite;
     unsigned int quadIndex;
 

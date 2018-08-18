@@ -20,6 +20,7 @@ public:
         None, // 0
         TerminalA, // 1
         ColumnA, // 2
+        TerminalB, // 3
     };
 
     struct Schema
