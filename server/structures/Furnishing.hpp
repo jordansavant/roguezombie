@@ -24,7 +24,8 @@ public:
         DeskA, // 4
         DeskB, // 5
         SinkA, // 6
-        SinkB // 7
+        SinkB, // 7
+        OpTableA, // 8
     };
 
     struct Schema

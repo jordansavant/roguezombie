@@ -1253,6 +1253,12 @@ void XoGeni::CellMap::spawnDecor()
                         case 0:
                             cell->structureType = 4; // Furnishing
                             cell->structureSubType = 1; // Terminal facing South
+                            cell->hasLight = true;
+                            cell->lightColorR = 50;
+                            cell->lightColorG = 255;
+                            cell->lightColorB = 50;
+                            cell->lightRadius = 2;
+                            cell->lightOpacity = 0.5;
                             break;
                         case 1:
                             cell->structureType = 4; // Furnishing
@@ -1280,6 +1286,12 @@ void XoGeni::CellMap::spawnDecor()
                         case 0:
                             cell->structureType = 4; // Furnishing
                             cell->structureSubType = 3; // Terminal facing East
+                            cell->hasLight = true;
+                            cell->lightColorR = 50;
+                            cell->lightColorG = 255;
+                            cell->lightColorB = 50;
+                            cell->lightRadius = 2;
+                            cell->lightOpacity = 0.5;
                             break;
                         case 1:
                             cell->structureType = 4; // Furnishing
@@ -1303,7 +1315,13 @@ void XoGeni::CellMap::spawnDecor()
         if (cell) {
             cell->hasStructure = true;
             cell->structureType = 4; // Terminal
-            cell->structureSubType = LevelGenerator::random.of(4, 5);
+            cell->structureSubType = LevelGenerator::random.of(8, 8, 8); // desk south, desk east, sink east, op table
+            cell->hasLight = true;
+            cell->lightColorR = 255;
+            cell->lightColorG = 255;
+            cell->lightColorB = 255;
+            cell->lightRadius = 2;
+            cell->lightOpacity = 0.75;
             int brk = 0;
         }
 
