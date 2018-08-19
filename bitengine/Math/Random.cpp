@@ -1,5 +1,6 @@
 #include "Random.hpp"
 #include <random>
+#include <cstdarg>
 #include "mtrand.hpp"
 
 bit::Random::Random()
@@ -32,14 +33,62 @@ unsigned int bit::Random::next()
     return engine();
 }
 
-unsigned int bit::Random::next(int max)
+unsigned int bit::Random::next(unsigned int max)
 {
     return next() % max;
 }
 
-unsigned int bit::Random::next(int min, int max)
+unsigned int bit::Random::next(unsigned int min, unsigned int max)
 {
     return next() % (max - min) + min;
+}
+
+
+
+int bit::Random::of(int a, int b)
+{
+    switch (next(2)) {
+        case 0: return a;
+        case 1: return b;
+    }
+}
+int bit::Random::of(int a, int b, int c)
+{
+    switch (next(3)) {
+        case 0: return a;
+        case 1: return b;
+        case 2: return c;
+    }
+}
+int bit::Random::of(int a, int b, int c, int d)
+{
+    switch (next(4)) {
+        case 0: return a;
+        case 1: return b;
+        case 2: return c;
+        case 3: return d;
+    }
+}
+int bit::Random::of(int a, int b, int c, int d, int e)
+{
+    switch (next(5)) {
+        case 0: return a;
+        case 1: return b;
+        case 2: return c;
+        case 3: return d;
+        case 4: return e;
+    }
+}
+int bit::Random::of(int a, int b, int c, int d, int e, int f)
+{
+    switch (next(5)) {
+        case 0: return a;
+        case 1: return b;
+        case 2: return c;
+        case 3: return d;
+        case 4: return e;
+        case 5: return f;
+    }
 }
 
 float bit::Random::nextFloat()

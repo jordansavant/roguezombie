@@ -1,4 +1,5 @@
 #include "bitengine/System.hpp"
+#include "bitengine/Math.hpp"
 #include "bitengine/System/tinyxml2.h"
 #include "client/RogueZombieGame.hpp"
 #include "server/RogueZombieServer.hpp"

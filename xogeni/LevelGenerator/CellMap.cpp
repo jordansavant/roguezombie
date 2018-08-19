@@ -1295,7 +1295,7 @@ void XoGeni::CellMap::spawnDecor()
         if (cell) {
             cell->hasStructure = true;
             cell->structureType = 4; // Terminal
-            cell->structureSubType = 1 + LevelGenerator::random.next(4);
+            cell->structureSubType = LevelGenerator::random.of(4, 5);
             int brk = 0;
         }
 

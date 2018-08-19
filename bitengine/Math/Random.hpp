@@ -24,9 +24,15 @@ namespace bit
 
         unsigned int next();
 
-        unsigned int next(int max);
+        unsigned int next(unsigned int max);
 
-        unsigned int next(int min, int max);
+        unsigned int next(unsigned int min, unsigned int max);
+        
+        int of(int a, int b);
+        int of(int a, int b, int c);
+        int of(int a, int b, int c, int d);
+        int of(int a, int b, int c, int d, int e);
+        int of(int a, int b, int c, int d, int e, int f);
 
         float nextFloat();
 

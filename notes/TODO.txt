@@ -1,6 +1,8 @@
 
 Bugs:
 
+- MISSING 2 STAIRWELL SPRITES
+- During combat when clicking move it moves as far as it can, then it holds onto the waypoint and moves there after combat ends
 
 Improvements:
 
