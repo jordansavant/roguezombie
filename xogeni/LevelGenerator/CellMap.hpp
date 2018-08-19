@@ -178,6 +178,10 @@ namespace XoGeni
 
         void inspectRoomEastCells(Room* room, const std::function<bool(Cell* cell)> &inspector);
 
+        void inspectRoomSouthCells(Room* room, const std::function<bool(Cell* cell)> &inspector);
+
+        void inspectRoomWestCells(Room* room, const std::function<bool(Cell* cell)> &inspector);
+
         Cell* getCellAtPosition(unsigned int x, unsigned int y);
 
         Cell* getCellAtPositionNullable(unsigned int x, unsigned int y);

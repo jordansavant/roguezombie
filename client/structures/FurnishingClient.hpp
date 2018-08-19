@@ -28,6 +28,11 @@ public:
     bit::Sprite* sinkBSprite;
     bit::Sprite* opTableASprite;
     bit::Sprite* pilonASprite;
+    bit::Sprite* trashCanASprite;
+    bit::Sprite* trashCanBSprite;
+    bit::Sprite* rollingTerminalASprite;
+    bit::Sprite* deskBeakerBSprite;
+    bit::Sprite* deskCoffeeASprite;
     unsigned int quadIndex;
 
     void clientLoad(LevelClient* level);

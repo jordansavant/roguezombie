@@ -31,6 +31,11 @@ void FurnishingClient::clientLoad(LevelClient* _level)
     sinkBSprite = level->state->rogueZombieGame->spriteLoader->getSprite("SinkB");
     opTableASprite = level->state->rogueZombieGame->spriteLoader->getSprite("OpTableA");
     pilonASprite = level->state->rogueZombieGame->spriteLoader->getSprite("PilonA");
+    trashCanASprite = level->state->rogueZombieGame->spriteLoader->getSprite("TrashCanA");
+    trashCanBSprite = level->state->rogueZombieGame->spriteLoader->getSprite("TrashCanB");
+    rollingTerminalASprite = level->state->rogueZombieGame->spriteLoader->getSprite("RollingTerminalA");
+    deskBeakerBSprite = level->state->rogueZombieGame->spriteLoader->getSprite("DeskBeakerB");
+    deskCoffeeASprite = level->state->rogueZombieGame->spriteLoader->getSprite("DeskCoffeeA");
     //sprite->applyToQuad(&level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex]);
 }
 
@@ -66,6 +71,21 @@ void FurnishingClient::clientUpdate(sf::Time &gameTime)
             break;
         case Furnishing::SubType::PilonA:
             sprite = pilonASprite;
+            break;
+        case Furnishing::SubType::TrashCanA:
+            sprite = trashCanASprite;
+            break;
+        case Furnishing::SubType::TrashCanB:
+            sprite = trashCanBSprite;
+            break;
+        case Furnishing::SubType::RollingTerminalA:
+            sprite = rollingTerminalASprite;
+            break;
+        case Furnishing::SubType::DeskBeakerB:
+            sprite = deskBeakerBSprite;
+            break;
+        case Furnishing::SubType::DeskCoffeeA:
+            sprite = deskCoffeeASprite;
             break;
     }
 

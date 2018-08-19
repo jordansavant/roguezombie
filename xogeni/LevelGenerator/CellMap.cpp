@@ -1248,7 +1248,7 @@ void XoGeni::CellMap::spawnDecor()
                 if (LevelGenerator::random.next(3) == 0)
                 {
                     cell->hasStructure = true;
-                    cell->decorate(4, LevelGenerator::random.of(1, 4, 4, 4, 6));
+                    cell->decorate(4, LevelGenerator::random.of(1, 4, 4, 6, 9, 10, 11, 12, 14));
                 }
             }
             return false;
@@ -1258,7 +1258,27 @@ void XoGeni::CellMap::spawnDecor()
                 if (LevelGenerator::random.next(3) == 0)
                 {
                     cell->hasStructure = true;
-                    cell->decorate(4, LevelGenerator::random.of(3, 5, 5, 5, 7));
+                    cell->decorate(4, LevelGenerator::random.of(3, 5, 5, 7, 9, 10, 11, 13));
+                }
+            }
+            return false;
+        });
+        inspectRoomSouthCells(room, [this](Cell* cell) -> bool {
+            if (!cell->isOccupied() && isCellSafeToBlock(cell)) {
+                if (LevelGenerator::random.next(6) == 0)
+                {
+                    cell->hasStructure = true;
+                    cell->decorate(4, LevelGenerator::random.of(4, 4, 4, 9, 10, 11));
+                }
+            }
+            return false;
+        });
+        inspectRoomWestCells(room, [this](Cell* cell) -> bool {
+            if (!cell->isOccupied() && isCellSafeToBlock(cell)) {
+                if (LevelGenerator::random.next(6) == 0)
+                {
+                    cell->hasStructure = true;
+                    cell->decorate(4, LevelGenerator::random.of(5, 5, 5, 9, 10, 11));
                 }
             }
             return false;
@@ -1268,7 +1288,7 @@ void XoGeni::CellMap::spawnDecor()
         Cell * cell = getSafeToBlockRoomCell(rooms[i], true, 2);
         if (cell) {
             cell->hasStructure = true;
-            cell->decorate(4, LevelGenerator::random.of(8, 9));
+            cell->decorate(4, LevelGenerator::random.of(8, 9, 12));
         }
 
     }
@@ -1442,6 +1462,28 @@ void XoGeni::CellMap::inspectRoomEastCells(Room* room, const std::function<bool(
     for (unsigned int j = room->y; j < room->y + room->height; j++) // rows
     {
         Cell* cell = getCellAtPosition(room->x, j);
+        bool complete = inspector(cell);
+        if (complete)
+            break;
+    }
+}
+
+void XoGeni::CellMap::inspectRoomSouthCells(Room* room, const std::function<bool(Cell* cell)> &inspector)
+{
+    for (unsigned int i = room->x; i < room->x + room->width; i++) // cols
+    {
+        Cell* cell = getCellAtPosition(i, room->y + room->height - 1);
+        bool complete = inspector(cell);
+        if (complete)
+            break;
+    }
+}
+
+void XoGeni::CellMap::inspectRoomWestCells(Room* room, const std::function<bool(Cell* cell)> &inspector)
+{
+    for (unsigned int j = room->y; j < room->y + room->height; j++) // rows
+    {
+        Cell* cell = getCellAtPosition(room->x + room->width - 1, j);
         bool complete = inspector(cell);
         if (complete)
             break;

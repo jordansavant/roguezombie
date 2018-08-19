@@ -33,6 +33,11 @@ namespace bit
         int of(int a, int b, int c, int d);
         int of(int a, int b, int c, int d, int e);
         int of(int a, int b, int c, int d, int e, int f);
+        int of(int a, int b, int c, int d, int e, int f, int g);
+        int of(int a, int b, int c, int d, int e, int f, int g, int h);
+        int of(int a, int b, int c, int d, int e, int f, int g, int h, int i);
+        int of(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j);
+        int of(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k);
 
         float nextFloat();
 

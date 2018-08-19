@@ -27,6 +27,11 @@ public:
         SinkB, // 7
         OpTableA, // 8
         PilonA, // 9
+        TrashCanA, // 10
+        TrashCanB, // 11
+        RollingTerminalA, // 12
+        DeskBeakerB, // 13
+        DeskCoffeeA, // 14
     };
 
     struct Schema
