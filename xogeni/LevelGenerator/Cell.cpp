@@ -75,6 +75,14 @@ void XoGeni::Cell::decorate(unsigned int type, unsigned int subtype)
                     lightRadius = 2;
                     lightOpacity = 0.75;
                     break;
+                case 9: // Pilon
+                    hasLight = true;
+                    lightColorR = 200;
+                    lightColorG = 200;
+                    lightColorB = 255;
+                    lightRadius = 2;
+                    lightOpacity = .2;
+                    break;
             }
             break;
         }

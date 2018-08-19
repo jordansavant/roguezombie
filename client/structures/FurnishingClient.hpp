@@ -27,6 +27,7 @@ public:
     bit::Sprite* sinkASprite;
     bit::Sprite* sinkBSprite;
     bit::Sprite* opTableASprite;
+    bit::Sprite* pilonASprite;
     unsigned int quadIndex;
 
     void clientLoad(LevelClient* level);

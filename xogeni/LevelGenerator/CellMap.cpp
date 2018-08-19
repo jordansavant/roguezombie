@@ -1265,10 +1265,10 @@ void XoGeni::CellMap::spawnDecor()
         });
 
         // Random stuff
-        Cell * cell = getSafeToBlockRoomCell(rooms[i], true);
+        Cell * cell = getSafeToBlockRoomCell(rooms[i], true, 2);
         if (cell) {
             cell->hasStructure = true;
-            cell->decorate(4, LevelGenerator::random.of(8, 8, 8));
+            cell->decorate(4, LevelGenerator::random.of(8, 9));
         }
 
     }
@@ -1359,11 +1359,11 @@ XoGeni::Cell* XoGeni::CellMap::getOpenRoomCell(Room* room, bool random)
 }
 
 
-XoGeni::Cell* XoGeni::CellMap::getSafeToBlockRoomCell(Room* room, bool random)
+XoGeni::Cell* XoGeni::CellMap::getSafeToBlockRoomCell(Room* room, bool random, unsigned int padding = 0)
 {
     if (!random) {
         Cell* openCell = NULL;
-        inspectCellsInDimension(room->x, room->y, room->width, room->height, [this, &openCell](Cell* cell) -> bool {
+        inspectCellsInDimension(room->x + padding, room->y + padding, room->width - padding, room->height - padding, [this, &openCell](Cell* cell) -> bool {
             if (!cell->isOccupied() && isCellSafeToBlock(cell))
             {
                 openCell = cell;
@@ -1376,7 +1376,7 @@ XoGeni::Cell* XoGeni::CellMap::getSafeToBlockRoomCell(Room* room, bool random)
     else {
         unsigned int cellCount = room->width * room->height;
         std::vector<Cell*> openCells;
-        inspectCellsInDimension(room->x, room->y, room->width, room->height, [this, &openCells](Cell* cell) -> bool {
+        inspectCellsInDimension(room->x + padding, room->y + padding, room->width - padding, room->height - padding, [this, &openCells](Cell* cell) -> bool {
             if (!cell->isOccupied() && isCellSafeToBlock(cell))
             {
                 openCells.push_back(cell);

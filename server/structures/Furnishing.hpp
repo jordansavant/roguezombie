@@ -26,6 +26,7 @@ public:
         SinkA, // 6
         SinkB, // 7
         OpTableA, // 8
+        PilonA, // 9
     };
 
     struct Schema
