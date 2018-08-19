@@ -24,6 +24,8 @@ public:
     bit::Sprite* columnASprite;
     bit::Sprite* deskASprite;
     bit::Sprite* deskBSprite;
+    bit::Sprite* sinkASprite;
+    bit::Sprite* sinkBSprite;
     unsigned int quadIndex;
 
     void clientLoad(LevelClient* level);

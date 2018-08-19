@@ -23,6 +23,8 @@ public:
         TerminalB, // 3
         DeskA, // 4
         DeskB, // 5
+        SinkA, // 6
+        SinkB // 7
     };
 
     struct Schema

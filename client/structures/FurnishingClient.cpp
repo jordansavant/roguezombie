@@ -27,6 +27,8 @@ void FurnishingClient::clientLoad(LevelClient* _level)
     columnASprite = level->state->rogueZombieGame->spriteLoader->getSprite("ColumnA");
     deskASprite = level->state->rogueZombieGame->spriteLoader->getSprite("DeskA");
     deskBSprite = level->state->rogueZombieGame->spriteLoader->getSprite("DeskB");
+    sinkASprite = level->state->rogueZombieGame->spriteLoader->getSprite("SinkA");
+    sinkBSprite = level->state->rogueZombieGame->spriteLoader->getSprite("SinkB");
     //sprite->applyToQuad(&level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex]);
 }
 
@@ -50,6 +52,12 @@ void FurnishingClient::clientUpdate(sf::Time &gameTime)
             break;
         case Furnishing::SubType::DeskB:
             sprite = deskBSprite;
+            break;
+        case Furnishing::SubType::SinkA:
+            sprite = sinkASprite;
+            break;
+        case Furnishing::SubType::SinkB:
+            sprite = sinkBSprite;
             break;
     }
 

@@ -1248,7 +1248,7 @@ void XoGeni::CellMap::spawnDecor()
                 if (LevelGenerator::random.next(3) == 0)
                 {
                     cell->hasStructure = true;
-                    switch (LevelGenerator::random.next(2))
+                    switch (LevelGenerator::random.next(4))
                     {
                         case 0:
                             cell->structureType = 4; // Furnishing
@@ -1261,6 +1261,10 @@ void XoGeni::CellMap::spawnDecor()
                         case 2:
                             cell->structureType = 3; // Chest
                             break;
+                        case 3:
+                            cell->structureType = 4; // Furnishing
+                            cell->structureSubType = 6; // Sink South
+                            break;
                     }
                 }
             }
@@ -1271,19 +1275,23 @@ void XoGeni::CellMap::spawnDecor()
                 if (LevelGenerator::random.next(3) == 0)
                 {
                     cell->hasStructure = true;
-                    switch (LevelGenerator::random.next(3))
+                    switch (LevelGenerator::random.next(4))
                     {
-                    case 0:
-                        cell->structureType = 4; // Furnishing
-                        cell->structureSubType = 3; // Terminal facing East
-                        break;
-                    case 1:
-                        cell->structureType = 4; // Furnishing
-                        cell->structureSubType = 5; // Desk East
-                        break;
-                    case 2:
-                        cell->structureType = 3; // Chest
-                        break;
+                        case 0:
+                            cell->structureType = 4; // Furnishing
+                            cell->structureSubType = 3; // Terminal facing East
+                            break;
+                        case 1:
+                            cell->structureType = 4; // Furnishing
+                            cell->structureSubType = 5; // Desk East
+                            break;
+                        case 2:
+                            cell->structureType = 3; // Chest
+                            break;
+                        case 3:
+                            cell->structureType = 4; // Furnishing
+                            cell->structureSubType = 7; // Sink East
+                            break;
                     }
                 }
             }

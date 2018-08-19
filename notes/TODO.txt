@@ -1,9 +1,11 @@
 
 Bugs:
 
-- During combat when clicking move it moves as far as it can, then it holds onto the waypoint and moves there after combat ends
 
 Improvements:
+
+- ability to destroy objects (help with blocking issues)
+- eat corpses
 
 
 Story:
