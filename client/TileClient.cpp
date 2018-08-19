@@ -135,10 +135,12 @@ void TileClient::clientUpdate(sf::Time &gameTime)
                         // If I have something on me but its not a player character
                         if(schema.bodyId > 0)
                         {
-                            if(level->playerCharacter != NULL && hasCharacter && characterClient == level->playerCharacter)
+                            if (level->playerCharacter != NULL && hasCharacter && characterClient == level->playerCharacter)
                                 c = moveColor;
-                            else
+                            else if (hasStructure && structureClient->schema.interactable)
                                 c = interactColor;
+                            else
+                                c = defaultColor;
                         }
                         else
                         {

@@ -20,30 +20,33 @@ public:
 
     enum Type
     {
-        None,
-        Wall,
-        Door,
-        Chest,
-        Furnishing
+        None, // 0
+        Wall, // 1
+        Door, // 2
+        Chest, // 3 
+        Furnishing // 4
     };
 
     struct Schema
     {
         Schema()
-            :type(Type::None)
+            :type(Type::None), interactable(false)
         {
         }
 
         Type type;
+        bool interactable;
 
         friend sf::Packet& operator <<(sf::Packet& packet, const Schema &schema)
         {
             packet << sf::Uint32(schema.type);
+            packet << schema.interactable;
             return packet;
         }
         friend sf::Packet& operator >>(sf::Packet& packet, Schema &schema)
         {
             bit::NetworkHelper::unpackEnum<sf::Uint32, Structure::Type>(packet, schema.type);
+            packet >> schema.interactable;
             return packet;
         }
     };

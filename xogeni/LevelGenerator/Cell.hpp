@@ -73,6 +73,7 @@ namespace XoGeni
         unsigned int metadata_floodfillId;
 
         bool isOccupied();
+        bool isSafeToBlock();
 
     };
 }

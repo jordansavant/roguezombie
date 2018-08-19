@@ -160,7 +160,11 @@ namespace XoGeni
         //void spawnTreasure();
 
 
+        bool isCellSafeToBlock(Cell* cell);
+
         Cell* getOpenRoomCell(Room* room, bool random);
+
+        Cell* getSafeToBlockRoomCell(Room* room, bool random);
 
         bool canHouseDimension(unsigned int x, unsigned int y, unsigned int w, unsigned int h);
 

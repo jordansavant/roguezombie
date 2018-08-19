@@ -20,6 +20,7 @@ void Chest::load(Level* _level, unsigned int _id, float _x, float _y)
 
     blockFoV = false;
     schema.isLocked = true;
+    Structure::schema.interactable = true;
     Body::schema.obstructionRatio = .1;
 }
 

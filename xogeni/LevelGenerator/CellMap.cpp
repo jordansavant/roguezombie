@@ -1244,25 +1244,22 @@ void XoGeni::CellMap::spawnDecor()
 
         // Random decor
         inspectRoomNorthCells(room, [this](Cell* cell) -> bool {
-            if (!cell->isOccupied()) {
-                // dont block doors
-                Cell* northCell = getCellAtPosition(cell->x, cell->y - 1);
-                Cell* eastCell = getCellAtPosition(cell->x - 1, cell->y);
-                Cell* westCell = getCellAtPosition(cell->x + 1, cell->y);
-                Cell* southCell = getCellAtPosition(cell->x, cell->y + 1);
-                if (!northCell->isDoor && !eastCell->isDoor && !westCell->isDoor && !southCell->isDoor
-                    && !northCell->isTunnel && !eastCell->isTunnel && !westCell->isTunnel && !southCell->isTunnel
-                    && LevelGenerator::random.next(3) == 0)
+            if (!cell->isOccupied() && isCellSafeToBlock(cell)) {
+                if (LevelGenerator::random.next(3) == 0)
                 {
                     cell->hasStructure = true;
-                    cell->structureType = 4; // Furnishing
                     switch (LevelGenerator::random.next(2))
                     {
                         case 0:
+                            cell->structureType = 4; // Furnishing
                             cell->structureSubType = 1; // Terminal facing South
                             break;
                         case 1:
+                            cell->structureType = 4; // Furnishing
                             cell->structureSubType = 4; // Desk South
+                            break;
+                        case 2:
+                            cell->structureType = 3; // Chest
                             break;
                     }
                 }
@@ -1270,31 +1267,38 @@ void XoGeni::CellMap::spawnDecor()
             return false;
         });
         inspectRoomEastCells(room, [this](Cell* cell) -> bool {
-            if (!cell->isOccupied()) {
-                // dont block doors
-                Cell* northCell = getCellAtPosition(cell->x, cell->y - 1);
-                Cell* eastCell = getCellAtPosition(cell->x - 1, cell->y);
-                Cell* westCell = getCellAtPosition(cell->x + 1, cell->y);
-                Cell* southCell = getCellAtPosition(cell->x, cell->y + 1);
-                if (!northCell->isDoor && !eastCell->isDoor && !westCell->isDoor && !southCell->isDoor
-                    && !northCell->isTunnel && !eastCell->isTunnel && !westCell->isTunnel && !southCell->isTunnel
-                    && LevelGenerator::random.next(3) == 0)
+            if (!cell->isOccupied() && isCellSafeToBlock(cell)) {
+                if (LevelGenerator::random.next(3) == 0)
                 {
                     cell->hasStructure = true;
-                    cell->structureType = 4; // Furnishing
-                    switch (LevelGenerator::random.next(2))
+                    switch (LevelGenerator::random.next(3))
                     {
                     case 0:
+                        cell->structureType = 4; // Furnishing
                         cell->structureSubType = 3; // Terminal facing East
                         break;
                     case 1:
+                        cell->structureType = 4; // Furnishing
                         cell->structureSubType = 5; // Desk East
+                        break;
+                    case 2:
+                        cell->structureType = 3; // Chest
                         break;
                     }
                 }
             }
             return false;
         });
+
+        // Random stuff
+        Cell * cell = getSafeToBlockRoomCell(rooms[i], true);
+        if (cell) {
+            cell->hasStructure = true;
+            cell->structureType = 4; // Terminal
+            cell->structureSubType = 1 + LevelGenerator::random.next(4);
+            int brk = 0;
+        }
+
     }
 }
 
@@ -1340,6 +1344,19 @@ void XoGeni::CellMap::spawnEnemies()
 
 
 
+
+
+bool XoGeni::CellMap::isCellSafeToBlock(Cell* cell)
+{
+    Cell* northCell = getCellAtPosition(cell->x, cell->y - 1);
+    Cell* eastCell = getCellAtPosition(cell->x - 1, cell->y);
+    Cell* westCell = getCellAtPosition(cell->x + 1, cell->y);
+    Cell* southCell = getCellAtPosition(cell->x, cell->y + 1);
+    return (!northCell->isDoor && !eastCell->isDoor && !westCell->isDoor && !southCell->isDoor
+        && !northCell->isTunnel && !eastCell->isTunnel && !westCell->isTunnel && !southCell->isTunnel);
+}
+
+
 XoGeni::Cell* XoGeni::CellMap::getOpenRoomCell(Room* room, bool random)
 {
     if (!random) {
@@ -1359,6 +1376,36 @@ XoGeni::Cell* XoGeni::CellMap::getOpenRoomCell(Room* room, bool random)
         std::vector<Cell*> openCells;
         inspectCellsInDimension(room->x, room->y, room->width, room->height, [&openCells](Cell* cell) -> bool {
             if (!cell->isTagUnreachable)
+            {
+                openCells.push_back(cell);
+            }
+            return false;
+        });
+        unsigned int r = LevelGenerator::random.next(openCells.size());
+        return openCells[r];
+    }
+}
+
+
+XoGeni::Cell* XoGeni::CellMap::getSafeToBlockRoomCell(Room* room, bool random)
+{
+    if (!random) {
+        Cell* openCell = NULL;
+        inspectCellsInDimension(room->x, room->y, room->width, room->height, [this, &openCell](Cell* cell) -> bool {
+            if (!cell->isOccupied() && isCellSafeToBlock(cell))
+            {
+                openCell = cell;
+                return true; // break inspection loop
+            }
+            return false;
+        });
+        return openCell;
+    }
+    else {
+        unsigned int cellCount = room->width * room->height;
+        std::vector<Cell*> openCells;
+        inspectCellsInDimension(room->x, room->y, room->width, room->height, [this, &openCells](Cell* cell) -> bool {
+            if (!cell->isOccupied() && isCellSafeToBlock(cell))
             {
                 openCells.push_back(cell);
             }
