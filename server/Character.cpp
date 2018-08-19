@@ -234,6 +234,9 @@ void Character::combat_PerformAction_MoveToLocation(sf::Time &gameTime)
             // Move to the delay state to end the current action
             combatTilesTraversed = 0;
             combat_SwitchStateDelay();
+
+            // Clear the path since I cannot travel further
+            path.clear();
         }
 
         // Else if its time to move
