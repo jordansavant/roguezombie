@@ -73,7 +73,8 @@ namespace XoGeni
         unsigned int metadata_floodfillId;
 
         bool isOccupied();
-        bool isSafeToBlock();
+
+        void decorate(unsigned int type, unsigned int subtype);
 
     };
 }

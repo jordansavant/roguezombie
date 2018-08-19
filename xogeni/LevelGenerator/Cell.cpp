@@ -25,3 +25,58 @@ bool XoGeni::Cell::isOccupied()
 {
     return isTagUnreachable || isWall || isDoor || hasCharacter || hasStructure || isEntrance || isEntranceTransition || isExitTransition;
 }
+
+
+
+void XoGeni::Cell::decorate(unsigned int type, unsigned int subtype)
+{
+    structureType = type;
+    structureSubType = subtype;
+
+    switch (type)
+    {
+        case 3: // chest
+            break;
+        case 4: // furnishings
+        {
+            switch (subtype)
+            {
+                case 1: // Terminal facing South
+                    hasLight = true;
+                    lightColorR = 200;
+                    lightColorG = 255;
+                    lightColorB = 200;
+                    lightRadius = 1;
+                    lightOpacity = 0.2;
+                    break;
+                case 2: // Column
+                    break;
+                case 3: // Terminal East
+                    hasLight = true;
+                    lightColorR = 200;
+                    lightColorG = 255;
+                    lightColorB = 200;
+                    lightRadius = 1;
+                    lightOpacity = 0.2;
+                    break;
+                case 4: // Desk South
+                    break;
+                case 5: // Desk East
+                    break;
+                case 6: // Sink South
+                    break;
+                case 7: // Sink East
+                    break;
+                case 8: // Optable
+                    hasLight = true;
+                    lightColorR = 255;
+                    lightColorG = 255;
+                    lightColorB = 255;
+                    lightRadius = 2;
+                    lightOpacity = 0.75;
+                    break;
+            }
+            break;
+        }
+    }
+}
