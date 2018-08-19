@@ -21,7 +21,7 @@ void FurnishingClient::clientLoad(LevelClient* _level)
 {
     level = _level;
 
-    quadIndex = level->vertexMap_charactersToggleIlluminated.requestVertexIndex();
+    quadIndex = level->vertexMap_charactersNormal.requestVertexIndex();
     terminalASprite = level->state->rogueZombieGame->spriteLoader->getSprite("TerminalA");
     terminalBSprite = level->state->rogueZombieGame->spriteLoader->getSprite("TerminalB");
     columnASprite = level->state->rogueZombieGame->spriteLoader->getSprite("ColumnA");
@@ -89,7 +89,7 @@ void FurnishingClient::clientUpdate(sf::Time &gameTime)
             break;
     }
 
-    sprite->applyToQuad(&level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex]);
+    sprite->applyToQuad(&level->vertexMap_charactersNormal.vertexArray[quadIndex]);
 
     // Position
     float spriteWidth = sprite->width;
@@ -107,7 +107,7 @@ void FurnishingClient::clientUpdate(sf::Time &gameTime)
     float renderY = renderPosition.y - spriteHeight + yFootOffset;
 
     float z = RZConfig::getDrawDepthForGameplay(renderY + spriteHeight);
-    bit::Vertex3* quad = &level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex];
+    bit::Vertex3* quad = &level->vertexMap_charactersNormal.vertexArray[quadIndex];
     bit::VertexHelper::positionQuad(quad, renderX, renderY, z, spriteWidth, spriteHeight);
 
     // Color and luminence
@@ -120,7 +120,7 @@ void FurnishingClient::clientUpdate(sf::Time &gameTime)
 
 void FurnishingClient::reset()
 {
-    bit::VertexHelper::resetQuad(&level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex]);
+    bit::VertexHelper::resetQuad(&level->vertexMap_charactersNormal.vertexArray[quadIndex]);
 }
 
 void FurnishingClient::handleSnapshot(bit::ServerPacket &packet, bool full)
