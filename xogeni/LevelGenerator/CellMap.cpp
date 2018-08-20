@@ -1287,8 +1287,13 @@ void XoGeni::CellMap::spawnDecor()
         // Random stuff
         Cell * cell = getSafeToBlockRoomCell(rooms[i], true, 2);
         if (cell) {
-            cell->hasStructure = true;
-            cell->decorate(4, LevelGenerator::random.of(8, 9, 12));
+            if (LevelGenerator::random.boolean()) {
+                cell->hasStructure = true;
+                cell->decorate(3);
+            } else {
+                cell->hasStructure = true;
+                cell->decorate(4, LevelGenerator::random.of(8, 9, 12));
+            }
         }
 
     }

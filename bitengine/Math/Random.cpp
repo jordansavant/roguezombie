@@ -18,6 +18,11 @@ void bit::Random::seed(unsigned int _seed)
     engine.seed(_seed);
 }
 
+bool bit::Random::boolean()
+{
+    return next(2) == 0;
+}
+
 unsigned int bit::Random::min()
 {
     return 0;

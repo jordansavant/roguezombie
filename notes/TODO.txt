@@ -10,7 +10,7 @@ Improvements:
 
 Story:
 
-Labratory experiment escaped, part zombie, part human
+Laboratory experiment escaped, part zombie, part human
 Start deep underground several levels down
 Must get to surface level to escape
 At surface level, tower ascends as optional boss up top

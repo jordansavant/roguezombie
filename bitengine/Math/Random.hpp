@@ -18,6 +18,8 @@ namespace bit
 
         void seed(unsigned int seed);
 
+        bool boolean();
+
         unsigned int max();
 
         unsigned int min();

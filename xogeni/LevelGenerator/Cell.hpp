@@ -74,7 +74,7 @@ namespace XoGeni
 
         bool isOccupied();
 
-        void decorate(unsigned int type, unsigned int subtype);
+        void decorate(unsigned int type, unsigned int subtype = 0);
 
     };
 }
