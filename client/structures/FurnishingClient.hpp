@@ -33,6 +33,7 @@ public:
     bit::Sprite* rollingTerminalASprite;
     bit::Sprite* deskBeakerBSprite;
     bit::Sprite* deskCoffeeASprite;
+    bit::Sprite* shelfASprite;
     unsigned int quadIndex;
 
     void clientLoad(LevelClient* level);

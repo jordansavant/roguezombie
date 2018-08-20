@@ -1249,6 +1249,9 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                     case Character::Type::Scientist:
                         rogueZombieGame->soundManager->play(humanCharacterDeathSoundId);
                         break;
+                    case Character::Type::Guard:
+                        rogueZombieGame->soundManager->play(humanCharacterDeathSoundId);
+                        break;
                 }
                 break;
             }

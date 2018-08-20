@@ -1704,6 +1704,8 @@ std::string Character::getTitle(Character::Type type)
             return "Hunter";
         case Character::Type::Scientist:
             return "Scientist";
+        case Character::Type::Guard:
+            return "Guard";
     }
 }
 

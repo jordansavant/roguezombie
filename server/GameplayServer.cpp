@@ -6,7 +6,6 @@
 #include "Player.hpp"
 #include "Interaction.hpp"
 #include "Character.hpp"
-#include "characters/Hunter.hpp"
 #include "Tile.hpp"
 #include "levels/Interior.hpp"
 #include "mission/Mission.hpp"

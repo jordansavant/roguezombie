@@ -1248,7 +1248,7 @@ void XoGeni::CellMap::spawnDecor()
                 if (LevelGenerator::random.next(3) == 0)
                 {
                     cell->hasStructure = true;
-                    cell->decorate(4, LevelGenerator::random.of(1, 4, 4, 6, 9, 10, 11, 12, 14));
+                    cell->decorate(4, LevelGenerator::random.of(1, 4, 4, 6, 9, 10, 11, 12, 14, 15));
                 }
             }
             return false;
@@ -1322,7 +1322,9 @@ void XoGeni::CellMap::spawnEnemies()
                 switch (difficultyLevel)
                 {
                     case 0:
-                        cell->characterType = 4; // Scientist
+                        cell->characterType = LevelGenerator::random.of(4, 5); // scientist, guard
+                        //cell->characterType = 4; // Scientist
+                        //cell->characterType = 5; // Guard
                         break;
 
                     default:

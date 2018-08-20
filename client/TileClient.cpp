@@ -37,7 +37,7 @@ bool TileClient::hasInteractableBody()
     // Has a character taht is not the player
     bool interactWithCharacter = (hasCharacter && characterClient != level->playerCharacter);
 
-    bool interactWithStructure = (hasStructure && structureClient->isOfInteractableType());
+    bool interactWithStructure = (hasStructure && structureClient->schema.interactable);
 
     return interactWithCharacter || interactWithStructure;
 }
@@ -137,7 +137,7 @@ void TileClient::clientUpdate(sf::Time &gameTime)
                         {
                             if (level->playerCharacter != NULL && hasCharacter && characterClient == level->playerCharacter)
                                 c = moveColor;
-                            else if (hasStructure && structureClient->schema.interactable)
+                            else if (hasInteractableBody())
                                 c = interactColor;
                             else
                                 c = defaultColor;

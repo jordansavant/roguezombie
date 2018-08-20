@@ -16,6 +16,8 @@ class BaseLevelClientRunner;
 class ZombieClient;
 class OgreClient;
 class HunterClient;
+class ScientistClient;
+class GuardClient;
 class TileClient;
 class WallClient;
 class DoorClient;

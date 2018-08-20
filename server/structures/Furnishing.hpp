@@ -32,6 +32,7 @@ public:
         RollingTerminalA, // 12
         DeskBeakerB, // 13
         DeskCoffeeA, // 14
+        ShelfA, // 15
     };
 
     struct Schema

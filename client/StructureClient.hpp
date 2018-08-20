@@ -18,8 +18,6 @@ public:
 	Structure::Schema schema;
 
 	virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
-
-	bool isOfInteractableType();
 };
 
 #endif

@@ -7,6 +7,7 @@
 #include "characters/Ogre.hpp"
 #include "characters/Hunter.hpp"
 #include "characters/Scientist.hpp"
+#include "characters/Guard.hpp"
 #include "structures/Wall.hpp"
 #include "structures/Door.hpp"
 #include "structures/Chest.hpp"
@@ -94,6 +95,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
     runners.push_back(new LevelRunner<Ogre>(this, &ogres));
     runners.push_back(new LevelRunner<Hunter>(this, &hunters));
     runners.push_back(new LevelRunner<Scientist>(this, &scientists));
+    runners.push_back(new LevelRunner<Guard>(this, &guards));
     runners.push_back(new LevelRunner<Wall>(this, &walls));
     runners.push_back(new LevelRunner<Door>(this, &doors));
     runners.push_back(new LevelRunner<Chest>(this, &chests));
@@ -291,6 +293,19 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         scientist->combatDecisionAi = AiRoutines::Combat::Scientist_DecideCombat;
                         scientist->getStartingDialog = std::bind(&Level::getDialogTree, this);
                         c = scientist;
+                        break;
+                    }
+                    case Character::Type::Guard:
+                    {
+                        Guard* guard = new Guard();
+                        guard->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                        guard->moveToPosition(t->schema.x, t->schema.y);
+                        guards.push_back(guard);
+                        guard->hostilityCheckAi = AiRoutines::Combat::Generic_DetectHostility;
+                        guard->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
+                        guard->combatDecisionAi = AiRoutines::Combat::Hunter_DecideCombat;
+                        guard->getStartingDialog = std::bind(&Level::getDialogTree, this);
+                        c = guard;
                         break;
                     }
                 }
@@ -499,6 +514,9 @@ void Level::enterCombat()
         for (unsigned int i = 0; i < scientists.size(); i++)
             if (!scientists[i]->schema.isDead())
                 turnQueue.push_back(scientists[i]);
+        for (unsigned int i = 0; i < guards.size(); i++)
+            if (!guards[i]->schema.isDead())
+                turnQueue.push_back(guards[i]);
 
         // Sort the turn queue by initiative
         std::sort(turnQueue.begin(), turnQueue.end(), [] (Character* characterFirst, Character* characterSecond) -> bool {
@@ -1205,6 +1223,9 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
                         break;
                     case Character::Type::Scientist:
                         packNetworkBody<Scientist, Character>(packet, full, c, b->schema.type, c->schema.type);
+                        break;
+                    case Character::Type::Guard:
+                        packNetworkBody<Guard, Character>(packet, full, c, b->schema.type, c->schema.type);
                         break;
                 }
                 break;

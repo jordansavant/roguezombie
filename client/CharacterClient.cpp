@@ -30,6 +30,7 @@ void CharacterClient::reinitialize()
         case Character::Type::Hunter:
         case Character::Type::Zombie:
         case Character::Type::Scientist:
+        case Character::Type::Guard:
             sprite.width = 40;
             sprite.height = 40;
             sprite.baseOffsetX = 20;

@@ -18,22 +18,3 @@ void StructureClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 
     packet >> schema;
 }
-
-bool StructureClient::isOfInteractableType()
-{
-    // What structure types can our player character interact with?
-    switch(schema.type)
-    {
-        case Structure::Type::Chest:
-        {
-            return true;
-        }
-        default:
-        case Structure::Type::Furnishing:
-        {
-            return false;
-        }
-    }
-
-    return false;
-}
