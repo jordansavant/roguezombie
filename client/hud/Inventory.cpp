@@ -13,6 +13,7 @@
 #include "../CharacterClient.hpp"
 #include "../RogueZombieGame.hpp"
 #include "../mission/MissionClient.hpp"
+#include "../RZConfig.hpp"
 #include <string>
 #include <iomanip>
 
@@ -69,7 +70,7 @@ Inventory::Inventory(Hud* _hud)
     itemDataText->setSfFontSize(Hud::font_primarySize);
     itemDataText->setSfFont(hud->journalFont);
     itemDataText->setSfFontString(std::string(""));
-    itemDataText->normalColor = Hud::font_primaryColor;
+    itemDataText->normalColor = RZConfig::fontGreen;
     itemDataText->scaleStyle = ScaleStyle::PowerOfTwo;
     itemDataPanel->addChild(itemDataText);
 

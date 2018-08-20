@@ -426,6 +426,27 @@ Item* Item::create(Type type, unsigned int id)
 
             break;
 
+        case Type::Baton:
+
+            i = new Item();
+            i->schema.CategoryBase = ItemCategory::Base::BaseWeapon;
+            i->schema.CategoryWeapon = ItemCategory::Weapon::WeaponMelee;
+            i->schema.weight = 3;
+            i->schema.minimumDamage = 3;
+            i->schema.maximumDamage = 5;
+            i->schema.effectiveRangeInTiles = 1;
+            i->onUse = [i](Character* user) -> void
+            {
+                // Event
+                user->level->sendEventToAllPlayers([user](bit::ServerPacket &packet) {
+                    packet << sf::Uint32(ServerEvent::BluntHit);
+                    packet << user->Body::schema.x;
+                    packet << user->Body::schema.y;
+                });
+            };
+
+            break;
+
         case Type::Medkit:
 
             i = new Item();
@@ -611,6 +632,9 @@ std::string Item::getTitle(Type type)
         case Type::Crowbar:
             return "Crowbar";
 
+        case Type::Baton:
+            return "Baton";
+
         case Type::Medkit:
             return "Medkit";
 
@@ -661,6 +685,9 @@ std::string Item::getDescription(Type type)
         case Type::Crowbar:
             return "100% Freeman made";
 
+        case Type::Baton:
+            return "Pick up that can!";
+
         case Type::Medkit:
             return "Instantly recover health";
 
@@ -710,6 +737,9 @@ std::string Item::getSpriteName(Type type)
         case Type::Crowbar:
             return "Crowbar";
 
+        case Type::Baton:
+            return "Baton";
+
         case Type::FootballPads:
             return "FootballPads";
 
@@ -743,6 +773,9 @@ std::string Item::getIconName(Type type)
 
         case Type::Crowbar:
             return "Crowbar";
+
+        case Type::Baton:
+            return "Baton";
 
         case Type::Medkit:
             return "Medkit";

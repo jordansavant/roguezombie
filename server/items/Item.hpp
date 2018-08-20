@@ -27,6 +27,7 @@ public:
         Magnum357,
         Z4Rifle,
         Crowbar,
+        Baton,
         Medkit,
         Brick,
         Grenade,

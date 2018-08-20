@@ -68,7 +68,6 @@ public:
     static int font_largeSize;
     static int font_primarySize;
     static int font_noteSize;
-    static sf::Color font_primaryColor;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 

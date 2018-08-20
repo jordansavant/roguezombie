@@ -8,7 +8,7 @@
 
 namespace bit
 {
-    class Label : public Element, protected sf::Text
+    class Label : public Element, public sf::Text
     {
     public:
 

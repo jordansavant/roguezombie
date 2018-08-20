@@ -1,12 +1,14 @@
 
 Bugs:
 
+- hover tooltip item info went away
+- Guards use a baton but still run away for ranged combat
 
 Improvements:
 
 - ability to destroy objects (help with blocking issues)
 - eat corpses
-
+- turn queue can be laborious to wait for
 
 Story:
 
