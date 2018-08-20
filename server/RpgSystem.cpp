@@ -109,7 +109,7 @@ float RpgSystem::Combat::calculateMeleeChanceOfHit(Item* weapon, Character* atta
 {
     // Ensure we are within effective range
     float ER = weapon->schema.effectiveRangeInTiles;
-    float D = bit::VectorMath::distance(attacker->Body::schema.x, attacker->Body::schema.y, defender->Body::schema.x, defender->Body::schema.y) / attacker->level->tileWidth;
+    float D = bit::VectorMath::distance(attacker->Body::schema.x, attacker->Body::schema.y, defender->Body::schema.x, defender->Body::schema.y) / attacker->level->tileWidth / 1.5; // / 1.5 so we can hit diagonally as well as cardinally
     if(D > ER)
         return 0;
 
@@ -120,7 +120,7 @@ float RpgSystem::Combat::calculateMeleeChanceOfHit(Item* weapon, Character* atta
 // See core melee but capped at one tile
 float RpgSystem::Combat::calculateUnarmedChanceOfHit(Character* attacker, Character* defender)
 {
-    float D = bit::VectorMath::distance(attacker->Body::schema.x, attacker->Body::schema.y, defender->Body::schema.x, defender->Body::schema.y) / attacker->level->tileWidth;
+    float D = bit::VectorMath::distance(attacker->Body::schema.x, attacker->Body::schema.y, defender->Body::schema.x, defender->Body::schema.y) / attacker->level->tileWidth / 1.5; // / 1.5 so we can hit diagonally as well as cardinally
     if(D > 1)
         return 0;
     

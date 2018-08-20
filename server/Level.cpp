@@ -303,7 +303,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         guards.push_back(guard);
                         guard->hostilityCheckAi = AiRoutines::Combat::Generic_DetectHostility;
                         guard->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
-                        guard->combatDecisionAi = AiRoutines::Combat::Hunter_DecideCombat;
+                        guard->combatDecisionAi = AiRoutines::Combat::Guard_DecideCombat;
                         guard->getStartingDialog = std::bind(&Level::getDialogTree, this);
                         c = guard;
                         break;

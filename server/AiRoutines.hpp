@@ -31,6 +31,8 @@ public:
 
         static void Hunter_DecideCombat(Character* character);
 
+        static void Guard_DecideCombat(Character* character);
+
         static void Scientist_DecideCombat(Character* character);
 
     };

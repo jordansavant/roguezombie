@@ -3,6 +3,7 @@
 #include "Structure.hpp"
 #include "Level.hpp"
 #include "Tile.hpp"
+#include "items/Item.hpp"
 #include "../bitengine/Intelligence.hpp"
 #include "../bitengine/Math.hpp"
 
@@ -215,6 +216,190 @@ void AiRoutines::Combat::Hunter_DecideCombat(Character* character)
                     {
                         // Otherwise if no directions remain, attack character
                         character->combat_DecideAction_AttackCharacter(closestEnemy);
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        character->combat_DecideAction_Skip();
+    }
+}
+
+void AiRoutines::Combat::Guard_DecideCombat(Character* character)
+{
+    // Predicates about Guard
+    // 1. I either carry a range weapon or a melee weapon
+    // 2. I am a 1x1 character
+
+    // Guards should roughly act like hunters but change their action based on their weapon type
+    // If they are using a weapon that has a range <= 2 they should just run to the character and attack
+
+    // Figure out range of weapon
+    unsigned int attackRange = 1;
+    bool isMelee = true;
+    Item* weapon = character->equipment[Character::EquipmentSlot::WeaponPrimary];
+    if (weapon)
+    {
+        attackRange = weapon->schema.effectiveRangeInTiles;
+        isMelee = weapon->schema.isOfWeaponType(ItemCategory::Weapon::WeaponMelee);
+    }
+
+    // Find closest enemy and get our distances apart
+    Character* closestEnemy = character->getClosestVisibleEnemy();
+    if (closestEnemy)
+    {
+        bool seekCover = false;
+        int x1 = character->Body::schema.x;
+        int y1 = character->Body::schema.y;
+        int width1 = character->Body::schema.width;
+        int height1 = character->Body::schema.height;
+
+        int x2 = closestEnemy->Body::schema.x;
+        int y2 = closestEnemy->Body::schema.y;
+        int width2 = closestEnemy->Body::schema.width;
+        int height2 = closestEnemy->Body::schema.height;
+
+        int xDistance = bit::RectangleMath::axisDistance(bit::RectangleMath::Axis::X, x1, y1, width1, height1, x2, y2, width2, height2);
+        int yDistance = bit::RectangleMath::axisDistance(bit::RectangleMath::Axis::Y, x1, y1, width1, height1, x2, y2, width2, height2);
+        xDistance = std::abs(x2 - x1);
+        yDistance = std::abs(y2 - y1);
+
+        sf::Vector2f directionAway = bit::VectorMath::directionToVector(x2, y2, x1, y1);
+        sf::Vector2f directionToward = bit::VectorMath::directionToVector(x1, y1, x2, y2);
+        sf::Vector2f right(-directionAway.y, directionAway.x);
+        sf::Vector2f left(directionAway.y, -directionAway.x);
+
+        // If I am using a melee weapon go straight toward the enemy
+        if (isMelee)
+        {
+            if (xDistance <= character->level->tileWidth * attackRange && yDistance <= character->level->tileWidth * attackRange)
+            {
+                // If I am within melee attack range, then attack them
+                character->combat_DecideAction_AttackCharacter(closestEnemy);
+            }
+            else
+            {
+                // Go straight toward them
+                // Look at their adjacent tiles and find an open one nearby and set it as our destination
+                std::vector<sf::Vector2i> attempts;
+                attempts.push_back(sf::Vector2i(x2 + directionAway.x * character->level->tileWidth * 1, y2 + directionAway.y * character->level->tileHeight * 1)); // tile nearest me
+                attempts.push_back(sf::Vector2i(x2 + right.x * character->level->tileWidth * 2, y2 + right.y * character->level->tileHeight * 2)); // tile to right of them
+                attempts.push_back(sf::Vector2i(x2 + left.x * character->level->tileWidth * 1, y2 + left.y * character->level->tileHeight * 1)); // tile to left of them
+                attempts.push_back(sf::Vector2i(x2 + directionToward.x * character->level->tileWidth * 1, y2 + directionToward.y * character->level->tileHeight * 1)); // tile behind them
+
+                for (unsigned int i = 0; i < attempts.size(); i++)
+                {
+                    if (character->canPathToPosition(attempts[i].x, attempts[i].y))
+                    {
+                        // If this is a place, take it
+                        character->combat_DecideAction_MoveToLocation(attempts[i].x, attempts[i].y);
+                        break;
+                    }
+                    else if (i == attempts.size() - 1)
+                    {
+                        // Otherwise if no directions remain, attack character
+                        seekCover = true;
+                        character->combat_DecideAction_AttackCharacter(closestEnemy);
+                    }
+                }
+
+            }
+        }
+        else
+        {
+            // If I am using a ranged weapon look for cover and adaptively attack
+            seekCover = true;
+        }
+
+
+        if (seekCover)
+        {
+            // Priorities
+            // - Finding cover between myself and my enemy
+            // - If there is relevant cover
+            //     - Find the opposite side of cover
+            //     - If I am not on the opposite side
+            //         - Move to cover position
+            //     - If I am in the cover position
+            //         - Attack closest enemy
+            // - If there is no relevant cover
+            //     - If the enemy is within X tiles
+            //         - Move away from enemy to retain buffer distance
+            //     - Else if they are further than X tiles
+            //         - Fire toward the enemy
+
+            // Locates a cover position that is: 1. between me and enemy, 2. empty or has me in it
+            Tile* coverPosition = findCoverPositionFromEnemy(character, closestEnemy, 7); // 7 is the relevant search range
+
+            if (coverPosition)
+            {
+                // If the cover position is empty
+                if (coverPosition->body == NULL)
+                {
+                    // Move toward cover position
+                    character->combat_DecideAction_MoveToLocation(coverPosition->schema.x, coverPosition->schema.y);
+                }
+                // If I am in cover
+                else
+                {
+                    // Attack my enemy
+                    character->combat_DecideAction_AttackCharacter(closestEnemy);
+                }
+            }
+            else
+            {
+                if (xDistance < character->level->tileWidth * 2 && yDistance < character->level->tileWidth * 2)
+                {
+                    // If I am within 2 tiles, move away from them
+                    int tileDistance = 3;
+                    std::vector<sf::Vector2i> attempts;
+                    attempts.push_back(sf::Vector2i(x1 + directionAway.x * character->level->tileWidth * tileDistance, y1 + directionAway.y * character->level->tileHeight * tileDistance));
+                    attempts.push_back(sf::Vector2i(x1 + right.x * character->level->tileWidth * tileDistance, y1 + right.y * character->level->tileHeight * tileDistance));
+                    attempts.push_back(sf::Vector2i(x1 + left.x * character->level->tileWidth * tileDistance, y1 + left.y * character->level->tileHeight * tileDistance));
+
+                    for (unsigned int i = 0; i < attempts.size(); i++)
+                    {
+                        if (character->canPathToPosition(attempts[i].x, attempts[i].y))
+                        {
+                            // If this is a valid escape direction, take it
+                            character->combat_DecideAction_MoveToLocation(attempts[i].x, attempts[i].y);
+                            break;
+                        }
+                        else if (i == attempts.size() - 1)
+                        {
+                            // Otherwise if no directions remain, attack character
+                            character->combat_DecideAction_AttackCharacter(closestEnemy);
+                        }
+                    }
+                }
+                else if (xDistance < character->level->tileWidth * 6 && yDistance < character->level->tileWidth * 6)
+                {
+                    // If they are further than 2 tiles but within 6 tiles attack them
+                    character->combat_DecideAction_AttackCharacter(closestEnemy);
+                }
+                else
+                {
+                    // If I am further than 6 tiles, move toward them, trying longer distances up until shorter distances
+                    std::vector<sf::Vector2i> attempts;
+                    attempts.push_back(sf::Vector2i(x1 - directionAway.x * character->level->tileWidth * 4, y1 - directionAway.y * character->level->tileHeight * 4));
+                    attempts.push_back(sf::Vector2i(x1 - directionAway.x * character->level->tileWidth * 2, y1 - directionAway.y * character->level->tileHeight * 2));
+                    attempts.push_back(sf::Vector2i(x1 - directionAway.x * character->level->tileWidth * 1, y1 - directionAway.y * character->level->tileHeight * 1));
+
+                    for (unsigned int i = 0; i < attempts.size(); i++)
+                    {
+                        if (character->canPathToPosition(attempts[i].x, attempts[i].y))
+                        {
+                            // If this is a valid chase direction, take it
+                            character->combat_DecideAction_MoveToLocation(attempts[i].x, attempts[i].y);
+                            break;
+                        }
+                        else if (i == attempts.size() - 1)
+                        {
+                            // Otherwise if no directions remain, attack character
+                            character->combat_DecideAction_AttackCharacter(closestEnemy);
+                        }
                     }
                 }
             }
