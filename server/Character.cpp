@@ -16,7 +16,7 @@
 #include "RpgSystem.hpp"
 
 Character::Character()
-    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), actionDelayTimer(1), hostilityCheckAi(NULL), combatDetectionAi(NULL), combatDecisionAi(NULL),
+    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), actionDelayTimer(1.5), hostilityCheckAi(NULL), combatDetectionAi(NULL), combatDecisionAi(NULL),
       isHostileCombatDetected(false), hasTargetEnemy(false), targetEnemyPosition(0, 0), combatTilesTraversed(0), moveTimer(.67f), equipment(), schema(), visionRadius(30)
 {
     equipment.resize(EquipmentSlot::_count, NULL);
@@ -92,6 +92,9 @@ void Character::updateAlive_Free(sf::Time &gameTime)
 
 void Character::updateAlive_Combat(sf::Time &gameTime)
 {
+// EXPERIMENTAL!: I added this to improve turn queue processing time
+// lots of enemies in update cycles takes several seconds since entire level has to be in turn queue
+COMBAT_UPDATE:
     switch(combatState)
     {
         case CombatState::Waiting:
@@ -103,6 +106,10 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
                 schema.currentActionPoints = schema.maxActionPoints;
                 sendCombatTurnStart();
                 combat_SwitchStateDecide();
+
+                // EXPERIMENTAL!
+                if (!schema.isPlayerCharacter)
+                    goto COMBAT_UPDATE;
             }
 
             break;
@@ -117,12 +124,20 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
             {
                 // Make a decision in combat
                 combat_DecideAction(gameTime);
+
+                // EXPERIMENTAL!
+                if (!schema.isPlayerCharacter)
+                    goto COMBAT_UPDATE;
             }
             else
             {
                 // If I am out of action points, then resume waiting my turn and signal my turn is over
                 level->endTurn(this);
                 combat_SwitchStateWaiting();
+
+                // EXPERIMENTAL!
+                if (!schema.isPlayerCharacter)
+                    goto COMBAT_UPDATE;
 
                 // Send game event to player for end of turn
                 sendCombatTurnEnd();
@@ -137,11 +152,19 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
 
                     combat_PerformAction_MoveToLocation(gameTime);
 
+                    // EXPERIMENTAL!
+                    if (!schema.isPlayerCharacter && !isHostileCombatDetected)
+                        goto COMBAT_UPDATE;
+
                     break;
 
                 case CombatAction::Attack:
 
                     combat_PerformAction_AttackCharacter(gameTime);
+
+                    // EXPERIMENTAL!
+                    if (!schema.isPlayerCharacter && !isHostileCombatDetected)
+                        goto COMBAT_UPDATE;
 
                     break;
 
@@ -149,17 +172,29 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
 
                     combat_PerformAction_Skip(gameTime);
 
+                    // EXPERIMENTAL!
+                    if (!schema.isPlayerCharacter && !isHostileCombatDetected)
+                        goto COMBAT_UPDATE;
+
                     break;
 
                 case CombatAction::SwapWeapon:
 
                     combat_PerformAction_SwapWeapon(gameTime);
 
+                    // EXPERIMENTAL!
+                    if (!schema.isPlayerCharacter && !isHostileCombatDetected)
+                        goto COMBAT_UPDATE;
+
                     break;
 
                 case CombatAction::UsedItem:
 
                     combat_PerformAction_UsedItem(gameTime);
+
+                    // EXPERIMENTAL!
+                    if (!schema.isPlayerCharacter && !isHostileCombatDetected)
+                        goto COMBAT_UPDATE;
 
                     break;
             }
@@ -174,6 +209,10 @@ void Character::updateAlive_Combat(sf::Time &gameTime)
             if (!isHostileCombatDetected) {
                 combat_SwitchStateDecide();
                 actionDelayTimer.reset();
+
+                // EXPERIMENTAL!
+                if (!schema.isPlayerCharacter)
+                    goto COMBAT_UPDATE;
             }
             else if(actionDelayTimer.update(gameTime))
             {
@@ -1547,7 +1586,6 @@ void Character::sendCombatTurnStart()
     // Send game event to player for start of turn
     if(schema.isPlayerCharacter)
     {
-        bit::Output::Debug("Sending TURN BEGINS");
         level->server->sendEventToClient(*schema.player->client, [](bit::ServerPacket &packet){
             packet << sf::Uint32(ServerEvent::CombatTurnStart);
         });

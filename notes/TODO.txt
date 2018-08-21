@@ -1,14 +1,17 @@
 
 Bugs:
 
-- hover tooltip item info went away
-- Guards use a baton but still run away for ranged combat
+- Walls on southern tip of map are messed up Z depths
+
 
 Improvements:
 
 - ability to destroy objects (help with blocking issues)
-- eat corpses
-- turn queue can be laborious to wait for
+- eat corpses (destroy and heal)
+- turn queue can be laborious to wait for, reduce to characters actually needing combat and display them
+- Replace hunter AI with guard AI and expand on it to use weapon range instead of static distances
+- Clicking on interactible structures, finds nearest tile and walks to it and then opens automatically
+
 
 Story:
 
@@ -28,29 +31,31 @@ Enemies:
 Tier 0
 
 	Enemy
-	- Scientists
+	- Scientists -D
+	- Workers
 	
 	Weapons
-	- Fists
-	- Bricks
+	- Fists -D
+	- Bricks -D
 
 	Armor
-	- Rubber Gloves
+	- Rubber Gloves -D
+	- Hardhat -D
 	
 	Items
 	- None
 
 Tier 1
 	Enemy
-	- Security Guards w/ Batons
-	- Security Guards w/ Pistols
+	- Security Guards w/ Batons -D
+	- Security Guards w/ Pistols -D
 	
 	Weapons
-	- Pistol
-	- Baton
+	- Pistol -D
+	- Baton -D
 	
 	Armor
-	- Football Pads
+	- Football Pads -D
 	
 	Items
 	- Medkit?
@@ -58,11 +63,11 @@ Tier 1
 Tier 2
 
 	Enemy
-	- Hunter
+	- Hunter -D
 
 	Weapons
-	- Rifle
-	- Grenade
+	- Rifle -D
+	- Grenade -D
 
 Tier 3
 	
