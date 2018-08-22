@@ -1680,7 +1680,44 @@ void Character::getAvailableInteractions(std::vector<Interaction::Type> &fill)
     }
     else
     {
+        // Can loot bodies
         fill.push_back(Interaction::Type::OpenInventory);
+
+        // Can consume bodies // TODO Maybe not for robots?
+        fill.push_back(Interaction::Type::Consume);
+    }
+}
+
+void Character::handleInteraction(Interaction::Type interaction, Body* interactor, bit::ServerPacket &responsePacket)
+{
+    Body::handleInteraction(interaction, interactor, responsePacket);
+
+    switch (interaction)
+    {
+        case Interaction::Type::Consume:
+        {
+            // I am dead so I should be able to be destroyed
+
+            // TODO: Destroy this body
+            // TODO: Give health to consumer
+            
+            // interactor body will probably be a character, and a player character
+            if (interactor && interactor->schema.type == Body::Type::Character)
+            {
+                ::Character* character = static_cast<::Character*>(interactor);
+
+                if (character)
+                {
+                    // TODO: Make this more reasonable (defined as a value of healing based on what is being consumed?)
+                    character->heal(10); // Heal for 10
+                }
+            }
+
+            // Success
+            responsePacket << true;
+
+            break;
+        }
     }
 }
 

@@ -18,6 +18,7 @@ public:
         GetInventory,
         CloseInventory,
         Dialog,
+        Consume,
     };
 
     static std::string getTitle(Type type);

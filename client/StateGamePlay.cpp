@@ -930,6 +930,22 @@ void StateGamePlay::handleInteractionResponse(unsigned int tileId, Interaction::
 
             break;
         }
+        case Interaction::Type::Consume:
+        {
+            bool success;
+            packet >> success;
+
+            if (success)
+            {
+                displayMessage(std::string("Body consumed"));
+            }
+            else
+            {
+                displayMessage(std::string("Body cannot be consumed"));
+            }
+
+            break;
+        }
     }
 }
 

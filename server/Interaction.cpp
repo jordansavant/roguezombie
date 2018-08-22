@@ -23,5 +23,7 @@ std::string Interaction::getTitle(Type type)
             return "Close";
         case Interaction::Type::Dialog:
             return "Talk";
+        case Interaction::Type::Consume:
+            return "Consume";
     }
 }

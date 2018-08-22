@@ -379,6 +379,8 @@ public:
 
     void getAvailableInteractions(std::vector<Interaction::Type> &fill);
 
+    virtual void handleInteraction(Interaction::Type interaction, Body* interactor, bit::ServerPacket &responsePacket);
+
     void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 
 

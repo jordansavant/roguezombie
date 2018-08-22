@@ -2,13 +2,13 @@
 Bugs:
 
 - Walls on southern tip of map are messed up Z depths
+- chests are set to be locked but are not when i get to them
 
 
 Improvements:
 
 - ability to destroy objects (help with blocking issues)
 - eat corpses (destroy and heal)
-- turn queue can be laborious to wait for, reduce to characters actually needing combat and display them
 - Replace hunter AI with guard AI and expand on it to use weapon range instead of static distances
 - Clicking on interactible structures, finds nearest tile and walks to it and then opens automatically
 
