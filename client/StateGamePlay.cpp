@@ -938,6 +938,7 @@ void StateGamePlay::handleInteractionResponse(unsigned int tileId, Interaction::
             if (success)
             {
                 displayMessage(std::string("Body consumed"));
+                changeMode(Mode::Free);
             }
             else
             {

@@ -93,6 +93,8 @@ public:
 
     void endGameDefeat();
 
+    void removeCharacter(Character* character);
+
     
     // Player management
 

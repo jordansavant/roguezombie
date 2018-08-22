@@ -1698,20 +1698,19 @@ void Character::handleInteraction(Interaction::Type interaction, Body* interacto
         {
             // I am dead so I should be able to be destroyed
 
-            // TODO: Destroy this body
-            // TODO: Give health to consumer
-            
+            // Give health to consumer
             // interactor body will probably be a character, and a player character
             if (interactor && interactor->schema.type == Body::Type::Character)
             {
                 ::Character* character = static_cast<::Character*>(interactor);
 
-                if (character)
-                {
-                    // TODO: Make this more reasonable (defined as a value of healing based on what is being consumed?)
-                    character->heal(10); // Heal for 10
-                }
+                // TODO: Make this more reasonable (defined as a value of healing based on what is being consumed?)
+                character->heal(10); // Heal for 10
+
+                // Destroy this body
+                level->removeCharacter(this); // THIS Maybe should be queued if it causes trouble inside of loops or ee
             }
+
 
             // Success
             responsePacket << true;

@@ -20,6 +20,7 @@ public:
     bool isActive;
     unsigned int tileId;
     TileClient* tileClient;
+    bool hasInteractionUnderway;
 
     virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 

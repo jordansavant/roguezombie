@@ -13,7 +13,7 @@
 #include "../TileClient.hpp"
 
 InteractionMenu::InteractionMenu(Hud* _hud)
-    : Frame(_hud, 50, 0, 300, 200, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1,std::placeholders::_2, std::placeholders::_3), false), isActive(false), tileId(0), tileClient(NULL)
+    : Frame(_hud, 50, 0, 300, 200, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3), false), isActive(false), tileId(0), tileClient(NULL), hasInteractionUnderway(false)
 {
     useBottomPointer = true;
     managesOpacity = true;
@@ -106,18 +106,27 @@ void InteractionMenu::handleInteractionTree(bit::ServerPacket &packet, unsigned 
         option->paddingRight = 10;
         option->paddingBottom = 10;
         option->opacity = 0;
-        option->onActivate = [it, m, tileId] (Element* e){
+        option->onActivate = [this, it, m, tileId] (Element* e){
+
+            // Do not listen to interaction events if server is still processing a previous request
+            if (this->hasInteractionUnderway)
+            {
+                return;
+            }
+
+            this->hasInteractionUnderway = true;
             InteractionMenu* mx = m;
             Interaction::Type itx(it);
             unsigned int tileIdx = tileId;
             m->hud->state->serverRequest(
-                [itx, tileIdx, mx] (bit::ClientPacket &packet) {
+                [this, itx, tileIdx, mx] (bit::ClientPacket &packet) {
                     packet << sf::Uint32(ClientRequest::ProcessInteractionForBodyOnTile);
                     packet << sf::Uint32(itx);
                     packet << sf::Uint32(tileIdx);
                 },
-                [itx, tileIdx, mx] (bit::ServerPacket &packet) {
+                [this, itx, tileIdx, mx] (bit::ServerPacket &packet) {
                     mx->hud->state->handleInteractionResponse(tileIdx, itx, packet);
+                    this->hasInteractionUnderway = false;
                 }
             );
         };

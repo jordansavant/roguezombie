@@ -591,6 +591,50 @@ void Level::endGameDefeat()
     });
 }
 
+void Level::removeCharacter(Character* character)
+{
+    // Remove body from tiles
+    std::vector<Tile*> tiles;
+    getTilesWithinRectangle(character->Body::schema.x, character->Body::schema.y, character->Body::schema.width, character->Body::schema.height, tiles);
+    for (unsigned int i = 0; i < tiles.size(); i++)
+    {
+        if (tiles[i]->body && tiles[i]->body == character)
+        {
+            tiles[i]->setOccupyingBody(NULL);
+        }
+    }
+
+    // Remove lights from management list
+    for (unsigned int i = 0; i < character->lights.size(); i++)
+    {
+        lights.erase(std::remove(lights.begin(), lights.end(), character->lights[i]), lights.end());
+    }
+
+    // Remove character from management lists
+    switch (character->schema.type)
+    {
+    case Character::Type::Zombie:
+        zombies.erase(std::remove(zombies.begin(), zombies.end(), static_cast<Zombie*>(character)), zombies.end());
+        break;
+    case Character::Type::Ogre:
+        ogres.erase(std::remove(ogres.begin(), ogres.end(), static_cast<Ogre*>(character)), ogres.end());
+        break;
+    case Character::Type::Hunter:
+        hunters.erase(std::remove(hunters.begin(), hunters.end(), static_cast<Hunter*>(character)), hunters.end());
+        break;
+    case Character::Type::Guard:
+        guards.erase(std::remove(guards.begin(), guards.end(), static_cast<Guard*>(character)), guards.end());
+        break;
+    case Character::Type::Scientist:
+        scientists.erase(std::remove(scientists.begin(), scientists.end(), static_cast<Scientist*>(character)), scientists.end());
+        break;
+    }
+    // Remove from turnqueue
+    turnQueue.erase(std::remove(turnQueue.begin(), turnQueue.end(), character), turnQueue.end());
+    // Remove from character metalist
+    characters.erase(std::remove(characters.begin(), characters.end(), character), characters.end());
+}
+
 
 
 
@@ -701,37 +745,7 @@ void Level::removePlayer(Player* player)
         // If playing a character
         if(player->character)
         {
-            // Remove body from tiles
-            std::vector<Tile*> tiles;
-            getTilesWithinRectangle(player->character->Body::schema.x, player->character->Body::schema.y, player->character->Body::schema.width, player->character->Body::schema.height, tiles);
-            for(unsigned int i=0; i < tiles.size(); i++)
-            {
-                if(tiles[i]->body && tiles[i]->body == player->character)
-                {
-                    tiles[i]->setOccupyingBody(NULL);
-                }
-            }
-
-            // Remove lights from management list
-            for(unsigned int i=0; i < player->character->lights.size(); i++)
-            {
-                lights.erase(std::remove(lights.begin(), lights.end(), player->character->lights[i]), lights.end());
-            }
-
-            // Remove character from management lists
-            switch(player->character->schema.type)
-            {
-                case Character::Type::Zombie:
-                    zombies.erase(std::remove(zombies.begin(), zombies.end(), static_cast<Zombie*>(player->character)), zombies.end());
-                    break;
-                case Character::Type::Ogre:
-                    ogres.erase(std::remove(ogres.begin(), ogres.end(), static_cast<Ogre*>(player->character)), ogres.end());
-                    break;
-            }
-            // Remove from turnqueue
-            turnQueue.erase(std::remove(turnQueue.begin(), turnQueue.end(), player->character), turnQueue.end());
-            // Remove from character metalist
-            characters.erase(std::remove(characters.begin(), characters.end(), player->character), characters.end());
+            removeCharacter(player->character);
         }
     }
 }

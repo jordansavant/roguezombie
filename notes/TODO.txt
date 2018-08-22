@@ -11,6 +11,7 @@ Improvements:
 - eat corpses (destroy and heal)
 - Replace hunter AI with guard AI and expand on it to use weapon range instead of static distances
 - Clicking on interactible structures, finds nearest tile and walks to it and then opens automatically
+- destroy structures?
 
 
 Story:
