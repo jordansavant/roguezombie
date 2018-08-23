@@ -118,6 +118,13 @@ Item* Item::findItemBy(std::function<bool(Item*)> inspector)
     return NULL;
 }
 
+Item* Item::findItemByType(Type type)
+{
+    return findItemBy([type](Item* item) -> bool {
+        return item->schema.type == type;
+    });
+}
+
 Item* Item::removeItem(unsigned int itemId)
 {
     return removeItemBy([itemId] (Item* item) -> bool {

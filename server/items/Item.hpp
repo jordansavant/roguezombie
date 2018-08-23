@@ -148,6 +148,8 @@ public:
 
     Item* findItemBy(std::function<bool(Item*)> inspector);
 
+    Item* findItemByType(Type type);
+
     Item* removeItem(unsigned int itemId);
 
     Item* removeItemBy(std::function<bool(Item*)> inspector);

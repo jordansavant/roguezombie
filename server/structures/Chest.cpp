@@ -3,6 +3,7 @@
 #include "SFML/System.hpp"
 #include "../Level.hpp"
 #include "../Tile.hpp"
+#include "../Items/Item.hpp"
 #include "../Structure.hpp"
 #include "../Interaction.hpp"
 #include "../Character.hpp"
@@ -36,20 +37,35 @@ void Chest::handleInteraction(Interaction::Type interaction, Body* interactor, b
 
     switch(interaction)
     {
-        case Interaction::Type::UnlockWithKey:
         case Interaction::Type::UnlockWithLockpick:
         case Interaction::Type::UnlockWithBash:
+            // disabled until we want these mechanics in the game
+            break;
+        case Interaction::Type::UnlockWithKey:
         {
-            schema.isLocked = false;
+            bool wasLocked = false;
+
+            // Check if the character has a keycard
+            if (interactor && interactor->schema.type == Body::Type::Character)
+            {
+                ::Character* character = static_cast<::Character*>(interactor);
+                Item* keycard = character->inventory->findItemByType(Item::KeyCard);
+                if (keycard)
+                {
+                    schema.isLocked = false;
+                    wasLocked = true;
+                }
+            }
 
             // Success
-            responsePacket << true;
+            responsePacket << wasLocked;
 
             break;
         }
         case Interaction::Type::LockWithKey:
         case Interaction::Type::LockWithLockpick:
         {
+            // TODO: Disable lock until we have a reason to lock
             schema.isLocked = true;
 
             // Success
@@ -72,14 +88,14 @@ void Chest::getAvailableInteractions(std::vector<Interaction::Type> &fill)
     if(schema.isLocked)
     {
         fill.push_back(Interaction::Type::UnlockWithKey);
-        fill.push_back(Interaction::Type::UnlockWithLockpick);
-        fill.push_back(Interaction::Type::UnlockWithBash);
+        //fill.push_back(Interaction::Type::UnlockWithLockpick);
+        //fill.push_back(Interaction::Type::UnlockWithBash);
     }
     else
     {
         fill.push_back(Interaction::Type::OpenInventory);
-        fill.push_back(Interaction::Type::LockWithKey);
-        fill.push_back(Interaction::Type::LockWithLockpick);
+        //fill.push_back(Interaction::Type::LockWithKey);
+        //fill.push_back(Interaction::Type::LockWithLockpick);
     }
 
     // Put the default ones after our primary ones
