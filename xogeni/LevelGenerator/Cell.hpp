@@ -69,6 +69,7 @@ namespace XoGeni
         bool hasStructure;
         unsigned int structureType;
         unsigned int structureSubType;
+        bool isLocked;
 
         unsigned int metadata_floodfillId;
 

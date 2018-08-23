@@ -311,6 +311,8 @@ void LevelLoader::Level::unpack(XoGeni::CellMap* cellMap)
         tileDefs.push_back(tileDef);
         tId++;
 
+        bool hasBody = false;
+
 
         // Structures
         if(cell->isWall || cell->isDoor || cell->hasStructure)
@@ -318,16 +320,51 @@ void LevelLoader::Level::unpack(XoGeni::CellMap* cellMap)
             structureIdMap.push_back(sId);
             LevelLoader::Structure structureDef;
             structureDef.unpack(cell, sId);
+
+            // Structure Lights
+            if (cell->hasLight)
+            {
+                LevelLoader::Light lightDef;
+                lightDef.unpack(cell, 0);
+                structureDef.lights.push_back(lightDef);
+            }
+
             structureDefs.push_back(structureDef);
             sId++;
+            hasBody = true;
         }
         else
         {
             structureIdMap.push_back(0);
         }
 
-        // Lights
-        if(cell->hasLight)
+
+        // Characters
+        if (cell->hasCharacter)
+        {
+            characterIdMap.push_back(cId);
+            LevelLoader::Character characterDef;
+            characterDef.unpack(cell, cId);
+
+            // Character Lights
+            if (cell->hasLight)
+            {
+                LevelLoader::Light lightDef;
+                lightDef.unpack(cell, 0);
+                characterDef.lights.push_back(lightDef);
+            }
+
+            characterDefs.push_back(characterDef);
+            cId++;
+            hasBody = true;
+        }
+        else
+        {
+            characterIdMap.push_back(0);
+        }
+
+        // Lights on their own (no character or structure)
+        if (!hasBody && cell->hasLight)
         {
             lightIdMap.push_back(lId);
             LevelLoader::Light lightDef;
@@ -339,23 +376,6 @@ void LevelLoader::Level::unpack(XoGeni::CellMap* cellMap)
         {
             lightIdMap.push_back(0);
         }
-
-
-
-        // Characters
-        if (cell->hasCharacter)
-        {
-            characterIdMap.push_back(cId);
-            LevelLoader::Character characterDef;
-            characterDef.unpack(cell, cId);
-            characterDefs.push_back(characterDef);
-            cId++;
-        }
-        else
-        {
-            characterIdMap.push_back(0);
-        }
-
     }
 }
 
@@ -448,8 +468,8 @@ void LevelLoader::Structure::unpack(XoGeni::Cell* cell, unsigned int structureId
         type = cell->structureType;
         subtype = cell->structureSubType;
     }
-    isOpen = false;
-    isLocked = false;
+    isOpen = false; // for doors being open?
+    isLocked = cell->isLocked; // for chests
 
     // Items in structure
 

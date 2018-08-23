@@ -1289,7 +1289,8 @@ void XoGeni::CellMap::spawnDecor()
         if (cell) {
             if (LevelGenerator::random.boolean()) {
                 cell->hasStructure = true;
-                cell->decorate(3);
+                cell->decorate(3); // chest
+                cell->isLocked = true; // TODO: make this a heuristic that spawns with Keys as well
             } else {
                 cell->hasStructure = true;
                 cell->decorate(4, LevelGenerator::random.of(8, 9, 12));
