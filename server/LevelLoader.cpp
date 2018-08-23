@@ -472,6 +472,12 @@ void LevelLoader::Structure::unpack(XoGeni::Cell* cell, unsigned int structureId
     isLocked = cell->isLocked; // for chests
 
     // Items in structure
+    for (unsigned int i = 0; i < cell->inventory.size(); i++)
+    {
+        Item item;
+        item.type = cell->inventory[i];
+        items.push_back(item);
+    }
 
     // Lights in structure
 }
@@ -482,6 +488,12 @@ void LevelLoader::Character::unpack(XoGeni::Cell* cell, unsigned int characterId
     type = cell->characterType;
 
     // Items in character
+    for (unsigned int i = 0; i < cell->inventory.size(); i++)
+    {
+        Item item;
+        item.type = cell->inventory[i];
+        items.push_back(item);
+    }
 
     // Lights in character
 }

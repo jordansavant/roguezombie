@@ -1203,6 +1203,58 @@ void XoGeni::CellMap::tagUnreachableCells()
 // ENVIRONMENT SPAWNING START
 ////////////////////////////////////////
 
+void XoGeni::CellMap::populate()
+{
+    // MASTER LEVEL BUILDING ROUTING
+    // This routing uses the level's difficulty to build all machines, treasure, traps, furnishings, enemies, chests, keys etc
+
+
+    // LEVEL 0
+    // A level zero floor's goal is to introduce mechanics with a mild amount of challenge
+    // It should mostly be populated with helpless enemies, simple chests, no traps and a single Level 1 enemy as a boss
+
+    // MACHINES
+    // Chest/Key/Treasure:
+    // - Level 0 will reward a player with a pistol treasure
+    // - It will also have treasures for less useful reasons, potentially plot oriented (drives?)
+
+    machinate_chestKeyTreasure();
+
+}
+
+void XoGeni::CellMap::machinate_chestKeyTreasure()
+{
+    // Pick a random room and spawn a chest that is locked
+    // Generate a key for this chest
+    // Generate a level X enemy and place the key on his body
+
+    // for testing lets do it in the first room
+    Cell* chestCell = getSafeToBlockRoomCell(entranceRoom, true, 0);
+    if (chestCell)
+    {
+        setChest(chestCell, true);
+        // give it a pistol
+        chestCell->inventory.push_back(3);
+    }
+
+    // create a scientist
+    Cell* enemyCell = getOpenRoomCell(entranceRoom, true);
+    if (enemyCell)
+    {
+        enemyCell->hasCharacter = true;
+        enemyCell->characterType = 4;
+        // give him a keycard
+        enemyCell->inventory.push_back(15); // keycard
+    }
+}
+
+void XoGeni::CellMap::setChest(Cell* cell, bool isLocked)
+{
+    cell->hasStructure = true;
+    cell->decorate(3); // chest
+    cell->isLocked = isLocked; // TODO: make this a heuristic that spawns with Keys as well
+}
+
 void XoGeni::CellMap::spawnDecor()
 {
     // Types of decor

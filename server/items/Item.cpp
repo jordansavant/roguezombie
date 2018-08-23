@@ -602,6 +602,15 @@ Item* Item::create(Type type, unsigned int id)
             i->schema.armorEffectiveness = 0;
 
             break;
+
+        case Type::KeyCard:
+
+            i = new Item();
+            i->schema.CategoryBase = ItemCategory::Base::BaseNone;
+            i->schema.CategoryWeapon = ItemCategory::Weapon::WeaponNone;
+            i->schema.weight = .01;
+
+            break;
     }
 
     i->schema.id = id;
@@ -658,6 +667,9 @@ std::string Item::getTitle(Type type)
 
         case Type::GoldMedal:
             return "Gold Medal";
+
+        case Type::KeyCard:
+            return "Key Card";
     }
 }
 
@@ -711,6 +723,9 @@ std::string Item::getDescription(Type type)
 
         case Type::GoldMedal:
             return "Congrats you're #1";
+
+        case Type::KeyCard:
+            return "Opens chests and doors";
     }
 }
 
@@ -800,6 +815,9 @@ std::string Item::getIconName(Type type)
 
         case Type::GoldMedal:
             return "GoldMedal";
+
+        case Type::KeyCard:
+            return "KeyCard";
     }
 }
 

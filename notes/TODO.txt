@@ -2,7 +2,7 @@
 Bugs:
 
 - Walls on southern tip of map are messed up Z depths
-- chests are set to be locked but are not when i get to them
+- LightDefs require an ID but I dont have one for structures/characters -- see if we missed something
 
 
 Improvements:
@@ -11,6 +11,7 @@ Improvements:
 - Clicking on interactible structures, finds nearest tile and walks to it and then opens automatically
 - Chest locks and keys, keycards found on bodies open chests?
 	- Level generates same number of keycards as chests, must store keys on enemies
+- debri/blood tile litter for effects etc
 
 
 Story:

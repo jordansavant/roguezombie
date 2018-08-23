@@ -21,21 +21,22 @@ public:
 
     enum Type
     {
-        None,
-        Backpack,
-        HardHat,
-        Magnum357,
-        Z4Rifle,
-        Crowbar,
-        Baton,
-        Medkit,
-        Brick,
-        Grenade,
-        FootballPads,
-        CombatBoots,
-        RacingPants,
-        CleaningGloves,
-        GoldMedal,
+        None, // 0
+        Backpack, // 1
+        HardHat, // 2
+        Magnum357, // 3
+        Z4Rifle, // 4
+        Crowbar, // 5
+        Baton, // 6
+        Medkit, // 7
+        Brick, // 8
+        Grenade, // 9
+        FootballPads, // 10
+        CombatBoots, // 11
+        RacingPants, // 12
+        CleaningGloves, // 13
+        GoldMedal, // 14
+        KeyCard, // 15
     };
 
     enum CommandType

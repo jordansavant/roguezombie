@@ -71,6 +71,8 @@ namespace XoGeni
         unsigned int structureSubType;
         bool isLocked;
 
+        std::vector<unsigned int>inventory; // list of types
+
         unsigned int metadata_floodfillId;
 
         bool isOccupied();

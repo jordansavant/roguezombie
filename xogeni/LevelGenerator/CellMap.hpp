@@ -153,6 +153,12 @@ namespace XoGeni
 
         // Environment spawning
 
+        void populate();
+
+        void machinate_chestKeyTreasure();
+
+        void setChest(Cell* cell, bool isLocked);
+
         void spawnDecor();
 
         void spawnEnemies();
