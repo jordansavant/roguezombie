@@ -25,5 +25,7 @@ std::string Interaction::getTitle(Type type)
             return "Talk";
         case Interaction::Type::Consume:
             return "Consume";
+        case Interaction::Type::Destroy:
+            return "Destroy";
     }
 }

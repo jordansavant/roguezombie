@@ -17,7 +17,7 @@
 
 Character::Character()
     : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), actionDelayTimer(1.5), hostilityCheckAi(NULL), combatDetectionAi(NULL), combatDecisionAi(NULL),
-      isHostileCombatDetected(false), hasTargetEnemy(false), targetEnemyPosition(0, 0), combatTilesTraversed(0), moveTimer(.67f), equipment(), schema(), visionRadius(30)
+      isHostileCombatDetected(false), hasTargetEnemy(false), targetEnemyPosition(0, 0), combatTilesTraversed(0), moveTimer(.67f), equipment(), schema(), visionRadius(30), consumptionHeal(10)
 {
     equipment.resize(EquipmentSlot::_count, NULL);
 }
@@ -1705,10 +1705,18 @@ void Character::handleInteraction(Interaction::Type interaction, Body* interacto
                 ::Character* character = static_cast<::Character*>(interactor);
 
                 // TODO: Make this more reasonable (defined as a value of healing based on what is being consumed?)
-                character->heal(10); // Heal for 10
+                character->heal(consumptionHeal); // Heal for 10
 
                 // Destroy this body
                 level->removeCharacter(this); // THIS Maybe should be queued if it causes trouble inside of loops or ee
+
+                Player* player = character->schema.player;
+                if (player) {
+                    level->sendEventToPlayer(player, [](bit::ServerPacket &packet) -> void {
+                        packet << sf::Uint32(ServerEvent::CharacterConsumed);
+                        // TODO: Could Send the Character::Type here so we could customize the client side effects
+                    });
+                }
             }
 
 

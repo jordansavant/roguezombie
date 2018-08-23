@@ -48,6 +48,8 @@ enum ServerEvent
     CharacterDeath,
     BluntHit,
     CharacterHeal,
+    CharacterConsumed,
+    StructureDestroyed,
 };
 
 #endif

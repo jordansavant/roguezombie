@@ -12,6 +12,7 @@
 Door::Door()
     : Structure(), openerCount(0), previousIsOpen(false), currentIsOpen(false)
 {
+    isDestroyable = false;
 }
 
 void Door::load(Level* _level, unsigned int _id, float _x, float _y)

@@ -93,7 +93,11 @@ public:
 
     void endGameDefeat();
 
+    void removeBody(Body* body);
+
     void removeCharacter(Character* character);
+
+    void removeStructure(Structure* structure);
 
     
     // Player management

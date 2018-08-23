@@ -12,6 +12,7 @@
 Furnishing::Furnishing()
     : Structure(), schema()
 {
+    isDestroyable = true;
 }
 
 void Furnishing::load(Level* _level, unsigned int _id, float _x, float _y)

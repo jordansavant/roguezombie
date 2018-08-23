@@ -7,6 +7,7 @@
 Wall::Wall()
     : Structure()
 {
+    isDestroyable = false;
 }
 
 void Wall::load(Level* _level, unsigned int _id, float _x, float _y)

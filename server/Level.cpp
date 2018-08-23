@@ -591,49 +591,86 @@ void Level::endGameDefeat()
     });
 }
 
-void Level::removeCharacter(Character* character)
+void Level::removeBody(Body* body)
 {
+    // DONT USE DIRECTLY!! -- Use from removeCharacter or removeStructure
+
     // Remove body from tiles
     std::vector<Tile*> tiles;
-    getTilesWithinRectangle(character->Body::schema.x, character->Body::schema.y, character->Body::schema.width, character->Body::schema.height, tiles);
+    getTilesWithinRectangle(body->Body::schema.x, body->Body::schema.y, body->Body::schema.width, body->Body::schema.height, tiles);
     for (unsigned int i = 0; i < tiles.size(); i++)
     {
-        if (tiles[i]->body && tiles[i]->body == character)
+        if (tiles[i]->body && tiles[i]->body == body)
         {
             tiles[i]->setOccupyingBody(NULL);
         }
     }
 
     // Remove lights from management list
-    for (unsigned int i = 0; i < character->lights.size(); i++)
+    for (unsigned int i = 0; i < body->lights.size(); i++)
     {
-        lights.erase(std::remove(lights.begin(), lights.end(), character->lights[i]), lights.end());
+        lights.erase(std::remove(lights.begin(), lights.end(), body->lights[i]), lights.end());
     }
+}
+
+void Level::removeCharacter(Character* character)
+{
+    // Remove body and lights from tiles
+    removeBody(character);
 
     // Remove character from management lists
     switch (character->schema.type)
     {
-    case Character::Type::Zombie:
-        zombies.erase(std::remove(zombies.begin(), zombies.end(), static_cast<Zombie*>(character)), zombies.end());
-        break;
-    case Character::Type::Ogre:
-        ogres.erase(std::remove(ogres.begin(), ogres.end(), static_cast<Ogre*>(character)), ogres.end());
-        break;
-    case Character::Type::Hunter:
-        hunters.erase(std::remove(hunters.begin(), hunters.end(), static_cast<Hunter*>(character)), hunters.end());
-        break;
-    case Character::Type::Guard:
-        guards.erase(std::remove(guards.begin(), guards.end(), static_cast<Guard*>(character)), guards.end());
-        break;
-    case Character::Type::Scientist:
-        scientists.erase(std::remove(scientists.begin(), scientists.end(), static_cast<Scientist*>(character)), scientists.end());
-        break;
+        case Character::Type::Zombie:
+            zombies.erase(std::remove(zombies.begin(), zombies.end(), static_cast<Zombie*>(character)), zombies.end());
+            break;
+        case Character::Type::Ogre:
+            ogres.erase(std::remove(ogres.begin(), ogres.end(), static_cast<Ogre*>(character)), ogres.end());
+            break;
+        case Character::Type::Hunter:
+            hunters.erase(std::remove(hunters.begin(), hunters.end(), static_cast<Hunter*>(character)), hunters.end());
+            break;
+        case Character::Type::Guard:
+            guards.erase(std::remove(guards.begin(), guards.end(), static_cast<Guard*>(character)), guards.end());
+            break;
+        case Character::Type::Scientist:
+            scientists.erase(std::remove(scientists.begin(), scientists.end(), static_cast<Scientist*>(character)), scientists.end());
+            break;
     }
+
     // Remove from turnqueue
     turnQueue.erase(std::remove(turnQueue.begin(), turnQueue.end(), character), turnQueue.end());
+
     // Remove from character metalist
     characters.erase(std::remove(characters.begin(), characters.end(), character), characters.end());
 }
+
+void Level::removeStructure(Structure* structure)
+{
+    // Remove body and lights from tiles
+    removeBody(structure);
+
+    // Remove character from management lists
+    switch (structure->schema.type)
+    {
+        case Structure::Type::Wall:
+            walls.erase(std::remove(walls.begin(), walls.end(), static_cast<Wall*>(structure)), walls.end());
+            break;
+        case Structure::Type::Door:
+            doors.erase(std::remove(doors.begin(), doors.end(), static_cast<Door*>(structure)), doors.end());
+            break;
+        case Structure::Type::Chest:
+            chests.erase(std::remove(chests.begin(), chests.end(), static_cast<Chest*>(structure)), chests.end());
+            break;
+        case Structure::Type::Furnishing:
+            furnishings.erase(std::remove(furnishings.begin(), furnishings.end(), static_cast<Furnishing*>(structure)), furnishings.end());
+            break;
+    }
+
+    // Remove from character metalist
+    structures.erase(std::remove(structures.begin(), structures.end(), structure), structures.end());
+}
+
 
 
 

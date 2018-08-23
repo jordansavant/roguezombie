@@ -18,6 +18,8 @@ public:
 
     Structure();
 
+    bool isDestroyable;
+
     enum Type
     {
         None, // 0
@@ -57,6 +59,10 @@ public:
     virtual void update(sf::Time &gameTime);
 
     virtual void setPosition(float x, float y);
+
+    void getAvailableInteractions(std::vector<Interaction::Type> &fill);
+
+    virtual void handleInteraction(Interaction::Type interaction, Body* interactor, bit::ServerPacket &responsePacket);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
 };

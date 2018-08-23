@@ -6,6 +6,7 @@
 Hunter::Hunter()
     : Character()
 {
+    consumptionHeal = 10; // if eaten I will heal
 }
 
 void Hunter::load(Level* _level, unsigned int _id, float _x, float _y)

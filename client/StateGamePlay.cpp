@@ -947,6 +947,23 @@ void StateGamePlay::handleInteractionResponse(unsigned int tileId, Interaction::
 
             break;
         }
+        case Interaction::Type::Destroy:
+        {
+            bool success;
+            packet >> success;
+
+            if (success)
+            {
+                displayMessage(std::string("Structure destroyed"));
+                changeMode(Mode::Free);
+            }
+            else
+            {
+                displayMessage(std::string("Structure cannot be consumed"));
+            }
+
+            break;
+        }
     }
 }
 
@@ -1288,6 +1305,18 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 packet >> posX;
                 packet >> posY;
                 rogueZombieGame->soundManager->play(healSoundId);
+                break;
+            }
+
+            case ServerEvent::CharacterConsumed:
+            {
+                rogueZombieGame->soundManager->play(closeBodySoundId);
+                break;
+            }
+
+            case ServerEvent::StructureDestroyed:
+            {
+                rogueZombieGame->soundManager->play(thudSoundId);
                 break;
             }
         }

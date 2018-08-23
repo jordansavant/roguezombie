@@ -80,6 +80,7 @@ public:
     std::vector<Item*> equipment;
     unsigned int visionRadius;
     std::vector<Player*> spectators;
+    unsigned int consumptionHeal;
 
     // Events
     bit::Event<std::function<void(Character* c)>> onDeath;

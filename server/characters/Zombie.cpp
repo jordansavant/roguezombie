@@ -10,6 +10,7 @@
 Zombie::Zombie()
     : Character(), walkTimer(5)
 {
+    consumptionHeal = 0; // if eaten I will not heal
 }
 
 void Zombie::load(Level* _level, unsigned int _id, float _x, float _y)

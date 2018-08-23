@@ -12,6 +12,7 @@
 Chest::Chest()
     : Structure(),  schema()
 {
+    isDestroyable = true;
 }
 
 void Chest::load(Level* _level, unsigned int _id, float _x, float _y)
@@ -68,8 +69,6 @@ void Chest::prepareSnapshot(bit::ServerPacket &packet, bool full)
 
 void Chest::getAvailableInteractions(std::vector<Interaction::Type> &fill)
 {
-    Structure::getAvailableInteractions(fill);
-    
     if(schema.isLocked)
     {
         fill.push_back(Interaction::Type::UnlockWithKey);
@@ -82,6 +81,9 @@ void Chest::getAvailableInteractions(std::vector<Interaction::Type> &fill)
         fill.push_back(Interaction::Type::LockWithKey);
         fill.push_back(Interaction::Type::LockWithLockpick);
     }
+
+    // Put the default ones after our primary ones
+    Structure::getAvailableInteractions(fill);
 }
 
 void Chest::onInventoryOpen(Body* guest)
