@@ -199,6 +199,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         chest->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
                         chest->setPosition(t->schema.x, t->schema.y);
                         chest->schema.isLocked = structureDef.isLocked;
+                        chest->schema.subtype = static_cast<Chest::SubType>(structureDef.subtype);
                         chests.push_back(chest);
                         s = chest;
                         break;

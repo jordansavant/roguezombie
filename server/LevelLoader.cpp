@@ -475,7 +475,8 @@ void LevelLoader::Structure::unpack(XoGeni::Cell* cell, unsigned int structureId
     for (unsigned int i = 0; i < cell->inventory.size(); i++)
     {
         Item item;
-        item.type = cell->inventory[i];
+        item.type = cell->inventory[i].type;
+        item.subtype = cell->inventory[i].subtype;
         items.push_back(item);
     }
 
@@ -491,7 +492,8 @@ void LevelLoader::Character::unpack(XoGeni::Cell* cell, unsigned int characterId
     for (unsigned int i = 0; i < cell->inventory.size(); i++)
     {
         Item item;
-        item.type = cell->inventory[i];
+        item.type = cell->inventory[i].type;
+        item.subtype = cell->inventory[i].subtype;
         items.push_back(item);
     }
 

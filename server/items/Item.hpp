@@ -5,6 +5,7 @@
 #include "ItemCategory.hpp"
 #include <vector>
 #include "../../bitengine/Network.hpp"
+#include "../AccessLevel.hpp"
 
 class Body;
 class Character;
@@ -53,7 +54,7 @@ public:
         Schema()
             : id(0), position(0), CategoryBase(0), CategoryArmor(0), CategoryWeapon(0), CategoryJewelry(0), CategoryContainer(0),
               type(Type::None), weight(0), minimumDamage(0), maximumDamage(0), effectiveRangeInTiles(1), effectiveRadiusInTiles(1), armorEffectiveness(0),
-              canContainItems(false), itemLimit(0), commandType(CommandType::CommandTypeNone), canCommandInCombat(false), canCommandInFree(false)
+              canContainItems(false), itemLimit(0), commandType(CommandType::CommandTypeNone), canCommandInCombat(false), canCommandInFree(false), accessLevel(AccessLevel::None)
         {
         }
 
@@ -75,6 +76,7 @@ public:
         CommandType commandType;
         bool canCommandInCombat;
         bool canCommandInFree;
+        AccessLevel accessLevel;
 
         friend sf::Packet& operator <<(sf::Packet& packet, const Schema &schema)
         {

@@ -19,7 +19,8 @@ public:
     ChestClient();
 
     Chest::Schema schema;
-    bit::Sprite* sprite;
+    bit::Sprite* spriteDefault;
+    bit::Sprite* spriteYellow;
     unsigned int quadIndex;
 
     void clientLoad(LevelClient* level);

@@ -1229,12 +1229,13 @@ void XoGeni::CellMap::machinate_chestKeyTreasure()
     // Generate a level X enemy and place the key on his body
 
     // for testing lets do it in the first room
-    Cell* chestCell = getSafeToBlockRoomCell(entranceRoom, true, 0);
+    Cell* chestCell = getSafeToBlockRoomCell(entranceRoom, true, 1);
     if (chestCell)
     {
         setChest(chestCell, true);
         // give it a pistol
-        chestCell->inventory.push_back(3);
+        chestCell->structureSubType = 1; // yellow
+        chestCell->inventory.push_back(Cell::ItemData(3));
     }
 
     // create a scientist
@@ -1244,7 +1245,8 @@ void XoGeni::CellMap::machinate_chestKeyTreasure()
         enemyCell->hasCharacter = true;
         enemyCell->characterType = 4;
         // give him a keycard
-        enemyCell->inventory.push_back(15); // keycard
+        enemyCell->inventory.push_back(Cell::ItemData(15, 1)); // Item::Type::KeyCard, Chest::SubType::Yellow
+        enemyCell->inventory.push_back(15);
     }
 }
 

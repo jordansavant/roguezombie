@@ -24,6 +24,15 @@ namespace XoGeni
             unsigned int doorY;
         };
 
+        struct ItemData
+        {
+            ItemData() : type(0), accessLevel(0) {}
+            ItemData(unsigned int _type) : type(_type), accessLevel(0) {}
+            ItemData(unsigned int _type, unsigned int _accessLevel) : type(_type), accessLevel(_accessLevel) {}
+            unsigned int type;
+            unsigned int accessLevel;
+        };
+
         unsigned int index;
         unsigned int x, y;
         unsigned int tunnelTestCount;
@@ -71,7 +80,7 @@ namespace XoGeni
         unsigned int structureSubType;
         bool isLocked;
 
-        std::vector<unsigned int>inventory; // list of types
+        std::vector<ItemData>inventory; // list of types
 
         unsigned int metadata_floodfillId;
 

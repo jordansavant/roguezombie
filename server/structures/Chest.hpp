@@ -5,6 +5,7 @@
 #include "SFML/Graphics.hpp"
 #include "../../bitengine/Game.hpp"
 #include "../Structure.hpp"
+#include "../AccessLevel.hpp"
 
 class Level;
 class Character;
@@ -18,19 +19,24 @@ public:
     struct Schema
     {
         Schema()
-            : isLocked(false)
+            : isLocked(false), accessLevel(AccessLevel::None)
         {
         }
 
         bool isLocked;
+        AccessLevel accessLevel;
 
         friend sf::Packet& operator <<(sf::Packet& packet, const Schema &schema)
         {
-            return packet << schema.isLocked;
+            packet << schema.isLocked;
+            packet << sf::Uint32(schema.accessLevel);
+            return packet;
         }
         friend sf::Packet& operator >>(sf::Packet& packet, Schema &schema)
         {
-            return packet >> schema.isLocked;
+            packet >> schema.isLocked;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, AccessLevel>(packet, schema.accessLevel);
+            return packet;
         }
     };
     Schema schema;

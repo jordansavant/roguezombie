@@ -61,6 +61,7 @@ public:
     {
         unsigned int id;
         unsigned int type;
+        unsigned int subtype;
         unsigned int slot;
         unsigned int position;
 

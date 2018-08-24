@@ -1,5 +1,6 @@
 #include "ChestClient.hpp"
 #include "../../server/structures/Chest.hpp"
+#include "../../server/AccessLevel.hpp"
 #include "SFML/Graphics.hpp"
 #include "../LevelClient.hpp"
 #include "../StateGamePlay.hpp"
@@ -22,12 +23,23 @@ void ChestClient::clientLoad(LevelClient* _level)
     level = _level;
 
     quadIndex = level->vertexMap_charactersToggleIlluminated.requestVertexIndex();
-    sprite = level->state->rogueZombieGame->spriteLoader->getSprite("Chest");
-    sprite->applyToQuad(&level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex]);
+    spriteDefault = level->state->rogueZombieGame->spriteLoader->getSprite("Chest");
+    spriteYellow = level->state->rogueZombieGame->spriteLoader->getSprite("Chest_Yellow");
+    //spriteDefault->applyToQuad(&level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex]);
 }
 
 void ChestClient::clientUpdate(sf::Time &gameTime)
 {
+    // Sprite
+    bit::Sprite* sprite = NULL;
+    switch (schema.accessLevel) {
+        default:
+            sprite = spriteDefault;
+            break;
+        case AccessLevel::Yellow:
+            sprite = spriteYellow;
+            break;
+    }
     // Sprite
     sprite->applyToQuad(&level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex]);
 
