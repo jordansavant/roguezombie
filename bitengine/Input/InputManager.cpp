@@ -75,6 +75,7 @@ void bit::InputManager::inspectTextEnteredEvent(sf::Event e)
 					break;
 				case 8: // delete
 					itl->input = itl->input.substr(0, itl->input.size() - 1);
+					itl->isChanged = true;
 					break;
 				default:
 					// character range
@@ -82,11 +83,10 @@ void bit::InputManager::inspectTextEnteredEvent(sf::Event e)
 					{
 						char input;
 						input = static_cast<char>(e.text.unicode);
-						for (unsigned int i = 0; i < inputTextListeners.size(); i++)
-						{
-							inputTextListeners[i]->input += input;
-						}
+						if (itl->ignoreCharacters.find(input) == itl->ignoreCharacters.npos)
+							itl->input += input;
 					}
+					itl->isChanged = true;
 					break;
 			}
 		}

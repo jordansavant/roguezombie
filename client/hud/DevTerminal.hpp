@@ -17,6 +17,8 @@ public:
 
 	bit::Label* input;
 	bit::InputTextListener* inputTextListener;
+	bit::GameTimer blinker;
+	bool blink;
 
 	virtual void update(sf::RenderWindow &window, sf::Time &gameTime);
 

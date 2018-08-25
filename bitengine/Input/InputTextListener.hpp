@@ -14,9 +14,13 @@ namespace bit
 
 		std::string input;
 		bool isEntered;
+		bool isChanged;
 		bool listen;
+		std::string ignoreCharacters;
 
 		bool onEntered();
+
+		bool onChanged();
 
 		void clear();
 	};

@@ -5,11 +5,13 @@
 #include "../../bitengine/Input.hpp"
 
 DevTerminal::DevTerminal(Hud* _hud)
-	: Frame(_hud, 10, -30, _hud->targetWidth - 20, 30, bit::Element::AnchorType::TopLeft, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3), false)
+	: Frame(_hud, 10, -30, _hud->targetWidth - 20, 30, bit::Element::AnchorType::TopLeft, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3), false),
+	blinker(1), blink(false)
 {
 	scaleStyle = ScaleStyle::PowerOfTwo;
 
 	inputTextListener = hud->state->rogueZombieGame->inputManager->getInputTextListener();
+	inputTextListener->ignoreCharacters = "`";
 
 	input = new bit::Label(0, 0, 0, 0, bit::Element::AnchorType::TopLeft);
 	input->setSfFontSize(Hud::font_noteSize);
@@ -24,6 +26,11 @@ void DevTerminal::update(sf::RenderWindow &window, sf::Time &gameTime)
 {
 	Frame::update(window, gameTime);
 
+	if (blinker.update(gameTime))
+	{
+		blink = !blink;
+	}
+
 	if (inputTextListener->onEntered())
 	{
 		// Do something with the command
@@ -31,7 +38,13 @@ void DevTerminal::update(sf::RenderWindow &window, sf::Time &gameTime)
 		inputTextListener->clear();
 	}
 
-	input->setSfFontString(" > " + inputTextListener->input);
+	if (inputTextListener->onChanged())
+	{
+		blink = false;
+		blinker.reset();
+	}
+
+	input->setSfFontString(" > " + inputTextListener->input + (blink ? "_" : ""));
 }
 
 void DevTerminal::hide()
