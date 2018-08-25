@@ -13,6 +13,7 @@
 #include "Player.hpp"
 #include "mission/Mission.hpp"
 #include "items/Item.hpp"
+#include "AccessLevel.hpp"
 #include "RpgSystem.hpp"
 
 Character::Character()
@@ -1390,6 +1391,13 @@ void Character::onInventoryClose(Body* guest)
             }
         }
     }
+}
+
+bool Character::hasAccess(AccessLevel accessLevel)
+{
+	// A character has access to an access level by KeyCards found
+	Item* keycard = inventory->findItemByTypeAndAccessLevel(Item::KeyCard, accessLevel);
+	return keycard != NULL;
 }
 
 

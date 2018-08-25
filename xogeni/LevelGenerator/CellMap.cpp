@@ -1234,7 +1234,7 @@ void XoGeni::CellMap::machinate_chestKeyTreasure()
     {
         setChest(chestCell, true);
         // give it a pistol
-        chestCell->structureSubType = 1; // yellow
+        chestCell->structureAccessLevel = 1; // yellow
         chestCell->inventory.push_back(Cell::ItemData(3));
     }
 
@@ -1246,7 +1246,6 @@ void XoGeni::CellMap::machinate_chestKeyTreasure()
         enemyCell->characterType = 4;
         // give him a keycard
         enemyCell->inventory.push_back(Cell::ItemData(15, 1)); // Item::Type::KeyCard, Chest::SubType::Yellow
-        enemyCell->inventory.push_back(15);
     }
 }
 

@@ -49,9 +49,8 @@ void Chest::handleInteraction(Interaction::Type interaction, Body* interactor, b
             if (interactor && interactor->schema.type == Body::Type::Character)
             {
                 ::Character* character = static_cast<::Character*>(interactor);
-                Item* keycard = character->inventory->findItemByType(Item::KeyCard);
-                if (keycard)
-                {
+				if (character->hasAccess(schema.accessLevel))
+				{
                     schema.isLocked = false;
                     wasLocked = true;
                 }

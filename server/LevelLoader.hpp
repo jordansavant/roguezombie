@@ -61,7 +61,7 @@ public:
     {
         unsigned int id;
         unsigned int type;
-        unsigned int subtype;
+        unsigned int accessLevel;
         unsigned int slot;
         unsigned int position;
 
@@ -87,6 +87,7 @@ public:
         unsigned int id;
         unsigned int type;
         unsigned int subtype;
+		unsigned int accessLevel;
         bool isOpen;
         bool isLocked;
         std::vector<Item> items;

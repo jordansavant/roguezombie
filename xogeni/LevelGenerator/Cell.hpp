@@ -78,6 +78,7 @@ namespace XoGeni
         bool hasStructure;
         unsigned int structureType;
         unsigned int structureSubType;
+		unsigned int structureAccessLevel;
         bool isLocked;
 
         std::vector<ItemData>inventory; // list of types

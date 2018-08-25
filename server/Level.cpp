@@ -21,6 +21,7 @@
 #include "AiRoutines.hpp"
 #include "RpgSystem.hpp"
 #include "LevelLoader.hpp"
+#include "AccessLevel.hpp"
 #include "SFML/Network.hpp"
 #include "../bitengine/Network.hpp"
 #include "../bitengine/Math.hpp"
@@ -199,7 +200,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         chest->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
                         chest->setPosition(t->schema.x, t->schema.y);
                         chest->schema.isLocked = structureDef.isLocked;
-                        chest->schema.subtype = static_cast<Chest::SubType>(structureDef.subtype);
+                        chest->schema.accessLevel = static_cast<AccessLevel>(structureDef.accessLevel);
                         chests.push_back(chest);
                         s = chest;
                         break;
@@ -224,8 +225,9 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                     // Structure inventory
                     for(unsigned int i=0; i < structureDef.items.size(); i++)
                     {
-                        Item::Type itemType = static_cast<Item::Type>(structureDef.items[i].type);
-                        s->addItemToInventory(Item::create(itemType, server->getNextItemId()));
+						Item::Type itemType = static_cast<Item::Type>(structureDef.items[i].type);
+						AccessLevel accessLevel = static_cast<AccessLevel>(structureDef.items[i].accessLevel);
+                        s->addItemToInventory(Item::create(itemType, accessLevel, server->getNextItemId()));
                     }
                     // Structure Lights
                     for(unsigned int i=0; i < structureDef.lights.size(); i++)
@@ -320,7 +322,8 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                     for(unsigned int i=0; i < characterDef.items.size(); i++)
                     {
                         Item::Type itemType = static_cast<Item::Type>(characterDef.items[i].type);
-                        c->addItemToInventory(Item::create(itemType, server->getNextItemId()));
+						AccessLevel accessLevel = static_cast<AccessLevel>(characterDef.items[i].accessLevel);
+						c->addItemToInventory(Item::create(itemType, accessLevel, server->getNextItemId()));
                     }
                     // Character Lights
                     for(unsigned int i=0; i < characterDef.lights.size(); i++)

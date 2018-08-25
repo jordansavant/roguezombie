@@ -458,6 +458,7 @@ void LevelLoader::Tile::unpack(XoGeni::Cell* cell, unsigned int tileId)
 void LevelLoader::Structure::unpack(XoGeni::Cell* cell, unsigned int structureId)
 {
     id = structureId;
+	// TODO: Fix this to just use hasStructure for both wall and isDoor
     if (cell->isWall) {
         type = 1;
     }
@@ -467,6 +468,7 @@ void LevelLoader::Structure::unpack(XoGeni::Cell* cell, unsigned int structureId
     else if (cell->hasStructure) {
         type = cell->structureType;
         subtype = cell->structureSubType;
+		accessLevel = cell->structureAccessLevel;
     }
     isOpen = false; // for doors being open?
     isLocked = cell->isLocked; // for chests
@@ -476,7 +478,7 @@ void LevelLoader::Structure::unpack(XoGeni::Cell* cell, unsigned int structureId
     {
         Item item;
         item.type = cell->inventory[i].type;
-        item.subtype = cell->inventory[i].subtype;
+        item.accessLevel = cell->inventory[i].accessLevel;
         items.push_back(item);
     }
 
@@ -493,7 +495,7 @@ void LevelLoader::Character::unpack(XoGeni::Cell* cell, unsigned int characterId
     {
         Item item;
         item.type = cell->inventory[i].type;
-        item.subtype = cell->inventory[i].subtype;
+        item.accessLevel = cell->inventory[i].accessLevel;
         items.push_back(item);
     }
 

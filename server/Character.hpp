@@ -15,6 +15,7 @@ class Tile;
 class Mission;
 class Item;
 class Structure;
+enum AccessLevel;
 
 class Character : public Body
 {
@@ -328,6 +329,8 @@ public:
     virtual void onInventoryOpen(Body* guest = NULL);
 
     virtual void onInventoryClose(Body* guest = NULL);
+
+	bool hasAccess(AccessLevel accessLevel);
 
 
     // Movement

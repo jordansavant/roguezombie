@@ -152,6 +152,8 @@ public:
 
     Item* findItemByType(Type type);
 
+	Item* findItemByTypeAndAccessLevel(Type type, AccessLevel accessLevel);
+
     Item* removeItem(unsigned int itemId);
 
     Item* removeItemBy(std::function<bool(Item*)> inspector);
@@ -183,6 +185,8 @@ public:
     static void useItemOnTileArea(Character* self, Tile* tile, Item::Schema &itemSchema);
 
     static Item* create(Type type, unsigned int id);
+
+	static Item* create(Type type, AccessLevel accessLevel, unsigned int id);
 
     static std::string getTitle(Type type);
 

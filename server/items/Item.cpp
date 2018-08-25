@@ -125,6 +125,14 @@ Item* Item::findItemByType(Type type)
     });
 }
 
+Item* Item::findItemByTypeAndAccessLevel(Type type, AccessLevel accessLevel)
+{
+	// Used to determine if access can be granted to various restricted objects
+	return findItemBy([type, accessLevel](Item* item) -> bool {
+		return item->schema.type == type && item->schema.accessLevel == accessLevel;
+	});
+}
+
 Item* Item::removeItem(unsigned int itemId)
 {
     return removeItemBy([itemId] (Item* item) -> bool {
@@ -334,6 +342,11 @@ void Item::useItemOnTileArea(Character* self, Tile* tile, Item::Schema &itemSche
 }
 
 Item* Item::create(Type type, unsigned int id)
+{
+	return create(type, AccessLevel::None, id);
+}
+
+Item* Item::create(Type type, AccessLevel accessLevel, unsigned int id)
 {
     Item* i = 0;
 
@@ -622,6 +635,7 @@ Item* Item::create(Type type, unsigned int id)
 
     i->schema.id = id;
     i->schema.type = type;
+	i->schema.accessLevel = accessLevel;
     return i;
 }
 
