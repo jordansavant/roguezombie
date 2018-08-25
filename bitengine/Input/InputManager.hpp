@@ -11,6 +11,7 @@
 namespace bit
 {
     class Game;
+	class InputTextListener;
 
 	class InputManager : public GameComponent
 	{
@@ -24,7 +25,11 @@ namespace bit
 
         virtual void inspectMouseWheelEvent(sf::Event e);
 
+		virtual void inspectTextEnteredEvent(sf::Event e);
+
 		virtual void update(sf::Time &gameTime);
+
+		InputTextListener* getInputTextListener();
 
         // Mouse
 		bool isButtonDown(sf::Mouse::Button mouseButton);
@@ -93,6 +98,7 @@ namespace bit
         static const int gamepadCount = 8;
         int gamepadConnectionCounter;
         std::vector<InputBindingVector*> inputBindingVectors;
+		std::vector<InputTextListener*> inputTextListeners;
 	};
 }
 

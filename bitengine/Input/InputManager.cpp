@@ -5,6 +5,8 @@
 #include "XinputGamepad.hpp"
 #include "InputBinding.hpp"
 #include "InputBindingVector.hpp"
+#include "InputTextListener.hpp"
+#include "../System/Output.hpp"
 
 bit::InputManager::InputManager(bit::Game* _game)
     : bit::GameComponent(_game)
@@ -34,6 +36,11 @@ bit::InputManager::InputManager(bit::Game* _game)
 bit::InputManager::~InputManager()
 {
     while(!inputBindingVectors.empty()) delete inputBindingVectors.back(), inputBindingVectors.pop_back();
+
+	for (unsigned int i = 0; i < inputTextListeners.size(); i++)
+	{
+		delete inputTextListeners[i];
+	}
 }
 
 void bit::InputManager::preinspectEvents()
@@ -48,6 +55,49 @@ void bit::InputManager::inspectMouseWheelEvent(sf::Event e)
     {
         mouseWheelCurrentDelta = e.mouseWheel.delta;
     }
+}
+
+void bit::InputManager::inspectTextEnteredEvent(sf::Event e)
+{
+	// Handle ASCII characters only
+	if (e.text.unicode < 128)
+	{
+		for (unsigned int i = 0; i < inputTextListeners.size(); i++)
+		{
+			InputTextListener* itl = inputTextListeners[i];
+			if (itl->listen == false)
+				continue;
+
+			switch (static_cast<unsigned int>(e.text.unicode))
+			{
+				case 13: // return
+					itl->isEntered = true;
+					break;
+				case 8: // delete
+					itl->input = itl->input.substr(0, itl->input.size() - 1);
+					break;
+				default:
+					// character range
+					if ((e.text.unicode >= 32 && e.text.unicode <= 126))
+					{
+						char input;
+						input = static_cast<char>(e.text.unicode);
+						for (unsigned int i = 0; i < inputTextListeners.size(); i++)
+						{
+							inputTextListeners[i]->input += input;
+						}
+					}
+					break;
+			}
+		}
+	}
+}
+
+bit::InputTextListener* bit::InputManager::getInputTextListener()
+{
+	InputTextListener* i = new InputTextListener();
+	inputTextListeners.push_back(i);
+	return i;
 }
 
 void bit::InputManager::update(sf::Time &gameTime)

@@ -19,6 +19,7 @@ class StatBubble;
 class DialogMenu;
 class LootMenu;
 class Console;
+class DevTerminal;
 class TurnQueue;
 class ActionBar;
 class Tooltip;
@@ -44,6 +45,7 @@ public:
     DialogMenu* dialogMenu;
     LootMenu* lootMenu;
     Console* console;
+	DevTerminal* devTerminal;
     TurnQueue* turnQueue;
     ActionBar* actionBar;
     std::map<unsigned int, Minimap*> minimaps;
@@ -94,6 +96,10 @@ public:
     void activateActionBar();
 
     void deactivateActionBar();
+
+	void activateDevTerminal();
+
+	void deactivateDevTerminal();
 
     void showCloseButton();
 

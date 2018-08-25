@@ -37,6 +37,7 @@ public:
         Inventory,
         Journal,
         Options,
+		Dev,
         _count
     };
 
@@ -140,6 +141,11 @@ public:
     void modeOnExitOptions();
     void modeOnCaptureInputOptions(sf::Time &gameTime);
     void modeOnUpdateOptions(sf::Time &gameTime);
+
+	void modeOnEnterDev();
+	void modeOnExitDev();
+	void modeOnCaptureInputDev(sf::Time &gameTime);
+	void modeOnUpdateDev(sf::Time &gameTime);
 
     void modeOnCaptureInputCommonListener(sf::Time &gameTime);
     void modeOnUpdateCommonListener(sf::Time &gameTime);

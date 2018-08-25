@@ -4,6 +4,7 @@
 #include "Input/InputBinding.hpp"
 #include "Input/InputBindingVector.hpp"
 #include "Input/InputManager.hpp"
+#include "Input/InputTextListener.hpp"
 #include "Input/XinputGamepad.hpp"
 
 #endif

@@ -51,9 +51,9 @@ void RogueZombieGame::update(sf::Time &gameTime)
             changeFullscreen(!isFullscreen);
         if(inputManager->isButtonPressed(sf::Keyboard::Comma))
             this->setVerticalSync(!this->verticalSync);
-        if(inputManager->isButtonPressed(sf::Keyboard::Subtract))
+        if(inputManager->isButtonPressed(sf::Keyboard::LBracket))
             bit::Container::debugMode = !bit::Container::debugMode;
-        if(inputManager->isButtonPressed(sf::Keyboard::Add))
+        if(inputManager->isButtonPressed(sf::Keyboard::RBracket))
             bit::Element::debugMode = !bit::Element::debugMode;
     }
 }

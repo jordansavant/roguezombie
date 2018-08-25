@@ -1224,7 +1224,7 @@ void XoGeni::CellMap::populate()
 
 void XoGeni::CellMap::machinate_chestKeyTreasure()
 {
-    // Pick a random room and spawn a chest that is locked
+    // Pick a random room that is not the exit and spawn a chest that is locked
     // Generate a key for this chest
     // Generate a level X enemy and place the key on his body
 

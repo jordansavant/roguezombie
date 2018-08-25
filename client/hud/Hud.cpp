@@ -10,6 +10,7 @@
 #include "DialogMenu.hpp"
 #include "LootMenu.hpp"
 #include "Console.hpp"
+#include "DevTerminal.hpp"
 #include "TurnQueue.hpp"
 #include "ActionBar.hpp"
 #include "Tooltip.hpp"
@@ -59,6 +60,9 @@ Hud::Hud(StateGamePlay* _state)
     
     actionBar = new ActionBar(this);
     addChild(actionBar);
+
+	devTerminal = new DevTerminal(this);
+	addChild(devTerminal);
 
     // Special Menus
     optionsBar = new OptionsBar(this);
@@ -272,6 +276,16 @@ void Hud::activateActionBar()
 void Hud::deactivateActionBar()
 {
     actionBar->hide();
+}
+
+void Hud::activateDevTerminal()
+{
+	devTerminal->show();
+}
+
+void Hud::deactivateDevTerminal()
+{
+	devTerminal->hide();
 }
 
 void Hud::showCloseButton()

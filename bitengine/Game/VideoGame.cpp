@@ -118,6 +118,11 @@ void bit::VideoGame::run()
                 {
                     inputManager->inspectMouseWheelEvent(event);
                 }
+
+				if (event.type == sf::Event::TextEntered)
+				{
+					inputManager->inspectTextEnteredEvent(event);
+				}
             }
 
             sf::Time gtu = sf::seconds(dt);

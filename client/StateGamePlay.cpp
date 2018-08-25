@@ -103,6 +103,11 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     modeExit[Mode::Options] = std::bind(&StateGamePlay::modeOnExitOptions, this);
     modeCaptureInput[Mode::Options] = std::bind(&StateGamePlay::modeOnCaptureInputOptions, this, std::placeholders::_1);
     modeUpdate[Mode::Options] = std::bind(&StateGamePlay::modeOnUpdateOptions, this, std::placeholders::_1);
+
+	modeEnter[Mode::Dev] = std::bind(&StateGamePlay::modeOnEnterDev, this);
+	modeExit[Mode::Dev] = std::bind(&StateGamePlay::modeOnExitDev, this);
+	modeCaptureInput[Mode::Dev] = std::bind(&StateGamePlay::modeOnCaptureInputDev, this, std::placeholders::_1);
+	modeUpdate[Mode::Dev] = std::bind(&StateGamePlay::modeOnUpdateDev, this, std::placeholders::_1);
     
     changeMode(Mode::Joining);
 }
@@ -586,6 +591,36 @@ void StateGamePlay::modeOnUpdateOptions(sf::Time &gameTime)
 }
 
 
+/// /////////////////////////////////////////////////////////////////////
+///                            DEV MODES                               //
+/// /////////////////////////////////////////////////////////////////////
+
+void StateGamePlay::modeOnEnterDev()
+{
+	hud->activateDevTerminal();
+}
+
+void StateGamePlay::modeOnExitDev()
+{
+	hud->deactivateDevTerminal();
+}
+
+void StateGamePlay::modeOnCaptureInputDev(sf::Time &gameTime)
+{
+	// modeOnCaptureInputCommonListener(gameTime);
+}
+
+void StateGamePlay::modeOnUpdateDev(sf::Time &gameTime)
+{
+	// No common listener because I am capturing input
+	// modeOnUpdateCommonListener(gameTime);
+	if (mode == Mode::Dev && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Tilde) || rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape)))
+	{
+		changeMode(Mode::Free);
+		return;
+	}
+}
+
 
 /// /////////////////////////////////////////////////////////////////////
 ///                          COMMON MODES                              //
@@ -654,6 +689,13 @@ void StateGamePlay::modeOnUpdateCommonListener(sf::Time &gameTime)
         changeMode(Mode::Free);
         return;
     }
+
+	// Dev hot key
+	if (mode != Mode::Dev && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Tilde)))
+	{
+		changeMode(Mode::Dev);
+		return;
+	}
 }
 
 void StateGamePlay::requestItemCommand(Item::Schema &itemSchema, std::function<void()> onComplete)
