@@ -1,4 +1,4 @@
-﻿// A simple blur shader, weighted on alpha
+// A simple blur shader, weighted on alpha
 
 uniform sampler2D texture;
 
