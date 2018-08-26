@@ -31,8 +31,12 @@ GameplayServer::~GameplayServer()
 void GameplayServer::load()
 {
     // Generate levels
+    bit::Random random;
+    unsigned int seed = random.next();// 13726;
+    bit::Output::Debug("SEEDING WORLD");
+    bit::Output::Debug(seed);
     XoGeni::LevelGenerator levelGenerator;
-    levelLoader.loadFromXoGeni(levelGenerator, 13726);
+    levelLoader.loadFromXoGeni(levelGenerator, seed);
 
     //levelLoader.loadFromXML("HunterAI.xml");
 
@@ -40,9 +44,7 @@ void GameplayServer::load()
     levels.resize(levelLoader.levelDefs.size());
     for(unsigned int i=0; i < levelLoader.levelDefs.size(); i++)
     {
-        bit::Output::Debug("STARTING RZ LEVEL LOAD");
         levels[i].load(this, levelLoader.levelDefs[i]);
-        bit::Output::Debug("END RZ LEVEL LOAD");
 
         // Set up starting level for players
         if(levelLoader.defaultLevelId == levels[i].id || startingLevel == NULL)

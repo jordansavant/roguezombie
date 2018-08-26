@@ -1594,8 +1594,14 @@ XoGeni::Cell* XoGeni::CellMap::getSafeToBlockRoomCell(Room* room, bool random, u
             }
             return false;
         });
-        unsigned int r = LevelGenerator::random.next(openCells.size());
-        return openCells[r];
+
+        if (openCells.size() > 0)
+        {
+            unsigned int r = LevelGenerator::random.next(openCells.size());
+            return openCells[r];
+        }
+
+        return NULL;
     }
 }
 

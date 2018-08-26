@@ -338,7 +338,7 @@ void XoGeni::XoLevelRenderer::paint()
                     color = colorTagUnreachable;
                 if (cell->hasCharacter)
                     color = colorEnemy;
-                if (cell->hasStructure)
+                if (cell->hasStructure && !cell->isDoor && !cell->isWall)
                     color = colorStructure;
                 break;
         }

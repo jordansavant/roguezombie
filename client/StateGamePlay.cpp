@@ -1356,7 +1356,7 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
 
             case ServerEvent::CharacterConsumed:
             {
-                rogueZombieGame->soundManager->play(closeBodySoundId);
+                rogueZombieGame->soundManager->play(openBodySoundId);
                 break;
             }
 

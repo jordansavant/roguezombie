@@ -4,7 +4,9 @@ Bugs:
 
 - Walls on southern tip of map are messed up Z depths
 - Possible to get in combat with body blocking path and not be able to consume corpse or structure to get by (always allow interact)
-
+- Melee attacks not triggering BluntHit ServerEvent
+- move commands not tied to focus
+- weapon effect lighting is delayed with lower server fps
 
 Improvements:
 
@@ -19,8 +21,11 @@ Improvements:
 - need sounds / effects for melee
 - threaded level loader to load as we play
 - devcmd: give weapons, heal
-- cellmap adhere wall/door to new structure format.type
 - rename furnishing to represent their dierction
+- more loot! chests and bodies dont have surprises
+	- mutagens, chemicals, implants
+	- unknown 1-time-use items
+	- terminals to learn about random items
 
 
 Story:

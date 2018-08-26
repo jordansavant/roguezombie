@@ -1,10 +1,13 @@
 #include "Random.hpp"
 #include <random>
 #include <cstdarg>
+#include <ctime>
 #include "mtrand.hpp"
 
 bit::Random::Random()
 {
+    srand(time(NULL));
+    int s = std::rand();
     engine.seed(std::rand());
 }
 

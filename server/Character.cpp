@@ -18,7 +18,7 @@
 
 Character::Character()
     : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::MoveToLocation), actionDelayTimer(1.5), hostilityCheckAi(NULL), combatDetectionAi(NULL), combatDecisionAi(NULL),
-      isHostileCombatDetected(false), hasTargetEnemy(false), targetEnemyPosition(0, 0), moveTimer(.67f), directionToMove(MoveDirection::NoDirection), equipment(), schema(), visionRadius(30), consumptionHeal(10)
+      isHostileCombatDetected(false), hasTargetEnemy(false), targetEnemyPosition(0, 0), moveTimer(.5f), directionToMove(MoveDirection::NoDirection), equipment(), schema(), visionRadius(30), consumptionHeal(10)
 {
     equipment.resize(EquipmentSlot::_count, NULL);
 }
@@ -592,7 +592,20 @@ void Character::attack(Character* character)
     Item* weapon = equipment[Character::EquipmentSlot::WeaponPrimary];
     if(weapon && weapon->onUse)
     {
+        // Weapon use
         weapon->onUse(this);
+    }
+    else
+    {
+        // Unarmed attack
+        if (schema.isPlayerCharacter)
+        {
+            level->sendEventToAllPlayers([character](bit::ServerPacket &packet) {
+                packet << sf::Uint32(ServerEvent::BluntHit);
+                packet << character->Body::schema.x;
+                packet << character->Body::schema.y;
+            });
+        }
     }
 
     if(bit::Math::randomFloat() < CoH)
