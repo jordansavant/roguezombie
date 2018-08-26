@@ -81,3 +81,23 @@ bool bit::RectangleMath::isCardinallyAdjacent(float x1, float y1, float width1, 
 
     return (inXPlane || inYPlane) && (xDistance == 0 || yDistance == 0);
 }
+
+bool bit::RectangleMath::isCardinallyOrDiagonallyAdjacent(float x1, float y1, float width1, float height1, float x2, float y2, float width2, float height2)
+{
+    // THIS IS REALLY USED FOR TILE MAPS
+    // example 1x1s
+    // 0,0 | 1,0 | 2,0
+    // 0,1 | 1,1 | 2,1
+    // 0,2 | 1,2 | 2,2
+
+    int xDistance = axisDistance(bit::RectangleMath::Axis::X, x1, y1, width1, height1, x2, y2, width2, height2);
+    int yDistance = axisDistance(bit::RectangleMath::Axis::Y, x1, y1, width1, height1, x2, y2, width2, height2);
+    bool inYPlane = intersectsPlane(bit::RectangleMath::Axis::Y, x1, y1, width1, height1, x2, y2, width2, height2);
+    bool inXPlane = intersectsPlane(bit::RectangleMath::Axis::X, x1, y1, width1, height1, x2, y2, width2, height2);
+
+    bool isCardinal = (inXPlane || inYPlane) && (xDistance == 0 || yDistance == 0);
+
+    bool isDiagonal = xDistance < width1 && yDistance < height1;
+
+    return isCardinal || isDiagonal;
+}

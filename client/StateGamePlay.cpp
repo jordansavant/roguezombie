@@ -182,7 +182,7 @@ void StateGamePlay::modeOnExitJoining()
 
 void StateGamePlay::modeOnCaptureInputJoining(sf::Time &gameTime)
 {
-    modeOnCaptureInputCommonListener(gameTime);
+    // no input listening
 }
 
 void StateGamePlay::modeOnUpdateJoining(sf::Time &gameTime)
@@ -283,7 +283,7 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
                         // If the tile has a body and it is adjacent run interactions
                         if(t->schema.bodyId > 0)
                         {
-                            if(t->isCardinallyAdjacent(levelClient->playerCharacter))
+                            if(t->isCardinallyOrDiagonallyAdjacent(levelClient->playerCharacter))
                                 requestInteractionsForTile(t->schema.id);
                             else if(t->hasInteractableBody())
                                 displayMessage(std::string("Too far away"));
@@ -628,74 +628,78 @@ void StateGamePlay::modeOnUpdateDev(sf::Time &gameTime)
 
 void StateGamePlay::modeOnCaptureInputCommonListener(sf::Time &gameTime)
 {
-    // TODO, Copy Input Detection from Update function into Booleans here
 }
 
 void StateGamePlay::modeOnUpdateCommonListener(sf::Time &gameTime)
 {
+    if (!rogueZombieGame->isInFocus)
+    {
+        return;
+    }
+
     // Inventory hot key
-    if(mode == Mode::Inventory && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::I) || rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape)))
+    if (mode == Mode::Inventory && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::I) || rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape)))
     {
         changeMode(Mode::Free);
         return;
     }
-    if(mode != Mode::Inventory && mode != Mode::Loot && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::I)))
+    if (mode != Mode::Inventory && mode != Mode::Loot && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::I)))
     {
         changeMode(Mode::Inventory);
         return;
     }
 
     // Journal hot key
-    if(mode == Mode::Journal && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::J) || rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape)))
+    if (mode == Mode::Journal && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::J) || rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape)))
     {
         changeMode(Mode::Free);
         return;
     }
-    if(mode != Mode::Journal && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::J)))
+    if (mode != Mode::Journal && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::J)))
     {
         changeMode(Mode::Journal);
         return;
     }
 
     // Options hot key
-    if(mode == Mode::Options && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::O) || rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape)))
+    if (mode == Mode::Options && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::O) || rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape)))
     {
         changeMode(Mode::Free);
         return;
     }
-    if(mode != Mode::Options && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::O)))
+    if (mode != Mode::Options && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::O)))
     {
         changeMode(Mode::Options);
         return;
     }
 
     // Loot hot key
-    if(mode == Mode::Loot && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::I) || rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape)))
+    if (mode == Mode::Loot && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::I) || rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape)))
     {
         changeMode(Mode::Free);
         return;
     }
 
     // Interact hot key
-    if(mode == Mode::Interact && rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
+    if (mode == Mode::Interact && rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
     {
         changeMode(Mode::Free);
         return;
     }
 
     // Dialog hot key
-    if(mode == Mode::Dialog && rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
+    if (mode == Mode::Dialog && rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape))
     {
         changeMode(Mode::Free);
         return;
     }
 
-	// Dev hot key
-	if (mode != Mode::Dev && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Tilde)))
-	{
-		changeMode(Mode::Dev);
-		return;
-	}
+    // Dev hot key
+    if (mode != Mode::Dev && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Tilde)))
+    {
+        changeMode(Mode::Dev);
+        return;
+    }
 }
 
 void StateGamePlay::requestItemCommand(Item::Schema &itemSchema, std::function<void()> onComplete)

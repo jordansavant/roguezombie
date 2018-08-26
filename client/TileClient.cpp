@@ -56,6 +56,20 @@ bool TileClient::isCardinallyAdjacent(BodyClient* body)
     return bit::RectangleMath::isCardinallyAdjacent(x1, y1, width1, height1, x2, y2, width2, height2);
 }
 
+bool TileClient::isCardinallyOrDiagonallyAdjacent(BodyClient* body)
+{
+    int x1 = schema.x;
+    int y1 = schema.y;
+    int width1 = schema.width;
+    int height1 = schema.height;
+    int x2 = body->schema.x;
+    int y2 = body->schema.y;
+    int width2 = body->schema.width;
+    int height2 = body->schema.height;
+
+    return bit::RectangleMath::isCardinallyOrDiagonallyAdjacent(x1, y1, width1, height1, x2, y2, width2, height2);
+}
+
 void TileClient::clientLoad(LevelClient* _level)
 {
     level = _level;

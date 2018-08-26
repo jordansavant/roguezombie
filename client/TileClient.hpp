@@ -43,6 +43,8 @@ public:
 
     bool isCardinallyAdjacent(BodyClient* body);
 
+    bool isCardinallyOrDiagonallyAdjacent(BodyClient* body);
+
     bool hasTargetableCharacter();
 
     bool hasInteractableBody();
