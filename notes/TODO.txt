@@ -26,6 +26,8 @@ Improvements:
 	- mutagens, chemicals, implants
 	- unknown 1-time-use items
 	- terminals to learn about random items
+- Unarmed miss event
+	- Character::attack()
 
 
 Story:

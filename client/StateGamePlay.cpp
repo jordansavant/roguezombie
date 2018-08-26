@@ -219,6 +219,9 @@ void StateGamePlay::modeOnCaptureInputFree(sf::Time &gameTime)
 
 void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
 {
+    if (!rogueZombieGame->isInFocus)
+        return;
+
     // Move camera around
     if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Up))
         cameras[0]->direction.y = -1;

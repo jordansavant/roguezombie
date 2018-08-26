@@ -847,6 +847,6 @@ void Item::visualizeWeaponFire(Character* user)
     // Firing flare
     sf::Color s = sf::Color::Yellow;;
     sf::Color e = sf::Color::Black;
-    user->level->createLightFlare(user->Body::schema.x, user->Body::schema.y, 1, s, e, 2, 2, 1, 0);
+    user->level->createLightFlare(user->Body::schema.x, user->Body::schema.y, 0.5f, s, e, 2, 2, 1, 0);
 }
 

@@ -589,23 +589,13 @@ void Character::attack(Character* character)
     float CoH = RpgSystem::Combat::calculateChanceOfHit(this, character);
 
     // Visualize attack
+    bool unarmedAttack = true;
     Item* weapon = equipment[Character::EquipmentSlot::WeaponPrimary];
     if(weapon && weapon->onUse)
     {
         // Weapon use
         weapon->onUse(this);
-    }
-    else
-    {
-        // Unarmed attack
-        if (schema.isPlayerCharacter)
-        {
-            level->sendEventToAllPlayers([character](bit::ServerPacket &packet) {
-                packet << sf::Uint32(ServerEvent::BluntHit);
-                packet << character->Body::schema.x;
-                packet << character->Body::schema.y;
-            });
-        }
+        unarmedAttack = false;
     }
 
     if(bit::Math::randomFloat() < CoH)
@@ -633,6 +623,17 @@ void Character::attack(Character* character)
                 packet << sf::Uint32(mitigatedDamage);
             });
         }
+
+        // Game event
+        // Unarmed attack hit
+        if (unarmedAttack && schema.isPlayerCharacter)
+        {
+            level->sendEventToAllPlayers([character](bit::ServerPacket &packet) {
+                packet << sf::Uint32(ServerEvent::BluntHit);
+                packet << character->Body::schema.x;
+                packet << character->Body::schema.y;
+            });
+        }
     }
     else
     {
@@ -653,6 +654,8 @@ void Character::attack(Character* character)
                 packet << sf::Uint32(me->schema.type);
             });
         }
+
+        // TODO: Unarmed Miss Event
     }
 }
 
