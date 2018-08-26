@@ -19,11 +19,11 @@ Improvements:
 - Mark access items on minimap with colors
 - scientists need to feel more panicky, better sounds
 - need sounds / effects for melee
-- interact with diagonals
 - threaded level loader to load as we play
 - devcmd: give weapons, heal
 - Move cellmap type uints into constants
 - cellmap adhere wall/door to new structure format.type
+- rename furnishing to represent their dierction
 
 
 Story:

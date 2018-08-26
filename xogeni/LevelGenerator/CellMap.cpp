@@ -9,6 +9,55 @@
 #include "../../bitengine/Intelligence.hpp"
 #include "../../bitengine/System.hpp"
 
+unsigned int ACCESS_LEVEL_YELLOW = 1;
+unsigned int ACCESS_LEVEL_RED = 2;
+unsigned int ACCESS_LEVEL_GREEN = 3;
+unsigned int ACCESS_LEVEL_BLUE = 4;
+unsigned int ACCESS_LEVEL_PURPLE = 5;
+
+unsigned int CHARACTER_ZOMBIE = 1;
+unsigned int CHARACTER_HUNTER = 2;
+unsigned int CHARACTER_OGRE = 3;
+unsigned int CHARACTER_SCIENTIST = 4;
+unsigned int CHARACTER_GUARD = 5;
+
+unsigned int STRUCTURE_WALL = 1;
+unsigned int STRUCTURE_DOOR = 2;
+unsigned int STRUCTURE_CHEST = 3;
+unsigned int STRUCTURE_FURNISHING = 4;
+
+unsigned int FURNISHING_TERMINALA = 1;
+unsigned int FURNISHING_COLUMNA = 2;
+unsigned int FURNISHING_TERMINALB = 3;
+unsigned int FURNISHING_DESKA = 4;
+unsigned int FURNISHING_DESKB = 5;
+unsigned int FURNISHING_SINKA = 6;
+unsigned int FURNISHING_SINKB = 7;
+unsigned int FURNISHING_OPTABLEA = 8;
+unsigned int FURNISHING_PILONA = 9;
+unsigned int FURNISHING_TRASHCANA = 10;
+unsigned int FURNISHING_TRASHCANB = 11;
+unsigned int FURNISHING_ROLLINGTERMINALA = 12;
+unsigned int FURNISHING_DESKBEAKERB = 13;
+unsigned int FURNISHING_DESKCOFFEEA = 14;
+unsigned int FURNISHING_SHELFA = 15;
+
+unsigned int ITEM_BACKPACK = 1;
+unsigned int ITEM_HARDHAT = 2;
+unsigned int ITEM_MAGNUM357 = 3;
+unsigned int ITEM_Z4RIFLE = 4;
+unsigned int ITEM_CROWBAR = 5;
+unsigned int ITEM_BATON = 6;
+unsigned int ITEM_MEDKIT = 7;
+unsigned int ITEM_BRICK = 8;
+unsigned int ITEM_GRENADE = 9;
+unsigned int ITEM_FOOTBALLPADS = 10;
+unsigned int ITEM_COMBATBOOTS = 11;
+unsigned int ITEM_RACINGPANTS = 12;
+unsigned int ITEM_CLEANINGGLOVES = 13;
+unsigned int ITEM_GOLDMEDAL = 14;
+unsigned int ITEM_KEYCARD = 15;
+
 XoGeni::CellMap::CellMap(unsigned int id, unsigned int width, unsigned int height, unsigned int difficultyLevel)
     : id(id), width(width), height(height), size(width * height), difficultyLevel(difficultyLevel),
       entranceRoom(NULL), exitRoom(NULL)
@@ -1236,8 +1285,8 @@ void XoGeni::CellMap::machinate_chestKeyTreasure()
     {
         setChest(chestCell, true);
         // give it a pistol
-        chestCell->structureAccessLevel = 1; // yellow
-        chestCell->inventory.push_back(Cell::ItemData(3));
+        chestCell->structureAccessLevel = ACCESS_LEVEL_YELLOW; // yellow
+        chestCell->inventory.push_back(Cell::ItemData(ITEM_MAGNUM357));
     }
 
     // create a scientist
@@ -1246,9 +1295,9 @@ void XoGeni::CellMap::machinate_chestKeyTreasure()
     if (enemyCell)
     {
         enemyCell->hasCharacter = true;
-        enemyCell->characterType = 4;
+        enemyCell->characterType = CHARACTER_SCIENTIST;
         // give him a keycard
-        enemyCell->inventory.push_back(Cell::ItemData(15, 1)); // Item::Type::KeyCard, Chest::SubType::Yellow
+        enemyCell->inventory.push_back(Cell::ItemData(ITEM_KEYCARD, ACCESS_LEVEL_YELLOW)); // Item::Type::KeyCard, Chest::SubType::Yellow
     }
 }
 
@@ -1259,15 +1308,15 @@ void XoGeni::CellMap::machinate_boss()
     if (cell)
     {
         cell->hasCharacter = true;
-        cell->characterType = 5;
+        cell->characterType = CHARACTER_GUARD;
     }
 }
 
 void XoGeni::CellMap::setChest(Cell* cell, bool isLocked)
 {
     cell->hasStructure = true;
-    cell->decorate(3); // chest
-    cell->isLocked = isLocked; // TODO: make this a heuristic that spawns with Keys as well
+    cell->decorate(STRUCTURE_CHEST); // chest
+    cell->isLocked = isLocked;
 }
 
 void XoGeni::CellMap::spawnDecor()
@@ -1301,8 +1350,8 @@ void XoGeni::CellMap::spawnDecor()
                     if (!cell->isTagUnreachable && !cell->isRoomEdge)
                     {
                         cell->hasStructure = true;
-                        cell->structureType = 4; // Furnishing
-                        cell->structureSubType = 2; // Column
+                        cell->structureType = STRUCTURE_FURNISHING; // Furnishing
+                        cell->structureSubType = FURNISHING_COLUMNA; // Column
                     }
                 }
                 return false;
@@ -1315,7 +1364,18 @@ void XoGeni::CellMap::spawnDecor()
                 if (LevelGenerator::random.next(3) == 0)
                 {
                     cell->hasStructure = true;
-                    cell->decorate(4, LevelGenerator::random.of(1, 4, 4, 6, 9, 10, 11, 12, 14, 15));
+                    cell->decorate(STRUCTURE_FURNISHING, LevelGenerator::random.of(
+                        FURNISHING_TERMINALA,
+                        FURNISHING_DESKA,
+                        FURNISHING_DESKA,
+                        FURNISHING_SINKA,
+                        FURNISHING_PILONA,
+                        FURNISHING_TRASHCANA,
+                        FURNISHING_TRASHCANB,
+                        FURNISHING_ROLLINGTERMINALA,
+                        FURNISHING_DESKCOFFEEA,
+                        FURNISHING_SHELFA
+                    ));
                 }
             }
             return false;
@@ -1325,7 +1385,16 @@ void XoGeni::CellMap::spawnDecor()
                 if (LevelGenerator::random.next(3) == 0)
                 {
                     cell->hasStructure = true;
-                    cell->decorate(4, LevelGenerator::random.of(3, 5, 5, 7, 9, 10, 11, 13));
+                    cell->decorate(STRUCTURE_FURNISHING, LevelGenerator::random.of(
+                        FURNISHING_TERMINALB,
+                        FURNISHING_DESKB,
+                        FURNISHING_DESKB,
+                        FURNISHING_SINKB,
+                        FURNISHING_PILONA,
+                        FURNISHING_TRASHCANA,
+                        FURNISHING_TRASHCANB,
+                        FURNISHING_DESKBEAKERB
+                    ));
                 }
             }
             return false;
@@ -1335,7 +1404,14 @@ void XoGeni::CellMap::spawnDecor()
                 if (LevelGenerator::random.next(6) == 0)
                 {
                     cell->hasStructure = true;
-                    cell->decorate(4, LevelGenerator::random.of(4, 4, 4, 9, 10, 11));
+                    cell->decorate(STRUCTURE_FURNISHING, LevelGenerator::random.of(
+                        FURNISHING_DESKA,
+                        FURNISHING_DESKA,
+                        FURNISHING_DESKA,
+                        FURNISHING_PILONA,
+                        FURNISHING_TRASHCANA,
+                        FURNISHING_TRASHCANB
+                    ));
                 }
             }
             return false;
@@ -1345,7 +1421,14 @@ void XoGeni::CellMap::spawnDecor()
                 if (LevelGenerator::random.next(6) == 0)
                 {
                     cell->hasStructure = true;
-                    cell->decorate(4, LevelGenerator::random.of(5, 5, 5, 9, 10, 11));
+                    cell->decorate(STRUCTURE_FURNISHING, LevelGenerator::random.of(
+                        FURNISHING_DESKB,
+                        FURNISHING_DESKB,
+                        FURNISHING_DESKB,
+                        FURNISHING_PILONA,
+                        FURNISHING_TRASHCANA,
+                        FURNISHING_TRASHCANB
+                    ));
                 }
             }
             return false;
@@ -1356,11 +1439,15 @@ void XoGeni::CellMap::spawnDecor()
         if (cell) {
             if (LevelGenerator::random.boolean()) {
                 cell->hasStructure = true;
-                cell->decorate(3); // chest
-                cell->isLocked = true; // TODO: make this a heuristic that spawns with Keys as well
+                cell->decorate(STRUCTURE_CHEST); // chest
+                cell->isLocked = false; // regular chests are not locked
             } else {
                 cell->hasStructure = true;
-                cell->decorate(4, LevelGenerator::random.of(8, 9, 12));
+                cell->decorate(STRUCTURE_FURNISHING, LevelGenerator::random.of(
+                    FURNISHING_OPTABLEA,
+                    FURNISHING_PILONA,
+                    FURNISHING_ROLLINGTERMINALA
+                ));
             }
         }
 
@@ -1390,13 +1477,13 @@ void XoGeni::CellMap::spawnEnemies()
                 switch (difficultyLevel)
                 {
                     case 0:
-                        cell->characterType = 4; // scientist
+                        cell->characterType = CHARACTER_SCIENTIST; // scientist
                         break;
                     case 1:
-                        cell->characterType = 5; // guard
+                        cell->characterType = CHARACTER_GUARD; // guard
                         break;
                     default:
-                        cell->characterType = 3; // Hunter
+                        cell->characterType = CHARACTER_HUNTER; // Hunter
                         break;
                 }
             }
