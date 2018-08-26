@@ -40,7 +40,9 @@ void GameplayServer::load()
     levels.resize(levelLoader.levelDefs.size());
     for(unsigned int i=0; i < levelLoader.levelDefs.size(); i++)
     {
+        bit::Output::Debug("STARTING RZ LEVEL LOAD");
         levels[i].load(this, levelLoader.levelDefs[i]);
+        bit::Output::Debug("END RZ LEVEL LOAD");
 
         // Set up starting level for players
         if(levelLoader.defaultLevelId == levels[i].id || startingLevel == NULL)

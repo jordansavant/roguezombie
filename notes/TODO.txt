@@ -3,8 +3,7 @@ LEFT OFF:
 Bugs:
 
 - Walls on southern tip of map are messed up Z depths
-- Possible to get in combat with body blocking path and not be able to consume corpse or structure to get by
-- macbook pro packet delivery and move timer is wonky
+- Possible to get in combat with body blocking path and not be able to consume corpse or structure to get by (always allow interact)
 
 
 Improvements:
@@ -12,9 +11,9 @@ Improvements:
 - Replace hunter AI with guard AI and expand on it to use weapon range instead of static distances
 - Clicking on interactible structures, finds nearest tile and walks to it and then opens automatically
 - debri/blood tile litter for effects etc
-- WASD walking
 - Hotkeys for interactions (i = interact, l = loot, c = consume, a = attack)
 - scientists pose NO challenge (need some or other level0 bad guy)
+	- hazmat workers (hardhats, crowbars)
 - Mark access items on minimap with colors
 - scientists need to feel more panicky, better sounds
 - need sounds / effects for melee

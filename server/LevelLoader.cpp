@@ -315,7 +315,7 @@ void LevelLoader::Level::unpack(XoGeni::CellMap* cellMap)
 
 
         // Structures
-        if(cell->isWall || cell->isDoor || cell->hasStructure)
+        if(cell->hasStructure)
         {
             structureIdMap.push_back(sId);
             LevelLoader::Structure structureDef;
@@ -459,13 +459,7 @@ void LevelLoader::Structure::unpack(XoGeni::Cell* cell, unsigned int structureId
 {
     id = structureId;
 	// TODO: Fix this to just use hasStructure for both wall and isDoor
-    if (cell->isWall) {
-        type = 1;
-    }
-    else if (cell->isDoor) {
-        type = 2;
-    }
-    else if (cell->hasStructure) {
+    if (cell->hasStructure) {
         type = cell->structureType;
         subtype = cell->structureSubType;
 		accessLevel = cell->structureAccessLevel;

@@ -917,6 +917,9 @@ void XoGeni::CellMap::fixDoors()
         }
         else
         {
+            // Officially a door so give it structure definition
+            doorCell->hasStructure = true;
+            doorCell->structureType = STRUCTURE_DOOR;
             ++it; // iterate list pointer
         }
     }
@@ -1160,7 +1163,9 @@ void XoGeni::CellMap::buildWalls()
                     {
                         if(neighbor->room != NULL || neighbor->isDoor || neighbor->isTunnel)
                         {
-                            cell->isWall = 1;
+                            cell->isWall = true;
+                            cell->hasStructure = true;
+                            cell->structureType = STRUCTURE_WALL;
                         }
                     }
                 }
@@ -1304,7 +1309,7 @@ void XoGeni::CellMap::machinate_chestKeyTreasure()
 void XoGeni::CellMap::machinate_boss()
 {
     // Put a guard in the exit room
-    Cell* cell = getOpenRoomCell(entranceRoom, true);
+    Cell* cell = getOpenRoomCell(exitRoom, true);
     if (cell)
     {
         cell->hasCharacter = true;
