@@ -270,6 +270,9 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
                     if(character)
                         character->moveRight();
                     break;
+				case Command::Type::Dev_KillAll:
+					level->dev_killAll();
+					break;
 
                 // Item Mode Commands
                 case Command::Type::ItemCommand:

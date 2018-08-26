@@ -99,6 +99,8 @@ public:
 
     void removeStructure(Structure* structure);
 
+	void dev_killAll();
+
     
     // Player management
 

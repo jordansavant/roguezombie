@@ -3,6 +3,7 @@
 #include "../StateGamePlay.hpp"
 #include "../RogueZombieGame.hpp"
 #include "../../bitengine/Input.hpp"
+#include "../../bitengine/System.hpp"
 
 DevTerminal::DevTerminal(Hud* _hud)
 	: Frame(_hud, 10, -30, _hud->targetWidth - 20, 30, bit::Element::AnchorType::TopLeft, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3), false),
@@ -34,7 +35,7 @@ void DevTerminal::update(sf::RenderWindow &window, sf::Time &gameTime)
 	if (inputTextListener->onEntered())
 	{
 		// Do something with the command
-		std::string command = inputTextListener->input;
+		processCommand(inputTextListener->input);
 		inputTextListener->clear();
 	}
 
@@ -65,4 +66,21 @@ void DevTerminal::show()
 	relativePosition.y = -targetHeight;
 	immediateEffect(new bit::MoveEffect(300, bit::Easing::OutQuart, 0, targetHeight));
 	immediateEffect(new bit::FadeEffect(300, 1));
+}
+
+void DevTerminal::processCommand(std::string command)
+{
+	std::vector<std::string> args = bit::String::split(command, ' ');
+
+	if (args.size() > 0)
+	{
+		std::string op = args[0];
+
+		if (op == "killall")
+		{
+			Command cmd;
+			cmd.type = Command::Type::Dev_KillAll;
+			hud->state->issueCommand(cmd);
+		}
+	}
 }

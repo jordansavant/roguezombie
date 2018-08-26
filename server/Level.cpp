@@ -675,6 +675,18 @@ void Level::removeStructure(Structure* structure)
     structures.erase(std::remove(structures.begin(), structures.end(), structure), structures.end());
 }
 
+void Level::dev_killAll()
+{
+	// Iterate all characters that are not players and kill them
+	for (unsigned int i = 0; i < characters.size(); i++)
+	{
+		if (!characters[i]->schema.isPlayerCharacter)
+		{
+			characters[i]->kill();
+		}
+	}
+}
+
 
 
 

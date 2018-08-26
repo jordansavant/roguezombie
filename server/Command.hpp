@@ -23,6 +23,7 @@ public:
         FreeCommand,
         ItemCommand,
         Combat_AttackCharacter,
+		Dev_KillAll
     };
 
     enum Target

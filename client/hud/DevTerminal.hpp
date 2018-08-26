@@ -26,6 +26,8 @@ public:
 
 	virtual void show();
 
+	void processCommand(std::string command);
+
 };
 
 #endif
