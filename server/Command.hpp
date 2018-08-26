@@ -23,7 +23,9 @@ public:
         FreeCommand,
         ItemCommand,
         Combat_AttackCharacter,
-		Dev_KillAll
+		Dev_KillAll,
+		Dev_GoToEntrance,
+		Dev_GoToExit,
     };
 
     enum Target
@@ -49,6 +51,8 @@ public:
     {
         Attack
     };
+
+	Command(Type type);
 
     Type type;
 

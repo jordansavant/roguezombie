@@ -71,16 +71,25 @@ void DevTerminal::show()
 void DevTerminal::processCommand(std::string command)
 {
 	std::vector<std::string> args = bit::String::split(command, ' ');
+	unsigned int argc = args.size();
 
-	if (args.size() > 0)
+	if (argc > 0)
 	{
 		std::string op = args[0];
 
 		if (op == "killall")
 		{
-			Command cmd;
-			cmd.type = Command::Type::Dev_KillAll;
-			hud->state->issueCommand(cmd);
+			hud->state->issueCommand(Command(Command::Type::Dev_KillAll));
+		}
+
+		if (command == "goto entrance")
+		{
+			hud->state->issueCommand(Command(Command::Type::Dev_GoToEntrance));
+		}
+
+		if (command == "goto exit")
+		{
+			hud->state->issueCommand(Command(Command::Type::Dev_GoToExit));
 		}
 	}
 }

@@ -273,6 +273,10 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
 				case Command::Type::Dev_KillAll:
 					level->dev_killAll();
 					break;
+				case Command::Type::Dev_GoToEntrance:
+					break;
+				case Command::Type::Dev_GoToExit:
+					break;
 
                 // Item Mode Commands
                 case Command::Type::ItemCommand:

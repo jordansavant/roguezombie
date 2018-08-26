@@ -1220,16 +1220,18 @@ void XoGeni::CellMap::populate()
 
     machinate_chestKeyTreasure();
 
+    machinate_boss();
+
 }
 
 void XoGeni::CellMap::machinate_chestKeyTreasure()
 {
-    // Pick a random room that is not the exit and spawn a chest that is locked
+    // Pick a random room that is not the exit or entrance and spawn a chest that is locked
     // Generate a key for this chest
-    // Generate a level X enemy and place the key on his body
+    // Generate a level X enemy in a room >= entranceDistance of chest not the exit/entrance and place the key on his body
 
-    // for testing lets do it in the first room
-    Cell* chestCell = getSafeToBlockRoomCell(entranceRoom, true, 1);
+	Room* chestRoom = getRandomRoom(false, false);
+    Cell* chestCell = getSafeToBlockRoomCell(chestRoom, true, 1);
     if (chestCell)
     {
         setChest(chestCell, true);
@@ -1239,13 +1241,25 @@ void XoGeni::CellMap::machinate_chestKeyTreasure()
     }
 
     // create a scientist
-    Cell* enemyCell = getOpenRoomCell(entranceRoom, true);
+    Room* enemyRoom = getRandomRoom(false, false);
+    Cell* enemyCell = getOpenRoomCell(enemyRoom, true);
     if (enemyCell)
     {
         enemyCell->hasCharacter = true;
         enemyCell->characterType = 4;
         // give him a keycard
         enemyCell->inventory.push_back(Cell::ItemData(15, 1)); // Item::Type::KeyCard, Chest::SubType::Yellow
+    }
+}
+
+void XoGeni::CellMap::machinate_boss()
+{
+    // Put a guard in the exit room
+    Cell* cell = getOpenRoomCell(exitRoom, true);
+    if (cell)
+    {
+        cell->hasCharacter = true;
+        cell->characterType = 5;
     }
 }
 
@@ -1376,11 +1390,11 @@ void XoGeni::CellMap::spawnEnemies()
                 switch (difficultyLevel)
                 {
                     case 0:
-                        cell->characterType = LevelGenerator::random.of(4, 5); // scientist, guard
-                        //cell->characterType = 4; // Scientist
-                        //cell->characterType = 5; // Guard
+                        cell->characterType = 4; // scientist
                         break;
-
+                    case 1:
+                        cell->characterType = 5; // guard
+                        break;
                     default:
                         cell->characterType = 3; // Hunter
                         break;
@@ -1398,6 +1412,30 @@ void XoGeni::CellMap::spawnEnemies()
 
 
 
+
+XoGeni::Room* XoGeni::CellMap::getRandomRoom(bool includeEntrance, bool includeExit)
+{
+	std::vector<Room*> availableRooms;
+	for (unsigned int i = 0; i < rooms.size(); i++)
+	{
+		Room* room = rooms[i];
+		if (room == entranceRoom)
+		{
+			if (includeEntrance)
+                availableRooms.push_back(room);
+		}
+        else if (room == exitRoom)
+        {
+            if (includeExit)
+                availableRooms.push_back(room);
+        }
+        else
+        {
+            availableRooms.push_back(room);
+        }
+	}
+    return availableRooms[LevelGenerator::random.next(availableRooms.size())];
+}
 
 bool XoGeni::CellMap::isCellSafeToBlock(Cell* cell)
 {

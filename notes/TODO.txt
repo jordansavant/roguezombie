@@ -1,13 +1,11 @@
 LEFT OFF:
-- created keycards, chests require them, middle of machinate_chest for level 0
-	- one key per chest? one keycard per level?
-	- color coordinate chests and keys?
-	- doors and keys?
-
 
 Bugs:
 
 - Walls on southern tip of map are messed up Z depths
+- Possible to get in combat with body blocking path and not be able to consume corpse or structure to get by
+- out of focus still fires mode listener (not migrated to capture)
+- default chests are locked
 
 
 Improvements:
@@ -15,6 +13,17 @@ Improvements:
 - Replace hunter AI with guard AI and expand on it to use weapon range instead of static distances
 - Clicking on interactible structures, finds nearest tile and walks to it and then opens automatically
 - debri/blood tile litter for effects etc
+- WASD walking
+- Hotkeys for interactions (i = interact, l = loot, c = consume, a = attack)
+- scientists pose NO challenge (need some or other level0 bad guy)
+- Mark access items on minimap with colors
+- scientists need to feel more panicky, better sounds
+- need sounds / effects for melee
+- interact with diagonals
+- threaded level loader to load as we play
+- devcmd: give weapons, heal
+- Move cellmap type uints into constants
+- cellmap adhere wall/door to new structure format.type
 
 
 Story:

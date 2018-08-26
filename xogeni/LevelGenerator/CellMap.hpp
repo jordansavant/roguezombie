@@ -157,6 +157,8 @@ namespace XoGeni
 
         void machinate_chestKeyTreasure();
 
+        void machinate_boss();
+
         void setChest(Cell* cell, bool isLocked);
 
         void spawnDecor();
@@ -165,6 +167,8 @@ namespace XoGeni
 
         //void spawnTreasure();
 
+
+		Room* getRandomRoom(bool includeEntrance, bool includeExit);
 
         bool isCellSafeToBlock(Cell* cell);
 
