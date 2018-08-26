@@ -82,7 +82,6 @@ public:
     std::function<bool(Character*)> combatDetectionAi;
     std::function<void(Character*)> combatDecisionAi;
     bool isHostileCombatDetected;
-    unsigned int combatTilesTraversed;
     std::vector<Tile*> path;
     bool hasTargetEnemy;
     sf::Vector2f targetEnemyPosition;
@@ -100,7 +99,7 @@ public:
     struct Schema
     {
         Schema()
-            : isPlayerCharacter(false), clientId(0), player(NULL), type(Type::None), direction(0, 0),
+            : isPlayerCharacter(false), clientId(0), player(NULL), type(Type::None), direction(0, 0), combatTilesTraversed(0),
               maxActionPoints(2), currentActionPoints(2), maxHealth(0), health(0), speed(3),
               intelligence(1), dexterity(1), strength(1)
         {
@@ -114,6 +113,7 @@ public:
         Type type;
         std::vector<unsigned int> equipmentIds;
         sf::Vector2f direction;
+        unsigned int combatTilesTraversed;
 
         // Stats
         int maxActionPoints;
@@ -137,6 +137,7 @@ public:
             }
             packet << schema.direction.x;
             packet << schema.direction.y;
+            packet << sf::Uint32(schema.combatTilesTraversed);
 
             // Stats
             packet << sf::Int32(schema.maxActionPoints);
@@ -164,6 +165,7 @@ public:
             }
             packet >> schema.direction.x;
             packet >> schema.direction.y;
+            packet >> schema.combatTilesTraversed;
 
             // Stats
             packet >> schema.maxActionPoints;

@@ -1304,7 +1304,7 @@ void XoGeni::CellMap::machinate_chestKeyTreasure()
 void XoGeni::CellMap::machinate_boss()
 {
     // Put a guard in the exit room
-    Cell* cell = getOpenRoomCell(exitRoom, true);
+    Cell* cell = getOpenRoomCell(entranceRoom, true);
     if (cell)
     {
         cell->hasCharacter = true;

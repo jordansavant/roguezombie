@@ -142,7 +142,7 @@ void LevelClient::renderMoveMarkers()
         },
         [lc] (int x, int y, int depth) -> bool {
             TileClient* tile = lc->getTileAtIndices(x, y);
-            return !tile || depth > lc->playerCharacter->schema.speed || (tile->hasBody && tile->bodyClient != lc->playerCharacter);
+            return !tile || depth > (lc->playerCharacter->schema.speed - lc->playerCharacter->schema.combatTilesTraversed) || (tile->hasBody && tile->bodyClient != lc->playerCharacter);
         }
     );
 }

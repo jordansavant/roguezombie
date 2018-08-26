@@ -18,7 +18,7 @@
 
 Character::Character()
     : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::MoveToLocation), actionDelayTimer(1.5), hostilityCheckAi(NULL), combatDetectionAi(NULL), combatDecisionAi(NULL),
-      isHostileCombatDetected(false), hasTargetEnemy(false), targetEnemyPosition(0, 0), combatTilesTraversed(0), moveTimer(.67f), directionToMove(MoveDirection::NoDirection), equipment(), schema(), visionRadius(30), consumptionHeal(10)
+      isHostileCombatDetected(false), hasTargetEnemy(false), targetEnemyPosition(0, 0), moveTimer(.67f), directionToMove(MoveDirection::NoDirection), equipment(), schema(), visionRadius(30), consumptionHeal(10)
 {
     equipment.resize(EquipmentSlot::_count, NULL);
 }
@@ -105,6 +105,7 @@ COMBAT_UPDATE:
             {
                 // Refill my action points and move to decision making
                 schema.currentActionPoints = schema.maxActionPoints;
+                schema.combatTilesTraversed = 0;
                 sendCombatTurnStart();
                 combat_SwitchStateDecide();
 
@@ -265,9 +266,29 @@ void Character::combat_DecideAction(sf::Time &gameTime)
 
 void Character::combat_DecideAction_MoveInDirection(MoveDirection moveDirection)
 {
-    directionToMove = moveDirection;
-    combatAction = CombatAction::MoveInDirection;
-    combat_SwitchStatePerform();
+    // See if i can move in this direction
+    bool can = false;
+    switch (moveDirection)
+    {
+        case MoveDirection::Up:
+            can = canPathToPosition(Body::schema.x, Body::schema.y - level->tileHeight);
+            break;
+        case MoveDirection::Down:
+            can = canPathToPosition(Body::schema.x, Body::schema.y + level->tileHeight);
+            break;
+        case MoveDirection::Left:
+            can = canPathToPosition(Body::schema.x - level->tileWidth, Body::schema.y);
+            break;
+        case MoveDirection::Right:
+            can = canPathToPosition(Body::schema.x + level->tileWidth, Body::schema.y);
+            break;
+    }
+    if (can)
+    {
+        directionToMove = moveDirection;
+        combatAction = CombatAction::MoveInDirection;
+        combat_SwitchStatePerform();
+    }
 }
 
 void Character::combat_PerformAction_MoveInDirection(sf::Time &gameTime)
@@ -288,12 +309,12 @@ void Character::combat_PerformAction_MoveInDirection(sf::Time &gameTime)
             break;
     }
     directionToMove = MoveDirection::NoDirection;
-    combatTilesTraversed++;
-    if (combatTilesTraversed >= schema.speed)
+    schema.combatTilesTraversed++;
+    if (schema.combatTilesTraversed >= schema.speed)
     {
         // Move to the delay state to end the current action
         schema.currentActionPoints--;
-        combatTilesTraversed = 0;
+        schema.combatTilesTraversed = 0;
     }
     combat_SwitchStateDelay();
 }
@@ -304,7 +325,6 @@ void Character::combat_DecideAction_MoveToLocation(int x, int y)
     schema.currentActionPoints--;
     pathToPosition(x, y);
     combatAction = CombatAction::MoveToLocation;
-    combatTilesTraversed = 0;
     combat_SwitchStatePerform();
 }
 
@@ -314,10 +334,10 @@ void Character::combat_PerformAction_MoveToLocation(sf::Time &gameTime)
     if(path.size() > 0)
     {
         // If I have traversed the maximum number of tiles I can in this action
-        if(combatTilesTraversed >= schema.speed)
+        if(schema.combatTilesTraversed >= schema.speed)
         {
             // Move to the delay state to end the current action
-            combatTilesTraversed = 0;
+            schema.combatTilesTraversed = 0;
             combat_SwitchStateDelay();
 
             // Clear the path since I cannot travel further
@@ -342,7 +362,7 @@ void Character::combat_PerformAction_MoveToLocation(sf::Time &gameTime)
                     {
                         path.pop_back();
                     }
-                    combatTilesTraversed++;
+                    schema.combatTilesTraversed++;
                 }
             }
             // If I am on this tile already
@@ -356,6 +376,7 @@ void Character::combat_PerformAction_MoveToLocation(sf::Time &gameTime)
     else
     {
         // If I have reached my destination head back to make my next decision
+        schema.combatTilesTraversed = 0;
         combat_SwitchStateDelay();
     }
 }
@@ -367,6 +388,7 @@ void Character::combat_DecideAction_AttackCharacter(Character* character)
     targetEnemyPosition.y = character->Body::schema.y;
 
     schema.currentActionPoints--;
+    schema.combatTilesTraversed = 0;
     combatAction = CombatAction::Attack;
     combat_SwitchStatePerform();
 }
@@ -395,6 +417,7 @@ void Character::combat_PerformAction_AttackCharacter(sf::Time &gameTime)
 void Character::combat_DecideAction_Skip()
 {
     schema.currentActionPoints--;
+    schema.combatTilesTraversed = 0;
     combatAction = CombatAction::Skip;
     combat_SwitchStatePerform();
 }
@@ -421,6 +444,7 @@ void Character::combat_DecideAction_UsedItem()
 {
     // used an item external to the character
     schema.currentActionPoints--;
+    schema.combatTilesTraversed = 0;
     combatAction = CombatAction::UsedItem;
     combat_SwitchStatePerform();
 }
@@ -747,7 +771,7 @@ void Character::inspectCombatReachableTiles(std::function<void(Tile* t)> inspect
     Character* character = this;
     int originX = character->Body::schema.x / character->level->tileWidth;
     int originY = character->Body::schema.y / character->level->tileHeight;
-    int maxDistance = character->schema.speed;
+    int maxDistance = character->schema.speed; // TODO - shouldn't this subtract my current combatTilesTraversed variable?s
 
     // Flood fill
     bit::FloodFill::compute(originX, originY,
