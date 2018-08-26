@@ -58,11 +58,21 @@ public:
 
     enum CombatAction
     {
-        Move,
+        MoveToLocation,
+        MoveInDirection,
         Attack,
         Skip,
         SwapWeapon,
         UsedItem
+    };
+
+    enum MoveDirection
+    {
+        NoDirection,
+        Up,
+        Down,
+        Left,
+        Right
     };
 
     CombatState combatState;
@@ -77,6 +87,7 @@ public:
     bool hasTargetEnemy;
     sf::Vector2f targetEnemyPosition;
     bit::GameTimer moveTimer;
+    MoveDirection directionToMove;
     std::vector<Mission*> missions;
     std::vector<Item*> equipment;
     unsigned int visionRadius;
@@ -189,6 +200,10 @@ public:
     virtual void updateAlive_Combat(sf::Time &gameTime);
 
     virtual void combat_DecideAction(sf::Time &gameTime);
+
+    virtual void combat_DecideAction_MoveInDirection(MoveDirection moveDirection);
+
+    virtual void combat_PerformAction_MoveInDirection(sf::Time &gameTime);
 
     virtual void combat_DecideAction_MoveToLocation(int x, int y);
 

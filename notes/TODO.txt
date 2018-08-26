@@ -4,8 +4,7 @@ Bugs:
 
 - Walls on southern tip of map are messed up Z depths
 - Possible to get in combat with body blocking path and not be able to consume corpse or structure to get by
-- out of focus still fires mode listener (not migrated to capture)
-- default chests are locked
+- macbook pro packet delivery and move timer is wonky
 
 
 Improvements:
@@ -21,7 +20,6 @@ Improvements:
 - need sounds / effects for melee
 - threaded level loader to load as we play
 - devcmd: give weapons, heal
-- Move cellmap type uints into constants
 - cellmap adhere wall/door to new structure format.type
 - rename furnishing to represent their dierction
 

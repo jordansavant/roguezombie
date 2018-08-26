@@ -17,8 +17,8 @@
 #include "RpgSystem.hpp"
 
 Character::Character()
-    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::Move), actionDelayTimer(1.5), hostilityCheckAi(NULL), combatDetectionAi(NULL), combatDecisionAi(NULL),
-      isHostileCombatDetected(false), hasTargetEnemy(false), targetEnemyPosition(0, 0), combatTilesTraversed(0), moveTimer(.67f), equipment(), schema(), visionRadius(30), consumptionHeal(10)
+    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::MoveToLocation), actionDelayTimer(1.5), hostilityCheckAi(NULL), combatDetectionAi(NULL), combatDecisionAi(NULL),
+      isHostileCombatDetected(false), hasTargetEnemy(false), targetEnemyPosition(0, 0), combatTilesTraversed(0), moveTimer(.67f), directionToMove(MoveDirection::NoDirection), equipment(), schema(), visionRadius(30), consumptionHeal(10)
 {
     equipment.resize(EquipmentSlot::_count, NULL);
 }
@@ -149,9 +149,19 @@ COMBAT_UPDATE:
 
             switch(combatAction)
             {
-                case CombatAction::Move:
+                case CombatAction::MoveToLocation:
 
                     combat_PerformAction_MoveToLocation(gameTime);
+
+                    // EXPERIMENTAL!
+                    if (!schema.isPlayerCharacter && !isHostileCombatDetected)
+                        goto COMBAT_UPDATE;
+
+                    break;
+
+                case CombatAction::MoveInDirection:
+
+                    combat_PerformAction_MoveInDirection(gameTime);
 
                     // EXPERIMENTAL!
                     if (!schema.isPlayerCharacter && !isHostileCombatDetected)
@@ -253,12 +263,47 @@ void Character::combat_DecideAction(sf::Time &gameTime)
     }
 }
 
+void Character::combat_DecideAction_MoveInDirection(MoveDirection moveDirection)
+{
+    directionToMove = moveDirection;
+    combatAction = CombatAction::MoveInDirection;
+    combat_SwitchStatePerform();
+}
+
+void Character::combat_PerformAction_MoveInDirection(sf::Time &gameTime)
+{
+    switch (directionToMove)
+    {
+        case MoveDirection::Up:
+            moveUp();
+            break;
+        case MoveDirection::Down:
+            moveDown();
+            break;
+        case MoveDirection::Left:
+            moveLeft();
+            break;
+        case MoveDirection::Right:
+            moveRight();
+            break;
+    }
+    directionToMove = MoveDirection::NoDirection;
+    combatTilesTraversed++;
+    if (combatTilesTraversed >= schema.speed)
+    {
+        // Move to the delay state to end the current action
+        schema.currentActionPoints--;
+        combatTilesTraversed = 0;
+    }
+    combat_SwitchStateDelay();
+}
+
 void Character::combat_DecideAction_MoveToLocation(int x, int y)
 {
     // We have decided to move to a position, so we will set it up as our path
     schema.currentActionPoints--;
     pathToPosition(x, y);
-    combatAction = CombatAction::Move;
+    combatAction = CombatAction::MoveToLocation;
     combatTilesTraversed = 0;
     combat_SwitchStatePerform();
 }

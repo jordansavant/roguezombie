@@ -255,20 +255,40 @@ void Player::handleCommand(bit::ClientPacket &packet, Command::Type commandType)
             {
                 // Debug Commands
                 case Command::Type::PlayerMoveUp:
-                    if(character)
-                        character->moveUp();
+                    if (character)
+                    {
+                        if (validateCombat())
+                            character->combat_DecideAction_MoveInDirection(Character::MoveDirection::Up);
+                        else if (level->state == Level::State::Free)
+                            character->moveUp();
+                    }
                     break;
                 case Command::Type::PlayerMoveDown:
-                    if(character)
-                        character->moveDown();
+                    if (character)
+                    {
+                        if (validateCombat())
+                            character->combat_DecideAction_MoveInDirection(Character::MoveDirection::Down);
+                        else if(level->state == Level::State::Free)
+                            character->moveDown();
+                    }
                     break;
                 case Command::Type::PlayerMoveLeft:
-                    if(character)
-                        character->moveLeft();
+                    if (character)
+                    {
+                        if (validateCombat())
+                            character->combat_DecideAction_MoveInDirection(Character::MoveDirection::Left);
+                        else if (level->state == Level::State::Free)
+                            character->moveLeft();
+                    }
                     break;
                 case Command::Type::PlayerMoveRight:
-                    if(character)
-                        character->moveRight();
+                    if (character)
+                    {
+                        if (validateCombat())
+                            character->combat_DecideAction_MoveInDirection(Character::MoveDirection::Right);
+                        else if (level->state == Level::State::Free)
+                            character->moveRight();
+                    }
                     break;
 				case Command::Type::Dev_KillAll:
 					level->dev_killAll();
