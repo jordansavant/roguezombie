@@ -13,7 +13,7 @@ XoGeni::Cell::Cell(unsigned int index, unsigned int x, unsigned int y)
     isExitTransition(false), exitTransition(NULL), transitionDir(0, 0),
     hasLight(false), lightRadius(0), lightOpacity(0), lightColorR(0), lightColorG(0), lightColorB(0),
     isTagUnreachable(false),
-    hasCharacter(false), characterType(0),
+    hasCharacter(false), characterType(0), hasCharacterWithKey(false), characterKeyAccessLevel(0),
     hasStructure(false), structureType(0), structureSubType(0), structureAccessLevel(0), isLocked(false),
     metadata_floodfillId(0)
 {

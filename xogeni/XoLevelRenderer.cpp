@@ -87,8 +87,9 @@ void XoGeni::XoLevelRenderer::paint()
         sf::Color colorStructure = sf::Color(200, 100, 0);
 
         sf::Color color = colorGround;
+        float rotationRadians = 0;
 
-        unsigned int stateCount = 14;
+        unsigned int stateCount = 15;
         switch(renderState % stateCount)
         {
             // Rooms only
@@ -284,8 +285,7 @@ void XoGeni::XoLevelRenderer::paint()
                 if(cell->isTagUnreachable)
                     color = colorTagUnreachable;
                 break;
-            // Enemies added
-            // Final
+            // Decor added
             case 13:
                 if (cell->room)
                     if (cell->isRoomEdge)
@@ -308,13 +308,11 @@ void XoGeni::XoLevelRenderer::paint()
                     color = colorWall;
                 if (cell->isTagUnreachable)
                     color = colorTagUnreachable;
-                if (cell->hasCharacter)
-                    color = colorEnemy;
+                if (cell->hasStructure && !cell->isDoor && !cell->isWall)
+                    color = colorStructure;
                 break;
-            // Treasure added
-            // Final
-            default:
-            case 0:
+            // Enemy added
+            case 14:
                 if (cell->room)
                     if (cell->isRoomEdge)
                         color = colorRoomEdge;
@@ -336,16 +334,54 @@ void XoGeni::XoLevelRenderer::paint()
                     color = colorWall;
                 if (cell->isTagUnreachable)
                     color = colorTagUnreachable;
-                if (cell->hasCharacter)
-                    color = colorEnemy;
                 if (cell->hasStructure && !cell->isDoor && !cell->isWall)
                     color = colorStructure;
+                if (cell->hasCharacter)
+                    color = colorEnemy;
+                break;
+            // Machinations
+            // Final
+            default:
+            case 0:
+                if (cell->room)
+                    color = colorRoom;
+                if (cell->isTunnel)
+                    color = colorTunnel;
+                if (cell->isEntranceTransition)
+                    color = colorEntranceTransition;
+                if (cell->isExitTransition)
+                    color = colorExitTransition;
+                if (cell->isTagUnreachable)
+                    color = colorTagUnreachable;
+                if (cell->hasCharacter)
+                {
+                    rotationRadians = 3 * bit::Math::Pi / 4;
+                    if (cell->hasCharacterWithKey)
+                        color = sf::Color::Cyan;
+                    else
+                        color = colorEnemy;
+                }
+                if (cell->hasStructure)
+                {
+                    color = colorStructure;
+                    if (cell->isWall)
+                        color = colorWall;
+                    if (cell->isDoor)
+                        color = sf::Color::White;
+                    if (cell->structureType == 3) // chest
+                        color = sf::Color::Green;
+                    if (cell->structureAccessLevel > 0)
+                    {
+                        color = sf::Color::Cyan;
+                    }
+                }
                 break;
         }
         
 
         bit::VertexHelper::positionQuad(&vertexMap_tiles.vertexArray[quadIndex], x, y, renderZ, groundSprite->width, groundSprite->height);
         bit::VertexHelper::colorQuad(&vertexMap_tiles.vertexArray[quadIndex], color);
+        bit::VertexHelper::rotateQuad(&vertexMap_tiles.vertexArray[quadIndex], rotationRadians);
         groundSprite->applyToQuad(&vertexMap_tiles.vertexArray[quadIndex]);
     }
 }

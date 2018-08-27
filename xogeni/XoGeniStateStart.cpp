@@ -60,7 +60,7 @@ bool XoGeni::XoGeniStateStart::update(sf::Time &gameTime)
         cameras[0]->resetZoom();
 
     int ticks = xoGeniGame->inputManager->getMouseWheelTicks();
-    if(ticks != 0)
+    if(ticks != 0 || xoGeniGame->inputManager->isButtonPressed(sf::Keyboard::P))
     {
         //cameras[0]->changeZoom(ticks);
         levelRenderer->renderState++;

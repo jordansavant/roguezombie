@@ -74,6 +74,8 @@ namespace XoGeni
 
         bool hasCharacter;
         unsigned int characterType;
+        bool hasCharacterWithKey;
+        unsigned int characterKeyAccessLevel;
 
         bool hasStructure;
         unsigned int structureType;

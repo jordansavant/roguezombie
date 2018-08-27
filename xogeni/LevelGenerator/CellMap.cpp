@@ -1303,6 +1303,8 @@ void XoGeni::CellMap::machinate_chestKeyTreasure()
         enemyCell->characterType = CHARACTER_SCIENTIST;
         // give him a keycard
         enemyCell->inventory.push_back(Cell::ItemData(ITEM_KEYCARD, ACCESS_LEVEL_YELLOW)); // Item::Type::KeyCard, Chest::SubType::Yellow
+        enemyCell->hasCharacterWithKey = true;
+        enemyCell->characterKeyAccessLevel = ACCESS_LEVEL_YELLOW;
     }
 }
 
@@ -1477,6 +1479,10 @@ void XoGeni::CellMap::spawnEnemies()
             Cell* cell = getOpenRoomCell(rooms[i], true);
             if (cell)
             {
+                if (cell->hasStructure)
+                {
+                    int ow = 12;
+                }
                 cell->hasCharacter = true;
 
                 switch (difficultyLevel)
@@ -1558,7 +1564,7 @@ XoGeni::Cell* XoGeni::CellMap::getOpenRoomCell(Room* room, bool random)
         unsigned int cellCount = room->width * room->height;
         std::vector<Cell*> openCells;
         inspectCellsInDimension(room->x, room->y, room->width, room->height, [&openCells](Cell* cell) -> bool {
-            if (!cell->isTagUnreachable)
+            if (!cell->isOccupied())
             {
                 openCells.push_back(cell);
             }
