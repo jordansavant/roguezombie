@@ -70,8 +70,8 @@ XoGeni::CellMap* XoGeni::LevelGenerator::generate(unsigned int width, unsigned i
     cellMap->buildTags();
 
     cellMap->machinate();
-    cellMap->spawnDecor();
-    cellMap->spawnEnemies();
+    //cellMap->spawnDecor();
+    //cellMap->spawnEnemies();
     // cellMap->spawnTreasure();
     // cellMap->spawnTraps();
 

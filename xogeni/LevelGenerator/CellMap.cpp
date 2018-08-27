@@ -1276,6 +1276,50 @@ void XoGeni::CellMap::machinate()
 
     machinate_boss();
 
+    // designate machine rooms
+    for (unsigned int i = 0; i < rooms.size(); i++)
+    {
+        Room* room = rooms[i];
+        if (room == entranceRoom || room == exitRoom || room->width < 4 || room->height < 4)
+        {
+            room->isMachineRoom = false;
+            nonMachineRooms.push_back(room);
+        }
+        else if (i % 2 == 0 && LevelGenerator::random.next(2) == 0)
+        {
+            room->isMachineRoom = true;
+            machineRooms.push_back(room);
+        }
+    }
+
+    // build machine rooms
+    for (unsigned int i = 0; i < machineRooms.size(); i++)
+    {
+        // TODO: Expand on more machine rooms
+        machinate_trapRoom(machineRooms[i]);
+    }
+
+}
+
+void XoGeni::CellMap::machinate_trapRoom(Room* room)
+{
+    // Put a treasure chest in the middle of the room
+
+    Cell* centerCell = getRoomCenterCell(room);
+    setChest(centerCell, false);
+    unsigned int i = 0;
+
+    // Puts traps in a uniform pattern with manageable gaps
+    inspectRoomCells(room, [this, &i, room](Cell* cell) -> bool {
+        unsigned int rx = cell->x - room->x;
+        unsigned int ry = cell->y - room->y;
+        if (i % 3 == 0 && rx % 3 != 0 && this->isCellSafeToBlock(cell))
+        {
+            cell->isTrap = true;
+        }
+        i++;
+        return false;
+    });
 }
 
 void XoGeni::CellMap::machinate_chestKeyTreasure()
@@ -1597,6 +1641,14 @@ bool XoGeni::CellMap::isCellSafeToBlock(Cell* cell)
     Cell* southCell = getCellAtPosition(cell->x, cell->y + 1);
     return (!northCell->isDoor && !eastCell->isDoor && !westCell->isDoor && !southCell->isDoor
         && !northCell->isTunnel && !eastCell->isTunnel && !westCell->isTunnel && !southCell->isTunnel);
+}
+
+XoGeni::Cell* XoGeni::CellMap::getRoomCenterCell(Room* room)
+{
+    unsigned int x = room->x + room->width / 2;
+    unsigned int y = room->y + room->height / 2;
+
+    return getCellAtPosition(x, y);
 }
 
 

@@ -353,6 +353,8 @@ void XoGeni::XoLevelRenderer::paint()
                     color = colorExitTransition;
                 if (cell->isTagUnreachable)
                     color = colorTagUnreachable;
+                if (cell->isTrap)
+                    color = sf::Color::Red;
                 if (cell->hasCharacter)
                 {
                     rotationRadians = 3 * bit::Math::Pi / 4;

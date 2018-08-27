@@ -31,6 +31,8 @@ namespace XoGeni
 
         std::vector<XoGeni::Cell*> cells;
         std::vector<XoGeni::Room*> rooms;
+        std::vector<XoGeni::Room*> machineRooms;
+        std::vector<XoGeni::Room*> nonMachineRooms;
         std::vector<XoGeni::RoomDoor*> doors;
         XoGeni::Entrance* entrance;
         XoGeni::Exit* exit;
@@ -155,6 +157,8 @@ namespace XoGeni
 
         void machinate();
 
+        void machinate_trapRoom(Room* room);
+
         void machinate_chestKeyTreasure();
 
         void machinate_boss();
@@ -179,6 +183,8 @@ namespace XoGeni
 		Room* getRandomRoom(bool includeEntrance, bool includeExit);
 
         bool isCellSafeToBlock(Cell* cell);
+
+        Cell* getRoomCenterCell(Room* room);
 
         Cell* getOpenRoomCell(Room* room, bool random);
 

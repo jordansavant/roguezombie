@@ -47,6 +47,8 @@ namespace XoGeni
         bool isSill;
         bool isDoor;
         bool wasDoor;
+        bool isTrap;
+        unsigned int trapType;
         
         bool isTunnel;
         bool wasCorridorTunnel;

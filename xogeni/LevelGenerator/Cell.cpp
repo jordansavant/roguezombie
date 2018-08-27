@@ -6,7 +6,7 @@
 XoGeni::Cell::Cell(unsigned int index, unsigned int x, unsigned int y)
     : index(index), x(x), y(y), room(NULL), tunnelTestCount(0),
     isWall(false), isRoomEdge(false), isRoomPermiter(false), isSill(false),
-    isDoor(false), wasDoor(false),
+    isDoor(false), wasDoor(false), isTrap(false), trapType(0),
     isTunnel(false), wasCorridorTunnel(false), wasDoorTunnel(false), wasRoomFixTunnel(false),
     isEntrance(false), entranceId(0), entrancePriority(0),
     isEntranceTransition(false), entranceTransition(NULL),
@@ -76,12 +76,6 @@ void XoGeni::Cell::decorate(unsigned int type, unsigned int subtype)
                     lightOpacity = 0.75;
                     break;
                 case 9: // Pilon
-                    hasLight = true;
-                    lightColorR = 200;
-                    lightColorG = 200;
-                    lightColorB = 255;
-                    lightRadius = 2;
-                    lightOpacity = .2;
                     break;
             }
             break;
