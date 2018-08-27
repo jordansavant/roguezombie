@@ -333,6 +333,13 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
                                 target.bodyId = t->schema.bodyId;
                                 hud->statBubble->handleStats(t->schema.id);
                             }
+                            else if (t->hasInteractableBody())
+                            {
+                                if (t->isCardinallyOrDiagonallyAdjacent(levelClient->playerCharacter))
+                                    requestInteractionsForTile(t->schema.id);
+                                else
+                                    displayMessage(std::string("Too far away"));
+                            }
                         }
                         // Else issue command to move to tile
                         else

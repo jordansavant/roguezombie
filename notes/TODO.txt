@@ -4,9 +4,6 @@ Bugs:
 
 - Walls on southern tip of map are messed up Z depths
 - Possible to get in combat with body blocking path and not be able to consume corpse or structure to get by (always allow interact)
-- Melee attacks not triggering BluntHit ServerEvent
-- move commands not tied to focus
-- weapon effect lighting is delayed with lower server fps
 
 Improvements:
 
