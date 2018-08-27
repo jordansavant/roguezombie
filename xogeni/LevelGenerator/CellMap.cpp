@@ -1257,7 +1257,7 @@ void XoGeni::CellMap::tagUnreachableCells()
 // ENVIRONMENT SPAWNING START
 ////////////////////////////////////////
 
-void XoGeni::CellMap::populate()
+void XoGeni::CellMap::machinate()
 {
     // MASTER LEVEL BUILDING ROUTING
     // This routing uses the level's difficulty to build all machines, treasure, traps, furnishings, enemies, chests, keys etc
@@ -1284,25 +1284,29 @@ void XoGeni::CellMap::machinate_chestKeyTreasure()
     // Generate a key for this chest
     // Generate a level X enemy in a room >= entranceDistance of chest not the exit/entrance and place the key on his body
 
+    unsigned int accessLevel = getAccessLevelForDifficulty();
+    unsigned int itemType = getWeaponForDifficulty();
+    unsigned int standardEnemyType = getStandardEnemyTypeForDifficulty();
+
+    // Set the chest
 	Room* chestRoom = getRandomRoom(false, false);
     Cell* chestCell = getSafeToBlockRoomCell(chestRoom, true, 1);
     if (chestCell)
     {
         setChest(chestCell, true);
-        // give it a pistol
-        chestCell->structureAccessLevel = ACCESS_LEVEL_YELLOW; // yellow
-        chestCell->inventory.push_back(Cell::ItemData(ITEM_MAGNUM357));
+        chestCell->structureAccessLevel = accessLevel;
+        chestCell->inventory.push_back(Cell::ItemData(itemType));
     }
 
-    // create a scientist
+    // Create enemy with keycard for chest
     Room* enemyRoom = getRandomRoom(false, false);
     Cell* enemyCell = getOpenRoomCell(enemyRoom, true);
     if (enemyCell)
     {
         enemyCell->hasCharacter = true;
-        enemyCell->characterType = CHARACTER_SCIENTIST;
+        enemyCell->characterType = standardEnemyType;
         // give him a keycard
-        enemyCell->inventory.push_back(Cell::ItemData(ITEM_KEYCARD, ACCESS_LEVEL_YELLOW)); // Item::Type::KeyCard, Chest::SubType::Yellow
+        enemyCell->inventory.push_back(Cell::ItemData(ITEM_KEYCARD, accessLevel));
         enemyCell->hasCharacterWithKey = true;
         enemyCell->characterKeyAccessLevel = ACCESS_LEVEL_YELLOW;
     }
@@ -1315,7 +1319,7 @@ void XoGeni::CellMap::machinate_boss()
     if (cell)
     {
         cell->hasCharacter = true;
-        cell->characterType = CHARACTER_GUARD;
+        cell->characterType = getOutOfDepthEnemyTypeForDifficulty();
     }
 }
 
@@ -1500,6 +1504,56 @@ void XoGeni::CellMap::spawnEnemies()
             }
 
         }
+    }
+}
+
+unsigned int XoGeni::CellMap::getStandardEnemyTypeForDifficulty()
+{
+    switch (difficultyLevel)
+    {
+        case 0:
+            return CHARACTER_SCIENTIST;
+        case 1:
+            return CHARACTER_GUARD;
+        case 2:
+            return CHARACTER_HUNTER;
+        default:
+            return CHARACTER_HUNTER; // TODO better enemy scaling
+    }
+}
+
+unsigned int XoGeni::CellMap::getOutOfDepthEnemyTypeForDifficulty()
+{
+    switch (difficultyLevel)
+    {
+        case 0:
+            return CHARACTER_GUARD;
+        case 1:
+            return CHARACTER_HUNTER;
+        case 2:
+            return CHARACTER_HUNTER;
+        default:
+            return CHARACTER_HUNTER; // TODO better enemy scaling
+    }
+}
+
+unsigned int XoGeni::CellMap::getAccessLevelForDifficulty()
+{
+    switch (difficultyLevel)
+    {
+        // TODO: Scale
+        default:
+            return ACCESS_LEVEL_YELLOW;
+    }
+}
+
+unsigned int XoGeni::CellMap::getWeaponForDifficulty()
+{
+    switch (difficultyLevel)
+    {
+        // TODO: Scale, randomize
+        default:
+            return ITEM_MAGNUM357;
     }
 }
 

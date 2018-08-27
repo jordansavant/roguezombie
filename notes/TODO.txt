@@ -3,7 +3,10 @@ LEFT OFF:
 Bugs:
 
 - Walls on southern tip of map are messed up Z depths
-- Possible to get in combat with body blocking path and not be able to consume corpse or structure to get by (always allow interact)
+- two people standing on either side of door, one walk away door close despite person being next to it, only close if count of people is 0
+- if i destroy a body next to a door will it close?
+- made things interactable while in combat but still have no hover effect on tiles
+- can move partial amount and then attack in same turn
 
 Improvements:
 
@@ -17,7 +20,7 @@ Improvements:
 - scientists need to feel more panicky, better sounds
 - need sounds / effects for melee
 - threaded level loader to load as we play
-- devcmd: give weapons, heal
+- devcmd: give weapons, heal, teleport
 - rename furnishing to represent their dierction
 - more loot! chests and bodies dont have surprises
 	- mutagens, chemicals, implants
@@ -25,6 +28,10 @@ Improvements:
 	- terminals to learn about random items
 - Unarmed miss event
 	- Character::attack()
+- hover tile to get information about people
+- easy to destroy important game items for loot
+	- check for this?
+- room types for room decor
 
 
 Story:

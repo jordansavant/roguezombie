@@ -153,7 +153,7 @@ namespace XoGeni
 
         // Environment spawning
 
-        void populate();
+        void machinate();
 
         void machinate_chestKeyTreasure();
 
@@ -164,6 +164,14 @@ namespace XoGeni
         void spawnDecor();
 
         void spawnEnemies();
+
+        unsigned int getStandardEnemyTypeForDifficulty();
+
+        unsigned int getOutOfDepthEnemyTypeForDifficulty();
+
+        unsigned int getAccessLevelForDifficulty();
+
+        unsigned int getWeaponForDifficulty();
 
         //void spawnTreasure();
 

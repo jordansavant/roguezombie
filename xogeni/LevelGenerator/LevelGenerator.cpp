@@ -18,7 +18,7 @@ std::vector<XoGeni::CellMap*> XoGeni::LevelGenerator::buildTower(unsigned int se
 {
     random.seed(seed);
 
-    unsigned int mapCount = 1;
+    unsigned int mapCount = 2;
     std::vector<CellMap*> maps;
     CellMap* parent = NULL;
     unsigned int difficultyLevel = 0;
@@ -69,7 +69,7 @@ XoGeni::CellMap* XoGeni::LevelGenerator::generate(unsigned int width, unsigned i
     cellMap->buildLights();
     cellMap->buildTags();
 
-    cellMap->populate();
+    cellMap->machinate();
     cellMap->spawnDecor();
     cellMap->spawnEnemies();
     // cellMap->spawnTreasure();

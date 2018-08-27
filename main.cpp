@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
     bit::Output::stream << "Test" << ": " << bit::Math::toHash(std::string("Test")); bit::Output::Flush();
     bit::Output::stream << "Test" << ": " << bit::String::toHash(std::string("Test")); bit::Output::Flush();
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift))
     {
         XoGeni::XoGeniGame generator;
         generator.run();
