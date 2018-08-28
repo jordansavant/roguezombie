@@ -32,7 +32,8 @@ void GameplayServer::load()
 {
     // Generate levels
     bit::Random random;
-    unsigned int seed = random.next();// 13726;
+    unsigned int seed = 13726;
+    //unsigned int seed = random.next();
     bit::Output::Debug("SEEDING WORLD");
     bit::Output::Debug(seed);
     XoGeni::LevelGenerator levelGenerator;

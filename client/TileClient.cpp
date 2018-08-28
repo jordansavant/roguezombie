@@ -16,7 +16,7 @@
 #include <sstream>
 
 TileClient::TileClient()
-    : schema(), level(NULL), sprite(NULL), quadIndex(0), renderX(0), width(64), height(32), renderY(0), centerRenderX(0), centerRenderY(0),
+    : schema(), level(NULL), sprite(NULL), quadIndex(0), extraQuadIndex(0), renderX(0), width(64), height(32), renderY(0), centerRenderX(0), centerRenderY(0),
     hasBody(false), hasCharacter(false), hasStructure(false), bodyClient(NULL), characterClient(NULL), structureClient(NULL),
     metadata_shadowcastId(0), metadata_floodfillId(0)
 {
@@ -78,13 +78,16 @@ void TileClient::clientLoad(LevelClient* _level)
     quadIndex = level->vertexMap_charactersNormal.requestVertexIndex();
     sprite = level->state->rogueZombieGame->spriteLoader->getSprite(getSpriteMoniker(schema.type));
     sprite->applyToQuad(&level->vertexMap_charactersNormal.vertexArray[quadIndex]);
+
+    extraQuadIndex = level->vertexMap_charactersNormal.requestVertexIndex();
+    trapSpikeSpriteActive = level->state->rogueZombieGame->spriteLoader->getSprite("Trap_SpikeActive");
+    trapSpikeSpriteInactive = level->state->rogueZombieGame->spriteLoader->getSprite("Trap_SpikeInactive");
 }
 
 void TileClient::clientUpdate(sf::Time &gameTime)
 {
     // Sprite
     sprite->applyToQuad(&level->vertexMap_charactersNormal.vertexArray[quadIndex]);
-
 
     // Position
     bit::Vertex3* quad = &level->vertexMap_charactersNormal.vertexArray[quadIndex];
@@ -267,6 +270,18 @@ void TileClient::clientUpdate(sf::Time &gameTime)
     bit::ColorMixer cm(defaultColor);
     cm.mixAdditive(c);
     bit::VertexHelper::colorQuad(quad, cm.toColor());
+
+    // Extra Sprite
+    if (schema.isTrap)
+    {
+        bit::Vertex3* extraQuad = &level->vertexMap_charactersNormal.vertexArray[extraQuadIndex];
+        if (schema.isTrapActive)
+            trapSpikeSpriteActive->applyToQuad(extraQuad);
+        else
+            trapSpikeSpriteInactive->applyToQuad(extraQuad);
+        bit::VertexHelper::positionQuad(extraQuad, renderX, renderY, z, width, height);
+        bit::VertexHelper::colorQuad(extraQuad, cm.toColor());
+    }
 }
 
 void TileClient::reinitialize()

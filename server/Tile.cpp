@@ -1,6 +1,8 @@
 #include "Tile.hpp"
 #include "Body.hpp"
 #include "Level.hpp"
+#include "Character.hpp"
+#include "ServerEvent.hpp"
 #include "../bitengine/Intelligence.hpp"
 #include "../bitengine/Math.hpp"
 
@@ -31,6 +33,43 @@ void Tile::load(Level* _level, unsigned int _id, Type _type, int _x, int _y, int
 
     aStarX = _x;
     aStarY = _y;
+}
+
+void Tile::loadTrap(TrapType trapType)
+{
+    schema.isTrap = true;
+    schema.trapType = trapType;
+
+    switch (trapType)
+    {
+        case TrapType::Spike:
+        {
+            onBodyEnter += [this] (Tile* t, Body* b) {
+                if (!this->schema.isTrapActive && b->schema.type == Body::Type::Character)
+                {
+                    Character* c = static_cast<Character*>(b);
+                    c->harm(50); // TODO: Make this configurable?
+                    this->schema.isTrapActive = true;
+                    // TODO: Send event
+                    level->sendEventToAllPlayers([this](bit::ServerPacket &packet) {
+                        packet << sf::Uint32(ServerEvent::TrapSprung);
+                        packet << this->schema.x;
+                        packet << this->schema.y;
+                    });
+                }
+            };
+            onBodyLeave += [this](Tile* t, Body* b) {
+                this->schema.isTrapActive = false;
+                // TODO: Send event
+                //level->sendEventToAllPlayers([self](bit::ServerPacket &packet) {
+                //    packet << sf::Uint32(ServerEvent::CharacterHeal);
+                //    packet << self->Body::schema.x;
+                //    packet << self->Body::schema.y;
+                //});
+            };
+            break;
+        }
+    }
 }
 
 void Tile::update(sf::Time &gameTime)

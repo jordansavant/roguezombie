@@ -34,6 +34,12 @@ public:
         StairwellUp_East, // 9
     };
 
+    enum TrapType
+    {
+        NoTrap, // 0
+        Spike, // 1
+    };
+
     struct Entrance
     {
         unsigned int id;
@@ -43,7 +49,9 @@ public:
     struct Schema
     {
         Schema()
-            : id(0), x(0), y(0), centerX(0), centerY(0), width(0), height(0), type(Type::Ground), bodyId(0), doorId(0), illumination(0), gshade(0), bshade(0)
+            : id(0), x(0), y(0), centerX(0), centerY(0), width(0), height(0),
+            type(Type::Ground), bodyId(0), doorId(0), illumination(0), gshade(0), bshade(0),
+            isTrap(false), trapType(TrapType::NoTrap), isTrapActive(false)
         {
         }
 
@@ -56,6 +64,9 @@ public:
         unsigned int doorId;
         float illumination; // how illuminated this tile is
         unsigned char rshade, gshade, bshade; // color of light
+        bool isTrap;
+        TrapType trapType;
+        bool isTrapActive;
 
         friend sf::Packet& operator <<(sf::Packet& packet, const Schema &schema)
         {
@@ -73,6 +84,9 @@ public:
             packet << schema.rshade;
             packet << schema.gshade;
             packet << schema.bshade;
+            packet << schema.isTrap;
+            packet << sf::Uint32(schema.trapType);
+            packet << schema.isTrapActive;
             return packet;
         }
         friend sf::Packet& operator >>(sf::Packet& packet, Schema &schema)
@@ -91,6 +105,9 @@ public:
             packet >> schema.rshade;
             packet >> schema.gshade;
             packet >> schema.bshade;
+            packet >> schema.isTrap;
+            bit::NetworkHelper::unpackEnum<sf::Uint32, TrapType>(packet, schema.trapType);
+            packet >> schema.isTrapActive;
             return packet;
         }
     };
@@ -108,6 +125,8 @@ public:
     bool isUnreachable;
 
     virtual void load(Level* level, unsigned int id, Type type, int x, int y, int width, int height);
+
+    virtual void loadTrap(TrapType trapType);
 
     virtual void update(sf::Time &gameTime);
 

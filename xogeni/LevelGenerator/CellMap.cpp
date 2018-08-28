@@ -58,6 +58,8 @@ unsigned int ITEM_CLEANINGGLOVES = 13;
 unsigned int ITEM_GOLDMEDAL = 14;
 unsigned int ITEM_KEYCARD = 15;
 
+unsigned int TRAP_SPIKE = 1;
+
 XoGeni::CellMap::CellMap(unsigned int id, unsigned int width, unsigned int height, unsigned int difficultyLevel)
     : id(id), width(width), height(height), size(width * height), difficultyLevel(difficultyLevel),
       entranceRoom(NULL), exitRoom(NULL)
@@ -1304,6 +1306,7 @@ void XoGeni::CellMap::machinate()
 void XoGeni::CellMap::machinate_trapRoom(Room* room)
 {
     // Put a treasure chest in the middle of the room
+    // TODO: Pick a trap type for the room
 
     Cell* centerCell = getRoomCenterCell(room);
     setChest(centerCell, false);
@@ -1313,9 +1316,10 @@ void XoGeni::CellMap::machinate_trapRoom(Room* room)
     inspectRoomCells(room, [this, &i, room](Cell* cell) -> bool {
         unsigned int rx = cell->x - room->x;
         unsigned int ry = cell->y - room->y;
-        if (i % 3 == 0 && rx % 3 != 0 && this->isCellSafeToBlock(cell))
+        if (i % 3 == 0 && rx % 3 != 0 && !cell->isOccupied() && this->isCellSafeToBlock(cell))
         {
             cell->isTrap = true;
+            cell->trapType = TRAP_SPIKE;
         }
         i++;
         return false;

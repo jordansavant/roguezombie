@@ -51,6 +51,8 @@ public:
         std::vector<Event> exitEvents;
         std::vector<Entrance> entrances;
         bool isUnreachable;
+        bool isTrap;
+        unsigned int trapType;
 
         void unpack(tinyxml2::XMLElement* node);
 

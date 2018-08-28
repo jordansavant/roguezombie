@@ -50,6 +50,8 @@ enum ServerEvent
     CharacterHeal,
     CharacterConsumed,
     StructureDestroyed,
+    TrapSprung,
+    TrapReset
 };
 
 #endif

@@ -410,7 +410,12 @@ void LevelLoader::Tile::unpack(XoGeni::Cell* cell, unsigned int tileId)
             type = 7; // StairwellUp_West
     }
     else
+    {
         type = 1; // Ground
+    }
+
+    isTrap = cell->isTrap;
+    trapType = cell->trapType;
 
     // Enter events in tile
 

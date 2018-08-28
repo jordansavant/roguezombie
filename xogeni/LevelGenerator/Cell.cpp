@@ -23,7 +23,7 @@ XoGeni::Cell::Cell(unsigned int index, unsigned int x, unsigned int y)
 
 bool XoGeni::Cell::isOccupied()
 {
-    return isTagUnreachable || isWall || isDoor || hasCharacter || hasStructure || isEntrance || isEntranceTransition || isExitTransition;
+    return isTagUnreachable || isWall || isDoor || hasCharacter || hasStructure || isEntrance || isEntranceTransition || isExitTransition || isTrap;
 }
 
 

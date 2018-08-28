@@ -108,7 +108,7 @@ void Player::setupPlayerCharacter()
 
     character->schema.dexterity = 2; //TODO make me a better shot
     character->schema.maxHealth = 200;
-    character->schema.health = 50;
+    character->schema.health = 120;
 }
 
 // When a player dies

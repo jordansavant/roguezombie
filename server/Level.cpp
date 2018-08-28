@@ -133,6 +133,11 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
             t->isUnreachable = tileDef.isUnreachable;
             tiles[index] = t;
 
+            if (tileDef.isTrap)
+            {
+                t->loadTrap(static_cast<Tile::TrapType>(tileDef.trapType));
+            }
+
             // Append events
             for(unsigned int z=0; z < tileDef.enterEvents.size(); z++)
             {

@@ -1375,6 +1375,15 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 rogueZombieGame->soundManager->play(thudSoundId);
                 break;
             }
+
+            case ServerEvent::TrapSprung:
+            {
+                float posX, posY;
+                packet >> posX;
+                packet >> posY;
+                rogueZombieGame->soundManager->play(humanCharacterDeathSoundId);
+                break;
+            }
         }
     }
 }

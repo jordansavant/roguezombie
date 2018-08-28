@@ -28,6 +28,9 @@ public:
     LevelClient* level;
     bit::Sprite* sprite;
     unsigned int quadIndex;
+    bit::Sprite* trapSpikeSpriteInactive;
+    bit::Sprite* trapSpikeSpriteActive;
+    unsigned int extraQuadIndex;
     unsigned int lastSnapshotId;
     unsigned int width, height;
     float renderX, renderY;
