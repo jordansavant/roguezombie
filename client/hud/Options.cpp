@@ -124,6 +124,21 @@ Options::Options(Hud* _hud)
     addChild(vsyncCheckbox);
 
     initY += ySeparation;
+
+    // GAME 2X ZOOM
+    gamezoomCheckbox = new bit::CheckBox(checkboxCheckedTexture, checkboxUncheckedTexture, initX, initY, 0, 0, Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    gamezoomCheckbox->onActivate = [_hud](bit::Element* e) {
+        bit::CheckBox* c = static_cast<bit::CheckBox*>(e);
+        c->isChecked = !c->isChecked;
+        _hud->state->setGameZoom(c->isChecked);
+        _hud->state->rogueZombieGame->setVerticalSync(c->isChecked);
+    };
+    gamezoomCheckbox->setSfFontString(std::string("ZOOMx"));
+    gamezoomCheckbox->isChecked = hud->state->isGameZoomed();
+    configureCheckbox(gamezoomCheckbox);
+    addChild(gamezoomCheckbox);
+
+    initY += ySeparation;
     initY += ySeparation;
 
     // QUIT
@@ -207,6 +222,7 @@ void Options::show()
     syncResolutionOptionWithSystem();
     fullscreenCheckbox->isChecked = hud->state->rogueZombieGame->isFullscreen;
     vsyncCheckbox->isChecked = hud->state->rogueZombieGame->verticalSync;
+    gamezoomCheckbox->isChecked = hud->state->isGameZoomed();
     deconfirmQuit();
 }
 

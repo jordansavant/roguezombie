@@ -38,7 +38,7 @@ void InteractionMenu::updateReals(sf::RenderWindow &window, sf::Time &gameTime)
     {
         sf::Vector2i mapping = window.mapCoordsToPixel(sf::Vector2f(tileClient->centerRenderX, tileClient->centerRenderY));
         left = (int)(mapping.x - width / 2);
-        top = (int)(mapping.y - height - tileClient->height);
+        top = (int)(mapping.y - height - tileClient->height * hud->state->getZoomRatio());
     }
     else
     {

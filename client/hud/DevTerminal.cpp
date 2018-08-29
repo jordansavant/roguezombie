@@ -13,6 +13,7 @@ DevTerminal::DevTerminal(Hud* _hud)
 
 	inputTextListener = hud->state->rogueZombieGame->inputManager->getInputTextListener();
 	inputTextListener->ignoreCharacters = "`";
+    inputTextListener->listen = false;
 
 	input = new bit::Label(0, 0, 0, 0, bit::Element::AnchorType::TopLeft);
 	input->setSfFontSize(Hud::font_noteSize);

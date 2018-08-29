@@ -41,6 +41,7 @@ public:
     
     bit::CheckBox* fullscreenCheckbox;
     bit::CheckBox* vsyncCheckbox;
+    bit::CheckBox* gamezoomCheckbox;
 
     sf::Texture sliderHandleTexture;
     sf::Texture sliderBackgroundTexture;

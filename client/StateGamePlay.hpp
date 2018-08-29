@@ -97,6 +97,12 @@ public:
 
     virtual void load();
 
+    void setGameZoom(bool setZoom);
+
+    bool isGameZoomed();
+
+    float getZoomRatio();
+
     void switchLevels(unsigned int newId);
 
     void now();

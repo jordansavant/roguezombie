@@ -24,6 +24,7 @@ bit::Camera::Camera(sf::RenderWindow &window, float relativeX, float relativeY, 
 
 void bit::Camera::resetZoom()
 {
+    currentZoom = baseZoom;
     setView();
 }
 

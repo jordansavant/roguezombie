@@ -128,6 +128,32 @@ void StateGamePlay::load()
     levelClient->load(this);
 }
 
+void StateGamePlay::setGameZoom(bool setZoomed)
+{
+    if (setZoomed)
+    {
+        cameras[0]->changeZoom(100);
+    }
+    else
+    {
+        cameras[0]->resetZoom();
+    }
+
+    sf::Vector2f position(levelClient->playerCharacter->BodyClient::schema.x, levelClient->playerCharacter->BodyClient::schema.y);
+    position = bit::VectorMath::normalToIsometric(position.x, position.y);
+    cameras[0]->setCenter(position.x, position.y);
+}
+
+bool StateGamePlay::isGameZoomed()
+{
+    return cameras[0]->currentZoom > cameras[0]->baseZoom;
+}
+
+float StateGamePlay::getZoomRatio()
+{
+    return cameras[0]->getZoomRatio();
+}
+
 void StateGamePlay::switchLevels(unsigned int newId)
 {
     hud->onLevelChange(levelClient->levelId, newId);
