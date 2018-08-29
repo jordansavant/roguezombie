@@ -1328,6 +1328,7 @@ void XoGeni::CellMap::machinate_trapRoom(Room* room)
 
     Cell* centerCell = getRoomCenterCell(room);
     setChest(centerCell, false);
+    giveChestTreasure(centerCell, false);
     unsigned int i = 0;
 
     // Puts traps in a uniform pattern with manageable gaps
@@ -1360,8 +1361,9 @@ void XoGeni::CellMap::machinate_chestKeyTreasure()
     if (chestCell)
     {
         setChest(chestCell, true);
+        giveChestTreasure(chestCell, true); // better quality items
         chestCell->structureAccessLevel = accessLevel;
-        chestCell->inventory.push_back(Cell::ItemData(itemType));
+        chestCell->inventory.push_back(Cell::ItemData(itemType)); // guarantee weapon-up reward
     }
 
     // Create enemy with keycard for chest
@@ -1394,6 +1396,19 @@ void XoGeni::CellMap::setChest(Cell* cell, bool isLocked)
     cell->hasStructure = true;
     cell->decorate(STRUCTURE_CHEST); // chest
     cell->isLocked = isLocked;
+}
+
+void XoGeni::CellMap::giveChestTreasure(Cell* cell, bool isOutOfDepth)
+{
+    // Generate treasure for this chest cell (chest already set)
+
+    // How many items?
+    unsigned int count = LevelGenerator::random.next(1, 5);
+    for (unsigned int i = 0; i < count; i++)
+    {
+        unsigned int treasureType = isOutOfDepth ? getOutOfDepthEnemyTypeForDifficulty() : getStandardTreasureItemTypeForDifficulty();
+        cell->inventory.push_back(Cell::ItemData(treasureType));
+    }
 }
 
 void XoGeni::CellMap::decorateRoom(Room* room)
@@ -1508,9 +1523,8 @@ void XoGeni::CellMap::decorateRoom(Room* room)
     Cell * cell = getSafeToBlockRoomCell(room, true, 2);
     if (cell) {
         if (LevelGenerator::random.boolean()) {
-            cell->hasStructure = true;
-            cell->decorate(STRUCTURE_CHEST); // chest
-            cell->isLocked = false; // regular chests are not locked
+            setChest(cell, false); // unlocked storage
+            giveChestTreasure(cell, false);
         } else {
             cell->hasStructure = true;
             cell->decorate(STRUCTURE_FURNISHING, LevelGenerator::random.of(
@@ -1583,6 +1597,61 @@ unsigned int XoGeni::CellMap::getOutOfDepthEnemyTypeForDifficulty()
         default:
             return CHARACTER_HUNTER; // TODO better enemy scaling
     }
+}
+
+unsigned int XoGeni::CellMap::getStandardTreasureItemTypeForDifficulty()
+{
+    std::vector<unsigned int> items;
+    switch (difficultyLevel)
+    {
+        // NOTE THE CASCADE CASE!!! Each higher case adds items to lower cases
+        default: // TODO: Increased depth scaling
+        case 2:
+            items.push_back(ITEM_GRENADE);
+            items.push_back(ITEM_GOLDMEDAL);
+            items.push_back(ITEM_GRENADE);
+            items.push_back(ITEM_Z4RIFLE);
+            items.push_back(ITEM_MEDKIT); // increased chance
+        case 1:
+            items.push_back(ITEM_CROWBAR);
+            items.push_back(ITEM_BATON);
+            items.push_back(ITEM_HARDHAT);
+            items.push_back(ITEM_MAGNUM357);
+            items.push_back(ITEM_RACINGPANTS);
+        case 0:
+            items.push_back(ITEM_BRICK);
+            items.push_back(ITEM_CLEANINGGLOVES);
+            items.push_back(ITEM_MEDKIT);
+    }
+    return items[LevelGenerator::random.next(items.size())];
+}
+
+unsigned int XoGeni::CellMap::getOutOfDepthTreasureItemTypeForDifficulty()
+{
+    std::vector<unsigned int> items;
+    switch (difficultyLevel)
+    {
+        // DUPLICATE OF Standard BUT WITH CASES PUSHED DOWNWARD
+        // NOTE THE CASCADE CASE!!! Each higher case adds items to lower cases
+        default: // TODO: Increased depth scaling
+        case 1:
+            items.push_back(ITEM_GRENADE);
+            items.push_back(ITEM_GOLDMEDAL);
+            items.push_back(ITEM_GRENADE);
+            items.push_back(ITEM_Z4RIFLE);
+            items.push_back(ITEM_MEDKIT); // increased chance
+        case 0:
+            items.push_back(ITEM_CROWBAR);
+            items.push_back(ITEM_BATON);
+            items.push_back(ITEM_HARDHAT);
+            items.push_back(ITEM_MAGNUM357);
+            items.push_back(ITEM_RACINGPANTS);
+        //case 0:
+            items.push_back(ITEM_BRICK);
+            items.push_back(ITEM_CLEANINGGLOVES);
+            items.push_back(ITEM_MEDKIT);
+    }
+    return items[LevelGenerator::random.next(items.size())];
 }
 
 unsigned int XoGeni::CellMap::getAccessLevelForDifficulty()

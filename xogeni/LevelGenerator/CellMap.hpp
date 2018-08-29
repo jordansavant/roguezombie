@@ -169,9 +169,15 @@ namespace XoGeni
 
         void setChest(Cell* cell, bool isLocked);
 
+        void giveChestTreasure(Cell* cell, bool isOutOfDepth);
+
         unsigned int getStandardEnemyTypeForDifficulty();
 
         unsigned int getOutOfDepthEnemyTypeForDifficulty();
+
+        unsigned int getStandardTreasureItemTypeForDifficulty();
+
+        unsigned int getOutOfDepthTreasureItemTypeForDifficulty();
 
         unsigned int getAccessLevelForDifficulty();
 
