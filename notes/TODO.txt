@@ -18,7 +18,6 @@ Improvements:
 	- hazmat workers (hardhats, crowbars)
 - Mark access items on minimap with colors
 - scientists need to feel more panicky, better sounds
-- need sounds / effects for melee
 - threaded level loader to load as we play
 - devcmd: give weapons, heal, teleport
 - rename furnishing to represent their dierction

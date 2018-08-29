@@ -234,6 +234,11 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
         cameras[0]->direction.x = -1;
     if(rogueZombieGame->inputManager->isButtonDown(sf::Keyboard::Right))
         cameras[0]->direction.x = 1;
+    if (isShiftModifierDown && rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::RAlt))
+        cameras[0]->resetZoom();
+    else if (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::RAlt))
+        cameras[0]->changeZoom(100);
+
 
     // Debug commands to remove later on
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::X))
