@@ -53,6 +53,8 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     humanCharacterDeathSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_deathgrunt_01.ogg");
     thudSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_thud_01.ogg");
     healSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_heal_01.ogg");
+    spikeReleaseSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_spikerelease_01.ogg");
+    spikeReturnSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_spikereturn_01.ogg");
 
     // Music
     rogueZombieGame->musicManager->play(rogueZombieGame->exploreMusic);
@@ -1381,7 +1383,17 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 float posX, posY;
                 packet >> posX;
                 packet >> posY;
-                rogueZombieGame->soundManager->play(humanCharacterDeathSoundId);
+                rogueZombieGame->soundManager->play(spikeReleaseSoundId);
+                displayMessage("Trap sprung!");
+                break;
+            }
+
+            case ServerEvent::TrapReset:
+            {
+                float posX, posY;
+                packet >> posX;
+                packet >> posY;
+                rogueZombieGame->soundManager->play(spikeReturnSoundId);
                 break;
             }
         }

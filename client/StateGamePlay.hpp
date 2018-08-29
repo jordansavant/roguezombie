@@ -87,6 +87,8 @@ public:
     unsigned int humanCharacterDeathSoundId;
     unsigned int thudSoundId;
     unsigned int healSoundId;
+    unsigned int spikeReleaseSoundId;
+    unsigned int spikeReturnSoundId;
 
     // Gui
     Hud* hud;

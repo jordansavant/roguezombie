@@ -60,12 +60,11 @@ void Tile::loadTrap(TrapType trapType)
             };
             onBodyLeave += [this](Tile* t, Body* b) {
                 this->schema.isTrapActive = false;
-                // TODO: Send event
-                //level->sendEventToAllPlayers([self](bit::ServerPacket &packet) {
-                //    packet << sf::Uint32(ServerEvent::CharacterHeal);
-                //    packet << self->Body::schema.x;
-                //    packet << self->Body::schema.y;
-                //});
+                level->sendEventToAllPlayers([this](bit::ServerPacket &packet) {
+                    packet << sf::Uint32(ServerEvent::TrapReset);
+                    packet << this->schema.x;
+                    packet << this->schema.y;
+                });
             };
             break;
         }
