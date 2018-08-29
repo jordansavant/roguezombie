@@ -89,6 +89,7 @@ public:
     unsigned int healSoundId;
     unsigned int spikeReleaseSoundId;
     unsigned int spikeReturnSoundId;
+    unsigned int whiffSoundId;
 
     // Gui
     Hud* hud;

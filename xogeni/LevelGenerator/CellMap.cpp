@@ -1614,13 +1614,13 @@ unsigned int XoGeni::CellMap::getStandardTreasureItemTypeForDifficulty()
             items.push_back(ITEM_MEDKIT); // increased chance
         case 1:
             items.push_back(ITEM_CROWBAR);
-            items.push_back(ITEM_BATON);
             items.push_back(ITEM_HARDHAT);
             items.push_back(ITEM_MAGNUM357);
             items.push_back(ITEM_RACINGPANTS);
         case 0:
             items.push_back(ITEM_BRICK);
             items.push_back(ITEM_CLEANINGGLOVES);
+            items.push_back(ITEM_BATON);
             items.push_back(ITEM_MEDKIT);
     }
     return items[LevelGenerator::random.next(items.size())];
@@ -1642,13 +1642,13 @@ unsigned int XoGeni::CellMap::getOutOfDepthTreasureItemTypeForDifficulty()
             items.push_back(ITEM_MEDKIT); // increased chance
         case 0:
             items.push_back(ITEM_CROWBAR);
-            items.push_back(ITEM_BATON);
             items.push_back(ITEM_HARDHAT);
             items.push_back(ITEM_MAGNUM357);
             items.push_back(ITEM_RACINGPANTS);
         //case 0:
             items.push_back(ITEM_BRICK);
             items.push_back(ITEM_CLEANINGGLOVES);
+            items.push_back(ITEM_BATON);
             items.push_back(ITEM_MEDKIT);
     }
     return items[LevelGenerator::random.next(items.size())];

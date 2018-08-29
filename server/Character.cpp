@@ -655,7 +655,15 @@ void Character::attack(Character* character)
             });
         }
 
-        // TODO: Unarmed Miss Event
+        // Unarmed Miss Event
+        if (unarmedAttack && schema.isPlayerCharacter)
+        {
+            level->sendEventToAllPlayers([character](bit::ServerPacket &packet) {
+                packet << sf::Uint32(ServerEvent::BluntMiss);
+                packet << character->Body::schema.x;
+                packet << character->Body::schema.y;
+            });
+        }
     }
 }
 

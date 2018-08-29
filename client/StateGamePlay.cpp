@@ -55,6 +55,7 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     healSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_heal_01.ogg");
     spikeReleaseSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_spikerelease_01.ogg");
     spikeReturnSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_spikereturn_01.ogg");
+    whiffSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_wiff_01.ogg");
 
     // Music
     rogueZombieGame->musicManager->play(rogueZombieGame->exploreMusic);
@@ -1354,6 +1355,15 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 packet >> posX;
                 packet >> posY;
                 rogueZombieGame->soundManager->play(thudSoundId);
+                break;
+            }
+
+            case ServerEvent::BluntMiss:
+            {
+                float posX, posY;
+                packet >> posX;
+                packet >> posY;
+                rogueZombieGame->soundManager->play(whiffSoundId);
                 break;
             }
 

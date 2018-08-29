@@ -33,6 +33,7 @@ Improvements:
 	- check for this?
 - room types for room decor
 - have enemies look for you after breaking line of site
+- better item information in inventory
 
 
 Story:

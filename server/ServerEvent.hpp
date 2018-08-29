@@ -47,6 +47,7 @@ enum ServerEvent
     BodyClose,
     CharacterDeath,
     BluntHit,
+    BluntMiss,
     CharacterHeal,
     CharacterConsumed,
     StructureDestroyed,
