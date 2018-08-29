@@ -32,6 +32,7 @@ Improvements:
 - easy to destroy important game items for loot
 	- check for this?
 - room types for room decor
+- have enemies look for you after breaking line of site
 
 
 Story:

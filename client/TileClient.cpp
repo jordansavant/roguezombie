@@ -293,6 +293,7 @@ void TileClient::reinitialize()
 void TileClient::reset()
 {
     bit::VertexHelper::resetQuad(&level->vertexMap_charactersNormal.vertexArray[quadIndex]);
+    bit::VertexHelper::resetQuad(&level->vertexMap_charactersNormal.vertexArray[extraQuadIndex]);
 }
 
 void TileClient::handleSnapshot(bit::ServerPacket &packet, bool full)

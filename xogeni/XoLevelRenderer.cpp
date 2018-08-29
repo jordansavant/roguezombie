@@ -373,9 +373,7 @@ void XoGeni::XoLevelRenderer::paint()
                     if (cell->structureType == 3) // chest
                         color = sf::Color::Green;
                     if (cell->structureAccessLevel > 0)
-                    {
                         color = sf::Color::Cyan;
-                    }
                 }
                 break;
         }

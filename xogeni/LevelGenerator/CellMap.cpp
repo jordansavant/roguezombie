@@ -1292,13 +1292,31 @@ void XoGeni::CellMap::machinate()
             room->isMachineRoom = true;
             machineRooms.push_back(room);
         }
+        else
+        {
+            room->isMachineRoom = false;
+            nonMachineRooms.push_back(room);
+        }
     }
 
-    // build machine rooms
+    // build machine rooms (advanced rooms potentially linked)
     for (unsigned int i = 0; i < machineRooms.size(); i++)
     {
         // TODO: Expand on more machine rooms
         machinate_trapRoom(machineRooms[i]);
+    }
+
+    // build non-machine rooms (standard with room flavors)
+    for (unsigned int i = 0; i < nonMachineRooms.size(); i++)
+    {
+        Room* room = nonMachineRooms[i];
+
+        decorateRoom(room);
+
+        if (room != entranceRoom && room != exitRoom)
+        {
+            populateRoom(room);
+        }
     }
 
 }
@@ -1378,179 +1396,161 @@ void XoGeni::CellMap::setChest(Cell* cell, bool isLocked)
     cell->isLocked = isLocked;
 }
 
-void XoGeni::CellMap::spawnDecor()
+void XoGeni::CellMap::decorateRoom(Room* room)
 {
     // Types of decor
     // - stuff that goes against walls, particularly North and East walls (for ISO display)
     // - patterns like columns in a room
-
-
-    // Iterate rooms, place random enemy
-    for (unsigned int i = 0; i < rooms.size(); i++)
+    bool columnRoom = (LevelGenerator::random.next(2) == 0 && room->width > 8 && room->height > 8);
+    if (columnRoom)
     {
-        Room * room = rooms[i];
-        bool columnRoom = (LevelGenerator::random.next(2) == 0 && room->width > 8 && room->height > 8);
+        // Lets try and build out a column based room
+        unsigned int wt = (room->width) / 3;
+        unsigned int ht = (room->height) / 3;
 
-        if (columnRoom)
-        {
-            // Lets try and build out a column based room
-            unsigned int wt = (room->width) / 3;
-            unsigned int ht = (room->height) / 3;
+        inspectRoomCells(room, [&wt, &ht, &room](Cell* cell) -> bool {
 
-            inspectRoomCells(room, [&wt, &ht, &room](Cell* cell) -> bool {
-
-                // if this is a third from both edges
-                if (cell->x == room->x + wt && cell->y == room->y + ht
-                    || cell->x == room->x + room->width - wt - 1 && cell->y == room->y + ht
-                    || cell->x == room->x + wt && cell->y == room->y + room->height - ht - 1
-                    || cell->x == room->x + room->width - wt - 1 && cell->y == room->y + room->height - ht - 1
-                )
-                {
-                    if (!cell->isTagUnreachable && !cell->isRoomEdge)
-                    {
-                        cell->hasStructure = true;
-                        cell->structureType = STRUCTURE_FURNISHING; // Furnishing
-                        cell->structureSubType = FURNISHING_COLUMNA; // Column
-                    }
-                }
-                return false;
-            });
-        }
-
-        // Random decor
-        inspectRoomNorthCells(room, [this](Cell* cell) -> bool {
-            if (!cell->isOccupied() && isCellSafeToBlock(cell)) {
-                if (LevelGenerator::random.next(3) == 0)
+            // if this is a third from both edges
+            if (cell->x == room->x + wt && cell->y == room->y + ht
+                || cell->x == room->x + room->width - wt - 1 && cell->y == room->y + ht
+                || cell->x == room->x + wt && cell->y == room->y + room->height - ht - 1
+                || cell->x == room->x + room->width - wt - 1 && cell->y == room->y + room->height - ht - 1
+            )
+            {
+                if (!cell->isTagUnreachable && !cell->isRoomEdge)
                 {
                     cell->hasStructure = true;
-                    cell->decorate(STRUCTURE_FURNISHING, LevelGenerator::random.of(
-                        FURNISHING_TERMINALA,
-                        FURNISHING_DESKA,
-                        FURNISHING_DESKA,
-                        FURNISHING_SINKA,
-                        FURNISHING_PILONA,
-                        FURNISHING_TRASHCANA,
-                        FURNISHING_TRASHCANB,
-                        FURNISHING_ROLLINGTERMINALA,
-                        FURNISHING_DESKCOFFEEA,
-                        FURNISHING_SHELFA
-                    ));
+                    cell->structureType = STRUCTURE_FURNISHING; // Furnishing
+                    cell->structureSubType = FURNISHING_COLUMNA; // Column
                 }
             }
             return false;
         });
-        inspectRoomEastCells(room, [this](Cell* cell) -> bool {
-            if (!cell->isOccupied() && isCellSafeToBlock(cell)) {
-                if (LevelGenerator::random.next(3) == 0)
-                {
-                    cell->hasStructure = true;
-                    cell->decorate(STRUCTURE_FURNISHING, LevelGenerator::random.of(
-                        FURNISHING_TERMINALB,
-                        FURNISHING_DESKB,
-                        FURNISHING_DESKB,
-                        FURNISHING_SINKB,
-                        FURNISHING_PILONA,
-                        FURNISHING_TRASHCANA,
-                        FURNISHING_TRASHCANB,
-                        FURNISHING_DESKBEAKERB
-                    ));
-                }
-            }
-            return false;
-        });
-        inspectRoomSouthCells(room, [this](Cell* cell) -> bool {
-            if (!cell->isOccupied() && isCellSafeToBlock(cell)) {
-                if (LevelGenerator::random.next(6) == 0)
-                {
-                    cell->hasStructure = true;
-                    cell->decorate(STRUCTURE_FURNISHING, LevelGenerator::random.of(
-                        FURNISHING_DESKA,
-                        FURNISHING_DESKA,
-                        FURNISHING_DESKA,
-                        FURNISHING_PILONA,
-                        FURNISHING_TRASHCANA,
-                        FURNISHING_TRASHCANB
-                    ));
-                }
-            }
-            return false;
-        });
-        inspectRoomWestCells(room, [this](Cell* cell) -> bool {
-            if (!cell->isOccupied() && isCellSafeToBlock(cell)) {
-                if (LevelGenerator::random.next(6) == 0)
-                {
-                    cell->hasStructure = true;
-                    cell->decorate(STRUCTURE_FURNISHING, LevelGenerator::random.of(
-                        FURNISHING_DESKB,
-                        FURNISHING_DESKB,
-                        FURNISHING_DESKB,
-                        FURNISHING_PILONA,
-                        FURNISHING_TRASHCANA,
-                        FURNISHING_TRASHCANB
-                    ));
-                }
-            }
-            return false;
-        });
+    }
 
-        // Random stuff
-        Cell * cell = getSafeToBlockRoomCell(rooms[i], true, 2);
-        if (cell) {
-            if (LevelGenerator::random.boolean()) {
-                cell->hasStructure = true;
-                cell->decorate(STRUCTURE_CHEST); // chest
-                cell->isLocked = false; // regular chests are not locked
-            } else {
+    // Random decor
+    inspectRoomNorthCells(room, [this](Cell* cell) -> bool {
+        if (!cell->isOccupied() && isCellSafeToBlock(cell)) {
+            if (LevelGenerator::random.next(3) == 0)
+            {
                 cell->hasStructure = true;
                 cell->decorate(STRUCTURE_FURNISHING, LevelGenerator::random.of(
-                    FURNISHING_OPTABLEA,
+                    FURNISHING_TERMINALA,
+                    FURNISHING_DESKA,
+                    FURNISHING_DESKA,
+                    FURNISHING_SINKA,
                     FURNISHING_PILONA,
-                    FURNISHING_ROLLINGTERMINALA
+                    FURNISHING_TRASHCANA,
+                    FURNISHING_TRASHCANB,
+                    FURNISHING_ROLLINGTERMINALA,
+                    FURNISHING_DESKCOFFEEA,
+                    FURNISHING_SHELFA
                 ));
             }
         }
+        return false;
+    });
+    inspectRoomEastCells(room, [this](Cell* cell) -> bool {
+        if (!cell->isOccupied() && isCellSafeToBlock(cell)) {
+            if (LevelGenerator::random.next(3) == 0)
+            {
+                cell->hasStructure = true;
+                cell->decorate(STRUCTURE_FURNISHING, LevelGenerator::random.of(
+                    FURNISHING_TERMINALB,
+                    FURNISHING_DESKB,
+                    FURNISHING_DESKB,
+                    FURNISHING_SINKB,
+                    FURNISHING_PILONA,
+                    FURNISHING_TRASHCANA,
+                    FURNISHING_TRASHCANB,
+                    FURNISHING_DESKBEAKERB
+                ));
+            }
+        }
+        return false;
+    });
+    inspectRoomSouthCells(room, [this](Cell* cell) -> bool {
+        if (!cell->isOccupied() && isCellSafeToBlock(cell)) {
+            if (LevelGenerator::random.next(6) == 0)
+            {
+                cell->hasStructure = true;
+                cell->decorate(STRUCTURE_FURNISHING, LevelGenerator::random.of(
+                    FURNISHING_DESKA,
+                    FURNISHING_DESKA,
+                    FURNISHING_DESKA,
+                    FURNISHING_PILONA,
+                    FURNISHING_TRASHCANA,
+                    FURNISHING_TRASHCANB
+                ));
+            }
+        }
+        return false;
+    });
+    inspectRoomWestCells(room, [this](Cell* cell) -> bool {
+        if (!cell->isOccupied() && isCellSafeToBlock(cell)) {
+            if (LevelGenerator::random.next(6) == 0)
+            {
+                cell->hasStructure = true;
+                cell->decorate(STRUCTURE_FURNISHING, LevelGenerator::random.of(
+                    FURNISHING_DESKB,
+                    FURNISHING_DESKB,
+                    FURNISHING_DESKB,
+                    FURNISHING_PILONA,
+                    FURNISHING_TRASHCANA,
+                    FURNISHING_TRASHCANB
+                ));
+            }
+        }
+        return false;
+    });
 
+    // Random stuff
+    Cell * cell = getSafeToBlockRoomCell(room, true, 2);
+    if (cell) {
+        if (LevelGenerator::random.boolean()) {
+            cell->hasStructure = true;
+            cell->decorate(STRUCTURE_CHEST); // chest
+            cell->isLocked = false; // regular chests are not locked
+        } else {
+            cell->hasStructure = true;
+            cell->decorate(STRUCTURE_FURNISHING, LevelGenerator::random.of(
+                FURNISHING_OPTABLEA,
+                FURNISHING_PILONA,
+                FURNISHING_ROLLINGTERMINALA
+            ));
+        }
     }
 }
 
-void XoGeni::CellMap::spawnEnemies()
+void XoGeni::CellMap::populateRoom(Room* room)
 {
     // Iterate rooms, place random enemy
-    for (unsigned int i = 0; i < rooms.size(); i++)
+    unsigned int spawnCount = room->entranceWeight / 2 + 1;
+
+    for (unsigned int j = 0; j < spawnCount; j++)
     {
-        unsigned int spawnCount = 1;
-
-        if (rooms[i] == entranceRoom)
-            continue;
-
-        spawnCount = rooms[i]->entranceWeight / 2 + 1;
-
-        for (unsigned int j = 0; j < spawnCount; j++)
+        // Test a random cell in the room until one is found
+        Cell* cell = getOpenRoomCell(room, true);
+        if (cell)
         {
-            // Test a random cell in the room until one is found
-            Cell* cell = getOpenRoomCell(rooms[i], true);
-            if (cell)
+            if (cell->hasStructure)
             {
-                if (cell->hasStructure)
-                {
-                    int ow = 12;
-                }
-                cell->hasCharacter = true;
-
-                switch (difficultyLevel)
-                {
-                    case 0:
-                        cell->characterType = CHARACTER_SCIENTIST; // scientist
-                        break;
-                    case 1:
-                        cell->characterType = CHARACTER_GUARD; // guard
-                        break;
-                    default:
-                        cell->characterType = CHARACTER_HUNTER; // Hunter
-                        break;
-                }
+                int ow = 12;
             }
+            cell->hasCharacter = true;
 
+            switch (difficultyLevel)
+            {
+                case 0:
+                    cell->characterType = CHARACTER_SCIENTIST; // scientist
+                    break;
+                case 1:
+                    cell->characterType = CHARACTER_GUARD; // guard
+                    break;
+                default:
+                    cell->characterType = CHARACTER_HUNTER; // Hunter
+                    break;
+            }
         }
     }
 }

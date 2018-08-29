@@ -163,11 +163,11 @@ namespace XoGeni
 
         void machinate_boss();
 
+        void decorateRoom(Room* room);
+
+        void populateRoom(Room* room);
+
         void setChest(Cell* cell, bool isLocked);
-
-        void spawnDecor();
-
-        void spawnEnemies();
 
         unsigned int getStandardEnemyTypeForDifficulty();
 
