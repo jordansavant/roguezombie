@@ -124,3 +124,8 @@ void bit::Camera::lock(float x, float y, float toleranceX, float toleranceY, flo
     lockBufferAmount = bufferSpeed;
     lockBufferMax = bufferMax;
 }
+
+float bit::Camera::getZoomRatio()
+{
+    return currentZoom / baseZoom;
+}

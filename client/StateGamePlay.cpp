@@ -36,7 +36,7 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     fps.fpsText.setFillColor(sf::Color(100, 100, 100));
 
     createCamera(rogueZombieGame, 0, 0, 1, 1);
-    cameras[0]->panSpeed = 5;
+    cameras[0]->panSpeed = 8;
 
     hud = new Hud(this);
     joiningMenu = new JoiningMenu(rogueZombieGame, this);
@@ -846,8 +846,9 @@ bool StateGamePlay::update(sf::Time &gameTime)
     // Camera
     if(levelClient->playerCharacter)
     {
-        float toleranceX = 250 * rogueZombieGame->currentResolutionRatioX;
-        float toleranceY = 150 * rogueZombieGame->currentResolutionRatioY;
+        float zoomRatio = cameras[0]->getZoomRatio();
+        float toleranceX = 250 * rogueZombieGame->currentResolutionRatioX / zoomRatio;
+        float toleranceY = 150 * rogueZombieGame->currentResolutionRatioY / zoomRatio;
 
         sf::Vector2f position(levelClient->playerCharacter->BodyClient::schema.x, levelClient->playerCharacter->BodyClient::schema.y);
         position = bit::VectorMath::normalToIsometric(position.x, position.y);

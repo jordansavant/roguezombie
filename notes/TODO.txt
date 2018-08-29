@@ -33,6 +33,11 @@ Improvements:
 - room types for room decor
 - have enemies look for you after breaking line of site
 - better item information in inventory
+- need to be able to read clues
+	- scraps of paper
+	- computer disks
+- Use journal system to give me plot points
+- Each level generates another plot machine
 
 
 Story:

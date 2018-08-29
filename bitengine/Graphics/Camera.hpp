@@ -42,6 +42,8 @@ namespace bit
 
         virtual void lock(float x, float y, float toleranceX, float toleranceY, float bufferSpeed = 2.0, float bufferMax = 30.0);
 
+        float getZoomRatio();
+
     private:
 
         void setView();
