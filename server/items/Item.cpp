@@ -631,6 +631,32 @@ Item* Item::create(Type type, AccessLevel accessLevel, unsigned int id)
             i->schema.weight = .01;
 
             break;
+
+        case Type::Biosprayer:
+
+            i = new Item();
+            i->schema.CategoryBase = ItemCategory::Base::BaseWeapon;
+            i->schema.CategoryWeapon = ItemCategory::Weapon::WeaponRanged;
+            i->schema.weight = 4;
+            i->schema.minimumDamage = 4;
+            i->schema.maximumDamage = 8;
+            i->schema.effectiveRangeInTiles = 2;
+            i->onUse = [i](Character* user) -> void
+            {
+                // Visualize
+                i->visualizeWeaponFire(user);
+
+                // Event
+                Item* ix = i;
+                user->level->sendEventToAllPlayers([ix, user](bit::ServerPacket &packet) {
+                    packet << sf::Uint32(ServerEvent::Gunfire);
+                    packet << user->Body::schema.x;
+                    packet << user->Body::schema.y;
+                    packet << sf::Uint32(ix->schema.type);
+                });
+            };
+
+            break;
     }
 
     i->schema.id = id;
@@ -691,6 +717,9 @@ std::string Item::getTitle(Type type)
 
         case Type::KeyCard:
             return "Key Card";
+
+        case Type::Biosprayer:
+            return "Biosprayer";
     }
 }
 
@@ -747,6 +776,9 @@ std::string Item::getDescription(Type type)
 
         case Type::KeyCard:
             return "Opens chests and doors";
+
+        case Type::Biosprayer:
+            return "Toxifies enemies";
     }
 }
 
@@ -787,6 +819,12 @@ std::string Item::getSpriteName(Type type)
 
         case Type::CleaningGloves:
             return "CleaningGloves";
+
+        case Type::KeyCard:
+            return "KeyCard";
+
+        case Type::Biosprayer:
+            return "Biosprayer";
     }
 }
 
@@ -839,6 +877,9 @@ std::string Item::getIconName(Type type)
 
         case Type::KeyCard:
             return "KeyCard";
+
+        case Type::Biosprayer:
+            return "Biosprayer";
     }
 }
 

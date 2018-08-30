@@ -38,6 +38,7 @@ public:
         CleaningGloves, // 13
         GoldMedal, // 14
         KeyCard, // 15
+        Biosprayer, // 16
     };
 
     enum CommandType
