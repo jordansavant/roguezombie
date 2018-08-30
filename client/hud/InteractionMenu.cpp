@@ -11,6 +11,7 @@
 #include "../mission/MissionClient.hpp"
 #include "../../server/Interaction.hpp"
 #include "../TileClient.hpp"
+#include <sstream>
 
 InteractionMenu::InteractionMenu(Hud* _hud)
     : Frame(_hud, 50, 0, 300, 200, bit::Element::AnchorType::Left, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3), false), isActive(false), tileId(0), tileClient(NULL), hasInteractionUnderway(false)
@@ -77,6 +78,16 @@ void InteractionMenu::show()
     immediateEffect(new bit::FadeEffect(150, Hud::popupOpacity));
 }
 
+void InteractionMenu::handleNumberInput(unsigned int number)
+{
+    unsigned int index = number - 1;
+    if (index < childElements.size())
+    {
+        bit::Element* e = childElements[index];
+        e->onActivate(e);
+    }
+}
+
 void InteractionMenu::handleInteractionTree(bit::ServerPacket &packet, unsigned int tileId)
 {
     unsigned int optionSize;
@@ -95,13 +106,17 @@ void InteractionMenu::handleInteractionTree(bit::ServerPacket &packet, unsigned 
         InteractionMenu* m = this;
         Interaction::Type it;
         bit::NetworkHelper::unpackEnum<sf::Uint32, Interaction::Type>(packet, it);
+        std::stringstream ss;
+        std::string title;
+        ss << i + 1 << ". " << Interaction::getTitle(it);
+        title = ss.str();
         
         bit::Label* option = new bit::Label(15, y, 0, 0, bit::Element::AnchorType::TopLeft, std::bind(&Hud::typicalElementControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
         option->setSfFontSize(fontSize);
         option->setSfFont(hud->journalFont);
         option->normalColor = sf::Color(0, 255, 0);
         option->focusedColor = sf::Color(255, 255, 255);
-        option->setSfFontString(Interaction::getTitle(it));
+        option->setSfFontString(title);
         option->canHaveFocus = true;
         option->paddingRight = 10;
         option->paddingBottom = 10;
@@ -132,7 +147,7 @@ void InteractionMenu::handleInteractionTree(bit::ServerPacket &packet, unsigned 
         };
         addChild(option);
 
-        int wc = Interaction::getTitle(it).size();
+        int wc = title.size();
         w = std::max(w, wc);
 
         y += 30;

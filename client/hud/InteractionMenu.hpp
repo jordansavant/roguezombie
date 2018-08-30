@@ -36,6 +36,8 @@ public:
 
     virtual void show();
 
+    void handleNumberInput(unsigned int number);
+
     void handleInteractionTree(bit::ServerPacket &packet, unsigned int tileId);
 };
 

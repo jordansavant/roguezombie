@@ -531,6 +531,19 @@ void StateGamePlay::modeOnCaptureInputInteract(sf::Time &gameTime)
 
 void StateGamePlay::modeOnUpdateInteract(sf::Time &gameTime)
 {
+    // Need to listen to numeric key events and pass them into the interaction menu so the user can select an option without clicking it
+
+    if (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Num1))
+        hud->interactionMenu->handleNumberInput(1);
+    if (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Num2))
+        hud->interactionMenu->handleNumberInput(2);
+    if (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Num3))
+        hud->interactionMenu->handleNumberInput(3);
+    if (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Num4))
+        hud->interactionMenu->handleNumberInput(4);
+    if (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Num5))
+        hud->interactionMenu->handleNumberInput(5);
+
     // Exit
     modeOnUpdateCommonListener(gameTime);
 }
@@ -972,7 +985,7 @@ TileClient* StateGamePlay::findNextInteractableTile()
         for (unsigned int i = 0; i < interactionDirectionChecks.size(); i++)
         {
             // Update our index check to be the next direction (wrapping around)
-            lastInteractionDirectionCheckIndex = (lastInteractionDirectionCheckIndex + i + 1) % interactionDirectionChecks.size();
+            lastInteractionDirectionCheckIndex = (lastInteractionDirectionCheckIndex + 1) % interactionDirectionChecks.size();
 
             float worldX = x + (levelClient->tileWidth * interactionDirectionChecks[lastInteractionDirectionCheckIndex].x);
             float worldY = y + (levelClient->tileHeight * interactionDirectionChecks[lastInteractionDirectionCheckIndex].y);
