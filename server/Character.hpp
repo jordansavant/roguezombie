@@ -32,7 +32,8 @@ public:
         Ogre,
         Hunter,
         Scientist,
-        Guard
+        Guard,
+        Hazmaster
     };
 
     enum EquipmentSlot

@@ -8,6 +8,7 @@
 #include "characters/Hunter.hpp"
 #include "characters/Scientist.hpp"
 #include "characters/Guard.hpp"
+#include "characters/Hazmaster.hpp"
 #include "structures/Wall.hpp"
 #include "structures/Door.hpp"
 #include "structures/Chest.hpp"
@@ -97,6 +98,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
     runners.push_back(new LevelRunner<Hunter>(this, &hunters));
     runners.push_back(new LevelRunner<Scientist>(this, &scientists));
     runners.push_back(new LevelRunner<Guard>(this, &guards));
+    runners.push_back(new LevelRunner<Hazmaster>(this, &hazmasters));
     runners.push_back(new LevelRunner<Wall>(this, &walls));
     runners.push_back(new LevelRunner<Door>(this, &doors));
     runners.push_back(new LevelRunner<Chest>(this, &chests));
@@ -316,6 +318,19 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         c = guard;
                         break;
                     }
+                    case Character::Type::Hazmaster:
+                    {
+                        Hazmaster* hazmaster = new Hazmaster();
+                        hazmaster->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                        hazmaster->moveToPosition(t->schema.x, t->schema.y);
+                        hazmasters.push_back(hazmaster);
+                        hazmaster->hostilityCheckAi = AiRoutines::Combat::Generic_DetectHostility;
+                        hazmaster->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
+                        hazmaster->combatDecisionAi = AiRoutines::Combat::Guard_DecideCombat;
+                        hazmaster->getStartingDialog = std::bind(&Level::getDialogTree, this);
+                        c = hazmaster;
+                        break;
+                    }
                 }
 
                 if(c)
@@ -510,6 +525,8 @@ void Level::enterCombat()
     {
         state = State::Combat;
 
+        // TODO: Can't we use the Character metalist?
+
         // Move every character into the turn queue
         for(unsigned int i=0; i < zombies.size(); i++)
             if(!zombies[i]->schema.isDead())
@@ -526,6 +543,9 @@ void Level::enterCombat()
         for (unsigned int i = 0; i < guards.size(); i++)
             if (!guards[i]->schema.isDead())
                 turnQueue.push_back(guards[i]);
+        for (unsigned int i = 0; i < hazmasters.size(); i++)
+            if (!hazmasters[i]->schema.isDead())
+                turnQueue.push_back(hazmasters[i]);
 
         // Sort the turn queue by initiative
         std::sort(turnQueue.begin(), turnQueue.end(), [] (Character* characterFirst, Character* characterSecond) -> bool {
@@ -644,6 +664,9 @@ void Level::removeCharacter(Character* character)
             break;
         case Character::Type::Scientist:
             scientists.erase(std::remove(scientists.begin(), scientists.end(), static_cast<Scientist*>(character)), scientists.end());
+            break;
+        case Character::Type::Hazmaster:
+            hazmasters.erase(std::remove(hazmasters.begin(), hazmasters.end(), static_cast<Hazmaster*>(character)), hazmasters.end());
             break;
     }
 
@@ -1298,6 +1321,9 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
                         break;
                     case Character::Type::Guard:
                         packNetworkBody<Guard, Character>(packet, full, c, b->schema.type, c->schema.type);
+                        break;
+                    case Character::Type::Hazmaster:
+                        packNetworkBody<Hazmaster, Character>(packet, full, c, b->schema.type, c->schema.type);
                         break;
                 }
                 break;

@@ -1435,15 +1435,10 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 switch(type)
                 {
                     case Character::Type::Zombie:
-                        rogueZombieGame->soundManager->play(humanCharacterDeathSoundId);
-                        break;
                     case Character::Type::Hunter:
-                        rogueZombieGame->soundManager->play(humanCharacterDeathSoundId);
-                        break;
                     case Character::Type::Scientist:
-                        rogueZombieGame->soundManager->play(humanCharacterDeathSoundId);
-                        break;
                     case Character::Type::Guard:
+                    case Character::Type::Hazmaster:
                         rogueZombieGame->soundManager->play(humanCharacterDeathSoundId);
                         break;
                 }

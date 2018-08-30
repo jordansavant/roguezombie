@@ -23,6 +23,7 @@ class Ogre;
 class Hunter;
 class Scientist;
 class Guard;
+class Hazmaster;
 class Player;
 class Tile;
 class Door;
@@ -55,6 +56,7 @@ public:
     std::vector<Hunter*> hunters;
     std::vector<Scientist*> scientists;
     std::vector<Guard*> guards;
+    std::vector<Hazmaster*> hazmasters;
     std::vector<Structure*> structures; // meta list
     std::vector<Wall*> walls;
     std::vector<Door*> doors;

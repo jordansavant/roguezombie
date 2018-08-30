@@ -20,6 +20,7 @@ unsigned int CHARACTER_HUNTER = 2;
 unsigned int CHARACTER_OGRE = 3;
 unsigned int CHARACTER_SCIENTIST = 4;
 unsigned int CHARACTER_GUARD = 5;
+unsigned int CHARACTER_HAZMASTER = 6;
 
 unsigned int STRUCTURE_WALL = 1;
 unsigned int STRUCTURE_DOOR = 2;
@@ -1552,19 +1553,8 @@ void XoGeni::CellMap::populateRoom(Room* room)
                 int ow = 12;
             }
             cell->hasCharacter = true;
-
-            switch (difficultyLevel)
-            {
-                case 0:
-                    cell->characterType = CHARACTER_SCIENTIST; // scientist
-                    break;
-                case 1:
-                    cell->characterType = CHARACTER_GUARD; // guard
-                    break;
-                default:
-                    cell->characterType = CHARACTER_HUNTER; // Hunter
-                    break;
-            }
+            cell->characterType = getStandardEnemyTypeForDifficulty();
+            int check = 0;
         }
     }
 }
@@ -1574,11 +1564,21 @@ unsigned int XoGeni::CellMap::getStandardEnemyTypeForDifficulty()
     switch (difficultyLevel)
     {
         case 0:
-            return CHARACTER_SCIENTIST;
+            return LevelGenerator::random.of(
+                CHARACTER_SCIENTIST,
+                CHARACTER_HAZMASTER
+            );
         case 1:
-            return CHARACTER_GUARD;
+            return LevelGenerator::random.of(
+                CHARACTER_HAZMASTER,
+                CHARACTER_GUARD
+            );
         case 2:
-            return CHARACTER_HUNTER;
+            return LevelGenerator::random.of(
+                CHARACTER_HAZMASTER,
+                CHARACTER_GUARD,
+                CHARACTER_HUNTER
+            );
         default:
             return CHARACTER_HUNTER; // TODO better enemy scaling
     }
