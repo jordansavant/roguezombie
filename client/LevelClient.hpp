@@ -96,6 +96,8 @@ public:
 
     TileClient* getTileAtIndices(int x, int y);
 
+    TileClient* getTileAtWorldPosition(float x, float y);
+
     void renderMoveMarkers();
 
     void clearMoveMarkers();

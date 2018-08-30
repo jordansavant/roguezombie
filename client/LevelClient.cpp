@@ -124,6 +124,15 @@ TileClient* LevelClient::getTileAtIndices(int x, int y)
     return NULL;
 }
 
+TileClient* LevelClient::getTileAtWorldPosition(float x, float y)
+{
+    // Takes into account width of tiles
+    int ix = x / tileWidth;
+    int iy = y / tileHeight;
+
+    return getTileAtIndices(ix, iy);
+}
+
 void LevelClient::renderMoveMarkers()
 {
     unsigned int i=0;

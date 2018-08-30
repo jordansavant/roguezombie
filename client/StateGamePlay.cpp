@@ -26,7 +26,7 @@
 
 StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, bool isClient, bool isHost, bool isLocalOnly)
     : bit::ClientServerState(stack, _game, isClient, isHost, isLocalOnly), rogueZombieGame(_game), levelClient(NULL), mode(Mode::Init), endGameReason(EndGameReason::Quit), fps(),
-    isHudInteractionOccurring(false), input_tileSelect(false), inputActive_tileSelect(false)
+    isHudInteractionOccurring(false), input_tileSelect(false), inputActive_tileSelect(false), lastInteractionDirectionCheckIndex(0)
 {
     levelClient = new LevelClient();
     
@@ -113,6 +113,16 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
 	modeUpdate[Mode::Dev] = std::bind(&StateGamePlay::modeOnUpdateDev, this, std::placeholders::_1);
     
     changeMode(Mode::Joining);
+
+    // Interaction data
+    interactionDirectionChecks.push_back(sf::Vector2f(-1, 0)); // left
+    interactionDirectionChecks.push_back(sf::Vector2f(-1, -1)); // up left
+    interactionDirectionChecks.push_back(sf::Vector2f(0, -1)); // up
+    interactionDirectionChecks.push_back(sf::Vector2f(1, -1)); // up right
+    interactionDirectionChecks.push_back(sf::Vector2f(1, 0)); // right
+    interactionDirectionChecks.push_back(sf::Vector2f(1, 1)); // down right
+    interactionDirectionChecks.push_back(sf::Vector2f(0, 1)); // down
+    interactionDirectionChecks.push_back(sf::Vector2f(-1, 1)); // down left
 }
 
 StateGamePlay::~StateGamePlay()
@@ -132,7 +142,7 @@ void StateGamePlay::setGameZoom(bool setZoomed)
 {
     if (setZoomed)
     {
-        cameras[0]->changeZoom(100);
+        cameras[0]->changeZoom(100); // 2x
     }
     else
     {
@@ -273,6 +283,8 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
         cmd.type = Command::Type::PlayerDebug;
         issueCommand(cmd);
     }
+    
+    // Movement
     if(rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::W))
     {
         Command cmd;
@@ -681,6 +693,19 @@ void StateGamePlay::modeOnUpdateCommonListener(sf::Time &gameTime)
         return;
     }
 
+    // Interaction/Selection
+    if (mode == Mode::Interact || mode == Mode::Free)
+    {
+        if (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::E))
+        {
+            TileClient* t = findNextInteractableTile();
+            if (t)
+            {
+                requestInteractionsForTile(t->schema.id);
+            }
+        }
+    }
+
     // Inventory hot key
     if (mode == Mode::Inventory && (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::I) || rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::Escape)))
     {
@@ -928,6 +953,37 @@ void StateGamePlay::displayPlayerMessage(CharacterClient* character, std::string
     {
         displayMessage(message);
     }
+}
+
+TileClient* StateGamePlay::findNextInteractableTile()
+{
+    // we will be checking adjacent tiles in a clockwise motion
+    // when one is found we return it and record the position it was last checked at
+    // on a followup call we start at this position
+    
+    // get our players position
+    if (levelClient->playerCharacter)
+    {
+        float x, y;
+        x = levelClient->playerCharacter->BodyClient::schema.x;
+        y = levelClient->playerCharacter->BodyClient::schema.y;
+
+        // Check next directions
+        for (unsigned int i = 0; i < interactionDirectionChecks.size(); i++)
+        {
+            // Update our index check to be the next direction (wrapping around)
+            lastInteractionDirectionCheckIndex = (lastInteractionDirectionCheckIndex + i + 1) % interactionDirectionChecks.size();
+
+            float worldX = x + (levelClient->tileWidth * interactionDirectionChecks[lastInteractionDirectionCheckIndex].x);
+            float worldY = y + (levelClient->tileHeight * interactionDirectionChecks[lastInteractionDirectionCheckIndex].y);
+
+            TileClient* t = levelClient->getTileAtWorldPosition(worldX, worldY);
+            if (t && t->hasInteractableBody())
+                return t;
+        }
+    }
+
+    return NULL;
 }
 
 void StateGamePlay::requestInteractionsForTile(unsigned int tileId)

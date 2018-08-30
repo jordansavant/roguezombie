@@ -15,6 +15,7 @@ class RogueZombieGame;
 class CharacterClient;
 class Hud;
 class JoiningMenu;
+class TileClient;
 
 class StateGamePlay : public bit::ClientServerState
 {
@@ -75,6 +76,8 @@ public:
     bool inputActive_tileSelect;
     bool isShiftModifierDown;
     Target target;
+    std::vector<sf::Vector2f> interactionDirectionChecks;
+    unsigned int lastInteractionDirectionCheckIndex;
     
     unsigned int explosionSoundId;
     unsigned int pistolGunshotSoundId;
@@ -181,6 +184,8 @@ public:
     void displayPlayerMessage(CharacterClient* character, std::string const&message);
 
     void requestInteractionsForTile(unsigned int tileId);
+
+    TileClient* findNextInteractableTile();
 
     void handleInteractionResponse(unsigned int tileId, Interaction::Type interaction, bit::ServerPacket &packet);
 
