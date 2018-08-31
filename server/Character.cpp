@@ -11,6 +11,7 @@
 #include "Tile.hpp"
 #include "Structure.hpp"
 #include "Player.hpp"
+#include "CharacterEffect.hpp"
 #include "mission/Mission.hpp"
 #include "items/Item.hpp"
 #include "AccessLevel.hpp"
@@ -33,6 +34,11 @@ Character::~Character()
     for(unsigned int i=0; i < equipment.size(); i++)
     {
         delete equipment[i];
+    }
+
+    for (unsigned int i = 0; i < activeEffects.size(); i++)
+    {
+        delete activeEffects[i];
     }
 }
 
@@ -589,13 +595,20 @@ void Character::attack(Character* character)
     float CoH = RpgSystem::Combat::calculateChanceOfHit(this, character);
 
     // Visualize attack
-    bool unarmedAttack = true;
     Item* weapon = equipment[Character::EquipmentSlot::WeaponPrimary];
+    bool unarmedAttack = (weapon == NULL);
+
     if(weapon && weapon->onUse)
     {
         // Weapon use
         weapon->onUse(this);
-        unarmedAttack = false;
+    }
+
+    // Apply any special attack to enemy
+    if (weapon && weapon->onAttack)
+    {
+        // Weapon attack
+        weapon->onAttack(this, character);
     }
 
     if(bit::Math::randomFloat() < CoH)
@@ -713,6 +726,23 @@ bool Character::canDodge()
 bool Character::canBlock()
 {
     return (equipment[EquipmentSlot::WeaponPrimary] && equipment[EquipmentSlot::WeaponPrimary]->schema.isOfWeaponType(ItemCategory::Weapon::WeaponMelee));
+}
+
+void Character::addEffect(CharacterEffect* effect)
+{
+    // Only allowed one effect of each kind per character
+    for (unsigned int i = 0; i < activeEffects.size(); i++)
+    {
+        if (activeEffects[i]->type == effect->type)
+        {
+            delete effect;
+            return;
+        }
+    }
+    bit::Output::Debug("ADDING EFFECT");
+
+    // If its the only one of its kind, add it
+    activeEffects.push_back(effect);
 }
 
 
@@ -1579,9 +1609,36 @@ bool Character::moveToPosition(float x, float y)
 
         Body::schema.x = x;
         Body::schema.y = y;
+
+        onMove();
     }
 
     return canMove;
+}
+
+void Character::onMove()
+{
+    // Events to run when the character moves
+
+    // Character effects run per number of tiles
+    // Update with allowance for adding / removing entities mid loop
+    unsigned int i = 0;
+    for (auto it = activeEffects.begin(); it != activeEffects.end();)
+    {
+        (*it)->run(this);
+
+        // See if we need to remove the effect
+        if ((*it)->isComplete())
+        {
+            bit::Output::Debug("REMOVING EFFECT");
+            delete (*it);
+            it = activeEffects.erase(it);
+        }
+        else
+        {
+            ++it; // iterate list pointer
+        }
+    }
 }
 
 void Character::pathToPosition(float x, float y)

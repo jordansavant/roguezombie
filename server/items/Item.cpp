@@ -5,6 +5,7 @@
 #include "../ServerEvent.hpp"
 #include "../Body.hpp"
 #include "../Character.hpp"
+#include "../CharacterEffect.hpp"
 #include "../Tile.hpp"
 #include "../Player.hpp"
 #include "../Level.hpp"
@@ -12,7 +13,7 @@
 #include "../GameplayServer.hpp"
 
 Item::Item()
-    : schema(), parentItem(NULL), parentBody(NULL), applyToCharacter(NULL), applyToArea(NULL), onUse(NULL)
+    : schema(), parentItem(NULL), parentBody(NULL), applyToCharacter(NULL), applyToArea(NULL), onUse(NULL), onAttack(NULL)
 {
 }
 
@@ -655,6 +656,11 @@ Item* Item::create(Type type, AccessLevel accessLevel, unsigned int id)
                     packet << user->Body::schema.y;
                     packet << sf::Uint32(ix->schema.type);
                 });
+            };
+            i->onAttack = [i](Character* user, Character* enemy) -> void
+            {
+                // Apply poison data
+                enemy->addEffect(CharacterEffect::poison(10, 5, 20));
             };
 
             break;

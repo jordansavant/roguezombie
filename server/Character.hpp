@@ -15,6 +15,7 @@ class Tile;
 class Mission;
 class Item;
 class Structure;
+class CharacterEffect;
 enum AccessLevel;
 
 class Character : public Body
@@ -93,6 +94,7 @@ public:
     unsigned int visionRadius;
     std::vector<Player*> spectators;
     unsigned int consumptionHeal;
+    std::vector<CharacterEffect*> activeEffects;
 
     // Events
     bit::Event<std::function<void(Character* c)>> onDeath;
@@ -270,6 +272,8 @@ public:
 
     virtual bool canBlock();
 
+    virtual void addEffect(CharacterEffect* effect);
+
 
     // Inspection
 
@@ -370,6 +374,8 @@ public:
     bool canMoveToPosition(Level* targetLevel, float x, float y);
 
     bool moveToPosition(float x, float y);
+
+    void onMove();
 
 
     // Mission

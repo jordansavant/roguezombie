@@ -16,6 +16,8 @@ Bugs:
 Improvements:
 
 - Replace hunter AI with guard AI and expand on it to use weapon range instead of static distances
+	- incorporate maximum weapon range
+	- look at structures within effective range of the enemy, not myself
 - Clicking on interactible structures, finds nearest tile and walks to it and then opens automatically
 - debris/blood tile litter for effects etc
 - scientists pose NO challenge (need some or other level0 bad guy)
@@ -29,9 +31,7 @@ Improvements:
 	- mutagens, chemicals, implants
 	- unknown 1-time-use items
 	- terminals to learn about random items
-- Unarmed miss event
-	- Character::attack()
-- hover tile to get information about people
+- hover tile to get information about people, tiles, structures
 - easy to destroy important game items for loot
 	- check for this?
 - room types for room decor

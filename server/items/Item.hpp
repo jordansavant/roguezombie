@@ -147,6 +147,7 @@ public:
     std::function<bool(Character*)> applyToCharacter;
     std::function<bool(Tile*)> applyToArea;
     std::function<void(Character*)> onUse;
+    std::function<void(Character* self, Character* other)> onAttack;
 
     void addItem(Item* item);
 
