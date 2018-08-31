@@ -11,12 +11,11 @@ CharacterEffect::CharacterEffect()
 
 void CharacterEffect::run(Character* character)
 {
+    tileCounter++;
     if (tileCounter % tileInterval == 0)
     {
         onRun(character);
     }
-
-    tileCounter++;
 }
 
 bool CharacterEffect::isComplete()
@@ -30,6 +29,7 @@ void CharacterEffect::onStart(Character* character)
     character->level->sendEventToAllPlayers([character, this](bit::ServerPacket &packet) {
         packet << sf::Uint32(ServerEvent::CharacterEffectCreated);
         packet << sf::Uint32(this->type);
+        packet << sf::Uint32(character->Body::schema.id);
         packet << character->Body::schema.x;
         packet << character->Body::schema.y;
     });
@@ -52,6 +52,7 @@ void CharacterEffect::onRun(Character* character)
     character->level->sendEventToAllPlayers([character, this](bit::ServerPacket &packet) {
         packet << sf::Uint32(ServerEvent::CharacterEffectRun);
         packet << sf::Uint32(this->type);
+        packet << sf::Uint32(character->Body::schema.id);
         packet << character->Body::schema.x;
         packet << character->Body::schema.y;
     });
@@ -63,6 +64,7 @@ void CharacterEffect::onEnd(Character* character)
     character->level->sendEventToAllPlayers([character, this](bit::ServerPacket &packet) {
         packet << sf::Uint32(ServerEvent::CharacterEffectRemoved);
         packet << sf::Uint32(this->type);
+        packet << sf::Uint32(character->Body::schema.id);
         packet << character->Body::schema.x;
         packet << character->Body::schema.y;
     });

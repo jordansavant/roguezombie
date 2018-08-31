@@ -12,6 +12,8 @@ Bugs:
 - if i destroy a body next to a door will it close?
 - made things interactable while in combat but still have no hover effect on tiles
 - can move partial amount and then attack in same turn
+- Are tiles returning QuadIndexes and things back into the VertexMap?
+	- Maybe through a pool? So they are not lost?
 
 Improvements:
 

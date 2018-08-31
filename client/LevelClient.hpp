@@ -10,6 +10,7 @@
 #include "StateGamePlay.hpp"
 #include "../server/Level.hpp"
 #include "MoveMarker.hpp"
+#include "VisualEffect.hpp"
 #include <map>
 
 class BaseLevelClientRunner;
@@ -62,6 +63,8 @@ public:
     bool renderMoveMarkersOnNextSnapshot;
     bool isPlayerDecisionMode;
     bool isPlayerSpecating;
+    bit::Pool<VisualEffect> visualEffectPool;
+    std::vector<VisualEffect*> activeVisualEffects;
 
     // Selection
     SelectMode selectMode;
@@ -93,11 +96,15 @@ public:
 
     TileClient* getTileAtWorldPosition(float x, float y);
 
+    CharacterClient* getCharacterById(unsigned int id);
+
     void renderMoveMarkers();
 
     void clearMoveMarkers();
 
     void cancelSelectMode();
+
+    void visualEffect(VisualEffect::Type type, float worldX, float worldY);
 
     void enterCharacterSelectMode(unsigned int range, std::function<void(CharacterClient* characterClient, TileClient* tileCilent)>);
 

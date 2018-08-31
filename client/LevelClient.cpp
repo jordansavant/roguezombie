@@ -4,6 +4,7 @@
 #include "StateGamePlay.hpp"
 #include "RogueZombieGame.hpp"
 #include "CharacterClient.hpp"
+#include "VisualEffect.hpp"
 #include "structures/WallClient.hpp"
 #include "structures/DoorClient.hpp"
 #include "structures/ChestClient.hpp"
@@ -21,7 +22,7 @@
 
 LevelClient::LevelClient()
     : state(NULL), tileCount(0), tileRows(0), tileColumns(0), tileWidth(0), tileHeight(0), levelState(Level::State::Free), tilePool(), characterPool(), doorPool(), chestPool(), furnishingPool(), hoveredTile(NULL), playerTile(NULL), playerCharacter(NULL), isPlayerDecisionMode(false), isPlayerSpecating(false),
-      selectMode(SelectMode::None), onCharacterSelect(NULL), selectRange(1), selectRadius(1), renderMoveMarkersOnNextSnapshot(false)
+      selectMode(SelectMode::None), onCharacterSelect(NULL), selectRange(1), selectRadius(1), renderMoveMarkersOnNextSnapshot(false), visualEffectPool()
 {
 }
 
@@ -30,6 +31,11 @@ LevelClient::~LevelClient()
     for(unsigned int i=0; i < runners.size(); i++)
     {
         delete runners[i];
+    }
+
+    for (unsigned int i = 0; i < activeVisualEffects.size(); i++)
+    {
+        delete activeVisualEffects[i];
     }
 }
 
@@ -66,6 +72,12 @@ void LevelClient::load(StateGamePlay* _state)
     {
         moveMarkers[i].load(this);
     }
+
+    // prep effects pool
+    visualEffectPool.factoryMethod = [this]() -> VisualEffect* {
+        VisualEffect* ve = new VisualEffect(this);
+        return ve;
+    };
 }
 
 void LevelClient::captureInput(sf::Time &gameTime)
@@ -83,6 +95,25 @@ void LevelClient::update(sf::Time &gameTime)
     {
         runners[i]->update(gameTime);
     }
+
+    // Update visual effects
+    for (auto it = activeVisualEffects.begin(); it != activeVisualEffects.end();)
+    {
+        (*it)->update(gameTime);
+
+        // See if we need to remove the effect
+        if ((*it)->isComplete)
+        {
+            bit::Output::Debug("REMOVE VISUAL EFFECT");
+            visualEffectPool.recycle((*it));
+            it = activeVisualEffects.erase(it);
+        }
+        else
+        {
+            ++it; // iterate list pointer
+        }
+    }
+
 }
 
 void LevelClient::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -133,6 +164,18 @@ TileClient* LevelClient::getTileAtWorldPosition(float x, float y)
     return getTileAtIndices(ix, iy);
 }
 
+CharacterClient* LevelClient::getCharacterById(unsigned int id)
+{
+    CharacterClient* c = characters.at(id);
+    auto itr = characters.find(id);
+    if (itr != characters.end())
+    {
+        CharacterClient* cc = itr->second;
+        return cc;
+    }
+    return NULL;
+}
+
 void LevelClient::renderMoveMarkers()
 {
     unsigned int i=0;
@@ -173,6 +216,14 @@ void LevelClient::cancelSelectMode()
     selectRadius = 0;
     selectRange = 0;
     selectMode = SelectMode::None;
+}
+
+void LevelClient::visualEffect(VisualEffect::Type type, float worldX, float worldY)
+{
+    bit::Output::Debug("ADD VISUAL EFFECT");
+    VisualEffect* ve = visualEffectPool.fetch();
+    ve->load(type, worldX, worldY);
+    activeVisualEffects.push_back(ve);
 }
 
 void LevelClient::enterCharacterSelectMode(unsigned int range, std::function<void(CharacterClient* characterClient, TileClient* tileCilent)> onSelect)

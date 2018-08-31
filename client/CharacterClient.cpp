@@ -2,6 +2,7 @@
 #include "LevelClient.hpp"
 #include "StateGamePlay.hpp"
 #include "RogueZombieGame.hpp"
+#include "VisualEffect.hpp"
 
 CharacterClient::CharacterClient()
     : schema(), sprite(0, 0, 0, 0), chanceOfHit(0), visionRadius(30)
@@ -263,4 +264,34 @@ void CharacterClient::handleServerEventPacket_equipmentSwapped(bit::ServerPacket
     schema.equipmentIds[slotB] = icB.schema.id;
 
     level->state->displayPlayerMessage(this, std::string(Item::getTitle(equipment[slotA].schema.type) + " swapped with " + Item::getTitle(equipment[slotB].schema.type)));
+}
+
+void CharacterClient::onEffectCreate(CharacterEffect::Type type)
+{
+    switch (type)
+    {
+        case CharacterEffect::Type::Poison:
+            level->visualEffect(VisualEffect::Type::Poison, BodyClient::schema.x, BodyClient::schema.y);
+            break;
+    }
+}
+
+void CharacterClient::onEffectRun(CharacterEffect::Type type)
+{
+    switch (type)
+    {
+        case CharacterEffect::Type::Poison:
+            level->visualEffect(VisualEffect::Type::Poison, BodyClient::schema.x, BodyClient::schema.y);
+            break;
+    }
+}
+
+void CharacterClient::onEffectRemove(CharacterEffect::Type type)
+{
+    switch (type)
+    {
+        case CharacterEffect::Type::Poison:
+            // TODO: Display poison removal
+            break;
+    }
 }

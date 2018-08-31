@@ -4,6 +4,7 @@
 
 #include "BodyClient.hpp"
 #include "../server/Character.hpp"
+#include "../server/CharacterEffect.hpp"
 #include "CharacterSprite.hpp"
 #include "SFML/Graphics.hpp"
 #include "SFML/Network.hpp"
@@ -53,6 +54,12 @@ public:
     void handleServerEventPacket_equipmentRemoved(bit::ServerPacket &packet);
 
     void handleServerEventPacket_equipmentSwapped(bit::ServerPacket &packet);
+
+    void onEffectCreate(CharacterEffect::Type type);
+
+    void onEffectRun(CharacterEffect::Type type);
+
+    void onEffectRemove(CharacterEffect::Type type);
 };
 
 #endif

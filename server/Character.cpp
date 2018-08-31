@@ -1622,7 +1622,6 @@ void Character::onMove()
 
     // Character effects run per number of tiles
     // Update with allowance for adding / removing entities mid loop
-    unsigned int i = 0;
     for (auto it = activeEffects.begin(); it != activeEffects.end();)
     {
         (*it)->run(this);

@@ -16,6 +16,7 @@
 #include "../server/Command.hpp"
 #include "../server/CharacterEffect.hpp"
 #include "menus/JoiningMenu.hpp"
+#include "VisualEffect.hpp"
 #include "hud/Hud.hpp"
 #include "hud/InteractionMenu.hpp"
 #include "hud/StatBubble.hpp"
@@ -1506,34 +1507,55 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
 
             case ServerEvent::CharacterEffectCreated:
             {
+                bit::Output::Debug("EFFECT CREATE EVENT RECEIEVED");
                 CharacterEffect::Type type;
+                unsigned int characterId;
                 float posX, posY;
                 bit::NetworkHelper::unpackEnum<sf::Uint32, CharacterEffect::Type>(packet, type);
+                packet >> characterId;
                 packet >> posX;
                 packet >> posY;
-                bit::Output::Debug("EFFECT CREATE EVENT RECEIEVED");
+                CharacterClient* cc = levelClient->getCharacterById(characterId);
+                if (cc)
+                {
+                    cc->onEffectCreate(type);
+                }
                 break;
             }
 
             case ServerEvent::CharacterEffectRun:
             {
+                bit::Output::Debug("EFFECT RUN EVENT RECEIEVED");
                 CharacterEffect::Type type;
+                unsigned int characterId;
                 float posX, posY;
                 bit::NetworkHelper::unpackEnum<sf::Uint32, CharacterEffect::Type>(packet, type);
+                packet >> characterId;
                 packet >> posX;
                 packet >> posY;
-                bit::Output::Debug("EFFECT RUN EVENT RECEIEVED");
+                CharacterClient* cc = levelClient->getCharacterById(characterId);
+                if (cc)
+                {
+                    cc->onEffectRun(type);
+                }
                 break;
             }
 
             case ServerEvent::CharacterEffectRemoved:
             {
+                bit::Output::Debug("EFFECT REMOVE EVENT RECEIEVED");
                 CharacterEffect::Type type;
+                unsigned int characterId;
                 float posX, posY;
                 bit::NetworkHelper::unpackEnum<sf::Uint32, CharacterEffect::Type>(packet, type);
+                packet >> characterId;
                 packet >> posX;
                 packet >> posY;
-                bit::Output::Debug("EFFECT REMOVE EVENT RECEIEVED");
+                CharacterClient* cc = levelClient->getCharacterById(characterId);
+                if (cc)
+                {
+                    cc->onEffectRemove(type);
+                }
                 break;
             }
         }
