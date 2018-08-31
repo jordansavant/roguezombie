@@ -37,11 +37,25 @@ void InformationPanel::display(TileClient* tileClient)
         ss << cc->getTitle() << "\n";
         ss << "- Health: " << cc->schema.health << "/" << cc->schema.maxHealth << "\n";
         ss << "- Dexterity: " << cc->schema.dexterity << "\n";
-        ss << "- Intelligence: " << cc->schema.intelligence << "\n";
         ss << "- Speed: " << cc->schema.speed << "\n";
         ss << "- Strength: " << cc->schema.strength << "\n";
         if (cc->hasEquipment[Character::EquipmentSlot::WeaponPrimary])
-            ss << "- Weapon: " << Item::getTitle(cc->equipment[Character::EquipmentSlot::WeaponPrimary].schema.type) << "\n";
+        {
+            ItemClient* ic = &cc->equipment[Character::EquipmentSlot::WeaponPrimary];
+            ss << "- Weapon: " << Item::getTitle(ic->schema.type) << "\n";
+            ss << "  - Range: " << ic->schema.effectiveRangeInTiles << "\n";
+            ss << "  - Damage: " << ic->schema.minimumDamage << "-" << ic->schema.maximumDamage << "\n";
+        }
+        if (cc->activeEffects.size() > 0)
+        {
+            for (unsigned int i=0; i < cc->activeEffects.size(); i++)
+            {
+                ss << "* " << CharacterEffect::getAdjective(cc->activeEffects[i].type) << "\n";
+                ss << "  - Damage: " << cc->activeEffects[i].damageAmount << "\n";
+                ss << "  - Every: " << cc->activeEffects[i].tileInterval << " moves\n";
+                ss << "  - For: " << cc->activeEffects[i].tileCounter << "/" << cc->activeEffects[i].maxTiles << " moves\n";
+            }
+        }
     }
     else if (tileClient->hasStructure)
     {

@@ -80,3 +80,25 @@ CharacterEffect* CharacterEffect::poison(int _damageAmount, unsigned int _tileIn
 
     return e;
 }
+
+std::string CharacterEffect::getTitle(Type type)
+{
+    switch (type)
+    {
+        default:
+            return "Unknown";
+        case Type::Poison:
+            return "Poison";
+    }
+}
+
+std::string CharacterEffect::getAdjective(Type type)
+{
+    switch (type)
+    {
+        default:
+            return "Unknown";
+        case Type::Poison:
+            return "Poisoned";
+    }
+}

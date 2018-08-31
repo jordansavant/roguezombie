@@ -74,6 +74,21 @@ void CharacterClient::handleSnapshot(bit::ServerPacket &packet, bool full)
         }
     }
 
+    // Active effects
+    activeEffects.clear();
+    unsigned int effectSize;
+    packet >> effectSize;
+    for (unsigned int i = 0; i < effectSize; i++)
+    {
+        ActiveEffect e;
+        bit::NetworkHelper::unpackEnum<sf::Uint32, CharacterEffect::Type>(packet, e.type);
+        packet >> e.damageAmount;
+        packet >> e.tileInterval;
+        packet >> e.tileCounter;
+        packet >> e.maxTiles;
+        activeEffects.push_back(e);
+    }
+
     // Mission Clientside
     bool hasMissionUpdate;
     packet >> hasMissionUpdate;

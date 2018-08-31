@@ -1908,6 +1908,17 @@ void Character::prepareSnapshot(bit::ServerPacket &packet, bool full)
         }
     }
 
+    // Active Effects
+    packet << sf::Uint32(activeEffects.size());
+    for (unsigned int i = 0; i < activeEffects.size(); i++)
+    {
+        packet << sf::Uint32(activeEffects[i]->type);
+        packet << sf::Int32(activeEffects[i]->damageAmount);
+        packet << sf::Uint32(activeEffects[i]->tileInterval);
+        packet << sf::Uint32(activeEffects[i]->tileCounter);
+        packet << sf::Uint32(activeEffects[i]->maxTiles);
+    }
+
     // Missions
     packet << full;
     if(full)

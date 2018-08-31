@@ -2,6 +2,8 @@
 #ifndef RZ_CHARACTEREFFECT_H
 #define RZ_CHARACTEREFFECT_H
 
+#include <string>
+
 class Character;
 
 class CharacterEffect
@@ -33,6 +35,10 @@ public:
     void onEnd(Character* character);
 
     static CharacterEffect* poison(int damageAmount, unsigned int tileInterval, unsigned int maxTiles);
+
+    static std::string getTitle(Type type);
+
+    static std::string getAdjective(Type type);
 };
 
 #endif

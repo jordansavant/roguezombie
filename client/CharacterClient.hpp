@@ -17,6 +17,15 @@ class CharacterClient : public BodyClient
 {
 public:
 
+    struct ActiveEffect
+    {
+        CharacterEffect::Type type;
+        int damageAmount;
+        unsigned int tileInterval;
+        unsigned int tileCounter;
+        unsigned int maxTiles;
+    };
+
     CharacterClient();
 
     Character::Schema schema;
@@ -26,6 +35,7 @@ public:
     std::map<unsigned int, MissionClient> missionClients;
     float chanceOfHit;
     unsigned int visionRadius;
+    std::vector<ActiveEffect> activeEffects;
     
     virtual void clientLoad(LevelClient* level);
 
