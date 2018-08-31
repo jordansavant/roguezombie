@@ -79,7 +79,7 @@ void Player::setupPlayerCharacter()
     //Item* magnum = Item::create(Item::Type::Magnum357, level->server->getNextItemId());
     //character->addItemToInventory(magnum);
     //
-    Item* rifle = Item::create(Item::Type::Z4Rifle, level->server->getNextItemId());
+    Item* rifle = Item::create(Item::Type::Biosprayer, level->server->getNextItemId());
     character->addItemToInventory(rifle);
     //
     //Item* crowbar = Item::create(Item::Type::Crowbar, level->server->getNextItemId());

@@ -187,11 +187,15 @@ float RpgSystem::Combat::calculateRangedObstructionPenalty(Character* attacker, 
 // (ER / (ER + D))
 // ER = Weapon Effect Range Stat (measured in distance of tiles)
 // D = Distance to target (in tiles)
+// MR = Maximum Range of Weapon
 float RpgSystem::Combat::calculateRangedDistanceFactor(Item* weapon, Character* attacker, Character* defender)
 {
     float ER = weapon->schema.effectiveRangeInTiles;
+    float MR = weapon->schema.maximumRangeInTiles;
     float D = bit::VectorMath::distance(attacker->Body::schema.x, attacker->Body::schema.y, defender->Body::schema.x, defender->Body::schema.y) / attacker->level->tileWidth;
     if(ER == 0 && D == 0)
+        return 0;
+    if (D > MR)
         return 0;
     return (ER / (ER + D));
 }

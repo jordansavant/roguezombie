@@ -641,6 +641,7 @@ Item* Item::create(Type type, AccessLevel accessLevel, unsigned int id)
             i->schema.minimumDamage = 4;
             i->schema.maximumDamage = 8;
             i->schema.effectiveRangeInTiles = 2;
+            i->schema.maximumRangeInTiles = 2;
             i->onUse = [i](Character* user) -> void
             {
                 // Visualize

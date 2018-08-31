@@ -1,4 +1,9 @@
 LEFT OFF:
+Biosprayer
+	- has range of 2 but still works at a distance
+	- needs a max range built in
+	- needs a way to poison enemies over time
+
 
 Bugs:
 
@@ -40,6 +45,7 @@ Improvements:
 - Each level generates another plot machine
 - unique attacks, such as something that can only strike at 2 away, not 3 or 1
 - server effects for attack types, gonna have to be sprites
+- refactor characters to be easier to add to
 
 
 Story:
