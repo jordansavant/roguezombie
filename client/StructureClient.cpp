@@ -18,3 +18,8 @@ void StructureClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 
     packet >> schema;
 }
+
+std::string StructureClient::getTitle()
+{
+    return Structure::getTitle(schema.type);
+}

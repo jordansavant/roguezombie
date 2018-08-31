@@ -108,6 +108,10 @@ public:
 
     void switchLevels(unsigned int newId);
 
+    void onHoverTile(TileClient* tileClient);
+
+    void onUnhoverTile(TileClient* tileClient);
+
     void now();
 
     void exitInventoryModes();

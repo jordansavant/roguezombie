@@ -59,13 +59,11 @@ void VisualEffect::update(sf::Time &gameTime)
                 bit::Vertex3* quad = &level->vertexMap_charactersNormal.vertexArray[quadIndex];
                 sf::Vector2f isoPosition = bit::VectorMath::normalToIsometric(worldX, worldY);
                 float x = isoPosition.x - sprite->width / 2 ;
-                float y = isoPosition.y - timer.getCompletionRatio() * 35;
+                float y = isoPosition.y - timer.getCompletionRatio() * 35 - 15;
                 float z = RZConfig::getDrawDepthForGameplay(worldY + level->tileHeight);
                 char alpha = 255 * (1 - timer.getCompletionRatio());
                 bit::VertexHelper::positionQuad(quad, x, y, z, sprite->width, sprite->height);
                 bit::VertexHelper::colorQuad(quad, sf::Color(255, 255, 255, alpha));
-
-                // render the poison icon at this position
                 break;
             }
         }

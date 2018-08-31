@@ -1,8 +1,6 @@
 LEFT OFF:
-Biosprayer
-	- has range of 2 but still works at a distance
-	- needs a max range built in
-	- needs a way to poison enemies over time
+- Active Effects
+	- Need to see this in some sort of character panel
 
 
 Bugs:

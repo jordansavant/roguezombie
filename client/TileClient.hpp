@@ -64,6 +64,8 @@ public:
 
     static std::string getSpriteMoniker(Tile::Type type);
 
+    std::string getTitle();
+
 private:
 
     sf::Color getMoveColor();

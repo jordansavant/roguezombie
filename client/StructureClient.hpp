@@ -18,6 +18,8 @@ public:
 	Structure::Schema schema;
 
 	virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
+
+    virtual std::string getTitle();
 };
 
 #endif

@@ -60,6 +60,8 @@ public:
     void onEffectRun(CharacterEffect::Type type);
 
     void onEffectRemove(CharacterEffect::Type type);
+
+    virtual std::string getTitle();
 };
 
 #endif

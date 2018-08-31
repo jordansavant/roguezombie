@@ -87,3 +87,20 @@ void Structure::prepareSnapshot(bit::ServerPacket &packet, bool full)
 
     packet << schema;
 }
+
+std::string Structure::getTitle(Structure::Type type)
+{
+    switch (type)
+    {
+        default:
+            return "Undefined";
+        case Structure::Type::Wall:
+            return "Wall";
+        case Structure::Type::Door:
+            return "Door";
+        case Structure::Type::Chest:
+            return "Chest";
+        case Structure::Type::Furnishing:
+            return "Furnishing";
+    }
+}

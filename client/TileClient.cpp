@@ -119,11 +119,13 @@ void TileClient::clientUpdate(sf::Time &gameTime)
     {
         // Set me as being hovered over
         level->hoveredTile = this;
+        level->state->onHoverTile(this);
     }
     // Unset if I was the previous tile hovered but not anymore
     else if(level->hoveredTile == this)
     {
         level->hoveredTile = NULL;
+        level->state->onUnhoverTile(this);
     }
 
     // Default coloring to the lighting engine
@@ -325,6 +327,27 @@ std::string TileClient::getSpriteMoniker(Tile::Type type)
             return "StairwellUp_South";
         case Tile::Type::StairwellUp_East:
             return "StairwellUp_East";
+    }
+}
+
+std::string TileClient::getTitle()
+{
+    switch (schema.type)
+    {
+        default:
+            return "Undefined";
+        case Tile::Type::Ground:
+            return "Ground";
+        case Tile::Type::StairwellDown_South:
+        case Tile::Type::StairwellDown_East:
+        case Tile::Type::StairwellDown_North:
+        case Tile::Type::StairwellDown_West:
+            return "Stairwell Down";
+        case Tile::Type::StairwellUp_North:
+        case Tile::Type::StairwellUp_West:
+        case Tile::Type::StairwellUp_South:
+        case Tile::Type::StairwellUp_East:
+            return "Stairwell Up";
     }
 }
 

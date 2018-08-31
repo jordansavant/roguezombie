@@ -34,3 +34,35 @@ void Furnishing::prepareSnapshot(bit::ServerPacket &packet, bool full)
 
     packet << schema;
 }
+
+std::string Furnishing::getTitle(SubType subtype)
+{
+    switch (subtype)
+    {
+        default:
+            return "Undefined";
+        case Furnishing::SubType::TerminalA:
+        case Furnishing::SubType::RollingTerminalA:
+        case Furnishing::SubType::TerminalB:
+            return "Terminal";
+        case Furnishing::SubType::ColumnA:
+            return "Column";
+        case Furnishing::SubType::DeskA:
+        case Furnishing::SubType::DeskB:
+        case Furnishing::SubType::DeskBeakerB:
+        case Furnishing::SubType::DeskCoffeeA:
+            return "Desk";
+        case Furnishing::SubType::SinkA:
+        case Furnishing::SubType::SinkB:
+            return "Sink";
+        case Furnishing::SubType::OpTableA:
+            return "Op Table";
+        case Furnishing::SubType::PilonA:
+            return "Pilon";
+        case Furnishing::SubType::TrashCanA:
+        case Furnishing::SubType::TrashCanB:
+            return "Trash Can";
+        case Furnishing::SubType::ShelfA:
+            return "Shelf";
+    }
+}

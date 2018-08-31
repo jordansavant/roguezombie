@@ -274,6 +274,8 @@ void CharacterClient::onEffectCreate(CharacterEffect::Type type)
             level->visualEffect(VisualEffect::Type::Poison, BodyClient::schema.x, BodyClient::schema.y);
             break;
     }
+
+    // If I am a player character add this status effect to my HUD
 }
 
 void CharacterClient::onEffectRun(CharacterEffect::Type type)
@@ -294,4 +296,11 @@ void CharacterClient::onEffectRemove(CharacterEffect::Type type)
             // TODO: Display poison removal
             break;
     }
+
+    // If I am a player character remove this status effect to my HUD
+}
+
+std::string CharacterClient::getTitle()
+{
+    return Character::getTitle(schema.type);
 }

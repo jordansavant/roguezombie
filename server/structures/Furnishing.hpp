@@ -62,6 +62,8 @@ public:
     virtual void update(sf::Time &gameTime);
 
     virtual void prepareSnapshot(bit::ServerPacket &packet, bool full = false);
+
+    static std::string getTitle(SubType subtype);
 };
 
 #endif

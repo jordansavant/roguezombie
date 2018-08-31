@@ -2,6 +2,7 @@
 #include "HudElement.hpp"
 #include "Minimap.hpp"
 #include "OptionsBar.hpp"
+#include "InformationPanel.hpp"
 #include "Journal.hpp"
 #include "Options.hpp"
 #include "Inventory.hpp"
@@ -79,6 +80,9 @@ Hud::Hud(StateGamePlay* _state)
 
     lootMenu = new LootMenu(this);
     addChild(lootMenu);
+
+    informationPanel = new InformationPanel(this);
+    addChild(informationPanel);
 
     // Minimaps
 

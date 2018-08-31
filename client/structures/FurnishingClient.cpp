@@ -133,3 +133,8 @@ void FurnishingClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 
     packet >> schema;
 }
+
+std::string FurnishingClient::getTitle()
+{
+    return Furnishing::getTitle(schema.subtype);
+}

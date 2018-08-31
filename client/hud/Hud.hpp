@@ -25,6 +25,7 @@ class ActionBar;
 class Tooltip;
 class InventoryIcon;
 class Minimap;
+class InformationPanel;
 
 class Hud : public bit::Container
 {
@@ -48,6 +49,7 @@ public:
 	DevTerminal* devTerminal;
     TurnQueue* turnQueue;
     ActionBar* actionBar;
+    InformationPanel* informationPanel;
     std::map<unsigned int, Minimap*> minimaps;
     Minimap* liveMinimap;
     bool isMapActive;

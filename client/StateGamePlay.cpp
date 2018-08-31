@@ -23,6 +23,7 @@
 #include "hud/DialogMenu.hpp"
 #include "hud/Inventory.hpp"
 #include "hud/LootMenu.hpp"
+#include "hud/InformationPanel.hpp"
 #include "items/ItemClient.hpp"
 #include <sstream>
 
@@ -174,6 +175,16 @@ void StateGamePlay::switchLevels(unsigned int newId)
     levelClient = new LevelClient();
     levelClient->levelId = newId;
     levelClient->load(this);
+}
+
+void StateGamePlay::onHoverTile(TileClient* tileClient)
+{
+    hud->informationPanel->display(tileClient);
+}
+
+void StateGamePlay::onUnhoverTile(TileClient* tileClient)
+{
+    hud->informationPanel->clear();
 }
 
 void StateGamePlay::changeMode(Mode _mode)
@@ -1507,7 +1518,6 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
 
             case ServerEvent::CharacterEffectCreated:
             {
-                bit::Output::Debug("EFFECT CREATE EVENT RECEIEVED");
                 CharacterEffect::Type type;
                 unsigned int characterId;
                 float posX, posY;
@@ -1525,7 +1535,6 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
 
             case ServerEvent::CharacterEffectRun:
             {
-                bit::Output::Debug("EFFECT RUN EVENT RECEIEVED");
                 CharacterEffect::Type type;
                 unsigned int characterId;
                 float posX, posY;
@@ -1543,7 +1552,6 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
 
             case ServerEvent::CharacterEffectRemoved:
             {
-                bit::Output::Debug("EFFECT REMOVE EVENT RECEIEVED");
                 CharacterEffect::Type type;
                 unsigned int characterId;
                 float posX, posY;
