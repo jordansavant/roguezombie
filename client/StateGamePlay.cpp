@@ -1482,6 +1482,7 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 packet >> posX;
                 packet >> posY;
                 rogueZombieGame->soundManager->play(healSoundId);
+                levelClient->visualEffect(VisualEffect::Heal, posX, posY);
                 break;
             }
 

@@ -55,6 +55,7 @@ void VisualEffect::update(sf::Time &gameTime)
         switch (type)
         {
             case Type::Poison:
+            case Type::Heal:
             {
                 bit::Vertex3* quad = &level->vertexMap_charactersNormal.vertexArray[quadIndex];
                 sf::Vector2f isoPosition = bit::VectorMath::normalToIsometric(worldX, worldY);
@@ -78,5 +79,7 @@ std::string VisualEffect::getSpriteMoniker(Type type)
             return "ve_Undefined";
         case Type::Poison:
             return "ve_Poison";
+        case Type::Heal:
+            return "ve_Heal";
     }
 }

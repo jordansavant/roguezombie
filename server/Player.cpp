@@ -88,7 +88,11 @@ void Player::setupPlayerCharacter()
     //Item* hardhat = Item::create(Item::Type::HardHat, level->server->getNextItemId());
     //character->addItemToInventory(hardhat);
     //
-    //character->addItemToInventory(Item::create(Item::Type::Medkit, level->server->getNextItemId()));
+    character->addItemToInventory(Item::create(Item::Type::Medkit, level->server->getNextItemId()));
+    character->addItemToInventory(Item::create(Item::Type::Medkit, level->server->getNextItemId()));
+    character->addItemToInventory(Item::create(Item::Type::Medkit, level->server->getNextItemId()));
+    character->addItemToInventory(Item::create(Item::Type::Medkit, level->server->getNextItemId()));
+    character->addItemToInventory(Item::create(Item::Type::Medkit, level->server->getNextItemId()));
     //character->addItemToInventory(Item::create(Item::Type::Brick, level->server->getNextItemId()));
     //character->addItemToInventory(Item::create(Item::Type::Grenade, level->server->getNextItemId()));
     //character->addItemToInventory(Item::create(Item::Type::Grenade, level->server->getNextItemId()));

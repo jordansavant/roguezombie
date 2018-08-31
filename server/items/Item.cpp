@@ -484,13 +484,6 @@ Item* Item::create(Type type, AccessLevel accessLevel, unsigned int id)
             {
                 self->heal(bit::Math::random(i->schema.minimumDamage, i->schema.maximumDamage));
 
-                // Event
-                self->level->sendEventToAllPlayers([self] (bit::ServerPacket &packet) {
-                    packet << sf::Uint32(ServerEvent::CharacterHeal);
-                    packet << self->Body::schema.x;
-                    packet << self->Body::schema.y;
-                });
-
                 return true;
             };
 

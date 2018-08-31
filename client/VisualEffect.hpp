@@ -16,7 +16,8 @@ public:
     enum Type
     {
         None,
-        Poison
+        Poison,
+        Heal
     };
 
     VisualEffect();

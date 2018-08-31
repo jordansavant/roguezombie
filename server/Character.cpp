@@ -683,6 +683,13 @@ void Character::attack(Character* character)
 void Character::heal(int amount)
 {
     schema.health = bit::Math::clamp(schema.health + amount, 0, schema.maxHealth);
+
+    // Event
+    level->sendEventToAllPlayers([this](bit::ServerPacket &packet) {
+        packet << sf::Uint32(ServerEvent::CharacterHeal);
+        packet << this->Body::schema.x;
+        packet << this->Body::schema.y;
+    });
 }
 
 void Character::harm(int damage)
