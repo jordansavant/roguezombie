@@ -52,7 +52,10 @@ enum ServerEvent
     CharacterConsumed,
     StructureDestroyed,
     TrapSprung,
-    TrapReset
+    TrapReset,
+    CharacterEffectCreated,
+    CharacterEffectRun,
+    CharacterEffectRemoved
 };
 
 #endif

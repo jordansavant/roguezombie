@@ -14,6 +14,7 @@
 #include "TileClient.hpp"
 #include "CharacterClient.hpp"
 #include "../server/Command.hpp"
+#include "../server/CharacterEffect.hpp"
 #include "menus/JoiningMenu.hpp"
 #include "hud/Hud.hpp"
 #include "hud/InteractionMenu.hpp"
@@ -1500,6 +1501,39 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 packet >> posX;
                 packet >> posY;
                 rogueZombieGame->soundManager->play(spikeReturnSoundId);
+                break;
+            }
+
+            case ServerEvent::CharacterEffectCreated:
+            {
+                CharacterEffect::Type type;
+                float posX, posY;
+                bit::NetworkHelper::unpackEnum<sf::Uint32, CharacterEffect::Type>(packet, type);
+                packet >> posX;
+                packet >> posY;
+                bit::Output::Debug("EFFECT CREATE EVENT RECEIEVED");
+                break;
+            }
+
+            case ServerEvent::CharacterEffectRun:
+            {
+                CharacterEffect::Type type;
+                float posX, posY;
+                bit::NetworkHelper::unpackEnum<sf::Uint32, CharacterEffect::Type>(packet, type);
+                packet >> posX;
+                packet >> posY;
+                bit::Output::Debug("EFFECT RUN EVENT RECEIEVED");
+                break;
+            }
+
+            case ServerEvent::CharacterEffectRemoved:
+            {
+                CharacterEffect::Type type;
+                float posX, posY;
+                bit::NetworkHelper::unpackEnum<sf::Uint32, CharacterEffect::Type>(packet, type);
+                packet >> posX;
+                packet >> posY;
+                bit::Output::Debug("EFFECT REMOVE EVENT RECEIEVED");
                 break;
             }
         }

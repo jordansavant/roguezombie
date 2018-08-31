@@ -26,6 +26,12 @@ public:
 
     bool isComplete();
 
+    void onStart(Character* character);
+
+    void onRun(Character* character);
+
+    void onEnd(Character* character);
+
     static CharacterEffect* poison(int damageAmount, unsigned int tileInterval, unsigned int maxTiles);
 };
 

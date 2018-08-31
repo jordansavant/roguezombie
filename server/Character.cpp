@@ -739,9 +739,9 @@ void Character::addEffect(CharacterEffect* effect)
             return;
         }
     }
-    bit::Output::Debug("ADDING EFFECT");
 
     // If its the only one of its kind, add it
+    effect->onStart(this);
     activeEffects.push_back(effect);
 }
 
@@ -1630,7 +1630,7 @@ void Character::onMove()
         // See if we need to remove the effect
         if ((*it)->isComplete())
         {
-            bit::Output::Debug("REMOVING EFFECT");
+            (*it)->onEnd(this);
             delete (*it);
             it = activeEffects.erase(it);
         }
