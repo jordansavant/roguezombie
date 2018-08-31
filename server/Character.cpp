@@ -604,18 +604,18 @@ void Character::attack(Character* character)
         weapon->onUse(this);
     }
 
-    // Apply any special attack to enemy
-    if (weapon && weapon->onAttack)
-    {
-        // Weapon attack
-        weapon->onAttack(this, character);
-    }
-
     if(bit::Math::randomFloat() < CoH)
     {
         float damage = RpgSystem::Combat::calculateAttackDamage(this, character);
         unsigned int mitigatedDamage = RpgSystem::Combat::calculateDamageMitigation(this, character, damage);
         character->harm(mitigatedDamage);
+
+        // Apply any special attack to enemy
+        if (weapon && weapon->onAttack)
+        {
+            // Weapon attack
+            weapon->onAttack(this, character);
+        }
 
         // Game Event
         if(schema.isPlayerCharacter)
