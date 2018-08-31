@@ -1965,6 +1965,8 @@ std::string Character::getTitle(Character::Type type)
             return "Guard";
         case Character::Type::Hazmaster:
             return "Hazmaster";
+        case Character::Type::Batman:
+            return "Man Bat";
     }
 }
 

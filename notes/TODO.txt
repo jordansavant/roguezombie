@@ -1,10 +1,10 @@
 LEFT OFF:
-- Active Effects
-	- Need to see this in some sort of character panel
-
+- Biosprayer sound and lighting needs to be more like a spray
 
 Bugs:
 
+- After attacking I get free movement for 2 turns.. ???
+	- IMPORTANT
 - Walls on southern tip of map are messed up Z depths
 - two people standing on either side of door, one walk away door close despite person being next to it, only close if count of people is 0
 - if i destroy a body next to a door will it close?

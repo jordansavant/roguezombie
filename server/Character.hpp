@@ -34,7 +34,8 @@ public:
         Hunter,
         Scientist,
         Guard,
-        Hazmaster
+        Hazmaster,
+        Batman
     };
 
     enum EquipmentSlot

@@ -1452,6 +1452,7 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                     case Character::Type::Scientist:
                     case Character::Type::Guard:
                     case Character::Type::Hazmaster:
+                    case Character::Type::Batman:
                         rogueZombieGame->soundManager->play(humanCharacterDeathSoundId);
                         break;
                 }

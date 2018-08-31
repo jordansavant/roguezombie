@@ -307,6 +307,8 @@ std::string CharacterSprite::getSpriteMoniker(Character::Type t)
             return "Guard";
         case Character::Type::Hazmaster:
             return "Hazmaster";
+        case Character::Type::Batman:
+            return "Batman";
     }
 }
 

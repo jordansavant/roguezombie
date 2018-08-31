@@ -21,6 +21,7 @@ unsigned int CHARACTER_OGRE = 3;
 unsigned int CHARACTER_SCIENTIST = 4;
 unsigned int CHARACTER_GUARD = 5;
 unsigned int CHARACTER_HAZMASTER = 6;
+unsigned int CHARACTER_BATMAN = 7;
 
 unsigned int STRUCTURE_WALL = 1;
 unsigned int STRUCTURE_DOOR = 2;
@@ -1580,7 +1581,11 @@ unsigned int XoGeni::CellMap::getStandardEnemyTypeForDifficulty()
                 CHARACTER_HUNTER
             );
         default:
-            return CHARACTER_HUNTER; // TODO better enemy scaling
+            return LevelGenerator::random.of(
+                CHARACTER_GUARD,
+                CHARACTER_HUNTER,
+                CHARACTER_BATMAN
+            );
     }
 }
 
@@ -1593,9 +1598,9 @@ unsigned int XoGeni::CellMap::getOutOfDepthEnemyTypeForDifficulty()
         case 1:
             return CHARACTER_HUNTER;
         case 2:
-            return CHARACTER_HUNTER;
+            return CHARACTER_BATMAN;
         default:
-            return CHARACTER_HUNTER; // TODO better enemy scaling
+            return CHARACTER_BATMAN; // TODO better enemy scaling
     }
 }
 

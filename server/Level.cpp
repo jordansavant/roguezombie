@@ -9,6 +9,7 @@
 #include "characters/Scientist.hpp"
 #include "characters/Guard.hpp"
 #include "characters/Hazmaster.hpp"
+#include "characters/Batman.hpp"
 #include "structures/Wall.hpp"
 #include "structures/Door.hpp"
 #include "structures/Chest.hpp"
@@ -99,6 +100,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
     runners.push_back(new LevelRunner<Scientist>(this, &scientists));
     runners.push_back(new LevelRunner<Guard>(this, &guards));
     runners.push_back(new LevelRunner<Hazmaster>(this, &hazmasters));
+    runners.push_back(new LevelRunner<Batman>(this, &batmans));
     runners.push_back(new LevelRunner<Wall>(this, &walls));
     runners.push_back(new LevelRunner<Door>(this, &doors));
     runners.push_back(new LevelRunner<Chest>(this, &chests));
@@ -331,6 +333,19 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         c = hazmaster;
                         break;
                     }
+                    case Character::Type::Batman:
+                    {
+                        Batman* batman = new Batman();
+                        batman->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                        batman->moveToPosition(t->schema.x, t->schema.y);
+                        batmans.push_back(batman);
+                        batman->hostilityCheckAi = AiRoutines::Combat::Generic_DetectHostility;
+                        batman->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
+                        batman->combatDecisionAi = AiRoutines::Combat::Coverless_DecideCombat;
+                        batman->getStartingDialog = std::bind(&Level::getDialogTree, this);
+                        c = batman;
+                        break;
+                    }
                 }
 
                 if(c)
@@ -528,24 +543,9 @@ void Level::enterCombat()
         // TODO: Can't we use the Character metalist?
 
         // Move every character into the turn queue
-        for(unsigned int i=0; i < zombies.size(); i++)
-            if(!zombies[i]->schema.isDead())
-                turnQueue.push_back(zombies[i]);
-        for(unsigned int i=0; i < ogres.size(); i++)
-            if(!ogres[i]->schema.isDead())
-                turnQueue.push_back(ogres[i]);
-        for(unsigned int i=0; i < hunters.size(); i++)
-            if(!hunters[i]->schema.isDead())
-                turnQueue.push_back(hunters[i]);
-        for (unsigned int i = 0; i < scientists.size(); i++)
-            if (!scientists[i]->schema.isDead())
-                turnQueue.push_back(scientists[i]);
-        for (unsigned int i = 0; i < guards.size(); i++)
-            if (!guards[i]->schema.isDead())
-                turnQueue.push_back(guards[i]);
-        for (unsigned int i = 0; i < hazmasters.size(); i++)
-            if (!hazmasters[i]->schema.isDead())
-                turnQueue.push_back(hazmasters[i]);
+        for (unsigned int i = 0; i < characters.size(); i++)
+            if (!characters[i]->schema.isDead())
+                turnQueue.push_back(characters[i]);
 
         // Sort the turn queue by initiative
         std::sort(turnQueue.begin(), turnQueue.end(), [] (Character* characterFirst, Character* characterSecond) -> bool {
@@ -667,6 +667,9 @@ void Level::removeCharacter(Character* character)
             break;
         case Character::Type::Hazmaster:
             hazmasters.erase(std::remove(hazmasters.begin(), hazmasters.end(), static_cast<Hazmaster*>(character)), hazmasters.end());
+            break;
+        case Character::Type::Batman:
+            batmans.erase(std::remove(batmans.begin(), batmans.end(), static_cast<Batman*>(character)), batmans.end());
             break;
     }
 
@@ -1324,6 +1327,9 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
                         break;
                     case Character::Type::Hazmaster:
                         packNetworkBody<Hazmaster, Character>(packet, full, c, b->schema.type, c->schema.type);
+                        break;
+                    case Character::Type::Batman:
+                        packNetworkBody<Batman, Character>(packet, full, c, b->schema.type, c->schema.type);
                         break;
                 }
                 break;
