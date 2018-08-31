@@ -326,7 +326,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         hazmasters.push_back(hazmaster);
                         hazmaster->hostilityCheckAi = AiRoutines::Combat::Generic_DetectHostility;
                         hazmaster->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
-                        hazmaster->combatDecisionAi = AiRoutines::Combat::Guard_DecideCombat;
+                        hazmaster->combatDecisionAi = AiRoutines::Combat::Coverless_DecideCombat;
                         hazmaster->getStartingDialog = std::bind(&Level::getDialogTree, this);
                         c = hazmaster;
                         break;

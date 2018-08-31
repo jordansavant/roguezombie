@@ -17,8 +17,7 @@ Improvements:
 
 - Replace hunter AI with guard AI and expand on it to use weapon range instead of static distances
 - Clicking on interactible structures, finds nearest tile and walks to it and then opens automatically
-- debri/blood tile litter for effects etc
-- Hotkeys for interactions (i = interact, l = loot, c = consume, a = attack)
+- debris/blood tile litter for effects etc
 - scientists pose NO challenge (need some or other level0 bad guy)
 	- hazmat workers (hardhats, crowbars)
 - Mark access items on minimap with colors
