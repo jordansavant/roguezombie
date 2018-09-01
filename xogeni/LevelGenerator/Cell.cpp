@@ -30,6 +30,7 @@ bool XoGeni::Cell::isOccupied()
 
 void XoGeni::Cell::decorate(unsigned int type, unsigned int subtype)
 {
+    hasStructure = true;
     structureType = type;
     structureSubType = subtype;
 

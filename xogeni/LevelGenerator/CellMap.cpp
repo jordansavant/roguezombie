@@ -46,6 +46,8 @@ unsigned int FURNISHING_DESKBEAKERB = 13;
 unsigned int FURNISHING_DESKCOFFEEA = 14;
 unsigned int FURNISHING_SHELFA = 15;
 unsigned int FURNISHING_HADESPORTALA = 16;
+unsigned int FURNISHING_HADESSPIKEA = 17;
+unsigned int FURNISHING_HADESSPIKEB = 18;
 
 unsigned int ITEM_BACKPACK = 1;
 unsigned int ITEM_HARDHAT = 2;
@@ -1375,7 +1377,6 @@ void XoGeni::CellMap::machinate_hordeRoom(Room* room)
 
     // Fill the room with skeletons
     unsigned int maxSpawnCount = LevelGenerator::random.next(3, 7);
-    unsigned int i = 0;
     for (unsigned int i = 0; i < maxSpawnCount; i++)
     {
         Cell* cell = getOpenRoomCell(room, true);
@@ -1387,6 +1388,19 @@ void XoGeni::CellMap::machinate_hordeRoom(Room* room)
     }
 
     // Fill the remaining room with hellscape furnishing
+    unsigned int cellCount = room->cellCount() / 10;
+    unsigned int maxDecorCount = LevelGenerator::random.next(cellCount, cellCount + 2);
+    for (unsigned int i = 0; i < maxDecorCount; i++)
+    {
+        Cell* cell = getSafeToBlockRoomCell(room, true, 1);
+        if (cell)
+        {
+            cell->decorate(STRUCTURE_FURNISHING, LevelGenerator::random.of(
+                FURNISHING_HADESSPIKEA,
+                FURNISHING_HADESSPIKEB
+            ));
+        }
+    }
 }
 
 void XoGeni::CellMap::machinate_chestKeyTreasure()
@@ -1437,7 +1451,6 @@ void XoGeni::CellMap::machinate_boss()
 
 void XoGeni::CellMap::setChest(Cell* cell, bool isLocked)
 {
-    cell->hasStructure = true;
     cell->decorate(STRUCTURE_CHEST); // chest
     cell->isLocked = isLocked;
 }
@@ -1478,9 +1491,7 @@ void XoGeni::CellMap::decorateRoom(Room* room)
             {
                 if (!cell->isTagUnreachable && !cell->isRoomEdge)
                 {
-                    cell->hasStructure = true;
-                    cell->structureType = STRUCTURE_FURNISHING; // Furnishing
-                    cell->structureSubType = FURNISHING_COLUMNA; // Column
+                    cell->decorate(STRUCTURE_FURNISHING, FURNISHING_COLUMNA);
                 }
             }
             return false;
@@ -1492,7 +1503,6 @@ void XoGeni::CellMap::decorateRoom(Room* room)
         if (!cell->isOccupied() && isCellSafeToBlock(cell)) {
             if (LevelGenerator::random.next(3) == 0)
             {
-                cell->hasStructure = true;
                 cell->decorate(STRUCTURE_FURNISHING, LevelGenerator::random.of(
                     FURNISHING_TERMINALA,
                     FURNISHING_DESKA,
@@ -1513,7 +1523,6 @@ void XoGeni::CellMap::decorateRoom(Room* room)
         if (!cell->isOccupied() && isCellSafeToBlock(cell)) {
             if (LevelGenerator::random.next(3) == 0)
             {
-                cell->hasStructure = true;
                 cell->decorate(STRUCTURE_FURNISHING, LevelGenerator::random.of(
                     FURNISHING_TERMINALB,
                     FURNISHING_DESKB,
@@ -1532,7 +1541,6 @@ void XoGeni::CellMap::decorateRoom(Room* room)
         if (!cell->isOccupied() && isCellSafeToBlock(cell)) {
             if (LevelGenerator::random.next(6) == 0)
             {
-                cell->hasStructure = true;
                 cell->decorate(STRUCTURE_FURNISHING, LevelGenerator::random.of(
                     FURNISHING_DESKA,
                     FURNISHING_DESKA,
@@ -1549,7 +1557,6 @@ void XoGeni::CellMap::decorateRoom(Room* room)
         if (!cell->isOccupied() && isCellSafeToBlock(cell)) {
             if (LevelGenerator::random.next(6) == 0)
             {
-                cell->hasStructure = true;
                 cell->decorate(STRUCTURE_FURNISHING, LevelGenerator::random.of(
                     FURNISHING_DESKB,
                     FURNISHING_DESKB,
@@ -1570,7 +1577,6 @@ void XoGeni::CellMap::decorateRoom(Room* room)
             setChest(cell, false); // unlocked storage
             giveChestTreasure(cell, false);
         } else {
-            cell->hasStructure = true;
             cell->decorate(STRUCTURE_FURNISHING, LevelGenerator::random.of(
                 FURNISHING_OPTABLEA,
                 FURNISHING_PILONA,

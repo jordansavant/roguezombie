@@ -18,3 +18,7 @@ XoGeni::Room::Room(unsigned int x, unsigned int y, unsigned int width, unsigned 
 {
 }
 
+unsigned int XoGeni::Room::cellCount()
+{
+    return width * height;
+}

@@ -20,6 +20,8 @@ namespace XoGeni
         unsigned int entranceWeight;
         bool isMachineRoom;
 
+        unsigned int cellCount();
+
     };
 }
 

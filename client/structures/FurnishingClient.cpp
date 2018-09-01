@@ -38,6 +38,8 @@ void FurnishingClient::clientLoad(LevelClient* _level)
     deskCoffeeASprite = level->state->rogueZombieGame->spriteLoader->getSprite("DeskCoffeeA");
     shelfASprite = level->state->rogueZombieGame->spriteLoader->getSprite("ShelfA");
     hadesPortalASprite = level->state->rogueZombieGame->spriteLoader->getSprite("HadesPortalA");
+    hadesSpikeASprite = level->state->rogueZombieGame->spriteLoader->getSprite("HadesSpikeA");
+    hadesSpikeBSprite = level->state->rogueZombieGame->spriteLoader->getSprite("HadesSpikeB");
     //sprite->applyToQuad(&level->vertexMap_charactersToggleIlluminated.vertexArray[quadIndex]);
 }
 
@@ -94,6 +96,12 @@ void FurnishingClient::clientUpdate(sf::Time &gameTime)
             break;
         case Furnishing::SubType::HadesPortalA:
             sprite = hadesPortalASprite;
+            break;
+        case Furnishing::SubType::HadesSpikeA:
+            sprite = hadesSpikeASprite;
+            break;
+        case Furnishing::SubType::HadesSpikeB:
+            sprite = hadesSpikeBSprite;
             break;
     }
 

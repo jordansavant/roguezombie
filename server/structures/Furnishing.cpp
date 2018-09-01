@@ -66,5 +66,8 @@ std::string Furnishing::getTitle(SubType subtype)
             return "Shelf";
         case Furnishing::SubType::HadesPortalA:
             return "Hades Portal";
+        case Furnishing::SubType::HadesSpikeA:
+        case Furnishing::SubType::HadesSpikeB:
+            return "Hades Spike";
     }
 }
