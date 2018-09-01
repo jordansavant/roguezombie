@@ -34,8 +34,6 @@ public:
 
         static void Guard_DecideCombat(Character* character);
 
-        static void Coverless_DecideCombat(Character* character);
-
         static void Scientist_DecideCombat(Character* character);
 
         static void Savage_DecideCombat(Character* character);
