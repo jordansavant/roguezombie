@@ -543,14 +543,12 @@ void AiRoutines::Combat::Savage_DecideCombat(Character* character)
         float y2 = closestEnemy->Body::schema.y;
 
         float distance = bit::VectorMath::distance(x1, y1, x2, y2);
-        int xDistance = std::abs(x2 - x1);
-        int yDistance = std::abs(y2 - y1);
 
         bool withinEffectiveRange = distance <= attackRangeDistance;
         bool withinMaximumRange = distance <= maxAttackRangeDistance;
 
         // Am I within range of this enemy?
-        if (withinMaximumRange)
+        if (withinEffectiveRange)
         {
             // Attack the enemy
             character->combat_DecideAction_AttackCharacter(closestEnemy);
@@ -563,10 +561,13 @@ void AiRoutines::Combat::Savage_DecideCombat(Character* character)
                     // If a spot exists then lets path toward it
                     character->combat_DecideAction_MoveToLocation(pos.x, pos.y);
                 },
-                [] (Character* character, Character* enemy) -> void {
+                [withinMaximumRange] (Character* character, Character* enemy) -> void {
                     // If no spot exists, yet we are out of range
                     // If I have a weapon that 
-                    character->combat_DecideAction_AttackCharacter(enemy);
+                    if (withinMaximumRange)
+                        character->combat_DecideAction_AttackCharacter(enemy);
+                    else
+                        character->combat_DecideAction_Skip();
                 }
             );
         }
@@ -586,15 +587,35 @@ void AiRoutines::Combat::findOpenAdjacentPosition(Character* character, Characte
 
     // Look for a spot within range of the enemy
     sf::Vector2f directionAway = bit::VectorMath::directionToVector(x2, y2, x1, y1);
-    sf::Vector2f directionToward = bit::VectorMath::directionToVector(x1, y1, x2, y2);
-    sf::Vector2f right(-directionAway.y, directionAway.x);
-    sf::Vector2f left(directionAway.y, -directionAway.x);
+    int directionAwayX = bit::Math::round(directionAway.x);
+    int directionAwayY = bit::Math::round(directionAway.y);
 
+    std::vector<sf::Vector2i> directions;
+    directions.push_back(sf::Vector2i(-1, -1)); // upleft
+    directions.push_back(sf::Vector2i(0, -1)); // up
+    directions.push_back(sf::Vector2i(1, -1)); // upright
+    directions.push_back(sf::Vector2i(1, 0)); // right
+    directions.push_back(sf::Vector2i(1, 1)); // downright
+    directions.push_back(sf::Vector2i(0, 1)); // down
+    directions.push_back(sf::Vector2i(-1, 1)); // downleft
+    directions.push_back(sf::Vector2i(-1, 0)); // left
+
+    unsigned int currentDirectionIndex;
+    for (unsigned int i = 0; i < directions.size(); i++)
+    {
+        if (directionAwayX == directions[i].x && directionAwayY == directions[i].y)
+            currentDirectionIndex = i;
+    }
+
+    // Build our attempts
     std::vector<sf::Vector2i> attempts;
-    attempts.push_back(sf::Vector2i(x2 + directionAway.x * character->level->tileWidth * 1, y2 + directionAway.y * character->level->tileHeight * 1)); // tile nearest me
-    attempts.push_back(sf::Vector2i(x2 + right.x * character->level->tileWidth * 2, y2 + right.y * character->level->tileHeight * 2)); // tile to right of them
-    attempts.push_back(sf::Vector2i(x2 + left.x * character->level->tileWidth * 1, y2 + left.y * character->level->tileHeight * 1)); // tile to left of them
-    attempts.push_back(sf::Vector2i(x2 + directionToward.x * character->level->tileWidth * 1, y2 + directionToward.y * character->level->tileHeight * 1)); // tile behind them
+    for (unsigned int i = 0; i < directions.size(); i++)
+    {
+        int x = (int)x2 + directions[i].x * character->level->tileWidth;
+        int y = (int)y2 + directions[i].y * character->level->tileHeight;
+        attempts.push_back(sf::Vector2i(x, y));
+        currentDirectionIndex = (currentDirectionIndex + 1) % directions.size();
+    }
 
     for (unsigned int i = 0; i < attempts.size(); i++)
     {

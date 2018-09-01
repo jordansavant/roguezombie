@@ -1,5 +1,4 @@
 LEFT OFF:
-- Biosprayer sound and lighting needs to be more like a spray
 
 Bugs:
 
@@ -8,6 +7,8 @@ Bugs:
 - if i destroy a body next to a door will it close?
 - made things interactable while in combat but still have no hover effect on tiles
 - can move partial amount and then attack in same turn
+	- not sure if this is really a bug, it feels like better strategy
+- a bug when leaving loot mode, inventory gets out of sync and shift clicking doesn't put items into actionbar
 
 Improvements:
 
