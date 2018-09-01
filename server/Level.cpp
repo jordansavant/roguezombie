@@ -10,6 +10,7 @@
 #include "characters/Guard.hpp"
 #include "characters/Hazmaster.hpp"
 #include "characters/Batman.hpp"
+#include "characters/Skeleton.hpp"
 #include "structures/Wall.hpp"
 #include "structures/Door.hpp"
 #include "structures/Chest.hpp"
@@ -101,6 +102,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
     runners.push_back(new LevelRunner<Guard>(this, &guards));
     runners.push_back(new LevelRunner<Hazmaster>(this, &hazmasters));
     runners.push_back(new LevelRunner<Batman>(this, &batmans));
+    runners.push_back(new LevelRunner<Skeleton>(this, &skeletons));
     runners.push_back(new LevelRunner<Wall>(this, &walls));
     runners.push_back(new LevelRunner<Door>(this, &doors));
     runners.push_back(new LevelRunner<Chest>(this, &chests));
@@ -346,6 +348,19 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         c = batman;
                         break;
                     }
+                    case Character::Type::Skeleton:
+                    {
+                        Skeleton* skeleton = new Skeleton();
+                        skeleton->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                        skeleton->moveToPosition(t->schema.x, t->schema.y);
+                        skeletons.push_back(skeleton);
+                        skeleton->hostilityCheckAi = AiRoutines::Combat::Generic_DetectHostility;
+                        skeleton->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
+                        skeleton->combatDecisionAi = AiRoutines::Combat::Coverless_DecideCombat;
+                        skeleton->getStartingDialog = std::bind(&Level::getDialogTree, this);
+                        c = skeleton;
+                        break;
+                    }
                 }
 
                 if(c)
@@ -544,8 +559,12 @@ void Level::enterCombat()
 
         // Move every character into the turn queue
         for (unsigned int i = 0; i < characters.size(); i++)
+        {
             if (!characters[i]->schema.isDead())
+            {
                 turnQueue.push_back(characters[i]);
+            }
+        }
 
         // Sort the turn queue by initiative
         std::sort(turnQueue.begin(), turnQueue.end(), [] (Character* characterFirst, Character* characterSecond) -> bool {
@@ -670,6 +689,9 @@ void Level::removeCharacter(Character* character)
             break;
         case Character::Type::Batman:
             batmans.erase(std::remove(batmans.begin(), batmans.end(), static_cast<Batman*>(character)), batmans.end());
+            break;
+        case Character::Type::Skeleton:
+            skeletons.erase(std::remove(skeletons.begin(), skeletons.end(), static_cast<Skeleton*>(character)), skeletons.end());
             break;
     }
 
@@ -1234,7 +1256,7 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
             packet << sf::Uint32(turnQueue.size());
             for(unsigned int i=0; i < turnQueue.size(); i++)
             {
-                if((!turnQueue[i]->schema.isDead() && turnQueue[i]->isHostileCombatDetected) || turnQueue[i]->schema.isPlayerCharacter)
+                if ((!turnQueue[i]->schema.isDead() && turnQueue[i]->isHostileCombatDetected) || turnQueue[i]->schema.isPlayerCharacter)
                 {
                     packet << true;
                     if(first)
@@ -1330,6 +1352,9 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
                         break;
                     case Character::Type::Batman:
                         packNetworkBody<Batman, Character>(packet, full, c, b->schema.type, c->schema.type);
+                        break;
+                    case Character::Type::Skeleton:
+                        packNetworkBody<Skeleton, Character>(packet, full, c, b->schema.type, c->schema.type);
                         break;
                 }
                 break;

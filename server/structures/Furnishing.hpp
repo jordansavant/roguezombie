@@ -33,6 +33,7 @@ public:
         DeskBeakerB, // 13
         DeskCoffeeA, // 14
         ShelfA, // 15
+        HadesPortalA, // 16
     };
 
     struct Schema

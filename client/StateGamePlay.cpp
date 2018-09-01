@@ -1455,6 +1455,9 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                     case Character::Type::Batman:
                         rogueZombieGame->soundManager->play(humanCharacterDeathSoundId);
                         break;
+                    case Character::Type::Skeleton: // TODO make this some sort of rattling sound
+                        rogueZombieGame->soundManager->play(humanCharacterDeathSoundId);
+                        break;
                 }
                 break;
             }

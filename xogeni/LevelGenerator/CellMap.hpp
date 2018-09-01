@@ -159,6 +159,8 @@ namespace XoGeni
 
         void machinate_trapRoom(Room* room);
 
+        void machinate_hordeRoom(Room* room);
+
         void machinate_chestKeyTreasure();
 
         void machinate_boss();

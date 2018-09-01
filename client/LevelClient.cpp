@@ -166,7 +166,6 @@ TileClient* LevelClient::getTileAtWorldPosition(float x, float y)
 
 CharacterClient* LevelClient::getCharacterById(unsigned int id)
 {
-    CharacterClient* c = characters.at(id);
     auto itr = characters.find(id);
     if (itr != characters.end())
     {

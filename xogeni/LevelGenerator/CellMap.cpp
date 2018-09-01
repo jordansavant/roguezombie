@@ -22,6 +22,7 @@ unsigned int CHARACTER_SCIENTIST = 4;
 unsigned int CHARACTER_GUARD = 5;
 unsigned int CHARACTER_HAZMASTER = 6;
 unsigned int CHARACTER_BATMAN = 7;
+unsigned int CHARACTER_SKELETON = 8;
 
 unsigned int STRUCTURE_WALL = 1;
 unsigned int STRUCTURE_DOOR = 2;
@@ -43,6 +44,7 @@ unsigned int FURNISHING_ROLLINGTERMINALA = 12;
 unsigned int FURNISHING_DESKBEAKERB = 13;
 unsigned int FURNISHING_DESKCOFFEEA = 14;
 unsigned int FURNISHING_SHELFA = 15;
+unsigned int FURNISHING_HADESPORTALA = 16;
 
 unsigned int ITEM_BACKPACK = 1;
 unsigned int ITEM_HARDHAT = 2;
@@ -1305,7 +1307,15 @@ void XoGeni::CellMap::machinate()
     for (unsigned int i = 0; i < machineRooms.size(); i++)
     {
         // TODO: Expand on more machine rooms
-        machinate_trapRoom(machineRooms[i]);
+        switch (LevelGenerator::random.next(2))
+        {
+            case 0:
+                machinate_trapRoom(machineRooms[i]);
+                break;
+            case 1:
+                machinate_hordeRoom(machineRooms[i]);
+                break;
+        }
     }
 
     // build non-machine rooms (standard with room flavors)
@@ -1345,6 +1355,27 @@ void XoGeni::CellMap::machinate_trapRoom(Room* room)
         i++;
         return false;
     });
+}
+
+void XoGeni::CellMap::machinate_hordeRoom(Room* room)
+{
+    // Put a hell portal in the middle of the room
+    Cell* centerCell = getRoomCenterCell(room);
+    centerCell->hasStructure = true;
+    centerCell->decorate(STRUCTURE_FURNISHING, FURNISHING_HADESPORTALA);
+
+    // Fill the room with skeletons and a hell portal
+    unsigned int maxSpawnCount = LevelGenerator::random.next(4, 8);
+    unsigned int i = 0;
+    for (unsigned int i = 0; i < maxSpawnCount; i++)
+    {
+        Cell* cell = getOpenRoomCell(room, true);
+        if (cell)
+        {
+            cell->hasCharacter = true;
+            cell->characterType = CHARACTER_SKELETON;
+        }
+    }
 }
 
 void XoGeni::CellMap::machinate_chestKeyTreasure()

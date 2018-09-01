@@ -1869,7 +1869,8 @@ void Character::handleInteraction(Interaction::Type interaction, Body* interacto
                 ::Character* character = static_cast<::Character*>(interactor);
 
                 // TODO: Make this more reasonable (defined as a value of healing based on what is being consumed?)
-                character->heal(consumptionHeal); // Heal for 10
+                if (consumptionHeal > 0)
+                    character->heal(consumptionHeal); // Heal for 10
 
                 // Destroy this body
                 level->removeCharacter(this); // THIS Maybe should be queued if it causes trouble inside of loops or ee
@@ -1967,6 +1968,8 @@ std::string Character::getTitle(Character::Type type)
             return "Hazmaster";
         case Character::Type::Batman:
             return "Man Bat";
+        case Character::Type::Skeleton:
+            return "Skeleton";
     }
 }
 

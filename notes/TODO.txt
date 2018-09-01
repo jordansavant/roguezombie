@@ -3,15 +3,11 @@ LEFT OFF:
 
 Bugs:
 
-- After attacking I get free movement for 2 turns.. ???
-	- IMPORTANT
 - Walls on southern tip of map are messed up Z depths
 - two people standing on either side of door, one walk away door close despite person being next to it, only close if count of people is 0
 - if i destroy a body next to a door will it close?
 - made things interactable while in combat but still have no hover effect on tiles
 - can move partial amount and then attack in same turn
-- Are tiles returning QuadIndexes and things back into the VertexMap?
-	- Maybe through a pool? So they are not lost?
 
 Improvements:
 
@@ -41,9 +37,8 @@ Improvements:
 	- scraps of paper
 	- computer disks
 - Use journal system to give me plot points
-- Each level generates another plot machine
+	- Each level generates another plot machine
 - unique attacks, such as something that can only strike at 2 away, not 3 or 1
-- server effects for attack types, gonna have to be sprites
 - refactor characters to be easier to add to
 
 

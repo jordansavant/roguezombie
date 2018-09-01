@@ -35,7 +35,8 @@ public:
         Scientist,
         Guard,
         Hazmaster,
-        Batman
+        Batman,
+        Skeleton
     };
 
     enum EquipmentSlot

@@ -13,7 +13,7 @@ TurnQueue::TurnQueue(Hud* _hud)
     scaleStyle = ScaleStyle::PowerOfTwo;
     
     // Fill elements with turn queue items
-    for(unsigned int i=0; i < 100; i++)
+    for(unsigned int i=0; i < 300; i++)
     {
         HudElement* he = new HudElement(0, 10000, 0, 0, Element::AnchorType::Bottom);
         he->load(hud, std::string("optionbar_character"));

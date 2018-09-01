@@ -49,23 +49,13 @@ void XoGeni::Cell::decorate(unsigned int type, unsigned int subtype)
                     lightRadius = 1;
                     lightOpacity = 0.2;
                     break;
-                case 2: // Column
-                    break;
-                case 3: // Terminal East
+                case 3: //s Terminal East
                     hasLight = true;
                     lightColorR = 200;
                     lightColorG = 255;
                     lightColorB = 200;
                     lightRadius = 1;
                     lightOpacity = 0.2;
-                    break;
-                case 4: // Desk South
-                    break;
-                case 5: // Desk East
-                    break;
-                case 6: // Sink South
-                    break;
-                case 7: // Sink East
                     break;
                 case 8: // Optable
                     hasLight = true;
@@ -75,7 +65,13 @@ void XoGeni::Cell::decorate(unsigned int type, unsigned int subtype)
                     lightRadius = 2;
                     lightOpacity = 0.75;
                     break;
-                case 9: // Pilon
+                case 16: // Hades Portal
+                    hasLight = true;
+                    lightColorR = 255;
+                    lightColorG = 0;
+                    lightColorB = 255;
+                    lightRadius = 5;
+                    lightOpacity = 1;
                     break;
             }
             break;

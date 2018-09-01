@@ -34,6 +34,7 @@ void CharacterClient::reinitialize()
         case Character::Type::Guard:
         case Character::Type::Hazmaster:
         case Character::Type::Batman:
+        case Character::Type::Skeleton:
             sprite.width = 40;
             sprite.height = 40;
             sprite.baseOffsetX = 20;
