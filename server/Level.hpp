@@ -26,6 +26,7 @@ class Guard;
 class Hazmaster;
 class Batman;
 class Skeleton;
+class SkeletonLord;
 class Player;
 class Tile;
 class Door;
@@ -61,6 +62,7 @@ public:
     std::vector<Hazmaster*> hazmasters;
     std::vector<Batman*> batmans;
     std::vector<Skeleton*> skeletons;
+    std::vector<SkeletonLord*> skeletonLords;
     std::vector<Structure*> structures; // meta list
     std::vector<Wall*> walls;
     std::vector<Door*> doors;

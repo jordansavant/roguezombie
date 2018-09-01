@@ -1986,6 +1986,8 @@ std::string Character::getTitle(Character::Type type)
             return "Man Bat";
         case Character::Type::Skeleton:
             return "Skeleton";
+        case Character::Type::SkeletonLord:
+            return "Skeleton Lord";
     }
 }
 

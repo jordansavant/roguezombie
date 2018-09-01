@@ -311,6 +311,8 @@ std::string CharacterSprite::getSpriteMoniker(Character::Type t)
             return "Batman";
         case Character::Type::Skeleton:
             return "Skeleton";
+        case Character::Type::SkeletonLord:
+            return "SkeletonLord";
     }
 }
 

@@ -36,7 +36,8 @@ public:
         Guard,
         Hazmaster,
         Batman,
-        Skeleton
+        Skeleton,
+        SkeletonLord
     };
 
     enum EquipmentSlot

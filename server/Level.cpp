@@ -11,6 +11,7 @@
 #include "characters/Hazmaster.hpp"
 #include "characters/Batman.hpp"
 #include "characters/Skeleton.hpp"
+#include "characters/SkeletonLord.hpp"
 #include "structures/Wall.hpp"
 #include "structures/Door.hpp"
 #include "structures/Chest.hpp"
@@ -103,6 +104,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
     runners.push_back(new LevelRunner<Hazmaster>(this, &hazmasters));
     runners.push_back(new LevelRunner<Batman>(this, &batmans));
     runners.push_back(new LevelRunner<Skeleton>(this, &skeletons));
+    runners.push_back(new LevelRunner<SkeletonLord>(this, &skeletonLords));
     runners.push_back(new LevelRunner<Wall>(this, &walls));
     runners.push_back(new LevelRunner<Door>(this, &doors));
     runners.push_back(new LevelRunner<Chest>(this, &chests));
@@ -359,6 +361,19 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         skeleton->combatDecisionAi = AiRoutines::Combat::Savage_DecideCombat;
                         skeleton->getStartingDialog = std::bind(&Level::getDialogTree, this);
                         c = skeleton;
+                        break;
+                    }
+                    case Character::Type::SkeletonLord:
+                    {
+                        SkeletonLord* skeletonLord = new SkeletonLord();
+                        skeletonLord->load(this, server->getNextBodyId(), t->schema.x, t->schema.y);
+                        skeletonLord->moveToPosition(t->schema.x, t->schema.y);
+                        skeletonLords.push_back(skeletonLord);
+                        skeletonLord->hostilityCheckAi = AiRoutines::Combat::Generic_DetectHostility;
+                        skeletonLord->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
+                        skeletonLord->combatDecisionAi = AiRoutines::Combat::Savage_DecideCombat;
+                        skeletonLord->getStartingDialog = std::bind(&Level::getDialogTree, this);
+                        c = skeletonLord;
                         break;
                     }
                 }
@@ -692,6 +707,9 @@ void Level::removeCharacter(Character* character)
             break;
         case Character::Type::Skeleton:
             skeletons.erase(std::remove(skeletons.begin(), skeletons.end(), static_cast<Skeleton*>(character)), skeletons.end());
+            break;
+        case Character::Type::SkeletonLord:
+            skeletonLords.erase(std::remove(skeletonLords.begin(), skeletonLords.end(), static_cast<SkeletonLord*>(character)), skeletonLords.end());
             break;
     }
 
@@ -1355,6 +1373,9 @@ void Level::prepareSnapshot(bit::ServerPacket &packet, bit::RemoteClient& client
                         break;
                     case Character::Type::Skeleton:
                         packNetworkBody<Skeleton, Character>(packet, full, c, b->schema.type, c->schema.type);
+                        break;
+                    case Character::Type::SkeletonLord:
+                        packNetworkBody<SkeletonLord, Character>(packet, full, c, b->schema.type, c->schema.type);
                         break;
                 }
                 break;

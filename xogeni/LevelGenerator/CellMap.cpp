@@ -23,6 +23,7 @@ unsigned int CHARACTER_GUARD = 5;
 unsigned int CHARACTER_HAZMASTER = 6;
 unsigned int CHARACTER_BATMAN = 7;
 unsigned int CHARACTER_SKELETON = 8;
+unsigned int CHARACTER_SKELETONLORD = 9;
 
 unsigned int STRUCTURE_WALL = 1;
 unsigned int STRUCTURE_DOOR = 2;
@@ -1364,8 +1365,16 @@ void XoGeni::CellMap::machinate_hordeRoom(Room* room)
     centerCell->hasStructure = true;
     centerCell->decorate(STRUCTURE_FURNISHING, FURNISHING_HADESPORTALA);
 
-    // Fill the room with skeletons and a hell portal
-    unsigned int maxSpawnCount = LevelGenerator::random.next(4, 8);
+    // Place one skeleton lord in the room
+    Cell* cell = getOpenRoomCell(room, true);
+    if (cell)
+    {
+        cell->hasCharacter = true;
+        cell->characterType = CHARACTER_SKELETONLORD;
+    }
+
+    // Fill the room with skeletons
+    unsigned int maxSpawnCount = LevelGenerator::random.next(3, 7);
     unsigned int i = 0;
     for (unsigned int i = 0; i < maxSpawnCount; i++)
     {
@@ -1376,6 +1385,8 @@ void XoGeni::CellMap::machinate_hordeRoom(Room* room)
             cell->characterType = CHARACTER_SKELETON;
         }
     }
+
+    // Fill the remaining room with hellscape furnishing
 }
 
 void XoGeni::CellMap::machinate_chestKeyTreasure()
