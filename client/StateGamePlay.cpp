@@ -1432,7 +1432,7 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 switch (type)
                 {
                     default:
-                        rogueZombieGame->soundManager->play(magicCastSoundId, getSoundDistance(posX, posY));
+                        rogueZombieGame->soundManager->play(magicCastSoundId, getSoundDistance(posX, posY), 0.75f + bit::Math::randomFloat() / 2);
                         break;
                 }
                 break;
