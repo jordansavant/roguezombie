@@ -330,7 +330,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         hazmasters.push_back(hazmaster);
                         hazmaster->hostilityCheckAi = AiRoutines::Combat::Generic_DetectHostility;
                         hazmaster->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
-                        hazmaster->combatDecisionAi = AiRoutines::Combat::Coverless_DecideCombat;
+                        hazmaster->combatDecisionAi = AiRoutines::Combat::Savage_DecideCombat;
                         hazmaster->getStartingDialog = std::bind(&Level::getDialogTree, this);
                         c = hazmaster;
                         break;
@@ -343,7 +343,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         batmans.push_back(batman);
                         batman->hostilityCheckAi = AiRoutines::Combat::Generic_DetectHostility;
                         batman->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
-                        batman->combatDecisionAi = AiRoutines::Combat::Coverless_DecideCombat;
+                        batman->combatDecisionAi = AiRoutines::Combat::Savage_DecideCombat;
                         batman->getStartingDialog = std::bind(&Level::getDialogTree, this);
                         c = batman;
                         break;
@@ -356,7 +356,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         skeletons.push_back(skeleton);
                         skeleton->hostilityCheckAi = AiRoutines::Combat::Generic_DetectHostility;
                         skeleton->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
-                        skeleton->combatDecisionAi = AiRoutines::Combat::Coverless_DecideCombat;
+                        skeleton->combatDecisionAi = AiRoutines::Combat::Savage_DecideCombat;
                         skeleton->getStartingDialog = std::bind(&Level::getDialogTree, this);
                         c = skeleton;
                         break;

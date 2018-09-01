@@ -356,6 +356,10 @@ public:
 
 	bool hasAccess(AccessLevel accessLevel);
 
+    unsigned int getEffectiveRange();
+
+    unsigned int getMaximumRange();
+
 
     // Movement
 

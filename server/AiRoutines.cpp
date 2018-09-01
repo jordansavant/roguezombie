@@ -584,3 +584,95 @@ void AiRoutines::Combat::Scientist_DecideCombat(Character* character)
         character->combat_DecideAction_Skip();
     }
 }
+
+
+void AiRoutines::Combat::Savage_DecideCombat(Character* character)
+{
+    // SAVAGE COMBAT AI
+    // A rudimentary AI where the character approaches enemies to within their effective range
+    // 1. Will look for any visible enemies and target the closest one
+    // 2. Will check effective range of weapon (or unarmed)
+    // 3. If within that range already, will attack
+    // 4. If not within that range will look for a location within that range and move to it
+
+    // Get range
+    unsigned int attackRange = character->getEffectiveRange();
+    float attackRangeDistance = character->level->tileWidth * attackRange;
+    unsigned int maxAttackRange = character->getEffectiveRange();
+    float maxAttackRangeDistance = character->level->tileWidth * attackRange;
+
+    // Find closest enemy and get our distances apart
+    Character* closestEnemy = character->getClosestVisibleEnemy();
+    if (closestEnemy)
+    {
+        float x1 = character->Body::schema.x;
+        float y1 = character->Body::schema.y;
+        float x2 = closestEnemy->Body::schema.x;
+        float y2 = closestEnemy->Body::schema.y;
+
+        float distance = bit::VectorMath::distance(x1, y1, x2, y2);
+        int xDistance = std::abs(x2 - x1);
+        int yDistance = std::abs(y2 - y1);
+
+        bool withinEffectiveRange = distance <= attackRangeDistance;
+        bool withinMaximumRange = distance <= maxAttackRangeDistance;
+
+        // Am I within range of this enemy?
+        if (withinMaximumRange)
+        {
+            // Attack the enemy
+            character->combat_DecideAction_AttackCharacter(closestEnemy);
+        }
+        else
+        {
+            // Look for a spot nearby we can get to
+            findOpenAdjacentPosition(character, closestEnemy,
+                [] (Character* character, Character* enemy, sf::Vector2i pos) -> void {
+                    // If a spot exists then lets path toward it
+                    character->combat_DecideAction_MoveToLocation(pos.x, pos.y);
+                },
+                [] (Character* character, Character* enemy) -> void {
+                    // If no spot exists, yet we are out of range
+                    // If I have a weapon that 
+                    character->combat_DecideAction_AttackCharacter(enemy);
+                }
+            );
+        }
+    }
+    else
+    {
+        character->combat_DecideAction_Skip();
+    }
+}
+
+void AiRoutines::Combat::findOpenAdjacentPosition(Character* character, Character* enemy, std::function<void(Character* character, Character* enemy, sf::Vector2i pos)> onSuccess, std::function<void(Character* character, Character* enemy)> onFailure)
+{
+    float x1 = character->Body::schema.x;
+    float y1 = character->Body::schema.y;
+    float x2 = enemy->Body::schema.x;
+    float y2 = enemy->Body::schema.y;
+
+    // Look for a spot within range of the enemy
+    sf::Vector2f directionAway = bit::VectorMath::directionToVector(x2, y2, x1, y1);
+    sf::Vector2f directionToward = bit::VectorMath::directionToVector(x1, y1, x2, y2);
+    sf::Vector2f right(-directionAway.y, directionAway.x);
+    sf::Vector2f left(directionAway.y, -directionAway.x);
+
+    std::vector<sf::Vector2i> attempts;
+    attempts.push_back(sf::Vector2i(x2 + directionAway.x * character->level->tileWidth * 1, y2 + directionAway.y * character->level->tileHeight * 1)); // tile nearest me
+    attempts.push_back(sf::Vector2i(x2 + right.x * character->level->tileWidth * 2, y2 + right.y * character->level->tileHeight * 2)); // tile to right of them
+    attempts.push_back(sf::Vector2i(x2 + left.x * character->level->tileWidth * 1, y2 + left.y * character->level->tileHeight * 1)); // tile to left of them
+    attempts.push_back(sf::Vector2i(x2 + directionToward.x * character->level->tileWidth * 1, y2 + directionToward.y * character->level->tileHeight * 1)); // tile behind them
+
+    for (unsigned int i = 0; i < attempts.size(); i++)
+    {
+        if (character->canPathToPosition(attempts[i].x, attempts[i].y))
+        {
+            // If this place is reachable, lets do it
+            onSuccess(character, enemy, sf::Vector2i(attempts[i].x, attempts[i].y));
+            return;
+        }
+    }
+
+    onFailure(character, enemy);
+}

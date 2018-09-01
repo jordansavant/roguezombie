@@ -1530,6 +1530,22 @@ bool Character::hasAccess(AccessLevel accessLevel)
 	return keycard != NULL;
 }
 
+unsigned int Character::getEffectiveRange()
+{
+    // Sees if I have a weapon equipped and returns its range
+    // If no weapon, then I am unarmed and my range is 1
+    Item* weapon = equipment[Character::EquipmentSlot::WeaponPrimary];
+    return weapon ? weapon->schema.effectiveRangeInTiles : 1;
+}
+
+unsigned int Character::getMaximumRange()
+{
+    // Sees if I have a weapon equipped and returns its maximum range
+    // If no weapon, then I am unarmed and my range is 1
+    Item* weapon = equipment[Character::EquipmentSlot::WeaponPrimary];
+    return weapon ? weapon->schema.maximumRangeInTiles : 1;
+}
+
 
 ///////////////////////////////////////////////////////
 //                   MOVEMENT                        //
