@@ -60,7 +60,7 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     healSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_heal_01.ogg");
     spikeReleaseSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_spikerelease_01.ogg");
     spikeReturnSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_spikereturn_01.ogg");
-    whiffSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_wiff_01.ogg");
+    whiffSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_wiff_02.ogg");
 
     // Music
     rogueZombieGame->musicManager->play(rogueZombieGame->exploreMusic);
@@ -378,7 +378,7 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
                 if(inputActive_tileSelect)
                 {
                     // Always deactivate the stat bubble if something is clicked
-                    hud->statBubble->deactivate();
+                    //hud->statBubble->deactivate();
 
                     // See if a tile is being hovered over
                     if(levelClient->hoveredTile)
@@ -392,7 +392,7 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
                             {
                                 target.tileId = t->schema.id;
                                 target.bodyId = t->schema.bodyId;
-                                hud->statBubble->handleStats(t->schema.id);
+                                //hud->statBubble->handleStats(t->schema.id);
                             }
                             else if (t->hasInteractableBody())
                             {

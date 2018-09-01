@@ -8,6 +8,7 @@
 #include "../../bitengine/Input.hpp"
 #include "../../bitengine/System.hpp"
 #include <sstream>
+#include <iomanip>
 
 InformationPanel::InformationPanel(Hud* _hud)
     : bit::Container(60, 130, 320, 320, bit::Element::AnchorType::TopLeft, std::bind(&Hud::typicalContainerControl, hud, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)), hud(_hud)
@@ -34,25 +35,31 @@ void InformationPanel::display(TileClient* tileClient)
     if (tileClient->hasCharacter)
     {
         CharacterClient* cc = tileClient->characterClient;
-        ss << cc->getTitle() << "\n";
-        ss << "- Health: " << cc->schema.health << "/" << cc->schema.maxHealth << "\n";
-        ss << "- Dexterity: " << cc->schema.dexterity << "\n";
-        ss << "- Speed: " << cc->schema.speed << "\n";
-        ss << "- Strength: " << cc->schema.strength << "\n";
+        if (cc->isMyPlayer())
+            ss << cc->getTitle() << " (You)\n";
+        else if (cc->isPlayer())
+            ss << cc->getTitle() << " (Player)\n";
+        else
+            ss << cc->getTitle() << "\n";
+        ss << "- HP: " << cc->schema.health << "/" << cc->schema.maxHealth << "\n";
+        ss << "- Dex: " << cc->schema.dexterity << "\n";
+        ss << "- Spd: " << cc->schema.speed << "\n";
+        ss << "- Str: " << cc->schema.strength << "\n";
+        ss << "- CoH: " << std::setprecision(4) << cc->chanceOfHit * 100 << "%\n";
         if (cc->hasEquipment[Character::EquipmentSlot::WeaponPrimary])
         {
             ItemClient* ic = &cc->equipment[Character::EquipmentSlot::WeaponPrimary];
             ss << "- Weapon: " << Item::getTitle(ic->schema.type) << "\n";
-            ss << "  - Range: " << ic->schema.effectiveRangeInTiles << "\n";
-            ss << "  - Damage: " << ic->schema.minimumDamage << "-" << ic->schema.maximumDamage << "\n";
+            ss << "  - Rng: " << ic->schema.effectiveRangeInTiles << "\n";
+            ss << "  - Dmg: " << ic->schema.minimumDamage << "-" << ic->schema.maximumDamage << "\n";
         }
         if (cc->activeEffects.size() > 0)
         {
             for (unsigned int i=0; i < cc->activeEffects.size(); i++)
             {
                 ss << "* " << CharacterEffect::getAdjective(cc->activeEffects[i].type) << "\n";
-                ss << "  - Damage: " << cc->activeEffects[i].damageAmount << "\n";
-                ss << "  - Every: " << cc->activeEffects[i].tileInterval << " moves\n";
+                ss << "  - Dmg: " << cc->activeEffects[i].damageAmount << "\n";
+                ss << "  - Per: " << cc->activeEffects[i].tileInterval << " moves\n";
                 ss << "  - For: " << cc->activeEffects[i].tileCounter << "/" << cc->activeEffects[i].maxTiles << " moves\n";
             }
         }

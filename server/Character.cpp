@@ -18,7 +18,7 @@
 #include "RpgSystem.hpp"
 
 Character::Character()
-    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::MoveToLocation), actionDelayTimer(1.5), hostilityCheckAi(NULL), combatDetectionAi(NULL), combatDecisionAi(NULL),
+    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::MoveToLocation), actionDelayTimer(.75f), hostilityCheckAi(NULL), combatDetectionAi(NULL), combatDecisionAi(NULL),
       isHostileCombatDetected(false), hasTargetEnemy(false), targetEnemyPosition(0, 0), moveTimer(.5f), directionToMove(MoveDirection::NoDirection), equipment(), schema(), visionRadius(30), consumptionHeal(10)
 {
     equipment.resize(EquipmentSlot::_count, NULL);
@@ -669,7 +669,7 @@ void Character::attack(Character* character)
         }
 
         // Unarmed Miss Event
-        if (unarmedAttack && schema.isPlayerCharacter)
+        if (unarmedAttack)
         {
             level->sendEventToAllPlayers([character](bit::ServerPacket &packet) {
                 packet << sf::Uint32(ServerEvent::BluntMiss);

@@ -45,6 +45,10 @@ public:
 
     virtual void reset();
 
+    bool isPlayer();
+
+    bool isMyPlayer();
+
     virtual void handleSnapshot(bit::ServerPacket &packet, bool full = false);
 
     void handleServerEventPacket_missionCompleted(bit::ServerPacket &packet);

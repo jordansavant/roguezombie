@@ -57,6 +57,16 @@ void CharacterClient::reset()
     sprite.reset();
 }
 
+bool CharacterClient::isPlayer()
+{
+    return schema.isPlayerCharacter;
+}
+
+bool CharacterClient::isMyPlayer()
+{
+    return level->playerCharacter == this;
+}
+
 void CharacterClient::handleSnapshot(bit::ServerPacket &packet, bool full)
 {
     // Body
