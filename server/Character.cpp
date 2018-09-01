@@ -1987,7 +1987,7 @@ std::string Character::getTitle(Character::Type type)
         case Character::Type::Skeleton:
             return "Skeleton";
         case Character::Type::SkeletonLord:
-            return "Skeleton Lord";
+            return "Bone Lord";
     }
 }
 

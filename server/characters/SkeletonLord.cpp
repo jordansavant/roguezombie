@@ -16,4 +16,7 @@ void SkeletonLord::load(Level* _level, unsigned int _id, float _x, float _y)
     schema.maxHealth = 30;
     schema.health = 30;
     schema.speed = 3;
+
+    Item* weapon = Item::create(Item::Wand, level->server->getNextItemId());
+    equip(Character::EquipmentSlot::WeaponPrimary, weapon);
 }

@@ -39,6 +39,7 @@ public:
         GoldMedal, // 14
         KeyCard, // 15
         Biosprayer, // 16
+        Wand, // 17
     };
 
     enum CommandType
@@ -202,6 +203,8 @@ public:
     static std::string getIconName(Type type);
 
     static void visualizeWeaponFire(Character* user);
+
+    static void visualizeMagicFire(Character* user);
 
 };
 

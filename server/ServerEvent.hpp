@@ -39,6 +39,7 @@ enum ServerEvent
 
     Explosion,
     Gunfire,
+    MagicFire,
     DoorOpen,
     DoorClose,
     ChestOpen,

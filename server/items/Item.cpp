@@ -657,6 +657,35 @@ Item* Item::create(Type type, AccessLevel accessLevel, unsigned int id)
             };
 
             break;
+
+        case Type::Wand:
+
+            i = new Item();
+            i->schema.CategoryBase = ItemCategory::Base::BaseWeapon;
+            i->schema.CategoryWeapon = ItemCategory::Weapon::WeaponRanged;
+            i->schema.weight = 2;
+            i->schema.minimumDamage = 4;
+            i->schema.maximumDamage = 8;
+            i->schema.effectiveRangeInTiles = 5;
+            i->onUse = [i](Character* user) -> void
+            {
+                // Visualize
+                i->visualizeMagicFire(user);
+
+                // Event
+                Item* ix = i;
+                user->level->sendEventToAllPlayers([ix, user](bit::ServerPacket &packet) {
+                    packet << sf::Uint32(ServerEvent::MagicFire);
+                    packet << user->Body::schema.x;
+                    packet << user->Body::schema.y;
+                    packet << sf::Uint32(ix->schema.type);
+                });
+            };
+            i->onAttack = [i](Character* user, Character* enemy) -> void
+            {
+            };
+
+            break;
     }
 
     i->schema.id = id;
@@ -720,6 +749,9 @@ std::string Item::getTitle(Type type)
 
         case Type::Biosprayer:
             return "Biosprayer";
+
+        case Type::Wand:
+            return "Wand";
     }
 }
 
@@ -779,6 +811,9 @@ std::string Item::getDescription(Type type)
 
         case Type::Biosprayer:
             return "Toxifies enemies";
+
+        case Type::Wand:
+            return "Hades shall prevail";
     }
 }
 
@@ -825,6 +860,9 @@ std::string Item::getSpriteName(Type type)
 
         case Type::Biosprayer:
             return "Biosprayer";
+
+        case Type::Wand:
+            return "Wand";
     }
 }
 
@@ -880,6 +918,9 @@ std::string Item::getIconName(Type type)
 
         case Type::Biosprayer:
             return "Biosprayer";
+
+        case Type::Wand:
+            return "Wand";
     }
 }
 
@@ -890,4 +931,13 @@ void Item::visualizeWeaponFire(Character* user)
     sf::Color e = sf::Color::Black;
     user->level->createLightFlare(user->Body::schema.x, user->Body::schema.y, 0.5f, s, e, 2, 2, 1, 0);
 }
+
+void Item::visualizeMagicFire(Character* user)
+{
+    // Firing flare
+    sf::Color s = sf::Color::Magenta;;
+    sf::Color e = sf::Color::Black;
+    user->level->createLightFlare(user->Body::schema.x, user->Body::schema.y, 0.5f, s, e, 2, 2, 1, 0);
+}
+
 

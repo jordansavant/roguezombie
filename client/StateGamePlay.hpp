@@ -82,6 +82,7 @@ public:
     unsigned int explosionSoundId;
     unsigned int pistolGunshotSoundId;
     unsigned int rifleGunshotSoundId;
+    unsigned int magicCastSoundId;
     unsigned int doorCloseSoundId;
     unsigned int openBodySoundId;
     unsigned int closeBodySoundId;
