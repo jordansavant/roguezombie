@@ -1148,6 +1148,30 @@ void StateGamePlay::endGame(EndGameReason reason)
     disconnect();
 }
 
+float StateGamePlay::getSoundDistance(float worldX, float worldY)
+{
+    // We want to fade sound events that are reasonably far from the player
+    if (levelClient->playerCharacter)
+    {
+        float distance = bit::VectorMath::distance(worldX, worldY, levelClient->playerCharacter->BodyClient::schema.x, levelClient->playerCharacter->BodyClient::schema.y);
+        float tileWidth = levelClient->tileWidth;
+        float min = 5;
+        float max = 30;
+        float minW = min * tileWidth;
+        float maxW = max * tileWidth;
+
+        // Anything within ~30 tiles should play at normal volume
+        // Anything beyond ~100 tiles should play muted
+        if (distance < minW)
+            return 1;
+        else if (distance > maxW)
+            return 0;
+        else
+            return 1 - ((distance - minW) / (maxW - minW));
+    }
+    return 0;
+}
+
 
 /**
  * Packet handling
@@ -1372,7 +1396,7 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 float posX, posY;
                 packet >> posX;
                 packet >> posY;
-                rogueZombieGame->soundManager->play(explosionSoundId);
+                rogueZombieGame->soundManager->play(explosionSoundId, getSoundDistance(posX, posY));
                 break;
             }
 
@@ -1386,13 +1410,13 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 switch(type)
                 {
                     case Item::Type::Z4Rifle:
-                        rogueZombieGame->soundManager->play(rifleGunshotSoundId);
+                        rogueZombieGame->soundManager->play(rifleGunshotSoundId, getSoundDistance(posX, posY));
                         break;
                     case Item::Type::Magnum357:
-                        rogueZombieGame->soundManager->play(pistolGunshotSoundId);
+                        rogueZombieGame->soundManager->play(pistolGunshotSoundId, getSoundDistance(posX, posY));
                         break;
                     default:
-                        rogueZombieGame->soundManager->play(pistolGunshotSoundId);
+                        rogueZombieGame->soundManager->play(pistolGunshotSoundId, getSoundDistance(posX, posY));
                         break;
                 }
                 break;
@@ -1408,7 +1432,7 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 switch (type)
                 {
                     default:
-                        rogueZombieGame->soundManager->play(magicCastSoundId);
+                        rogueZombieGame->soundManager->play(magicCastSoundId, getSoundDistance(posX, posY));
                         break;
                 }
                 break;
@@ -1424,7 +1448,7 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 switch (type)
                 {
                     default:
-                        rogueZombieGame->soundManager->play(spraySoundId);
+                        rogueZombieGame->soundManager->play(spraySoundId, getSoundDistance(posX, posY));
                         break;
                 }
                 break;
@@ -1435,7 +1459,8 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 float posX, posY;
                 packet >> posX;
                 packet >> posY;
-                rogueZombieGame->soundManager->play(doorCloseSoundId);
+                levelClient->playerCharacter->BodyClient::schema.x;
+                rogueZombieGame->soundManager->play(doorCloseSoundId, getSoundDistance(posX, posY));
                 break;
             }
 
@@ -1444,7 +1469,7 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 float posX, posY;
                 packet >> posX;
                 packet >> posY;
-                rogueZombieGame->soundManager->play(doorCloseSoundId);
+                rogueZombieGame->soundManager->play(doorCloseSoundId, getSoundDistance(posX, posY));
                 break;
             }
 
@@ -1487,10 +1512,10 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                     case Character::Type::Guard:
                     case Character::Type::Hazmaster:
                     case Character::Type::Batman:
-                        rogueZombieGame->soundManager->play(humanCharacterDeathSoundId);
+                        rogueZombieGame->soundManager->play(humanCharacterDeathSoundId, getSoundDistance(posX, posY));
                         break;
                     case Character::Type::Skeleton: // TODO make this some sort of rattling sound
-                        rogueZombieGame->soundManager->play(humanCharacterDeathSoundId);
+                        rogueZombieGame->soundManager->play(humanCharacterDeathSoundId, getSoundDistance(posX, posY));
                         break;
                 }
                 break;
@@ -1501,7 +1526,7 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 float posX, posY;
                 packet >> posX;
                 packet >> posY;
-                rogueZombieGame->soundManager->play(thudSoundId);
+                rogueZombieGame->soundManager->play(thudSoundId, getSoundDistance(posX, posY));
                 break;
             }
 
@@ -1510,7 +1535,7 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 float posX, posY;
                 packet >> posX;
                 packet >> posY;
-                rogueZombieGame->soundManager->play(whiffSoundId);
+                rogueZombieGame->soundManager->play(whiffSoundId, getSoundDistance(posX, posY));
                 break;
             }
 
@@ -1519,7 +1544,7 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 float posX, posY;
                 packet >> posX;
                 packet >> posY;
-                rogueZombieGame->soundManager->play(healSoundId);
+                rogueZombieGame->soundManager->play(healSoundId, getSoundDistance(posX, posY));
                 levelClient->visualEffect(VisualEffect::Heal, posX, posY);
                 break;
             }
@@ -1541,7 +1566,7 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 float posX, posY;
                 packet >> posX;
                 packet >> posY;
-                rogueZombieGame->soundManager->play(spikeReleaseSoundId);
+                rogueZombieGame->soundManager->play(spikeReleaseSoundId, getSoundDistance(posX, posY));
                 displayMessage("Trap sprung!");
                 break;
             }
@@ -1551,7 +1576,7 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 float posX, posY;
                 packet >> posX;
                 packet >> posY;
-                rogueZombieGame->soundManager->play(spikeReturnSoundId);
+                rogueZombieGame->soundManager->play(spikeReturnSoundId, getSoundDistance(posX, posY));
                 break;
             }
 

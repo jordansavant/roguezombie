@@ -273,6 +273,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         zombie->hostilityCheckAi = AiRoutines::Combat::Zombie_DetectHostility;
                         zombie->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
                         zombie->combatDecisionAi = AiRoutines::Combat::Zombie_DecideCombat;
+                        zombie->freeStateAi = AiRoutines::Free::Wander_FreeState;
                         c = zombie;
                         break;
                     }
@@ -295,6 +296,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         hunter->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
                         hunter->combatDecisionAi = AiRoutines::Combat::Hunter_DecideCombat;
                         hunter->getStartingDialog = std::bind(&Level::getDialogTree, this);
+                        hunter->freeStateAi = AiRoutines::Free::Wander_FreeState;
                         c = hunter;
                         break;
                     }
@@ -308,6 +310,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         scientist->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
                         scientist->combatDecisionAi = AiRoutines::Combat::Scientist_DecideCombat;
                         scientist->getStartingDialog = std::bind(&Level::getDialogTree, this);
+                        scientist->freeStateAi = AiRoutines::Free::Wander_FreeState;
                         c = scientist;
                         break;
                     }
@@ -321,6 +324,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         guard->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
                         guard->combatDecisionAi = AiRoutines::Combat::Guard_DecideCombat;
                         guard->getStartingDialog = std::bind(&Level::getDialogTree, this);
+                        guard->freeStateAi = AiRoutines::Free::Wander_FreeState;
                         c = guard;
                         break;
                     }
@@ -334,6 +338,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         hazmaster->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
                         hazmaster->combatDecisionAi = AiRoutines::Combat::Savage_DecideCombat;
                         hazmaster->getStartingDialog = std::bind(&Level::getDialogTree, this);
+                        hazmaster->freeStateAi = AiRoutines::Free::Wander_FreeState;
                         c = hazmaster;
                         break;
                     }
@@ -347,6 +352,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         batman->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
                         batman->combatDecisionAi = AiRoutines::Combat::Savage_DecideCombat;
                         batman->getStartingDialog = std::bind(&Level::getDialogTree, this);
+                        batman->freeStateAi = AiRoutines::Free::Wander_FreeState;
                         c = batman;
                         break;
                     }
@@ -360,6 +366,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         skeleton->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
                         skeleton->combatDecisionAi = AiRoutines::Combat::Savage_DecideCombat;
                         skeleton->getStartingDialog = std::bind(&Level::getDialogTree, this);
+                        skeleton->freeStateAi = AiRoutines::Free::Wander_FreeState;
                         c = skeleton;
                         break;
                     }
@@ -373,6 +380,7 @@ void Level::load(GameplayServer* _server, LevelLoader::Level &levelDef)
                         skeletonLord->combatDetectionAi = AiRoutines::Combat::Default_DetectCombat;
                         skeletonLord->combatDecisionAi = AiRoutines::Combat::Savage_DecideCombat;
                         skeletonLord->getStartingDialog = std::bind(&Level::getDialogTree, this);
+                        skeletonLord->freeStateAi = AiRoutines::Free::Wander_FreeState;
                         c = skeletonLord;
                         break;
                     }

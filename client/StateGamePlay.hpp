@@ -197,6 +197,8 @@ public:
 
     void endGame(EndGameReason);
 
+    float getSoundDistance(float x, float y);
+
 protected:
 
     virtual bit::Server* newServer();

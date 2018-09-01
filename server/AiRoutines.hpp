@@ -38,9 +38,15 @@ public:
 
         static void Savage_DecideCombat(Character* character);
 
-    private:
-        
         static void findOpenAdjacentPosition(Character* character, Character* enemy, std::function<void(Character* character, Character* enemy, sf::Vector2i pos)> onSuccess, std::function<void(Character* character, Character* enemy)> onFailure);
+
+    };
+
+    class Free
+    {
+    public:
+
+        static void Wander_FreeState(Character* character);
 
     };
 };

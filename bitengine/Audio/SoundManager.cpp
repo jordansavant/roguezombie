@@ -50,7 +50,7 @@ unsigned int bit::SoundManager::loadSound(std::string fileName)
 
 void bit::SoundManager::play(unsigned int soundId)
 {
-    play(soundId, masterVolume, defaultPitch);
+    play(soundId, 1, defaultPitch);
 }
 
 void bit::SoundManager::play(unsigned int soundId, float volume, float pitch)
@@ -59,7 +59,7 @@ void bit::SoundManager::play(unsigned int soundId, float volume, float pitch)
     {
         sf::Sound* sound = sounds.at(soundId);
 
-        sound->setVolume(Math::clamp(volume, 0, masterVolume));
+        sound->setVolume(Math::clamp(volume, 0, 1) * masterVolume);
         sound->setPitch(pitch);
         sound->play();
     }

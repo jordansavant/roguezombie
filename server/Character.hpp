@@ -86,6 +86,8 @@ public:
     std::function<bool(Character*, Character*)> hostilityCheckAi;
     std::function<bool(Character*)> combatDetectionAi;
     std::function<void(Character*)> combatDecisionAi;
+    std::function<void(Character*)> freeStateAi;
+    bit::GameTimer freeStateTimer;
     bool isHostileCombatDetected;
     std::vector<Tile*> path;
     bool hasTargetEnemy;

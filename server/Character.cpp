@@ -18,8 +18,8 @@
 #include "RpgSystem.hpp"
 
 Character::Character()
-    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::MoveToLocation), actionDelayTimer(.75f), hostilityCheckAi(NULL), combatDetectionAi(NULL), combatDecisionAi(NULL),
-      isHostileCombatDetected(false), hasTargetEnemy(false), targetEnemyPosition(0, 0), moveTimer(.5f), directionToMove(MoveDirection::NoDirection), equipment(), schema(), visionRadius(30), consumptionHeal(10)
+    : Body(), combatState(CombatState::Waiting), combatAction(CombatAction::MoveToLocation), actionDelayTimer(.75f), hostilityCheckAi(NULL), combatDetectionAi(NULL), combatDecisionAi(NULL), freeStateAi(NULL),
+      isHostileCombatDetected(false), hasTargetEnemy(false), targetEnemyPosition(0, 0), moveTimer(.5f), directionToMove(MoveDirection::NoDirection), equipment(), schema(), visionRadius(30), consumptionHeal(10), freeStateTimer(3 + bit::Math::randomFloat() * 3)
 {
     equipment.resize(EquipmentSlot::_count, NULL);
 }
@@ -94,7 +94,17 @@ void Character::updateAlive(sf::Time &gameTime)
 
 void Character::updateAlive_Free(sf::Time &gameTime)
 {
-    followPath(gameTime);
+    // If i have a path, i need to follow it
+    if (path.size() > 0)
+    {
+        followPath(gameTime);
+    }
+    // Otherwise if I have an AI lets figure out how to not stay bored
+    else if (freeStateAi && freeStateTimer.update(gameTime))
+    {
+        freeStateAi(this);
+        freeStateTimer.setNewDuration(3 + bit::Math::randomFloat() * 3);
+    }
 }
 
 void Character::updateAlive_Combat(sf::Time &gameTime)

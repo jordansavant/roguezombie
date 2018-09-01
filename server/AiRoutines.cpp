@@ -629,3 +629,26 @@ void AiRoutines::Combat::findOpenAdjacentPosition(Character* character, Characte
 
     onFailure(character, enemy);
 }
+
+
+void AiRoutines::Free::Wander_FreeState(Character* character)
+{
+    switch (bit::Math::random(8))
+    {
+        case 0:
+            character->moveUp();
+            break;
+        case 1:
+            character->moveDown();
+            break;
+        case 2:
+            character->moveLeft();
+            break;
+        case 3:
+            character->moveRight();
+            break;
+        default:
+            // Do nothing half the time
+            break;
+    }
+}
