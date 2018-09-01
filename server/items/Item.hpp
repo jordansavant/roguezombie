@@ -206,6 +206,8 @@ public:
 
     static void visualizeMagicFire(Character* user);
 
+    static void visualizePoisonFire(Character* user);
+
 };
 
 #endif

@@ -639,12 +639,12 @@ Item* Item::create(Type type, AccessLevel accessLevel, unsigned int id)
             i->onUse = [i](Character* user) -> void
             {
                 // Visualize
-                i->visualizeWeaponFire(user);
+                i->visualizePoisonFire(user);
 
                 // Event
                 Item* ix = i;
                 user->level->sendEventToAllPlayers([ix, user](bit::ServerPacket &packet) {
-                    packet << sf::Uint32(ServerEvent::Gunfire);
+                    packet << sf::Uint32(ServerEvent::SprayFire);
                     packet << user->Body::schema.x;
                     packet << user->Body::schema.y;
                     packet << sf::Uint32(ix->schema.type);
@@ -940,4 +940,10 @@ void Item::visualizeMagicFire(Character* user)
     user->level->createLightFlare(user->Body::schema.x, user->Body::schema.y, 0.5f, s, e, 2, 2, 1, 0);
 }
 
-
+void Item::visualizePoisonFire(Character* user)
+{
+    // Firing flare
+    sf::Color s = sf::Color::Green;;
+    sf::Color e = sf::Color::Black;
+    user->level->createLightFlare(user->Body::schema.x, user->Body::schema.y, 0.5f, s, e, 2, 2, 1, 0);
+}

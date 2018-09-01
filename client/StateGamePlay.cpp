@@ -49,6 +49,7 @@ StateGamePlay::StateGamePlay(bit::StateStack &stack, RogueZombieGame* _game, boo
     pistolGunshotSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_pistol_01.ogg");
     rifleGunshotSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_rifle_01.ogg");
     magicCastSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_magiccast_01.ogg");
+    spraySoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_spray_01.ogg");
     doorCloseSoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_click_01.ogg");
     openBodySoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_guts_01.ogg");
     closeBodySoundId = rogueZombieGame->soundManager->loadSound(resourcePath() + "bit_guts_02.ogg");
@@ -1408,6 +1409,22 @@ void StateGamePlay::handlePacket_ServerEvent(bit::ServerPacket &packet)
                 {
                     default:
                         rogueZombieGame->soundManager->play(magicCastSoundId);
+                        break;
+                }
+                break;
+            }
+
+            case ServerEvent::SprayFire:
+            {
+                float posX, posY;
+                Item::Type type;
+                packet >> posX;
+                packet >> posY;
+                bit::NetworkHelper::unpackEnum<sf::Uint32, Item::Type>(packet, type);
+                switch (type)
+                {
+                    default:
+                        rogueZombieGame->soundManager->play(spraySoundId);
                         break;
                 }
                 break;
