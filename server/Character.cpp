@@ -225,6 +225,16 @@ COMBAT_UPDATE:
                         goto COMBAT_UPDATE;
 
                     break;
+
+                case CombatAction::Interaction:
+
+                    combat_PerformAction_Interaction(gameTime);
+
+                    // EXPERIMENTAL!
+                    if (!schema.isPlayerCharacter && !isHostileCombatDetected)
+                        goto COMBAT_UPDATE;
+
+                    break;
             }
 
             break;
@@ -468,6 +478,20 @@ void Character::combat_DecideAction_UsedItem()
 void Character::combat_PerformAction_UsedItem(sf::Time &gameTime)
 {
     // used an item external to the character
+    combat_SwitchStateDelay();
+}
+
+void Character::combat_DecideAction_Interaction()
+{
+    // Player decided to perform an interaction
+    schema.currentActionPoints--;
+    combatAction = CombatAction::Interaction;
+    combat_SwitchStatePerform();
+}
+
+void Character::combat_PerformAction_Interaction(sf::Time &gameTime)
+{
+    // performed an interaction during combat
     combat_SwitchStateDelay();
 }
 

@@ -332,6 +332,7 @@ void GameplayServer::handlePacket_ClientRequest(bit::ClientPacket &packet, bit::
             if(t && t->body)
             {
                 t->body->handleInteraction(interaction, player->character, responsePacket);
+                player->onInteractionProcess();
             }
 
             break;

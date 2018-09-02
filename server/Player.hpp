@@ -55,6 +55,8 @@ public:
     bool validateFree();
 
     bool validateCombat();
+
+    void onInteractionProcess();
 };
 
 #endif

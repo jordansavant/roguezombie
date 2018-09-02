@@ -68,7 +68,8 @@ public:
         Attack,
         Skip,
         SwapWeapon,
-        UsedItem
+        UsedItem,
+        Interaction
     };
 
     enum MoveDirection
@@ -234,6 +235,10 @@ public:
     virtual void combat_DecideAction_UsedItem();
 
     virtual void combat_PerformAction_UsedItem(sf::Time &gameTime);
+
+    virtual void combat_DecideAction_Interaction();
+
+    virtual void combat_PerformAction_Interaction(sf::Time &gameTime);
 
 
     void combat_SwitchStateWaiting();

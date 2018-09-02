@@ -372,7 +372,7 @@ void StateGamePlay::modeOnUpdateFree(sf::Time &gameTime)
         }
         case Level::State::Combat:
         {
-            if(levelClient->selectMode == LevelClient::SelectMode::None)
+            if(levelClient->selectMode == LevelClient::SelectMode::None && levelClient->isPlayerDecisionMode)
             {
                 // Combat Mode Commands
                 if(inputActive_tileSelect)
@@ -724,12 +724,16 @@ void StateGamePlay::modeOnUpdateCommonListener(sf::Time &gameTime)
     // Interaction/Selection
     if (mode == Mode::Interact || mode == Mode::Free)
     {
-        if (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::E))
+        // Interactions can only be requested if we are not in combat or if its our turn
+        if (levelClient->levelState == Level::State::Free || (levelClient->levelState == Level::State::Combat && levelClient->isPlayerDecisionMode))
         {
-            TileClient* t = findNextInteractableTile();
-            if (t)
+            if (rogueZombieGame->inputManager->isButtonPressed(sf::Keyboard::E))
             {
-                requestInteractionsForTile(t->schema.id);
+                TileClient* t = findNextInteractableTile();
+                if (t)
+                {
+                    requestInteractionsForTile(t->schema.id);
+                }
             }
         }
     }

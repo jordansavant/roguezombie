@@ -79,8 +79,8 @@ void Player::setupPlayerCharacter()
     //Item* magnum = Item::create(Item::Type::Magnum357, level->server->getNextItemId());
     //character->addItemToInventory(magnum);
     //
-    Item* rifle = Item::create(Item::Type::Biosprayer, level->server->getNextItemId());
-    character->addItemToInventory(rifle);
+    character->addItemToInventory(Item::create(Item::Type::Biosprayer, level->server->getNextItemId()));
+    character->addItemToInventory(Item::create(Item::Type::Z4Rifle, level->server->getNextItemId()));
     //
     //Item* crowbar = Item::create(Item::Type::Crowbar, level->server->getNextItemId());
     //character->addItemToInventory(crowbar);
@@ -91,11 +91,9 @@ void Player::setupPlayerCharacter()
     character->addItemToInventory(Item::create(Item::Type::Medkit, level->server->getNextItemId()));
     character->addItemToInventory(Item::create(Item::Type::Medkit, level->server->getNextItemId()));
     character->addItemToInventory(Item::create(Item::Type::Medkit, level->server->getNextItemId()));
-    character->addItemToInventory(Item::create(Item::Type::Medkit, level->server->getNextItemId()));
-    character->addItemToInventory(Item::create(Item::Type::Medkit, level->server->getNextItemId()));
     //character->addItemToInventory(Item::create(Item::Type::Brick, level->server->getNextItemId()));
-    //character->addItemToInventory(Item::create(Item::Type::Grenade, level->server->getNextItemId()));
-    //character->addItemToInventory(Item::create(Item::Type::Grenade, level->server->getNextItemId()));
+    character->addItemToInventory(Item::create(Item::Type::Grenade, level->server->getNextItemId()));
+    character->addItemToInventory(Item::create(Item::Type::Grenade, level->server->getNextItemId()));
     //character->addItemToInventory(Item::create(Item::Type::Grenade, level->server->getNextItemId()));
     //character->addItemToInventory(Item::create(Item::Type::Grenade, level->server->getNextItemId()));
     //character->addItemToInventory(Item::create(Item::Type::HardHat, level->server->getNextItemId()));
@@ -588,4 +586,17 @@ bool Player::validateFree()
 bool Player::validateCombat()
 {
     return level->state == Level::State::Combat && character && character->combatState == Character::CombatState::DecideAction;
+}
+
+void Player::onInteractionProcess()
+{
+    // If the player has requested to perform an interaction and it has been completed
+    // Interactions cost a turn during combat
+    if (character)
+    {
+        if (validateCombat())
+            character->combat_DecideAction_Interaction();
+        else if (level->state == Level::State::Free)
+            character->moveUp();
+    }
 }
