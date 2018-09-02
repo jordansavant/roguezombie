@@ -1131,11 +1131,22 @@ void Character::swapWeapons()
 {
     Item* primary = equipment[Character::EquipmentSlot::WeaponPrimary];
     Item* secondary = equipment[Character::EquipmentSlot::WeaponSecondary];
-    
-    if(primary)
+
+    if (primary && secondary)
+    {
         setEquipmentSlot(Character::EquipmentSlot::WeaponSecondary, primary);
-    if(secondary)
         setEquipmentSlot(Character::EquipmentSlot::WeaponPrimary, secondary);
+    }
+    else if (primary)
+    {
+        setEquipmentSlot(Character::EquipmentSlot::WeaponSecondary, primary);
+        voidEquipmentSlot(Character::EquipmentSlot::WeaponPrimary);
+    }
+    else if (secondary)
+    {
+        voidEquipmentSlot(Character::EquipmentSlot::WeaponSecondary);
+        setEquipmentSlot(Character::EquipmentSlot::WeaponPrimary, secondary);
+    }
 }
 
 // Takes an existing inventory item and moves its inventory position

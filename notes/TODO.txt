@@ -10,7 +10,7 @@ Bugs:
 	- if so make path move obey new rules
 - a bug when leaving loot mode, inventory gets out of sync and shift clicking doesn't put items into actionbar
 - swapping weapons with nothing in secondary causes the icon to duplicate and get out of sync
-	-
+
 
 Improvements:
 
@@ -43,8 +43,6 @@ Improvements:
 	- Each level generates another plot machine
 - unique attacks, such as something that can only strike at 2 away, not 3 or 1
 - You can game the system by running past guys, poisoning, breaking line of sight, drive by looting
-	- looting and consuming should take a turn
-		- dont allow interactions unless its our turn
 	- enemies should track last known location and move toward it with haste
 - retain enemy targets between movement
 	- use character id and the map to find it each turn
