@@ -596,7 +596,9 @@ void Player::onInteractionProcess()
     {
         if (validateCombat())
             character->combat_DecideAction_Interaction();
-        else if (level->state == Level::State::Free)
-            character->moveUp();
+        //else if (level->state == Level::State::Free)
+            //character->moveUp();
+            // not sure why this condition was here, it was causing us to walk north each time we interacted with something while in free roaming mode
+            // i think it was supposed to be tested and we just need to comment it out
     }
 }

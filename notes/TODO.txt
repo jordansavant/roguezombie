@@ -9,7 +9,7 @@ Bugs:
 	- not sure if this is really a bug, it feels like better strategy
 	- if so make path move obey new rules
 - a bug when leaving loot mode, inventory gets out of sync and shift clicking doesn't put items into actionbar
-- swapping weapons with nothing in secondary causes the icon to duplicate and get out of sync
+- menus listen to input while not in focus
 
 
 Improvements:
@@ -29,7 +29,7 @@ Improvements:
 - more loot! chests and bodies dont have surprises
 	- mutagens, chemicals, implants
 	- unknown 1-time-use items
-	- terminals to learn about random items
+	- terminals to learn about random lore
 - hover tile to get information about people, tiles, structures
 - easy to destroy important game items for loot
 	- check for this?
@@ -48,6 +48,8 @@ Improvements:
 	- use character id and the map to find it each turn
 - wands should have a small chance to stun
 - effect immunities would be nice, granted by wearable items
+- explore the talking element
+	- its been implemented and can be interacted but it needs to be special
 	
 
 Story:
