@@ -2,7 +2,7 @@
 
 A fully networked, multiplayer roguelike game built in C++ using the SFML library.
 
-It has been a perpetual work in progress four several years when the inspiration hits me.
+It has been a perpetual work in progress for several years when the inspiration hits me.
 
 There are several wrapper build repositories for building this game on Mac, Windows and Linux.
 
