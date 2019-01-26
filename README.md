@@ -21,3 +21,5 @@ Enemies have various levels of functionally assigned AI routines to dynamically 
 Outside of combat the world proceeds in free time, where you can navigate the level at any pace. Once combat is detected a queue of combat begins.
 
 The game supports networked multiplayer games but has not been optimized in some time.
+
+https://youtu.be/5urZK-CNOFo
