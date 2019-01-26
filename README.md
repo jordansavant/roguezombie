@@ -22,4 +22,4 @@ Outside of combat the world proceeds in free time, where you can navigate the le
 
 The game supports networked multiplayer games but has not been optimized in some time.
 
-https://youtu.be/5urZK-CNOFo
+[![Rogue Zombie Video](https://img.youtube.com/vi/5urZK-CNOFo/0.jpg)](https://www.youtube.com/watch?v=5urZK-CNOFo)
