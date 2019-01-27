@@ -26,14 +26,12 @@ The game supports networked multiplayer games but has not been optimized in some
 
 https://www.youtube.com/watch?v=5urZK-CNOFo
 
-![](https://media.giphy.com/media/1Bek1Q5vb7tWHlsvEp/giphy.gif)
+<img src="https://media.giphy.com/media/1Bek1Q5vb7tWHlsvEp/giphy.gif" width="500" />
 
-![](https://media.giphy.com/media/5UudDFsjKINvU2nK9s/giphy.gif)
+<img src="https://media.giphy.com/media/5UudDFsjKINvU2nK9s/giphy.gif" width="500" />
 
-![](https://media.giphy.com/media/QJsUHfH4Lie30R61Vz/giphy.gif)
+<img src="https://media.giphy.com/media/QJsUHfH4Lie30R61Vz/giphy.gif" width="500" />
 
-![](https://media.giphy.com/media/tZqWkDeFzmclavakLI/giphy.gif)
-
-<img src="https://media.giphy.com/media/tZqWkDeFzmclavakLI/giphy.gif" width="50" />
+<img src="https://media.giphy.com/media/tZqWkDeFzmclavakLI/giphy.gif" width="500" />
 
 ## Building
