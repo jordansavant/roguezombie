@@ -24,6 +24,8 @@ The game supports networked multiplayer games but has not been optimized in some
 
 ## Media
 
+https://www.youtube.com/watch?v=5urZK-CNOFo
+
 ![](https://media.giphy.com/media/1Bek1Q5vb7tWHlsvEp/giphy.gif)
 
 ![](https://media.giphy.com/media/5UudDFsjKINvU2nK9s/giphy.gif)
@@ -32,7 +34,6 @@ The game supports networked multiplayer games but has not been optimized in some
 
 ![](https://media.giphy.com/media/tZqWkDeFzmclavakLI/giphy.gif)
 
+<img src="https://media.giphy.com/media/tZqWkDeFzmclavakLI/giphy.gif" width="50" />
 
-### Youtube
-
-[![Rogue Zombie Video](https://img.youtube.com/vi/5urZK-CNOFo/0.jpg)](https://www.youtube.com/watch?v=5urZK-CNOFo)
+## Building
